@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ML," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="主要内容  本文主要的内容包含机器学习中的几个常见问题，模型选择和泛化能力：    模型评估选择  训练误差和测试误差 过拟合问题 正则化 交叉验证    泛化能力  泛化误差 泛化误差上界">
+<meta name="keywords" content="ML">
+<meta property="og:type" content="article">
+<meta property="og:title" content="统计学习方法导论—2">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2019&#x2F;09&#x2F;13&#x2F;%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%AF%BC%E8%AE%BA-2.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="主要内容  本文主要的内容包含机器学习中的几个常见问题，模型选择和泛化能力：    模型评估选择  训练误差和测试误差 过拟合问题 正则化 交叉验证    泛化能力  泛化误差 泛化误差上界">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-10-28T16:34:33.696Z">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2019/09/13/统计学习方法导论-2.html"/>
+
+
+
+
+
+  <title>统计学习方法导论—2 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2019/09/13/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%AF%BC%E8%AE%BA-2.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">统计学习方法导论—2</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-13T11:42:44+08:00">
+                2019-9-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/" itemprop="url" rel="index">
+                    <span itemprop="name">统计学习方法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/09/13/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%AF%BC%E8%AE%BA-2.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/09/13/统计学习方法导论-2.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.9k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  7
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="主要内容">主要内容</h3>
+<blockquote>
+<p>本文主要的内容包含机器学习中的几个常见问题，模型选择和泛化能力：</p>
+</blockquote>
+<ul>
+<li>
+<p>模型评估选择</p>
+<ul>
+<li>训练误差和测试误差</li>
+<li>过拟合问题</li>
+<li>正则化</li>
+<li>交叉验证</li>
+</ul>
+</li>
+<li>
+<p>泛化能力</p>
+<ul>
+<li>泛化误差</li>
+<li>泛化误差上界</li>
+</ul>
+</li>
+</ul>
+<a id="more"></a>
+<h3 id="模型评估和选择">模型评估和选择</h3>
+<h4 id="训练误差和测试误差">训练误差和测试误差</h4>
+<p>假设学习模型是$Y=\hat{f}(X)$，训练误差是模型关于训练数据集的平均损失：$R_{emp}(\hat{f})$<br>
+$$<br>
+R_{emp}(\hat{f})=\frac{1}{N}\sum_{i=1}^NL(y_i,\hat{f}(x_i))<br>
+$$<br>
+其中N是训练样本的容量</p>
+<p>训练误差是关于数据集的平均损失：<br>
+$$<br>
+e_{test}=\frac{1}{N’}\sum_{i=1}^{N’}L(y_i,\hat{f}(x_i))<br>
+$$<br>
+其中$N’$是测试样本的容量​</p>
+<p>当损失函数是0-1损失时，测试误差就变成了常见的测试数据集上的误差率<code>error rate</code><br>
+$$<br>
+e_{test}=\frac{1}{N’}\sum_{i=1}^{N’}I(y_i \neq {\hat{f}}(x_i))<br>
+$$<br>
+I是指示函数，即$y\neq{\hat{f}}(x)$时为1，否则为0；相应的测试集上的准确率为<br>
+$$<br>
+r_{test}=\frac{1}{N’}\sum_{i=1}^{N’}I(y_i = {\hat{f}}(x_i))<br>
+$$<br>
+明显的：<br>
+$$<br>
+r_{test} + e_{test}=1<br>
+$$<br>
+<strong>总结</strong></p>
+<ul>
+<li>测试误差反应了学习方法对未知的测试数据集的预测能力</li>
+<li>通过学习方法对未知数据的预测能力称为<strong>泛化能力</strong></li>
+</ul>
+<h4 id="过拟合与模型选择">过拟合与模型选择</h4>
+<p>过拟合：一味地追求提高对训练数据的预测能力，所选模型的复杂度会比真实模型高，这种现象称之为<code>过拟合</code>。</p>
+<ul>
+<li>过拟合是指学习时选择的<strong>参数过多</strong></li>
+<li>过拟合对已知数据能够很好的判断，但是对未知数据预测的效果很差</li>
+<li>模型选择的目的在于避免过拟合并且提高模型的预测能力</li>
+</ul>
+<p>栗子：对M次多项式进行拟合<br>
+$$<br>
+f_M(x,w)=w_0+w_1x+w_2x<sup>2+…+w_Mx</sup>M=\sum_{j=0}<sup>Mw_jx</sup>j<br>
+$$<br>
+解决办法：</p>
+<ul>
+<li>
+<p>确定模型的复杂度，即多项式的次数</p>
+</li>
+<li>
+<p>在给定的模型复杂度下，根据经验风险最小的策略，求解参数，即多项式的系数</p>
+</li>
+<li>
+<p>经验风险最小化<br>
+$$<br>
+L(w)=\frac{1}{2}\sum_{i=1}<sup>{N}(f(x_i,w)-y_i)</sup>2<br>
+$$</p>
+</li>
+<li>
+<p>损失函数是平方损失，系数$\frac{1}{2}$是为了后续的求导计算。</p>
+</li>
+</ul>
+<ol>
+<li>在多项式拟合中，训练误差随着多项式系数即模型复杂度的增加而减小</li>
+<li>测试误差随着模型复杂度的增加先减小后增加</li>
+<li>优化的目的：使得测试误差达到最小</li>
+<li>当模型的复杂度过大，就会出现过拟合的现象，使用<code>正则化和交叉验证</code>来解决</li>
+</ol>
+<h4 id="正则化">正则化</h4>
+<p><strong>模型选择的典型方法是正则化</strong>。正则化是结构风险最小化策略的实现，在经验风险的基础上加上了一个正则项<code>regularrizer</code>或者罚项<code>penalty term</code>。正则化的一般形式<br>
+$$<br>
+\mathop{min}\limits_{f\in \Gamma}\frac{1}{N}\sum_{i=1}^NL(y_i,f(x_i))+\lambda J()<br>
+$$</p>
+<ul>
+<li>
+<p>第一项是经验风险</p>
+</li>
+<li>
+<p>第二项是正则化项</p>
+</li>
+<li>
+<p>两者构成了结构风险</p>
+</li>
+<li>
+<p>$\lambda$是正则化系数</p>
+</li>
+<li>
+<p>正则化项具有不同的形式：比如回归问题中，参数向量的$L_1$范数或<br>
+$$<br>
+L(w)=\frac{1}{N}\sum_{i=1}<sup>N(f(x_i;w)-y_i)</sup>2+\lambda ||w||<em>1<br>
+$$<br>
+者表示成参数向量的$L_2$范数<br>
+$$<br>
+L(w)=\frac{1}{N}\sum</em>{i=1}<sup>N(f(x_i;w)-y_i)</sup>2+{\frac{\lambda}{2}||w||^2}<br>
+$$</p>
+</li>
+</ul>
+<p><strong>正则化作用：选择经验风险和模型复杂度同时较小的模型</strong></p>
+<h4 id="交叉验证">交叉验证</h4>
+<h5 id="普通模型选择方法">普通模型选择方法</h5>
+<p>进行模型选择的<code>一般做法</code>是指将数据集分成三个部分：</p>
+<ul>
+<li>训练集<code>training  set</code>
+<ul>
+<li>作用是训练模型</li>
+</ul>
+</li>
+<li>验证集<code>validation set</code>
+<ul>
+<li>作用是用于模型的选择；一般数据足够多</li>
+</ul>
+</li>
+<li>测试集<code>test set</code>
+<ul>
+<li>对学习方法的评估</li>
+</ul>
+</li>
+</ul>
+<p><strong>在学习到不同复杂度的模型中，选择对验证集有最小预测误差的模型</strong></p>
+<h5 id="简单交叉验证">简单交叉验证</h5>
+<p>交叉验证<code>cross validation</code>的做法是数据分成两部分：</p>
+<ul>
+<li>训练集<code> 70%</code></li>
+<li>测试集<code> 30%</code></li>
+</ul>
+<p>通过训练集在不同的条件下进行模型的训练，从而得到模型，再把测试集数据放入模型进行评估，选择出测试误差最小的模型</p>
+<h5 id="S折交叉验证">S折交叉验证</h5>
+<p><code>S-fold cross validation</code> 的做法是：</p>
+<ul>
+<li>将数据随机分成<code>S</code>个互不相交、大小相同的子集</li>
+<li>利用<code>S-1</code>个子集进行训练</li>
+<li>利用剩下的子集进行测试</li>
+<li>对<code>S</code>中选择重复进行</li>
+<li>最后选择<code>S</code>次评测中测试误差最小的模型</li>
+</ul>
+<h5 id="留一交叉验证">留一交叉验证</h5>
+<p><code>S</code>折交叉验证的特殊情形是<code>S=N</code>，变成<code>留一交叉验证 leave-ont-out cross validation</code>，往往是在<strong>数据缺乏的情况下使用</strong></p>
+<h3 id="泛化能力">泛化能力</h3>
+<h4 id="什么是泛化误差">什么是泛化误差</h4>
+<p>学习方法的泛化能力是指由学习方法得到的模型对未知数据的预测能力，是学习方法重要的性质。通常是采用**通过测试误差来评估学习方法的泛化能力。**缺陷是</p>
+<ul>
+<li>过于依赖于测试数据</li>
+<li>测试数据是有限的，评估结果未必可靠</li>
+</ul>
+<p>如果学到的模型是$\hat{f}$，用该模型对未知数据预测的误差称为泛化误差<code>generalization error</code>，通过泛化误差来反映学习的泛化能力：<br>
+$$<br>
+\begin{align}<br>
+R_{exp}(f)<br>
+&amp; = E_P[L(Y,\hat{f}(X))]\<br>
+&amp; = \int_{X{\times}Y}{L(y, \hat{f}(x))P(x,y)}{\rm d}x{\rm d}y<br>
+\end{align}<br>
+$$<br>
+<strong>泛化误差就是所学习到的模型的期望风险</strong></p>
+<h4 id="泛化误差上界GEB">泛化误差上界<code>GEB</code></h4>
+<blockquote>
+<p>泛化能力分析往往是通过研究比较泛化误差的概率上界来实现的，称之为泛化误差上界 <code>generalization error bound</code>。泛化误差两个特质：</p>
+</blockquote>
+<ul>
+<li>GEB是样本容量的函数，样本容量增减，GEB趋于0；</li>
+<li>GEB是假设空间容量的函数，假设空间容量越大，模型越难学，GEB越大</li>
+</ul>
+<h4 id="二分类问题的GEB讨论">二分类问题的<code>GEB</code>讨论</h4>
+<ul>
+<li>
+<p>已知训练集：<br>
+$$<br>
+T={(x_1,y_1), (x_2,y_2),…(x_i,y_i),…,(x_N,y_N)}<br>
+$$<br>
+<code>N</code>是样本容量，<code>T</code>是从联合概率分布$P(X,Y)$独立同分布产生的，$X\in R^n，Y\in{-1,+1}$</p>
+</li>
+<li>
+<p>假设空间是函数的集合$\Gamma = {f_1, f_2, …, f_d}$，d是函数的个数。</p>
+</li>
+<li>
+<p>损失函数是<code>0-1</code>损失</p>
+</li>
+<li>
+<p>假设f是从$\Gamma$中选择出来，则f的<br>
+期望风险是<br>
+$$<br>
+R(f)=E[L(Y,f(X))]<br>
+$$<br>
+经验风险是<br>
+$$<br>
+\hat R(f)=\frac{1}N\sum_{i=1}^NL(y_i, f(x_i))<br>
+$$<br>
+经验风险最小化函数是<br>
+$$<br>
+f_N=arg \mathop{min}\limits_{f\in \Gamma}\hat R(f)<br>
+$$<br>
+泛化能力$R(f_N)=E[L(Y,f_N(X))]$<br>
+其中$f_N$依赖于样本容量N。</p>
+</li>
+</ul>
+<p><strong>泛化误差上界定理</strong><br>
+对于二分裂问题，当假设空间是有限个函数的集合，$\Gamma = {f_1, f_2, …, f_d}$，d是函数的个数，任意的$f\in \Gamma$，至少有以概率$1-\delta, 0 &lt; \delta &lt; 1$使得如下式子成立：$$R(f) \leq \hat R(f)+\epsilon (d,N,\delta)$$，其中<br>
+$$<br>
+\epsilon (d,N,\delta)=\sqrt {\frac{1}N(logd+log \frac {1}\delta)}<br>
+$$</p>
+<ul>
+<li>等式的左边是泛化误差，右端是泛化误差上界</li>
+<li>在泛化误差上界中第一项是训练误差，训练误差越小，泛化误差越小</li>
+<li>第二项中$\epsilon (d,N,\delta)$是样本容量N的单调递减函数，当N趋于无穷大时$\delta$趋于0</li>
+<li>同时第二项也和假设函数个数d相关；假设空间$\Gamma$包含的函数越多，其值越大</li>
+</ul>
+<CENTER><span style='font-size:2.5rem'>Stay Foolish Stay Hungry</span></CENTER>
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/09/13/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%AF%BC%E8%AE%BA-2.html">统计学习方法导论—2</a></p>
+  <p><span>发布时间:</span>2019年09月13日 - 11:09</p>
+  <p><span>原始链接:</span><a href="/2019/09/13/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%AF%BC%E8%AE%BA-2.html" title="统计学习方法导论—2">http://www.renpeter.cn/2019/09/13/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%AF%BC%E8%AE%BA-2.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2019/09/13/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%AF%BC%E8%AE%BA-2.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ML/" rel="tag"># ML</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/12/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%AF%BC%E8%AE%BA-1.html" rel="next" title="统计学习方法法导论_1">
+                <i class="fa fa-chevron-left"></i> 统计学习方法法导论_1
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/14/%E7%BE%8E%E6%9C%AF%E9%A6%86%E6%B8%B8%E8%AE%B0.html" rel="prev" title="李自健美术馆游记">
+                李自健美术馆游记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#主要内容"><span class="nav-number">1.</span> <span class="nav-text">主要内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型评估和选择"><span class="nav-number">2.</span> <span class="nav-text">模型评估和选择</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#训练误差和测试误差"><span class="nav-number">2.1.</span> <span class="nav-text">训练误差和测试误差</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#过拟合与模型选择"><span class="nav-number">2.2.</span> <span class="nav-text">过拟合与模型选择</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#正则化"><span class="nav-number">2.3.</span> <span class="nav-text">正则化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#交叉验证"><span class="nav-number">2.4.</span> <span class="nav-text">交叉验证</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#普通模型选择方法"><span class="nav-number">2.4.1.</span> <span class="nav-text">普通模型选择方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#简单交叉验证"><span class="nav-number">2.4.2.</span> <span class="nav-text">简单交叉验证</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#S折交叉验证"><span class="nav-number">2.4.3.</span> <span class="nav-text">S折交叉验证</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#留一交叉验证"><span class="nav-number">2.4.4.</span> <span class="nav-text">留一交叉验证</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#泛化能力"><span class="nav-number">3.</span> <span class="nav-text">泛化能力</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是泛化误差"><span class="nav-number">3.1.</span> <span class="nav-text">什么是泛化误差</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#泛化误差上界GEB"><span class="nav-number">3.2.</span> <span class="nav-text">泛化误差上界GEB</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二分类问题的GEB讨论"><span class="nav-number">3.3.</span> <span class="nav-text">二分类问题的GEB讨论</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2019/09/13/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%AF%BC%E8%AE%BA-2.html';
+          this.page.identifier = '2019/09/13/统计学习方法导论-2.html';
+          this.page.title = '统计学习方法导论—2';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

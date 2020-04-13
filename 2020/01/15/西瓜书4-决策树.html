@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="剪枝,ID3,C4.5,CART," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="从西瓜书和统计学习方法中学习了决策树的相关知识，同时在网上查找了树的知识点，最重要的是二叉树和树3种的遍历方式  树的知识 决策树 剪枝问题">
+<meta name="keywords" content="剪枝,ID3,C4.5,CART">
+<meta property="og:type" content="article">
+<meta property="og:title" content="西瓜书4-决策树">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2020&#x2F;01&#x2F;15&#x2F;%E8%A5%BF%E7%93%9C%E4%B9%A64-%E5%86%B3%E7%AD%96%E6%A0%91.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="从西瓜书和统计学习方法中学习了决策树的相关知识，同时在网上查找了树的知识点，最重要的是二叉树和树3种的遍历方式  树的知识 决策树 剪枝问题">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gax0ttd6y7j30u00zwqv5.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gax0x08fdpj30em05m41m.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gax0xtonwmj30p00jgkco.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gax0ycedgqj31220u0e82.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gax0yuqg6oj30yi0u07wj.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gax0yzcfjaj319q0u04qr.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gax0zf91omj30mn1g47og.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gax0zt97k2j30lw0f075m.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gax0zz86lbj31fw0u0qv6.jpg">
+<meta property="og:updated_time" content="2020-01-15T02:19:05.533Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gax0ttd6y7j30u00zwqv5.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2020/01/15/西瓜书4-决策树.html"/>
+
+
+
+
+
+  <title>西瓜书4-决策树 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2020/01/15/%E8%A5%BF%E7%93%9C%E4%B9%A64-%E5%86%B3%E7%AD%96%E6%A0%91.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">西瓜书4-决策树</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-01-15T10:17:20+08:00">
+                2020-1-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/%E8%A5%BF%E7%93%9C%E4%B9%A6/" itemprop="url" rel="index">
+                    <span itemprop="name">西瓜书</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/01/15/%E8%A5%BF%E7%93%9C%E4%B9%A64-%E5%86%B3%E7%AD%96%E6%A0%91.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/01/15/西瓜书4-决策树.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  3.5k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  13
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>从西瓜书和统计学习方法中学习了决策树的相关知识，同时在网上查找了树的知识点，最重要的是<strong>二叉树和树3种的遍历方式</strong></p>
+<ul>
+<li>树的知识</li>
+<li>决策树</li>
+<li>剪枝问题</li>
+</ul>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gax0ttd6y7j30u00zwqv5.jpg" alt=""></p>
+</blockquote>
+<a id="more"></a>
+<h3 id="树">树</h3>
+<blockquote>
+<p>树一种抽象类型数据，用来模拟具有树状结构性质的数据集合。它是由多个有限节点组成一个层次关系的集合。特点：</p>
+</blockquote>
+<ul>
+<li>
+<p>每个节点有0个或者多个子节点</p>
+</li>
+<li>
+<p>没有父节点的节点称之为根节点</p>
+</li>
+<li>
+<p>每个非根节点有且只有一个根节点</p>
+</li>
+</ul>
+<h4 id="术语">术语</h4>
+<ul>
+<li>
+<p>节点的度：一个节点含有的<code>子树的个数</code>称为该节点的度</p>
+</li>
+<li>
+<p>树的度：<code>最大的节点的度</code>称之为数的度</p>
+</li>
+<li>
+<p>叶节点或终端节点：<code>度为零</code>的节点</p>
+</li>
+<li>
+<p>父节点：含有子节点的节点上级</p>
+</li>
+<li>
+<p>子节点：一个节点还有的子树的根节点称为该节点的子节点</p>
+</li>
+<li>
+<p>兄弟节点：具有相同父节点的节点</p>
+</li>
+<li>
+<p>节点的层次：根节点为第一层，其子节点为第二层，类推</p>
+</li>
+<li>
+<p>树的高度或者深度：节点最大层次</p>
+</li>
+<li>
+<p>堂兄弟节点：父节点在同一层次的节点</p>
+</li>
+<li>
+<p>森林：由多个树互不相交的树的集合称为<strong>森林</strong></p>
+</li>
+</ul>
+<h4 id="二叉树">二叉树</h4>
+<p>每个节点最多只有两个子节点：左子树和右子树，性质：</p>
+<ul>
+<li>
+<p>第$i$层上最多$2^{(i-1)}$个节点</p>
+</li>
+<li>
+<p>深度为$k$的二叉数最多有$2^k-1$个节点</p>
+</li>
+<li>
+<p>具有$n$个节点的完全二叉树的深度必为$log2(n+1)$</p>
+</li>
+<li>
+<p>叶结点数为$N_0$，深度为2的节点总数为$N_2$，则$N_0=N_2+1$</p>
+</li>
+</ul>
+<h4 id="树的遍历">树的遍历</h4>
+<p>深度遍历的三种遍历顺序：</p>
+<p><strong>在子节点中，必须先左后右</strong></p>
+<ul>
+<li>
+<p>前序遍历：根—&gt;左—&gt;右</p>
+</li>
+<li>
+<p>中序遍历：左—&gt;根—&gt;右</p>
+</li>
+<li>
+<p>后序遍历：左—&gt;右—&gt;根</p>
+</li>
+</ul>
+<h4 id="树的种类">树的种类</h4>
+<ul>
+<li>
+<p>无序树：任意节点的子节点之间没有任何的顺序关系，称之为无序树，也叫自由树</p>
+</li>
+<li>
+<p>有序树：子节点之间由顺序关系</p>
+</li>
+<li>
+<p>二叉树：每个节点最多含有两个子树的树</p>
+</li>
+<li>
+<p>完全二叉树：若一棵树的深度为d，除去第d层外，其他各层的节点数目达到了最大值，且第d层所有节点从左向右连续紧密的排列的二叉树</p>
+</li>
+<li>
+<p>满二叉树：所有层的节点数达到了最大数</p>
+</li>
+<li>
+<p>平衡二叉树：当且仅当任何节点之间的<code>两颗子树的高度差不大于1</code>的二叉树</p>
+</li>
+<li>
+<p>排序二叉树：二叉搜索树，二叉查找树，性质：任何节点左边的数比节点上的数小，右边比节点上的数大</p>
+</li>
+<li>
+<p>霍夫曼树：用于信息编码</p>
+</li>
+<li>
+<p>$B$树/$B^+$树：在<code>MySQL</code>的索引中使用</p>
+</li>
+</ul>
+<h3 id="决策树">决策树</h3>
+<h4 id="决策树介绍">决策树介绍</h4>
+<blockquote>
+<p>决策树是基于树结构进行决策的，其目的是产生一颗泛化能力强，即处理未见示例能力强的决策树，它是一种有监督分类模型</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gax0x08fdpj30em05m41m.jpg" alt="QPGmDO.png"></p>
+<p>一颗决策树包含：</p>
+<ol>
+<li>一个根节点</li>
+<li>若干个内部节点</li>
+<li>若干个叶节点；<strong>叶节点对应于决策结果</strong></li>
+</ol>
+<h4 id="决策树学习">决策树学习</h4>
+<p>决策树学习的本质上是从训练数据集上归纳出一组分类规则，通过训练数据集估计条件概率模型。</p>
+<p>决策树学习的<strong>损失函数</strong>通常是<strong>正则化的极大似然函数</strong>。</p>
+<h4 id="决策树基本算法">决策树基本算法</h4>
+<ul>
+<li>决策树的生成是一个递归过程</li>
+<li>重点是第8行：最优属性的选择；分支节点所包含的样本尽可能的是属于一个类别，节点的“纯度”要高</li>
+</ul>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gax0xtonwmj30p00jgkco.jpg" alt=""></p>
+</blockquote>
+<hr>
+<h4 id="ID-3">ID.3</h4>
+<h5 id="信息增益">信息增益</h5>
+<p>ID.3算法是基于<strong>信息增益</strong>来选择最优划分属性。信息增益的计算基于<strong>信息熵 information entropy（样本集合纯度的指标）</strong>。</p>
+<p>假设数据集$D$中第$k$类样本占的比例是$p_k(k=1,2,…,K)$，则$D$的<strong>信息熵</strong>定义为：<br>
+$$<br>
+Ent(D)=-\sum^K_{k=1} p_klog_2{p_k}<br>
+$$<br>
+比如：某个事件发生的结果有3种情形，出现的概率分别是：</p>
+<table>
+<thead>
+<tr>
+<th>结果1</th>
+<th>结果2</th>
+<th>结果3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$\frac{1}{3}$</td>
+<td>$\frac{1}{2}$</td>
+<td>$\frac{1}{6}$</td>
+</tr>
+</tbody>
+</table>
+<p>信息熵的计算如下：</p>
+<p>$$Ent=-(\frac{1}{3}log_2\frac{1}{3}+\frac{1}{2}log_2\frac{1}{2}+\frac{1}{6}log_2\frac{1}{6})$$</p>
+<hr>
+<p><strong>信息熵越小</strong>，数据集$X$的<strong>纯度越大</strong></p>
+<p>假设数据集中离散属性$a$共有$V$个可能的取值${a<sup>1,…,a</sup>V}$。使用属性$a$对整个数据集进行划分，会产生V个分支节点；</p>
+<p>第$v$个节点包含数据集合$D$在属性$a$上取值为$a<sup>v$的样本，记为$D</sup>v$；节点的权重为$\frac{|D^v|}{|D|}$，样本数越多的分支节点，其影响越大</p>
+<p>基于<strong>属性$a$对数据集的信息增益</strong>表示为<br>
+$$<br>
+Gain(D,a)=Ent(D)-\sum<sup>V_{v=1}\frac{|D</sup>v|}{|D|}Ent(D^v)<br>
+$$<br>
+上面的式子：表示的是以属性$a$<strong>划分前</strong>和<strong>划分后</strong>的信息熵差值，信息增益<strong>越大越好</strong></p>
+<h5 id="具体过程">具体过程</h5>
+<ol>
+<li>从根节点开始，对所有节点计算所有可能的特征的信息增益</li>
+<li>选择信息增益最大的特征作为节点的特征，由特征的不同取值建立子结点</li>
+<li>再对子结点调用上述方法，递归地创建决策树（步骤2中使用的属性特征不再重复使用）</li>
+</ol>
+<h5 id="缺点">缺点</h5>
+<p>ID3算法的缺点是：偏向于<strong>取值较多的属性</strong>进行分割</p>
+<hr>
+<h4 id="C4-5">C4.5</h4>
+<h5 id="介绍">介绍</h5>
+<p>为了解决<code>ID3</code>算法的缺点，引入了<code>C4.5</code></p>
+<p><code>C4.5</code>使用的是<strong>信息增益率</strong>作为划分属性的准则，定义为：<br>
+$$<br>
+GainRatio(D,a)=\frac{Gain(D,a)}{IV(a)}<br>
+$$<br>
+其中<br>
+$$<br>
+IV(a)=-\sum<sup>V_{v=1}\frac{|D</sup>v|}{|D|}log_2\frac{|D^v|}{|D|}<br>
+$$<br>
+上式中的$IV(a)$称之为属性$a$的“固有值”。属性$a$的可能取值越多，“固有值”越大。</p>
+<h5 id="C4-5选择属性的依据">C4.5选择属性的依据</h5>
+<ol>
+<li>不是选择增益率最大的，可能对数目较少的属性有所偏好</li>
+<li>从候选属性中找出信息增益率高于平均水平的属性</li>
+<li>步骤2的基础上，选择增益率最高的</li>
+<li>使用过后的属性在下次进行划分的时候，不再考虑</li>
+<li>如果在某次划分的过程中，有多个属性的信息增益是相同的，任取其中一个。</li>
+<li>对于连续值属性，可取值数目不再有限，采用离散化技术（如二分法）进行处理。
+<ol>
+<li>将属性值从小到大排序，然后选择中间值作为分割点</li>
+<li>数值比它小的点被划分到左子树，数值不小于它的点被分到右子树，计算分割的信息增益率，选择信息增益率最大的属性值进行分割。</li>
+</ol>
+</li>
+</ol>
+<hr>
+<h4 id="CART">CART</h4>
+<h5 id="基尼系数Gini">基尼系数Gini</h5>
+<p><code>CART</code>决策树采用的<code>Gini</code>基尼系数来划分属性。采用的是二元切分法，每次将数据分成两份，分别进入左右两边的子树中。在整个树中</p>
+<ul>
+<li>每个非叶子节点都有两个孩子</li>
+<li>CART中叶子节点比非叶子节点多1</li>
+<li>选取基尼系数作为划分标准，每次迭代都会降低基尼系数。</li>
+</ul>
+<p>对于全部数据集$D$的纯度使用<strong>基尼系数</strong>来度量：<br>
+$$<br>
+\begin{align}<br>
+Gini(D)<br>
+&amp; =\sum<sup>{|Y|}_{k=1}\sum_{k</sup><code> \neq k}p_kp_{k^</code>} \<br>
+&amp; = 1-\sum<sup>{|Y|}_{k=1}p_k</sup>2<br>
+\end{align}<br>
+$$<br>
+基于某个属性$a$的基尼系数可表示为<br>
+$$<br>
+Gini(D|a)=\sum <sup>V_{v=1}\frac{D</sup>v}{D}Gini(D^v)<br>
+$$</p>
+<h5 id="Gini系数特点">Gini系数特点</h5>
+<ol>
+<li>反应从数据集中随机抽取两个样本，类别标志不一样的概率</li>
+<li>基尼系数越小越好，数据的纯度越高</li>
+<li>选择使得划分后<strong>基尼系数最小</strong>的属性作为最优划分属性</li>
+</ol>
+<hr>
+<h4 id="实例demo">实例demo</h4>
+<p>在<code>demo</code>中主要是讲解<strong>如何计算</strong>信息熵，信息增益，信息增益率，基尼系数。数据样本取自西瓜书</p>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gax0ycedgqj31220u0e82.jpg" alt="QPvbjS.png"></p>
+</blockquote>
+<h5 id="信息熵">信息熵</h5>
+<ol>
+<li>在整个样本中的正反例为8：9，信息熵为：</li>
+</ol>
+<p>$$<br>
+Ent(D)=-(\frac{8}{17}log_2 \frac{8}{17}+\frac{9}{17}log_2 \frac{9}{17})=0.998<br>
+$$</p>
+<ol start="2">
+<li>选择以属性“色泽seze”为例，有青绿、乌黑、浅白3种取值方案$D_1,D_2,D_3$，分别占比为6：6：5，每个子集数据中占比为（3：3）：（4：2）：（1：4），那么3个子节点的信息熵分别为：</li>
+</ol>
+<p>$$<br>
+Ent(D_1)=-(\frac{3}{6}log_2\frac{3}{6}+\frac{3}{6}log_2\frac{3}{6})=1.000<br>
+$$</p>
+<p>$$<br>
+Ent(D_2)=-(\frac{4}{6}log_2\frac{4}{6}+\frac{2}{6}log_2\frac{2}{6})=0.918<br>
+$$</p>
+<p>$$<br>
+Ent(D_1)=-(\frac{1}{5}log_2\frac{1}{5}+\frac{4}{5}log_2\frac{4}{5})=0.722<br>
+$$</p>
+<h5 id="信息增益-v2">信息增益</h5>
+<p>根据上面的计算，得到<strong>基于色泽</strong>属性的信息增益为<br>
+$$<br>
+\begin{align}<br>
+Gain(D,seze)<br>
+&amp; =Ent(D)-Ent(D)-\sum<sup>3_{v=1}\frac{|D</sup>v|}{|D|}Ent(D^v) \<br>
+&amp; = 0.998-\frac{6}{17}*1.00+\frac{6}{17}*0.918+\frac{5}{17}*0.722 \<br>
+&amp; = 0.109<br>
+\end{align}<br>
+$$<br>
+同理，可以得到基于其他属性的信息增益，不再累述。</p>
+<h5 id="信息增益率">信息增益率</h5>
+<p>还是以上面的色泽属性为例，基于色泽属性的信息增益已经计算出来：<br>
+$$<br>
+Gain(D,seze)=0.109<br>
+$$</p>
+<p>属性色泽中有3种结果，对应比例为6：6：5，固有值$IV(a)$为<br>
+$$<br>
+\begin{align}<br>
+IV(a)<br>
+&amp; =-\sum<sup>V_{v=1}\frac{|D</sup>v|}{|D|}log_2\frac{|D^v|}{|D|}  \<br>
+&amp; = -(\frac{6}{17}log_2 \frac{6}{17}+\frac{6}{17}log_2 \frac{6}{17}+\frac{5}{17}log_2 \frac{5}{17}) \<br>
+&amp; = 1.580</p>
+<p>\end{align}<br>
+$$<br>
+那么，基于<strong>属性色泽的基尼系数</strong>为<br>
+$$<br>
+Gain_ratio=\frac{0.109}{1.580}<br>
+$$</p>
+<h5 id="几种常见算法比较">几种常见算法比较</h5>
+<table>
+<thead>
+<tr>
+<th>决策树算法</th>
+<th>算法描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ID3</td>
+<td>在各级节点上，使用<strong>信息增益</strong>作为属性的选择标准<br />只适用于离散的描述属性<br />依赖于选择特征数目较多的属性特征<br />单变量决策树，特征之间的关系不会考虑</td>
+</tr>
+<tr>
+<td>C4.5</td>
+<td>使用的是<strong>信息增益率</strong>作为属性的选择标准<br />可以同时处理离散和连续的属性描述</td>
+</tr>
+<tr>
+<td>CART</td>
+<td>使用的是<strong>基尼系数</strong>作为属性的选择标准<br />非参数的分类和回归算法<br />构建的一定是二叉树<br />终节点是连续变量，属于回归树<br />终节点是离散变量，属于分类树</td>
+</tr>
+</tbody>
+</table>
+<h3 id="剪枝处理">剪枝处理</h3>
+<h4 id="剪枝由来">剪枝由来</h4>
+<p>剪枝<code>pruning</code>主要是为了处理决策树中的过拟合问题。在决策树中</p>
+<ul>
+<li>为了尽可能正确分类训练样本，结点划分过程不断重复，造成树的分支过多</li>
+<li>每个属性都被详细地加以考虑，决策树的树叶节点所覆盖的训练样本都是“纯”的</li>
+<li>从而使得<code>训练样本学的太好了</code>，把训练集的某些特点当做所有数据的一般性质，但是对于测试集中的数据表现并没有那么好，从而造成了过拟合<code>overfitting</code></li>
+</ul>
+<h4 id="剪枝算法">剪枝算法</h4>
+<p>CART剪枝算法分为两步：</p>
+<ol>
+<li>从算法生成的决策树$T_0$底端开始不断地进行剪枝，直到根节点，形成一个子树序列${T_0,T_1,…,T_n}$</li>
+<li>通过<strong>交叉验证法</strong>在独立地验证数据集上对上面的子树序列进行测试，选出最优子树</li>
+</ol>
+<h4 id="剪枝分类">剪枝分类</h4>
+<h5 id="预剪枝-preprunning"><strong>预剪枝-preprunning</strong></h5>
+<p>预剪枝就是及早地停止树的增长，在决策树生长的过程就进行剪枝操作。</p>
+<p>常见的做法是设定一个阈值，熵减小的数量小于这个阈值，即使还可以继续降低熵，也停止继续创建分支，终止树的增长。实际效果并不好。</p>
+<ol>
+<li>特点</li>
+</ol>
+<ul>
+<li>在决策树生成的过程中，对每个节点<strong>划分前先进行预估</strong></li>
+<li>如果当前节点的划分<strong>不能提高泛化能力</strong>，停止划分</li>
+<li>直接将当前节点划分叶子节点</li>
+</ul>
+<ol start="2">
+<li>通过西瓜书的例子来讲解</li>
+</ol>
+<p>采用<strong>留出法</strong>，将数据分成训练集和验证集（通过双横线区分）</p>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gax0yuqg6oj30yi0u07wj.jpg" alt=""></p>
+</blockquote>
+<ul>
+<li>这是没有经过任何剪枝得到的决策树（采用的是信息增益准则）</li>
+</ul>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gax0yzcfjaj319q0u04qr.jpg" alt=""></p>
+</blockquote>
+<p>由于是预剪枝，需要判断这个划分是否进行，即：是否提高泛化能力。</p>
+<p><strong>划分前</strong>：把该节点标记为叶节点，其类别标记为训练样例数最多的类型（例子中有两个：是和否都是5个），假设我们标记为好瓜，选择“是”。</p>
+<p>用表中的验证集进行评估，{4,5,8}被正确分类，那么不进行划分的正确率是$\frac{3}{7}=42.9%$</p>
+<p><strong>划分后：<strong>针对上面的训练集数据，计算出所有</strong>特征的信息增益</strong>，具体过程如下：</p>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gax0zf91omj30mn1g47og.jpg" alt=""></p>
+</blockquote>
+<p>从计算结果中，可以看出来<strong>色泽</strong>和<strong>脐部</strong>的信息增益值是最大的，从中任意选择一个<strong>脐部</strong>当做根节点，会产生3个分支（因为脐部有3个不同的属性：凹陷，稍凹，平坦）：</p>
+<p>当使用脐部 属性划分之后，下面的234号节点中包含的编号分别为{1,2,3,14}，{6,7,15,17}，{10,16}，分别被标记成“好瓜”，“好瓜”，“坏瓜”，验证集中{4,5,8,11,12}被正确分类，正确率是$\frac{5}{7}=71.4%$。</p>
+<p>于是采用脐部属性进行划分。</p>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gax0zt97k2j30lw0f075m.jpg" alt=""></p>
+</blockquote>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gax0zz86lbj31fw0u0qv6.jpg" alt=""></p>
+</blockquote>
+<h5 id="后剪枝-postprunning"><strong>后剪枝-postprunning</strong></h5>
+<ol>
+<li>剪枝过程</li>
+</ol>
+<ul>
+<li>先生成一颗完整的决策树</li>
+<li>从下往上对非叶节点进行考察：如果将该节点对应的子树替换为叶节点能够提高泛化性能，则替换为叶节点</li>
+<li>叶节点所标识的类别用这棵子树中大多数训练样本所属的类别来标识</li>
+</ul>
+<p>上面的栗子中，不进行划分的验证集精度为$42.9%$。</p>
+<ol start="2">
+<li>后剪枝首先考虑的是节点6，将节点6替换为叶子节点，替换后的节点包含{7,15}的训练样本，因为在属性纹理的区分之下，他们俩个被正确分类。于是将该节点的类别标记为“好瓜”（正负样本数量相同，随便标记）。验证集的精提高至$57.1%$，实施剪枝策略。</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2020/01/15/%E8%A5%BF%E7%93%9C%E4%B9%A64-%E5%86%B3%E7%AD%96%E6%A0%91.html">西瓜书4-决策树</a></p>
+  <p><span>发布时间:</span>2020年01月15日 - 10:01</p>
+  <p><span>原始链接:</span><a href="/2020/01/15/%E8%A5%BF%E7%93%9C%E4%B9%A64-%E5%86%B3%E7%AD%96%E6%A0%91.html" title="西瓜书4-决策树">http://www.renpeter.cn/2020/01/15/%E8%A5%BF%E7%93%9C%E4%B9%A64-%E5%86%B3%E7%AD%96%E6%A0%91.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2020/01/15/%E8%A5%BF%E7%93%9C%E4%B9%A64-%E5%86%B3%E7%AD%96%E6%A0%91.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%89%AA%E6%9E%9D/" rel="tag"># 剪枝</a>
+          
+            <a href="/tags/ID3/" rel="tag"># ID3</a>
+          
+            <a href="/tags/C4-5/" rel="tag"># C4.5</a>
+          
+            <a href="/tags/CART/" rel="tag"># CART</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/15/sqlzoo%E7%BB%83%E4%B9%A05.html" rel="next" title="sqlzoo练习5">
+                <i class="fa fa-chevron-left"></i> sqlzoo练习5
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/01/15/%E5%9F%BA%E4%BA%8Esklearn%E7%9A%84%E5%86%B3%E7%AD%96%E6%A0%91%E5%AE%9E%E7%8E%B0.html" rel="prev" title="基于sklearn的决策树实现">
+                基于sklearn的决策树实现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#树"><span class="nav-number">1.</span> <span class="nav-text">树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#术语"><span class="nav-number">1.1.</span> <span class="nav-text">术语</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二叉树"><span class="nav-number">1.2.</span> <span class="nav-text">二叉树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#树的遍历"><span class="nav-number">1.3.</span> <span class="nav-text">树的遍历</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#树的种类"><span class="nav-number">1.4.</span> <span class="nav-text">树的种类</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#决策树"><span class="nav-number">2.</span> <span class="nav-text">决策树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#决策树介绍"><span class="nav-number">2.1.</span> <span class="nav-text">决策树介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#决策树学习"><span class="nav-number">2.2.</span> <span class="nav-text">决策树学习</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#决策树基本算法"><span class="nav-number">2.3.</span> <span class="nav-text">决策树基本算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ID-3"><span class="nav-number">2.4.</span> <span class="nav-text">ID.3</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#信息增益"><span class="nav-number">2.4.1.</span> <span class="nav-text">信息增益</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#具体过程"><span class="nav-number">2.4.2.</span> <span class="nav-text">具体过程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#缺点"><span class="nav-number">2.4.3.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#C4-5"><span class="nav-number">2.5.</span> <span class="nav-text">C4.5</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#介绍"><span class="nav-number">2.5.1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#C4-5选择属性的依据"><span class="nav-number">2.5.2.</span> <span class="nav-text">C4.5选择属性的依据</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CART"><span class="nav-number">2.6.</span> <span class="nav-text">CART</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#基尼系数Gini"><span class="nav-number">2.6.1.</span> <span class="nav-text">基尼系数Gini</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Gini系数特点"><span class="nav-number">2.6.2.</span> <span class="nav-text">Gini系数特点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实例demo"><span class="nav-number">2.7.</span> <span class="nav-text">实例demo</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#信息熵"><span class="nav-number">2.7.1.</span> <span class="nav-text">信息熵</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#信息增益-v2"><span class="nav-number">2.7.2.</span> <span class="nav-text">信息增益</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#信息增益率"><span class="nav-number">2.7.3.</span> <span class="nav-text">信息增益率</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#几种常见算法比较"><span class="nav-number">2.7.4.</span> <span class="nav-text">几种常见算法比较</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#剪枝处理"><span class="nav-number">3.</span> <span class="nav-text">剪枝处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#剪枝由来"><span class="nav-number">3.1.</span> <span class="nav-text">剪枝由来</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#剪枝算法"><span class="nav-number">3.2.</span> <span class="nav-text">剪枝算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#剪枝分类"><span class="nav-number">3.3.</span> <span class="nav-text">剪枝分类</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#预剪枝-preprunning"><span class="nav-number">3.3.1.</span> <span class="nav-text">预剪枝-preprunning</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#后剪枝-postprunning"><span class="nav-number">3.3.2.</span> <span class="nav-text">后剪枝-postprunning</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2020/01/15/%E8%A5%BF%E7%93%9C%E4%B9%A64-%E5%86%B3%E7%AD%96%E6%A0%91.html';
+          this.page.identifier = '2020/01/15/西瓜书4-决策树.html';
+          this.page.title = '西瓜书4-决策树';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,2279 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="可视化,pandas,python库,数据处理," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="本文重点知识：  创建带有日期的索引：dates = pd.date_range(&amp;apos;20190924&amp;apos;, periods=6) head()、tail() 按轴排序：索引排序sort_index，默认是ascending=True升序  axis=0：行索引，可以用index axis=1：列索引，可以用columns   按值排序：df.sort_values(by=&amp;apos;columns&amp;apos;)，默认升">
+<meta name="keywords" content="可视化,pandas,python库,数据处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pandas系列1_对象创建及查看数据">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2019&#x2F;09&#x2F;26&#x2F;pandas%E7%B3%BB%E5%88%971-%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E4%B8%8E%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="本文重点知识：  创建带有日期的索引：dates = pd.date_range(&amp;apos;20190924&amp;apos;, periods=6) head()、tail() 按轴排序：索引排序sort_index，默认是ascending=True升序  axis=0：行索引，可以用index axis=1：列索引，可以用columns   按值排序：df.sort_values(by=&amp;apos;columns&amp;apos;)，默认升">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;09&#x2F;26&#x2F;ueW7y4.png">
+<meta property="og:updated_time" content="2019-10-28T16:34:33.678Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;09&#x2F;26&#x2F;ueW7y4.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2019/09/26/pandas系列1-对象创建与查看数据.html"/>
+
+
+
+
+
+  <title>pandas系列1_对象创建及查看数据 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2019/09/26/pandas%E7%B3%BB%E5%88%971-%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E4%B8%8E%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">pandas系列1_对象创建及查看数据</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-26T08:18:00+08:00">
+                2019-9-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/" itemprop="url" rel="index">
+                    <span itemprop="name">pandas</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/%E6%96%87%E6%A1%A3/" itemprop="url" rel="index">
+                    <span itemprop="name">文档</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/09/26/pandas%E7%B3%BB%E5%88%971-%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E4%B8%8E%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/09/26/pandas系列1-对象创建与查看数据.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  2.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  15
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文重点知识：</p>
+<ul>
+<li>创建带有日期的索引：<code>dates = pd.date_range('20190924', periods=6)</code></li>
+<li>head()、tail()</li>
+<li>按轴排序：索引排序<code>sort_index</code>，默认是<code>ascending=True</code>升序
+<ul>
+<li>axis=0：行索引，可以用<code>index</code></li>
+<li>axis=1：列索引，可以用<code>columns</code></li>
+</ul>
+</li>
+<li>按值排序：<code>df.sort_values(by='columns')</code>，默认升序</li>
+</ul>
+<h3 id="创建数据">创建数据</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">s = pd.Series([<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, np.nan, <span class="number">6</span>, <span class="number">89</span>])</span><br><span class="line">s</span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>     <span class="number">1.0</span></span><br><span class="line"><span class="number">1</span>     <span class="number">3.0</span></span><br><span class="line"><span class="number">2</span>     <span class="number">5.0</span></span><br><span class="line"><span class="number">3</span>     NaN</span><br><span class="line"><span class="number">4</span>     <span class="number">6.0</span></span><br><span class="line"><span class="number">5</span>    <span class="number">89.0</span></span><br><span class="line">dtype: <span class="built_in">float</span>64</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dates = pd.date_range(<span class="string">'20190924'</span>, periods=<span class="number">6</span>)</span><br><span class="line">dates</span><br></pre></td></tr></table></figure>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">DatetimeIndex(['<span class="number">2019</span><span class="number">-09</span><span class="number">-24</span>', '<span class="number">2019</span><span class="number">-09</span><span class="number">-25</span>', '<span class="number">2019</span><span class="number">-09</span><span class="number">-26</span>', '<span class="number">2019</span><span class="number">-09</span><span class="number">-27</span>',</span><br><span class="line">               '<span class="number">2019</span><span class="number">-09</span><span class="number">-28</span>', '<span class="number">2019</span><span class="number">-09</span><span class="number">-29</span>'],</span><br><span class="line">              dtype='datetime64[ns]', freq='D')</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df = pd.DataFrame(np.random.randn(<span class="number">6</span>,<span class="number">4</span>), index=dates, columns=list(<span class="string">"ABCD"</span>))</span><br><span class="line">df</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-24</th>
+      <td>0.500005</td>
+      <td>0.166578</td>
+      <td>-0.758513</td>
+      <td>-0.679173</td>
+    </tr>
+    <tr>
+      <th>2019-09-25</th>
+      <td>0.090209</td>
+      <td>0.117906</td>
+      <td>-0.402183</td>
+      <td>2.261182</td>
+    </tr>
+    <tr>
+      <th>2019-09-26</th>
+      <td>-0.809052</td>
+      <td>-0.173144</td>
+      <td>0.324912</td>
+      <td>-1.885101</td>
+    </tr>
+    <tr>
+      <th>2019-09-27</th>
+      <td>0.310374</td>
+      <td>-1.502089</td>
+      <td>1.524401</td>
+      <td>0.269953</td>
+    </tr>
+    <tr>
+      <th>2019-09-28</th>
+      <td>-0.846488</td>
+      <td>-0.235878</td>
+      <td>1.398896</td>
+      <td>-0.229573</td>
+    </tr>
+    <tr>
+      <th>2019-09-29</th>
+      <td>0.975853</td>
+      <td>-0.998395</td>
+      <td>-0.514480</td>
+      <td>-0.882704</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 同时创建多个不同的列</span></span><br><span class="line">df2 = pd.DataFrame(&#123;<span class="string">'A'</span>: <span class="number">1.</span>,   <span class="comment">#  某列的值相同</span></span><br><span class="line">                    <span class="string">'B'</span>: pd.Timestamp(<span class="string">'20130102'</span>),  <span class="comment"># 时间戳的创建</span></span><br><span class="line">                    <span class="string">'C'</span>: pd.Series(<span class="number">1</span>, index=list(range(<span class="number">4</span>)), dtype=<span class="string">'float32'</span>),  <span class="comment"># 某列值可以是S型数据</span></span><br><span class="line">                    <span class="string">'D'</span>: np.array([<span class="number">3</span>] * <span class="number">4</span>, dtype=<span class="string">'int32'</span>),  <span class="comment"># 使用numpy数组</span></span><br><span class="line">                    <span class="string">'E'</span>: pd.Categorical([<span class="string">"test"</span>, <span class="string">"train"</span>, <span class="string">"test"</span>, <span class="string">"train"</span>]), <span class="comment"># 不同的类</span></span><br><span class="line">                    <span class="string">'F'</span>: <span class="string">'foo'</span>&#125;)  <span class="comment"># 使用布尔值</span></span><br><span class="line"></span><br><span class="line">df2</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+      <th>E</th>
+      <th>F</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1.0</td>
+      <td>2013-01-02</td>
+      <td>1.0</td>
+      <td>3</td>
+      <td>test</td>
+      <td>foo</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1.0</td>
+      <td>2013-01-02</td>
+      <td>1.0</td>
+      <td>3</td>
+      <td>train</td>
+      <td>foo</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1.0</td>
+      <td>2013-01-02</td>
+      <td>1.0</td>
+      <td>3</td>
+      <td>test</td>
+      <td>foo</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1.0</td>
+      <td>2013-01-02</td>
+      <td>1.0</td>
+      <td>3</td>
+      <td>train</td>
+      <td>foo</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df2.dtypes</span><br></pre></td></tr></table></figure>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">A</span>           <span class="string">float64</span></span><br><span class="line"><span class="attr">B</span>    <span class="string">datetime64[ns]</span></span><br><span class="line"><span class="attr">C</span>           <span class="string">float32</span></span><br><span class="line"><span class="attr">D</span>             <span class="string">int32</span></span><br><span class="line"><span class="attr">E</span>          <span class="string">category</span></span><br><span class="line"><span class="attr">F</span>            <span class="string">object</span></span><br><span class="line"><span class="attr">dtype</span>: <span class="string">object</span></span><br></pre></td></tr></table></figure>
+<h3 id="查看数据">查看数据</h3>
+<p>查看数据的相关信息</p>
+<ul>
+<li>头、尾几行数据</li>
+<li>index、columns</li>
+<li>describe ,T</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 前几行数据，默认是5行</span></span><br><span class="line">df.head(<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-24</th>
+      <td>0.500005</td>
+      <td>0.166578</td>
+      <td>-0.758513</td>
+      <td>-0.679173</td>
+    </tr>
+    <tr>
+      <th>2019-09-25</th>
+      <td>0.090209</td>
+      <td>0.117906</td>
+      <td>-0.402183</td>
+      <td>2.261182</td>
+    </tr>
+    <tr>
+      <th>2019-09-26</th>
+      <td>-0.809052</td>
+      <td>-0.173144</td>
+      <td>0.324912</td>
+      <td>-1.885101</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看末几行，默认是5行</span></span><br><span class="line">df.tail(<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-28</th>
+      <td>-0.846488</td>
+      <td>-0.235878</td>
+      <td>1.398896</td>
+      <td>-0.229573</td>
+    </tr>
+    <tr>
+      <th>2019-09-29</th>
+      <td>0.975853</td>
+      <td>-0.998395</td>
+      <td>-0.514480</td>
+      <td>-0.882704</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看数据的行索引</span></span><br><span class="line">df.index</span><br></pre></td></tr></table></figure>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">DatetimeIndex(['<span class="number">2019</span><span class="number">-09</span><span class="number">-24</span>', '<span class="number">2019</span><span class="number">-09</span><span class="number">-25</span>', '<span class="number">2019</span><span class="number">-09</span><span class="number">-26</span>', '<span class="number">2019</span><span class="number">-09</span><span class="number">-27</span>',</span><br><span class="line">               '<span class="number">2019</span><span class="number">-09</span><span class="number">-28</span>', '<span class="number">2019</span><span class="number">-09</span><span class="number">-29</span>'],</span><br><span class="line">              dtype='datetime64[ns]', freq='D')</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看数据的列属性</span></span><br><span class="line">df.columns</span><br></pre></td></tr></table></figure>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">Index</span><span class="params">([<span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>, <span class="string">'D'</span>], dtype=<span class="string">'object'</span>)</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.to_numpy()</span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">array</span>([[ <span class="number">0.50000505</span>,  <span class="number">0.16657823</span>, <span class="number">-0.75851253</span>, <span class="number">-0.67917279</span>],</span><br><span class="line">       [ <span class="number">0.09020909</span>,  <span class="number">0.11790626</span>, <span class="number">-0.40218323</span>,  <span class="number">2.26118249</span>],</span><br><span class="line">       [<span class="number">-0.80905211</span>, <span class="number">-0.17314443</span>,  <span class="number">0.32491161</span>, <span class="number">-1.88510066</span>],</span><br><span class="line">       [ <span class="number">0.31037417</span>, <span class="number">-1.50208882</span>,  <span class="number">1.52440064</span>,  <span class="number">0.26995285</span>],</span><br><span class="line">       [<span class="number">-0.8464884</span> , <span class="number">-0.23587797</span>,  <span class="number">1.39889574</span>, <span class="number">-0.22957318</span>],</span><br><span class="line">       [ <span class="number">0.9758533</span> , <span class="number">-0.99839501</span>, <span class="number">-0.51448041</span>, <span class="number">-0.88270375</span>]])</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.describe()</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>6.000000</td>
+      <td>6.000000</td>
+      <td>6.000000</td>
+      <td>6.000000</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>0.036817</td>
+      <td>-0.437504</td>
+      <td>0.262172</td>
+      <td>-0.190903</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>0.730717</td>
+      <td>0.668113</td>
+      <td>0.997562</td>
+      <td>1.400993</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>-0.846488</td>
+      <td>-1.502089</td>
+      <td>-0.758513</td>
+      <td>-1.885101</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>-0.584237</td>
+      <td>-0.807766</td>
+      <td>-0.486406</td>
+      <td>-0.831821</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>0.200292</td>
+      <td>-0.204511</td>
+      <td>-0.038636</td>
+      <td>-0.454373</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>0.452597</td>
+      <td>0.045144</td>
+      <td>1.130400</td>
+      <td>0.145071</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>0.975853</td>
+      <td>0.166578</td>
+      <td>1.524401</td>
+      <td>2.261182</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.T</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>2019-09-24 00:00:00</th>
+      <th>2019-09-25 00:00:00</th>
+      <th>2019-09-26 00:00:00</th>
+      <th>2019-09-27 00:00:00</th>
+      <th>2019-09-28 00:00:00</th>
+      <th>2019-09-29 00:00:00</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>A</th>
+      <td>0.500005</td>
+      <td>0.090209</td>
+      <td>-0.809052</td>
+      <td>0.310374</td>
+      <td>-0.846488</td>
+      <td>0.975853</td>
+    </tr>
+    <tr>
+      <th>B</th>
+      <td>0.166578</td>
+      <td>0.117906</td>
+      <td>-0.173144</td>
+      <td>-1.502089</td>
+      <td>-0.235878</td>
+      <td>-0.998395</td>
+    </tr>
+    <tr>
+      <th>C</th>
+      <td>-0.758513</td>
+      <td>-0.402183</td>
+      <td>0.324912</td>
+      <td>1.524401</td>
+      <td>1.398896</td>
+      <td>-0.514480</td>
+    </tr>
+    <tr>
+      <th>D</th>
+      <td>-0.679173</td>
+      <td>2.261182</td>
+      <td>-1.885101</td>
+      <td>0.269953</td>
+      <td>-0.229573</td>
+      <td>-0.882704</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sort_index</span></span><br><span class="line"><span class="comment"># 索引排序`sort_index`，默认是`ascending=True`升序</span></span><br><span class="line"><span class="comment"># axis=0：行索引，可以用`index`</span></span><br><span class="line"><span class="comment"># axis=1：列索引，可以用`columns`</span></span><br><span class="line">df.sort_index(axis=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-24</th>
+      <td>0.500005</td>
+      <td>0.166578</td>
+      <td>-0.758513</td>
+      <td>-0.679173</td>
+    </tr>
+    <tr>
+      <th>2019-09-25</th>
+      <td>0.090209</td>
+      <td>0.117906</td>
+      <td>-0.402183</td>
+      <td>2.261182</td>
+    </tr>
+    <tr>
+      <th>2019-09-26</th>
+      <td>-0.809052</td>
+      <td>-0.173144</td>
+      <td>0.324912</td>
+      <td>-1.885101</td>
+    </tr>
+    <tr>
+      <th>2019-09-27</th>
+      <td>0.310374</td>
+      <td>-1.502089</td>
+      <td>1.524401</td>
+      <td>0.269953</td>
+    </tr>
+    <tr>
+      <th>2019-09-28</th>
+      <td>-0.846488</td>
+      <td>-0.235878</td>
+      <td>1.398896</td>
+      <td>-0.229573</td>
+    </tr>
+    <tr>
+      <th>2019-09-29</th>
+      <td>0.975853</td>
+      <td>-0.998395</td>
+      <td>-0.514480</td>
+      <td>-0.882704</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 按照行索引进行降序</span></span><br><span class="line">df.sort_index(axis=<span class="number">0</span>, ascending=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-29</th>
+      <td>0.975853</td>
+      <td>-0.998395</td>
+      <td>-0.514480</td>
+      <td>-0.882704</td>
+    </tr>
+    <tr>
+      <th>2019-09-28</th>
+      <td>-0.846488</td>
+      <td>-0.235878</td>
+      <td>1.398896</td>
+      <td>-0.229573</td>
+    </tr>
+    <tr>
+      <th>2019-09-27</th>
+      <td>0.310374</td>
+      <td>-1.502089</td>
+      <td>1.524401</td>
+      <td>0.269953</td>
+    </tr>
+    <tr>
+      <th>2019-09-26</th>
+      <td>-0.809052</td>
+      <td>-0.173144</td>
+      <td>0.324912</td>
+      <td>-1.885101</td>
+    </tr>
+    <tr>
+      <th>2019-09-25</th>
+      <td>0.090209</td>
+      <td>0.117906</td>
+      <td>-0.402183</td>
+      <td>2.261182</td>
+    </tr>
+    <tr>
+      <th>2019-09-24</th>
+      <td>0.500005</td>
+      <td>0.166578</td>
+      <td>-0.758513</td>
+      <td>-0.679173</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 按照某个属性进行排序</span></span><br><span class="line"><span class="comment"># 按照B属性的升序排列</span></span><br><span class="line">df.sort_values(by=<span class="string">"B"</span>)</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-27</th>
+      <td>0.310374</td>
+      <td>-1.502089</td>
+      <td>1.524401</td>
+      <td>0.269953</td>
+    </tr>
+    <tr>
+      <th>2019-09-29</th>
+      <td>0.975853</td>
+      <td>-0.998395</td>
+      <td>-0.514480</td>
+      <td>-0.882704</td>
+    </tr>
+    <tr>
+      <th>2019-09-28</th>
+      <td>-0.846488</td>
+      <td>-0.235878</td>
+      <td>1.398896</td>
+      <td>-0.229573</td>
+    </tr>
+    <tr>
+      <th>2019-09-26</th>
+      <td>-0.809052</td>
+      <td>-0.173144</td>
+      <td>0.324912</td>
+      <td>-1.885101</td>
+    </tr>
+    <tr>
+      <th>2019-09-25</th>
+      <td>0.090209</td>
+      <td>0.117906</td>
+      <td>-0.402183</td>
+      <td>2.261182</td>
+    </tr>
+    <tr>
+      <th>2019-09-24</th>
+      <td>0.500005</td>
+      <td>0.166578</td>
+      <td>-0.758513</td>
+      <td>-0.679173</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.sort_values(by=[<span class="string">"B"</span>,<span class="string">"C"</span>])</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-27</th>
+      <td>0.310374</td>
+      <td>-1.502089</td>
+      <td>1.524401</td>
+      <td>0.269953</td>
+    </tr>
+    <tr>
+      <th>2019-09-29</th>
+      <td>0.975853</td>
+      <td>-0.998395</td>
+      <td>-0.514480</td>
+      <td>-0.882704</td>
+    </tr>
+    <tr>
+      <th>2019-09-28</th>
+      <td>-0.846488</td>
+      <td>-0.235878</td>
+      <td>1.398896</td>
+      <td>-0.229573</td>
+    </tr>
+    <tr>
+      <th>2019-09-26</th>
+      <td>-0.809052</td>
+      <td>-0.173144</td>
+      <td>0.324912</td>
+      <td>-1.885101</td>
+    </tr>
+    <tr>
+      <th>2019-09-25</th>
+      <td>0.090209</td>
+      <td>0.117906</td>
+      <td>-0.402183</td>
+      <td>2.261182</td>
+    </tr>
+    <tr>
+      <th>2019-09-24</th>
+      <td>0.500005</td>
+      <td>0.166578</td>
+      <td>-0.758513</td>
+      <td>-0.679173</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<h3 id="选择数据">选择数据</h3>
+<h4 id="查看指定的行列数据">查看指定的行列数据</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 指定列属性查看数据</span></span><br><span class="line">df[[<span class="string">"B"</span>,<span class="string">"C"</span>]]</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>B</th>
+      <th>C</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-24</th>
+      <td>0.166578</td>
+      <td>-0.758513</td>
+    </tr>
+    <tr>
+      <th>2019-09-25</th>
+      <td>0.117906</td>
+      <td>-0.402183</td>
+    </tr>
+    <tr>
+      <th>2019-09-26</th>
+      <td>-0.173144</td>
+      <td>0.324912</td>
+    </tr>
+    <tr>
+      <th>2019-09-27</th>
+      <td>-1.502089</td>
+      <td>1.524401</td>
+    </tr>
+    <tr>
+      <th>2019-09-28</th>
+      <td>-0.235878</td>
+      <td>1.398896</td>
+    </tr>
+    <tr>
+      <th>2019-09-29</th>
+      <td>-0.998395</td>
+      <td>-0.514480</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 指定行标签查看指定的行数据</span></span><br><span class="line">df[<span class="number">1</span>:<span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-25</th>
+      <td>0.090209</td>
+      <td>0.117906</td>
+      <td>-0.402183</td>
+      <td>2.261182</td>
+    </tr>
+    <tr>
+      <th>2019-09-26</th>
+      <td>-0.809052</td>
+      <td>-0.173144</td>
+      <td>0.324912</td>
+      <td>-1.885101</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"20190924"</span>:<span class="string">"20190927"</span>]</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-24</th>
+      <td>0.500005</td>
+      <td>0.166578</td>
+      <td>-0.758513</td>
+      <td>-0.679173</td>
+    </tr>
+    <tr>
+      <th>2019-09-25</th>
+      <td>0.090209</td>
+      <td>0.117906</td>
+      <td>-0.402183</td>
+      <td>2.261182</td>
+    </tr>
+    <tr>
+      <th>2019-09-26</th>
+      <td>-0.809052</td>
+      <td>-0.173144</td>
+      <td>0.324912</td>
+      <td>-1.885101</td>
+    </tr>
+    <tr>
+      <th>2019-09-27</th>
+      <td>0.310374</td>
+      <td>-1.502089</td>
+      <td>1.524401</td>
+      <td>0.269953</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<h4 id="loc">loc</h4>
+<p>根据标签(不是自带的数字索引)查看数据</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.loc[dates[<span class="number">0</span>]]</span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">A    <span class="number">0.500005</span></span><br><span class="line">B    <span class="number">0.166578</span></span><br><span class="line">C   <span class="number">-0.758513</span></span><br><span class="line">D   <span class="number">-0.679173</span></span><br><span class="line">Name: <span class="number">2019</span><span class="number">-09</span><span class="number">-24</span> <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span>, dtype: <span class="built_in">float</span>64</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dates[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">Timestamp</span><span class="params">(<span class="string">'2019-09-24 00:00:00'</span>, freq=<span class="string">'D'</span>)</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 选择行和列</span></span><br><span class="line">df.loc[:, [<span class="string">"A"</span>,<span class="string">"B"</span>]]   <span class="comment"># 选择所有行和AB两个列</span></span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-24</th>
+      <td>0.500005</td>
+      <td>0.166578</td>
+    </tr>
+    <tr>
+      <th>2019-09-25</th>
+      <td>0.090209</td>
+      <td>0.117906</td>
+    </tr>
+    <tr>
+      <th>2019-09-26</th>
+      <td>-0.809052</td>
+      <td>-0.173144</td>
+    </tr>
+    <tr>
+      <th>2019-09-27</th>
+      <td>0.310374</td>
+      <td>-1.502089</td>
+    </tr>
+    <tr>
+      <th>2019-09-28</th>
+      <td>-0.846488</td>
+      <td>-0.235878</td>
+    </tr>
+    <tr>
+      <th>2019-09-29</th>
+      <td>0.975853</td>
+      <td>-0.998395</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 索引通过标签来实现</span></span><br><span class="line">df.loc[<span class="string">'20190924'</span>:<span class="string">'20190927'</span>, [<span class="string">'A'</span>, <span class="string">'B'</span>]]</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-24</th>
+      <td>0.500005</td>
+      <td>0.166578</td>
+    </tr>
+    <tr>
+      <th>2019-09-25</th>
+      <td>0.090209</td>
+      <td>0.117906</td>
+    </tr>
+    <tr>
+      <th>2019-09-26</th>
+      <td>-0.809052</td>
+      <td>-0.173144</td>
+    </tr>
+    <tr>
+      <th>2019-09-27</th>
+      <td>0.310374</td>
+      <td>-1.502089</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 指定的行或者列可以是切片形式</span></span><br><span class="line">df.loc[<span class="string">'20190924'</span>:<span class="string">'20190927'</span>, <span class="string">'A'</span>:<span class="string">'B'</span>]</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-24</th>
+      <td>0.500005</td>
+      <td>0.166578</td>
+    </tr>
+    <tr>
+      <th>2019-09-25</th>
+      <td>0.090209</td>
+      <td>0.117906</td>
+    </tr>
+    <tr>
+      <th>2019-09-26</th>
+      <td>-0.809052</td>
+      <td>-0.173144</td>
+    </tr>
+    <tr>
+      <th>2019-09-27</th>
+      <td>0.310374</td>
+      <td>-1.502089</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<h4 id="iloc数字索引">iloc数字索引</h4>
+<p>记忆放法：<code>iloc</code>记为<code>intloc</code>，int为整型，表示通过数字来进行索引</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-24</th>
+      <td>0.500005</td>
+      <td>0.166578</td>
+      <td>-0.758513</td>
+      <td>-0.679173</td>
+    </tr>
+    <tr>
+      <th>2019-09-25</th>
+      <td>0.090209</td>
+      <td>0.117906</td>
+      <td>-0.402183</td>
+      <td>2.261182</td>
+    </tr>
+    <tr>
+      <th>2019-09-26</th>
+      <td>-0.809052</td>
+      <td>-0.173144</td>
+      <td>0.324912</td>
+      <td>-1.885101</td>
+    </tr>
+    <tr>
+      <th>2019-09-27</th>
+      <td>0.310374</td>
+      <td>-1.502089</td>
+      <td>1.524401</td>
+      <td>0.269953</td>
+    </tr>
+    <tr>
+      <th>2019-09-28</th>
+      <td>-0.846488</td>
+      <td>-0.235878</td>
+      <td>1.398896</td>
+      <td>-0.229573</td>
+    </tr>
+    <tr>
+      <th>2019-09-29</th>
+      <td>0.975853</td>
+      <td>-0.998395</td>
+      <td>-0.514480</td>
+      <td>-0.882704</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.iloc[<span class="number">1</span>:<span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-25</th>
+      <td>0.090209</td>
+      <td>0.117906</td>
+      <td>-0.402183</td>
+      <td>2.261182</td>
+    </tr>
+    <tr>
+      <th>2019-09-26</th>
+      <td>-0.809052</td>
+      <td>-0.173144</td>
+      <td>0.324912</td>
+      <td>-1.885101</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.iloc[<span class="number">1</span>:<span class="number">3</span>, <span class="number">0</span>:<span class="number">2</span>]  <span class="comment"># 切片形式，连续性</span></span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-25</th>
+      <td>0.090209</td>
+      <td>0.117906</td>
+    </tr>
+    <tr>
+      <th>2019-09-26</th>
+      <td>-0.809052</td>
+      <td>-0.173144</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.iloc[[<span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>], [<span class="number">0</span>, <span class="number">2</span>]]  <span class="comment"># 行索引是离散的值</span></span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>C</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-25</th>
+      <td>0.090209</td>
+      <td>-0.402183</td>
+    </tr>
+    <tr>
+      <th>2019-09-26</th>
+      <td>-0.809052</td>
+      <td>0.324912</td>
+    </tr>
+    <tr>
+      <th>2019-09-28</th>
+      <td>-0.846488</td>
+      <td>1.398896</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.iloc[:, <span class="number">1</span>:<span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>B</th>
+      <th>C</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-24</th>
+      <td>0.166578</td>
+      <td>-0.758513</td>
+    </tr>
+    <tr>
+      <th>2019-09-25</th>
+      <td>0.117906</td>
+      <td>-0.402183</td>
+    </tr>
+    <tr>
+      <th>2019-09-26</th>
+      <td>-0.173144</td>
+      <td>0.324912</td>
+    </tr>
+    <tr>
+      <th>2019-09-27</th>
+      <td>-1.502089</td>
+      <td>1.524401</td>
+    </tr>
+    <tr>
+      <th>2019-09-28</th>
+      <td>-0.235878</td>
+      <td>1.398896</td>
+    </tr>
+    <tr>
+      <th>2019-09-29</th>
+      <td>-0.998395</td>
+      <td>-0.514480</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<h4 id="获取具体位置的元素">获取具体位置的元素</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.iloc[<span class="number">1</span>,<span class="number">2</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">-0.4021832300071616</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.iat[<span class="number">1</span>,<span class="number">2</span>]    <span class="comment"># 等同上面</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">-0.4021832300071616</span></span><br></pre></td></tr></table></figure>
+<h4 id="布尔索引">布尔索引</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-24</th>
+      <td>0.500005</td>
+      <td>0.166578</td>
+      <td>-0.758513</td>
+      <td>-0.679173</td>
+    </tr>
+    <tr>
+      <th>2019-09-25</th>
+      <td>0.090209</td>
+      <td>0.117906</td>
+      <td>-0.402183</td>
+      <td>2.261182</td>
+    </tr>
+    <tr>
+      <th>2019-09-26</th>
+      <td>-0.809052</td>
+      <td>-0.173144</td>
+      <td>0.324912</td>
+      <td>-1.885101</td>
+    </tr>
+    <tr>
+      <th>2019-09-27</th>
+      <td>0.310374</td>
+      <td>-1.502089</td>
+      <td>1.524401</td>
+      <td>0.269953</td>
+    </tr>
+    <tr>
+      <th>2019-09-28</th>
+      <td>-0.846488</td>
+      <td>-0.235878</td>
+      <td>1.398896</td>
+      <td>-0.229573</td>
+    </tr>
+    <tr>
+      <th>2019-09-29</th>
+      <td>0.975853</td>
+      <td>-0.998395</td>
+      <td>-0.514480</td>
+      <td>-0.882704</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[df.A &gt; <span class="number">0</span>]  <span class="comment"># 将属性A中大于0的行全部选择出出来</span></span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-24</th>
+      <td>0.500005</td>
+      <td>0.166578</td>
+      <td>-0.758513</td>
+      <td>-0.679173</td>
+    </tr>
+    <tr>
+      <th>2019-09-25</th>
+      <td>0.090209</td>
+      <td>0.117906</td>
+      <td>-0.402183</td>
+      <td>2.261182</td>
+    </tr>
+    <tr>
+      <th>2019-09-27</th>
+      <td>0.310374</td>
+      <td>-1.502089</td>
+      <td>1.524401</td>
+      <td>0.269953</td>
+    </tr>
+    <tr>
+      <th>2019-09-29</th>
+      <td>0.975853</td>
+      <td>-0.998395</td>
+      <td>-0.514480</td>
+      <td>-0.882704</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[df &gt; <span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">tbody</span> <span class="selector-tag">tr</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">vertical-align</span>: top;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.dataframe</span> <span class="selector-tag">thead</span> <span class="selector-tag">th</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2019-09-24</th>
+      <td>0.500005</td>
+      <td>0.166578</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2019-09-25</th>
+      <td>0.090209</td>
+      <td>0.117906</td>
+      <td>NaN</td>
+      <td>2.261182</td>
+    </tr>
+    <tr>
+      <th>2019-09-26</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.324912</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2019-09-27</th>
+      <td>0.310374</td>
+      <td>NaN</td>
+      <td>1.524401</td>
+      <td>0.269953</td>
+    </tr>
+    <tr>
+      <th>2019-09-28</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.398896</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2019-09-29</th>
+      <td>0.975853</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<p><img src="https://s2.ax1x.com/2019/09/26/ueW7y4.png" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/09/26/pandas%E7%B3%BB%E5%88%971-%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E4%B8%8E%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE.html">pandas系列1_对象创建及查看数据</a></p>
+  <p><span>发布时间:</span>2019年09月26日 - 08:09</p>
+  <p><span>原始链接:</span><a href="/2019/09/26/pandas%E7%B3%BB%E5%88%971-%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E4%B8%8E%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE.html" title="pandas系列1_对象创建及查看数据">http://www.renpeter.cn/2019/09/26/pandas%E7%B3%BB%E5%88%971-%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E4%B8%8E%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2019/09/26/pandas%E7%B3%BB%E5%88%971-%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E4%B8%8E%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag"># 可视化</a>
+          
+            <a href="/tags/pandas/" rel="tag"># pandas</a>
+          
+            <a href="/tags/python%E5%BA%93/" rel="tag"># python库</a>
+          
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag"># 数据处理</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/26/numpyPractice100-one.html" rel="next" title="numpyPractice100_one">
+                <i class="fa fa-chevron-left"></i> numpyPractice100_one
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/27/%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%941.html" rel="prev" title="生活随笔1">
+                生活随笔1 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建数据"><span class="nav-number">1.</span> <span class="nav-text">创建数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查看数据"><span class="nav-number">2.</span> <span class="nav-text">查看数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选择数据"><span class="nav-number">3.</span> <span class="nav-text">选择数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#查看指定的行列数据"><span class="nav-number">3.1.</span> <span class="nav-text">查看指定的行列数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#loc"><span class="nav-number">3.2.</span> <span class="nav-text">loc</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iloc数字索引"><span class="nav-number">3.3.</span> <span class="nav-text">iloc数字索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取具体位置的元素"><span class="nav-number">3.4.</span> <span class="nav-text">获取具体位置的元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#布尔索引"><span class="nav-number">3.5.</span> <span class="nav-text">布尔索引</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2019/09/26/pandas%E7%B3%BB%E5%88%971-%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E4%B8%8E%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE.html';
+          this.page.identifier = '2019/09/26/pandas系列1-对象创建与查看数据.html';
+          this.page.title = 'pandas系列1_对象创建及查看数据';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

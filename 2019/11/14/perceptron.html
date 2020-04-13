@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="perceptron,ML," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="第二章-感知机 perceptron  感知机是二分类的线性分类模型，输入为实例的特征向量，输出是实例的类别，取得是 +1 或者 -1。感知机对应于输入空间将实例划分为正负两类的分离超平面，属于是判别模型。">
+<meta name="keywords" content="perceptron,ML">
+<meta property="og:type" content="article">
+<meta property="og:title" content="perceptron">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2019&#x2F;11&#x2F;14&#x2F;perceptron.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="第二章-感知机 perceptron  感知机是二分类的线性分类模型，输入为实例的特征向量，输出是实例的类别，取得是 +1 或者 -1。感知机对应于输入空间将实例划分为正负两类的分离超平面，属于是判别模型。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;14&#x2F;MtiptJ.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;14&#x2F;MNStmD.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;14&#x2F;MNSOAJ.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;14&#x2F;MtjvyF.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;14&#x2F;MtjBse.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;14&#x2F;MtjqJ0.png">
+<meta property="og:updated_time" content="2019-11-18T10:42:06.595Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;14&#x2F;MtiptJ.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2019/11/14/perceptron.html"/>
+
+
+
+
+
+  <title>perceptron | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2019/11/14/perceptron.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">perceptron</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-11-14T16:11:00+08:00">
+                2019-11-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/" itemprop="url" rel="index">
+                    <span itemprop="name">统计学习方法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/11/14/perceptron.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/11/14/perceptron.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  9
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="第二章-感知机-perceptron">第二章-感知机 perceptron</h3>
+<blockquote>
+<p>感知机是二分类的线性分类模型，输入为实例的特征向量，输出是实例的类别，取得是 +1 或者 -1。感知机对应于输入空间将实例划分为正负两类的分离超平面，属于是判别模型。</p>
+</blockquote>
+<a id="more"></a>
+<h4 id="感知机模型">感知机模型</h4>
+<p>输入空间 $X \in R ^n$和输出空间$Y={+1,-1}$满足的函数关系是$$f(x)=sign(w \cdot x+b)$$解释为：</p>
+<ul>
+<li>$w$表示的是权值向量</li>
+<li>$b$表示的是偏置</li>
+<li>$w \cdot x$表示的是二者内积</li>
+<li><code>sign(x)</code>表示的是符号函数：x大于等于0，函数取1；否则取-1</li>
+</ul>
+<p>感知机模型对应于输入空间中的分类离超平面$w \cdot x+b = 0$</p>
+<h4 id="感知机学习策略">感知机学习策略</h4>
+<p>感知机学习的目标是求出一个将正负分类的超平面，需要确定两个模型参数$w,b$。输入空间中的任意一点到超平面$S$的距离为： $$\frac {1}{||w||}|w \cdot x_0 + b|$$其中||w||是w的$L_2$范数。</p>
+<p>对于误分类点$(x_i,y_i)$来说，总是有$$-y_i(w \cdot x_i + b) &gt; 0$$</p>
+<ul>
+<li>当$w \cdot x_i + b &gt; 0$，$y_i=-1$</li>
+<li>当$w \cdot x_i + b &lt; 0$，$y_i= +1$</li>
+</ul>
+<p>因此<strong>某个误判点到超平面的距离总是</strong>$$- \frac {1}{||w||}y_i(w \cdot x_0 + b)$$</p>
+<p>假设超平面$S$的误分类点集合为M，那么<strong>所有误分类点</strong>到超平面S的总距离是</p>
+<p>$$-\frac {1}{||w||}\sum_{x_i \in M}y_i{(w \cdot x_i+b)}$$</p>
+<p>不考虑前面的系数$\frac {1}{||w||}$，得到<strong>感知机的学习策略是极小化损失函数</strong>：</p>
+<p>$$\min <em>{w, b} L(w, b)=-\sum</em>{x_{i} \in M} y_{i}\left(w \cdot x_{i}+b\right)$$</p>
+<h4 id="感知机算法">感知机算法</h4>
+<p>感知机学习算法是基于<strong>随机梯度下降法</strong>的对损失函数的最优化算法，有<strong>原始形式和对偶形式</strong>两种。梯度下降算法的图解形式</p>
+<p><img src="https://s2.ax1x.com/2019/11/14/MtiptJ.png" alt="MtiptJ.png"></p>
+<ol>
+<li><strong>原始形式</strong></li>
+</ol>
+<ul>
+<li>
+<p>输入：给定输入数据集$$T={(x_1,y_1),(x_2,y_2),…,(x_N,y_N)},x_i \in X=R^n,y_i\in Y={+1,-1}$$</p>
+</li>
+<li>
+<p>输出：输出$w,b$；感知机模型$f(x)=sign(w \cdot x + b)$</p>
+</li>
+<li>
+<p>具体过程：</p>
+<ul>
+<li>
+<p>选取初值$w_0,b_0$</p>
+</li>
+<li>
+<p>随机抽取一个误分类点$(x_i,y_i)$对$w,b	$进行更新，其中学习率$\eta$满足$0 &lt; \eta &lt; 1$</p>
+</li>
+<li>
+<p>不断地更新$w,b$</p>
+<p>$w=w+\eta y_ix_i$</p>
+<p>$b = b+\eta y_i$</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>算法的具体阐述：</strong></p>
+<blockquote>
+<p>当一个实例点被误分类时，即位于分离超平面的错误一侧，调整两个参数的值，使得分离超平面向着误分类点一侧移动，减小该误分类点到分离超平面的距离，直至超平面越过该误分类点使其被正确分类。</p>
+</blockquote>
+<ol start="2">
+<li>
+<p>算法的收敛性</p>
+<p>当训练数据是线性可分时，感知机的学习算法是收敛的。误分类次数k满足不等式$$k \leq (\frac {R}{\gamma})^2$$</p>
+<p><img src="https://s2.ax1x.com/2019/11/14/MNStmD.png" alt="MNStmD.png"></p>
+<p><img src="https://s2.ax1x.com/2019/11/14/MNSOAJ.png" alt="MNSOAJ.png"></p>
+</li>
+</ol>
+<h3 id="代码">代码</h3>
+<h4 id="iris数据集">iris数据集</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">%matplotlib inline</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_iris</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># load data</span></span><br><span class="line">iris = load_iris()</span><br><span class="line">df = pd.DataFrame(iris.data, columns=iris.feature_names)</span><br><span class="line">df[<span class="string">'label'</span>] = iris.target</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.head()</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<pre><code>.dataframe tbody tr th {
+    vertical-align: top;
+}
+
+.dataframe thead th {
+    text-align: right;
+}
+</code></pre>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>sepal length (cm)</th>
+      <th>sepal width (cm)</th>
+      <th>petal length (cm)</th>
+      <th>petal width (cm)</th>
+      <th>label</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>5.1</td>
+      <td>3.5</td>
+      <td>1.4</td>
+      <td>0.2</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>4.9</td>
+      <td>3.0</td>
+      <td>1.4</td>
+      <td>0.2</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>4.7</td>
+      <td>3.2</td>
+      <td>1.3</td>
+      <td>0.2</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4.6</td>
+      <td>3.1</td>
+      <td>1.5</td>
+      <td>0.2</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5.0</td>
+      <td>3.6</td>
+      <td>1.4</td>
+      <td>0.2</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df.columns = [<span class="string">'sepal_length'</span>, <span class="string">'sepal_width'</span>, <span class="string">'petal_width'</span>,</span><br><span class="line">             <span class="string">'petal_width'</span>, <span class="string">'label'</span>]  <span class="comment"># 指定数据的列属性</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.label.value_counts()    <span class="comment"># 统计每个类别标签出现的个数</span></span><br></pre></td></tr></table></figure>
+<pre><code>2    50
+1    50
+0    50
+Name: label, dtype: int64
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">plt.scatter(df[:<span class="number">50</span>][<span class="string">'sepal_length'</span>], df[:<span class="number">50</span>][<span class="string">'sepal_width'</span>],</span><br><span class="line">            label = <span class="string">'0'</span>)   <span class="comment"># 生成数据集</span></span><br><span class="line"></span><br><span class="line">plt.scatter(df[<span class="number">50</span>:<span class="number">100</span>][<span class="string">'sepal_length'</span>], df[<span class="number">50</span>:<span class="number">100</span>][<span class="string">'sepal_width'</span>],</span><br><span class="line">            label = <span class="string">'1'</span>)</span><br><span class="line">plt.xlabel(<span class="string">"sepal_length"</span>)  <span class="comment"># 横纵轴的标签</span></span><br><span class="line">plt.ylabel(<span class="string">"sepal_width"</span>)</span><br><span class="line">plt.legend()</span><br></pre></td></tr></table></figure>
+<p><img src="https://s2.ax1x.com/2019/11/14/MtjvyF.png" alt="png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[:<span class="number">50</span>][<span class="string">'sepal_length'</span>][:<span class="number">5</span>]   <span class="comment"># df的前50行数据中取出sepal_length列的前5个数据</span></span><br></pre></td></tr></table></figure>
+<pre><code>0    5.1
+1    4.9
+2    4.7
+3    4.6
+4    5.0
+Name: sepal_length, dtype: float64
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 取出 df 数据的前100行中的第0，1 和 -1 列(最后一列)</span></span><br><span class="line">data = np.array(df.iloc[:<span class="number">100</span>, [<span class="number">0</span>,<span class="number">1</span>,<span class="number">-1</span>]])</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data[:<span class="number">5</span>]  <span class="comment"># 查看前5个数据；numpy的数据不能使用head()方法</span></span><br></pre></td></tr></table></figure>
+<pre><code>array([[5.1, 3.5, 0. ],
+       [4.9, 3. , 0. ],
+       [4.7, 3.2, 0. ],
+       [4.6, 3.1, 0. ],
+       [5. , 3.6, 0. ]])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># X 是所有行的除去最后一列；y 是所有行的最后一列</span></span><br><span class="line">X, y = data[:, :<span class="number">-1</span>], data[:, <span class="number">-1</span>]</span><br><span class="line">y</span><br></pre></td></tr></table></figure>
+<pre><code>array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+       0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+       0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1.,
+       1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1.,
+       1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1.,
+       1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1.])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 只是将0变成了1</span></span><br><span class="line">y = np.array([<span class="number">1</span> <span class="keyword">if</span> i == <span class="number">1</span> <span class="keyword">else</span> <span class="number">-1</span> <span class="keyword">for</span> i <span class="keyword">in</span> y])</span><br><span class="line">y</span><br></pre></td></tr></table></figure>
+<pre><code>array([-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  1,
+        1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
+        1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
+        1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1])
+</code></pre>
+<h4 id="Perceptron">Perceptron</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 数据线性可分，二分类数据</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Model</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="comment"># 定义3个参数的初值</span></span><br><span class="line">        self.w = np.ones(len(data[<span class="number">0</span>]) - <span class="number">1</span>, dtype = np.float32)   <span class="comment"># len(data[0])-1</span></span><br><span class="line">        self.b = <span class="number">0</span></span><br><span class="line">        self.l_rate = <span class="number">0.1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sign</span><span class="params">(self, x, w, b)</span>:</span></span><br><span class="line">        y = np.dot(x, w) + b</span><br><span class="line">        <span class="keyword">return</span> y</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 随机梯度下降</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fit</span><span class="params">(self, X_train, y_train)</span>:</span></span><br><span class="line">        flag = <span class="literal">False</span></span><br><span class="line">        <span class="keyword">while</span> <span class="keyword">not</span> flag:</span><br><span class="line">            wrong_count = <span class="number">0</span></span><br><span class="line">            <span class="keyword">for</span> d <span class="keyword">in</span> range(len(X_train)):  <span class="comment"># 遍历样本</span></span><br><span class="line">                X = X_train[d]</span><br><span class="line">                y = y_train[d]</span><br><span class="line">                <span class="keyword">if</span> y * self.sign(X, self.w, self.b) &lt;= <span class="number">0</span>:</span><br><span class="line">                    self.w = self.w + self.l_rate * np.dot(y, X)  <span class="comment"># 更新权重</span></span><br><span class="line">                    self.b = self.b + self.l_rate * y  <span class="comment"># 更新偏置</span></span><br><span class="line">                    wrong_count += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> wrong_count == <span class="number">0</span> :</span><br><span class="line">                flag = <span class="literal">True</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Perceptron Model!"</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">score</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">perceptron = Model()</span><br><span class="line">perceptron.fit(X, y)</span><br></pre></td></tr></table></figure>
+<pre><code>'Perceptron Model!'
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">x_points = np.linspace(<span class="number">4</span>,<span class="number">7</span>,<span class="number">10</span>)</span><br><span class="line">y_ = -(perceptron.w[<span class="number">0</span>] * x_points + perceptron.b) / perceptron.w[<span class="number">1</span>]</span><br><span class="line">plt.plot(x_points, y_)</span><br><span class="line"></span><br><span class="line">plt.plot(data[:<span class="number">50</span>, <span class="number">0</span>], data[:<span class="number">50</span>, <span class="number">1</span>], <span class="string">'bo'</span>, color=<span class="string">'blue'</span>, label=<span class="string">'0'</span>)</span><br><span class="line">plt.plot(data[<span class="number">50</span>:<span class="number">100</span>, <span class="number">0</span>], data[<span class="number">50</span>:<span class="number">100</span>, <span class="number">1</span>], <span class="string">'bo'</span>, color=<span class="string">'orange'</span>, label=<span class="string">'1'</span>)</span><br><span class="line"></span><br><span class="line">plt.xlabel(<span class="string">'sepal_length'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'sepal_width'</span>)</span><br><span class="line">plt.legend()</span><br></pre></td></tr></table></figure>
+<p><img src="https://s2.ax1x.com/2019/11/14/MtjBse.png" alt=""></p>
+<h4 id="scikit-learn实例">scikit-learn实例</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> Perceptron</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">clf = Perceptron(fit_intercept=<span class="literal">False</span>, max_iter=<span class="number">1000</span>, shuffle=<span class="literal">False</span>)</span><br><span class="line">clf.fit(X, y)</span><br></pre></td></tr></table></figure>
+<pre><code>Perceptron(alpha=0.0001, class_weight=None, early_stopping=False, eta0=1.0,
+           fit_intercept=False, max_iter=1000, n_iter_no_change=5, n_jobs=None,
+           penalty=None, random_state=0, shuffle=False, tol=0.001,
+           validation_fraction=0.1, verbose=0, warm_start=False)
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(clf.coef_)</span><br></pre></td></tr></table></figure>
+<pre><code>[[ 16.3 -24.2]]
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 截距</span></span><br><span class="line">print(clf.intercept_)</span><br></pre></td></tr></table></figure>
+<pre><code>[0.]
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">x_points = np.arange(<span class="number">4</span>,<span class="number">8</span>)</span><br><span class="line">y_ = -(clf.coef_[<span class="number">0</span>][<span class="number">0</span>] * x_points + clf.intercept_) / clf.coef_[<span class="number">0</span>][<span class="number">1</span>]</span><br><span class="line">plt.plot(x_points, y_)</span><br><span class="line"></span><br><span class="line">plt.plot(data[:<span class="number">50</span>, <span class="number">0</span>], data[:<span class="number">50</span>, <span class="number">1</span>], <span class="string">'bo'</span>, color=<span class="string">'blue'</span>, label=<span class="string">'0'</span>)</span><br><span class="line">plt.plot(data[<span class="number">50</span>:<span class="number">100</span>, <span class="number">0</span>], data[<span class="number">50</span>:<span class="number">100</span>, <span class="number">1</span>], <span class="string">'bo'</span>, color=<span class="string">'orange'</span>, label=<span class="string">'1'</span>)</span><br><span class="line"></span><br><span class="line">plt.xlabel(<span class="string">'sepal_length'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'sepal_width'</span>)</span><br><span class="line">plt.legend()</span><br></pre></td></tr></table></figure>
+<p><img src="https://s2.ax1x.com/2019/11/14/MtjqJ0.png" alt=""></p>
+<h3 id="代码实现（栗子2-1）">代码实现（栗子2.1）</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># --*-- coding: utf-8 --*--</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Perceptron</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span>  <span class="comment"># 初始化函数</span></span><br><span class="line">        self.weights = <span class="literal">None</span>  <span class="comment"># 定义两个参数：权重和偏置</span></span><br><span class="line">        self.bias = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sign</span><span class="params">(self, value)</span>:</span>  <span class="comment"># 定义符号函数：大于等于0输出1；否则输出-1</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span> <span class="keyword">if</span> value &gt;= <span class="number">0</span> <span class="keyword">else</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">train</span><span class="params">(self, dataset, labels)</span>:</span></span><br><span class="line">        learning_rate = <span class="number">1</span>  <span class="comment"># 定义学习率为1</span></span><br><span class="line">        dataset = np.array(dataset)  <span class="comment"># 将输入的数据转成 np.array 的形式</span></span><br><span class="line">        n = dataset.shape[<span class="number">0</span>]  <span class="comment"># 数据是 n * m</span></span><br><span class="line">        m = dataset.shape[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">        weights = np.zeros(m) <span class="comment"># 设置权重、偏置和学习率；权重是个数为 m 的全0向量</span></span><br><span class="line">        bias = <span class="number">0</span></span><br><span class="line">        i = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> i &lt; n:</span><br><span class="line">            <span class="comment"># 根据误分类点满足：y * sign(w.x + b) &lt; 0 来判断；再进行权重和偏置的更新</span></span><br><span class="line">            <span class="keyword">if</span> (labels[i] * self.sign(np.dot(weights, dataset[i]) + bias) &lt;= <span class="number">0</span>):</span><br><span class="line">                weights = weights + learning_rate * labels[i] * dataset[i] <span class="comment"># dataset[i]看作是x[i]</span></span><br><span class="line">                bias = bias + learning_rate * labels[i]  <span class="comment"># labels[i] 看作是y[i]</span></span><br><span class="line">                i = <span class="number">0</span></span><br><span class="line">            <span class="keyword">else</span>:  <span class="comment"># 如果不是误分类点，i自加1，进行下次循环，直到while循环条件不再满足</span></span><br><span class="line">                i += <span class="number">1</span></span><br><span class="line">        self.weights = weights <span class="comment"># 更新之后的权重和偏置</span></span><br><span class="line">        self.bias = bias</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">predict</span><span class="params">(self, data)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> (self.weights <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">and</span> self.bias <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>):</span><br><span class="line">            <span class="comment"># 权重和偏置都不是空值，根据 sign(w.x + b) 进行预测</span></span><br><span class="line">            <span class="keyword">return</span> self.sign(np.dot(self.weights, data) + self.bias)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    dataset = [[<span class="number">3</span>,<span class="number">3</span>],</span><br><span class="line">               [<span class="number">4</span>,<span class="number">3</span>],</span><br><span class="line">               [<span class="number">1</span>,<span class="number">1</span>]]</span><br><span class="line">    labels = [<span class="number">1</span>,<span class="number">1</span>,<span class="number">-1</span>]</span><br><span class="line"></span><br><span class="line">    perceptron = Perceptron()</span><br><span class="line">    perceptron.train(dataset, labels)</span><br><span class="line">    print(<span class="string">"weight is:"</span>, perceptron.weights)</span><br><span class="line">    print(<span class="string">"bias is:"</span>, perceptron.bias)</span><br><span class="line"></span><br><span class="line">    result = perceptron.predict([<span class="number">3</span>,<span class="number">3</span>])</span><br><span class="line">    print(<span class="string">"prediction:"</span>, result)</span><br></pre></td></tr></table></figure>
+<pre><code>weight is: [1. 1.]
+bias is: -3
+prediction: 1
+</code></pre>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/11/14/perceptron.html">perceptron</a></p>
+  <p><span>发布时间:</span>2019年11月14日 - 16:11</p>
+  <p><span>原始链接:</span><a href="/2019/11/14/perceptron.html" title="perceptron">http://www.renpeter.cn/2019/11/14/perceptron.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2019/11/14/perceptron.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/perceptron/" rel="tag"># perceptron</a>
+          
+            <a href="/tags/ML/" rel="tag"># ML</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/14/Golang%E4%B9%8B%E6%97%8533-map%E6%98%A0%E5%B0%84.html" rel="next" title="Golang之旅33-map映射">
+                <i class="fa fa-chevron-left"></i> Golang之旅33-map映射
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/15/Golang%E4%B9%8B%E6%97%8534-%E7%BB%93%E6%9E%84%E4%BD%931.html" rel="prev" title="Golang之旅34-结构体1">
+                Golang之旅34-结构体1 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#第二章-感知机-perceptron"><span class="nav-number">1.</span> <span class="nav-text">第二章-感知机 perceptron</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#感知机模型"><span class="nav-number">1.1.</span> <span class="nav-text">感知机模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#感知机学习策略"><span class="nav-number">1.2.</span> <span class="nav-text">感知机学习策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#感知机算法"><span class="nav-number">1.3.</span> <span class="nav-text">感知机算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码"><span class="nav-number">2.</span> <span class="nav-text">代码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#iris数据集"><span class="nav-number">2.1.</span> <span class="nav-text">iris数据集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Perceptron"><span class="nav-number">2.2.</span> <span class="nav-text">Perceptron</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#scikit-learn实例"><span class="nav-number">2.3.</span> <span class="nav-text">scikit-learn实例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码实现（栗子2-1）"><span class="nav-number">3.</span> <span class="nav-text">代码实现（栗子2.1）</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2019/11/14/perceptron.html';
+          this.page.identifier = '2019/11/14/perceptron.html';
+          this.page.title = 'perceptron';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="梯度下降," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="char2-回归问题 主要介绍的知识点包含：  神经知识简介 基于梯度下降法的优化 利用梯度下降发求解线性模型 回归问题小结及应用">
+<meta name="keywords" content="梯度下降">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TF-char2-回归问题">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2019&#x2F;11&#x2F;26&#x2F;TF-char2.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="char2-回归问题 主要介绍的知识点包含：  神经知识简介 基于梯度下降法的优化 利用梯度下降发求解线性模型 回归问题小结及应用">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;25&#x2F;MxiT4P.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;25&#x2F;MxkdoR.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;25&#x2F;MxEw26.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;25&#x2F;MxVsS0.md.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;25&#x2F;MxlFFU.png">
+<meta property="og:updated_time" content="2020-04-12T11:54:08.499Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;25&#x2F;MxiT4P.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2019/11/26/TF-char2.html"/>
+
+
+
+
+
+  <title>TF-char2-回归问题 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2019/11/26/TF-char2.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TF-char2-回归问题</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-11-26T10:51:47+08:00">
+                2019-11-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/TensorFlow/" itemprop="url" rel="index">
+                    <span itemprop="name">TensorFlow</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/11/26/TF-char2.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/11/26/TF-char2.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>char2-回归问题</p>
+<p>主要介绍的知识点包含：</p>
+<ul>
+<li>神经知识简介</li>
+<li>基于梯度下降法的优化</li>
+<li>利用梯度下降发求解线性模型</li>
+<li>回归问题小结及应用</li>
+</ul>
+<a id="more"></a>
+<h3 id="神经元模型">神经元模型</h3>
+<h5 id="介绍神经元">介绍神经元</h5>
+<blockquote>
+<p>每个神经元通过树突获取输入信号，通过轴 突传递输出信号，神经元之间相互连接构成了巨大的神经网络，从而形成了人脑的感知和 意识基础。</p>
+</blockquote>
+<p><img src="https://s2.ax1x.com/2019/11/25/MxiT4P.png" alt="MxiT4P.png"></p>
+<ul>
+<li>典型的神经元结构模型</li>
+<li>模拟神经元机制的人工神经网络的数学模型</li>
+</ul>
+<h5 id="具体解释">具体解释</h5>
+<p>将神经元模型抽象成数学结构：</p>
+<ul>
+<li>神经元输入向量$x=[x_1,…,x_n]^T$</li>
+<li>经过函数$f_\theta:x \rightarrow y$进行映射得到输出y</li>
+<li>$\theta$为函数f自身的参数</li>
+<li>$\theta:={w_1,…,w_n,b}$确定了神经元的状态；通过固定𝜃参数即可确定此神经 元的处理逻辑</li>
+</ul>
+<p><img src="https://s2.ax1x.com/2019/11/25/MxkdoR.png" alt="MxkdoR.png"></p>
+<p>上面有个简单的线性模型：<br>
+$$<br>
+f(x)=w^Tx+b<br>
+$$</p>
+<p>$$<br>
+f(x) = w_1x_1+w_2x_2+…w_nx_n+b<br>
+$$</p>
+<h4 id="单输入问题">单输入问题</h4>
+<p>当仅仅只有一个节点的时候，神经元模型简化为<br>
+$$<br>
+y=wx+b<br>
+$$</p>
+<ul>
+<li>w为直线的斜率slope</li>
+<li>b为直线的偏置bias</li>
+</ul>
+<p><img src="https://s2.ax1x.com/2019/11/25/MxEw26.png" alt="MxEw26.png"></p>
+<p><strong>带有误差的估计模型</strong></p>
+<p>采样点存在误差$\epsilon$满足，均值是$u$，方差为$\sigma^2$的正态分布，即采样本符合：<br>
+$$<br>
+y=wx+b+\epsilon,\epsilon-N(\mu,\sigma^2)<br>
+$$</p>
+<p><a href="https://imgchr.com/i/MxVsS0" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/11/25/MxVsS0.md.png" alt="MxVsS0.md.png"></a></p>
+<p>求出当前模型的采样点上的预测值和真实值之间的的差的平方和作为总误差L<br>
+$$<br>
+L(w,b) = \frac{1}{n}\sum<sup>n_{i=1}(wx</sup>{(i)}+b-y<sup>{(i)})</sup>2<br>
+$$<br>
+找出一组参数w,b使得L最小：<br>
+$$<br>
+w<sup>*,b</sup>* = arg \min \frac{1}{n}\sum<sup>n_{i=1}(wx</sup>{(i)}+b-y<sup>{(i)})</sup>2<br>
+$$<br>
+上述方法称之为均方误差<code>MSE，mean squared error</code></p>
+<h3 id="优化方法">优化方法</h3>
+<h4 id="梯度下降法">梯度下降法</h4>
+<p>解析解：经过严格公式推导得到的结果</p>
+<p>数值解：数据量大的情况下，可能无法得到解析解，借助数值优化的方法得到近似的数值解。</p>
+<blockquote>
+<p>梯度的定义：函数对各个自变量的偏导数组成的向量</p>
+</blockquote>
+<p><img src="https://s2.ax1x.com/2019/11/25/MxlFFU.png" alt="MxlFFU.png"></p>
+<ul>
+<li>
+<p>红色箭头表示梯度向量的模</p>
+</li>
+<li>
+<p>箭头的方向是梯度向量的方向，函数值增速最快的方向</p>
+</li>
+<li>
+<p>函数曲面越陡峭，箭头越长，梯度的模越大</p>
+</li>
+<li>
+<p>梯度方向$\triangledown f$总是指向函数值增大的方向；$-\triangledown f$ 指向函数值减小的方向<br>
+$$<br>
+x^<code>=x-\eta \cdot \triangledown f $$ 通过上式来不断地迭代更新$x^</code>$其中$\eta$表示缩放梯度向量，一般设置为较小的值：0.01，0.001等</p>
+</li>
+</ul>
+<p><strong>代价函数是均方误差函数</strong></p>
+<h4 id="系数求解">系数求解</h4>
+<p>$$<br>
+L(w,b) = \frac{1}{n}\sum<sup>n_{i=1}(wx</sup>{(i)}+b-y<sup>{(i)})</sup>2<br>
+$$</p>
+<p><strong>需要优化的模型参数是$w,b$</strong><br>
+$$<br>
+w^` := w -\eta \frac{\partial L}{\partial w}<br>
+$$</p>
+<p>$$<br>
+b^` := b -\eta \frac{\partial L}{\partial w}<br>
+$$</p>
+<p>不断循环地迭代更新参数。</p>
+<h3 id="线性模型实例-demo">线性模型实例-demo</h3>
+<ul>
+<li>样例符合$y=1.477*x+0.089$，误差自变量$\epsilon$采样自均值为0，方差为0.01的高斯分布：</li>
+</ul>
+<p>$$<br>
+y=1.477*x+0.089+\epsilon,\epsilon-N(0,0.01)<br>
+$$</p>
+<ul>
+<li>通过采样100次，获得训练数据</li>
+</ul>
+<h4 id="采样数据">采样数据</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line">data = []  <span class="comment"># 存放样本数据的列表</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100</span>):</span><br><span class="line">  x = np.random.uniform(<span class="number">-10</span>, <span class="number">10</span>)  <span class="comment"># 随机采样输入x</span></span><br><span class="line">  eps = np.random.normal(<span class="number">0.</span>, <span class="number">0.1</span>)  <span class="comment"># 采样高斯噪声</span></span><br><span class="line">  y = <span class="number">1.477</span> * x + <span class="number">0.089</span> + eps  <span class="comment"># 模型的输出</span></span><br><span class="line"></span><br><span class="line">  data.append([x,y])  <span class="comment"># 保存样本点</span></span><br><span class="line"></span><br><span class="line">data = np.array(data)  <span class="comment"># 全部采样完成之后，将数据转成Numpy数据</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>循环100次</li>
+<li>每次从区间[-100,100]的均匀分区U[0,1]随机采样一个数据x</li>
+<li>高斯分布中采样噪声$\epsilon$</li>
+<li>根据真实模型生成数据y，并保存为numpy数组</li>
+</ul>
+<h4 id="计算误差">计算误差</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mse</span><span class="params">(b,w,points)</span>:</span></span><br><span class="line">  <span class="comment"># 计算均方误差MSE</span></span><br><span class="line">  totalError = <span class="number">0</span></span><br><span class="line">  <span class="comment"># 循环迭代所有的点</span></span><br><span class="line">  <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, len(points)):</span><br><span class="line">    <span class="comment"># 怎么从array中取出值</span></span><br><span class="line">    x = points[i, <span class="number">0</span>]   <span class="comment"># 获取第i号点的输入x</span></span><br><span class="line">    y = points[i, <span class="number">1</span>]  <span class="comment">#  获取输入y</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 计算差的平方，再累加</span></span><br><span class="line">    totalError += (y - (w * x + b)) ** <span class="number">2</span></span><br><span class="line">    <span class="comment"># 将累加的误差求平均，得到均方误差</span></span><br><span class="line">   <span class="keyword">return</span> totalError / float(len(points))</span><br></pre></td></tr></table></figure>
+<h4 id="计算梯度">计算梯度</h4>
+<p>关于代价函数对两个参数的梯度，就是一个求导的过程，很简单：<br>
+$$<br>
+L(w,b) = \frac{1}{n}\sum<sup>n_{i=1}(wx</sup>{(i)}+b-y<sup>{(i)})</sup>2<br>
+$$<br>
+<strong>求出来的结果为：</strong><br>
+$$<br>
+\frac {\partial L}{\partial w} = \frac{2}{n}\sum<sup>n_{i=1}(wx</sup>{(i)}+b-y^{(i)})\cdot x^{(i)}<br>
+$$</p>
+<p>$$<br>
+\frac {\partial L}{\partial b} = \frac{2}{n}\sum<sup>n_{i=1}(wx</sup>{(i)}+b-y^{(i)})<br>
+$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">step_gradient</span><span class="params">(b_current, w_current, points, lr)</span>:</span></span><br><span class="line">  <span class="string">"""</span></span><br><span class="line"><span class="string">  计算梯度函数</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  b_current：目前b的值</span></span><br><span class="line"><span class="string">  w_current：目前w的值</span></span><br><span class="line"><span class="string">  points：总样本数据集</span></span><br><span class="line"><span class="string">  lr： 学习率</span></span><br><span class="line"><span class="string">  """</span></span><br><span class="line">  b_gradient = <span class="number">0</span></span><br><span class="line">  w_gradient = <span class="number">0</span></span><br><span class="line">  M = float(len(points))  <span class="comment"># 总样本数</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, len(points)):</span><br><span class="line">    x = points[i, <span class="number">0</span>]</span><br><span class="line">    y = points[i, <span class="number">1</span>]</span><br><span class="line">    <span class="comment"># 参考公式进行更新</span></span><br><span class="line">    b_gradient += (<span class="number">2</span>/M) * ((w_current * x + b_current) - y)</span><br><span class="line">    w_gradient += (<span class="number">2</span>/M) * x * ((w_current * x + b_current)-y)</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 更新两个系数</span></span><br><span class="line">  new_b = b_current - (lr * b_gradient)</span><br><span class="line">  new_w = w_current - (lr * w_gradient)</span><br><span class="line">  <span class="keyword">return</span> [new_b,  new_w]</span><br></pre></td></tr></table></figure>
+<h4 id="梯度更新">梯度更新</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gradient_descent</span><span class="params">(points, starting_b, starting_w, lr, num_iterations)</span>:</span></span><br><span class="line">  <span class="string">"""</span></span><br><span class="line"><span class="string">  梯度下降函数</span></span><br><span class="line"><span class="string">  points:数据集</span></span><br><span class="line"><span class="string">  starting_b, starting_w：两个参数的初始值</span></span><br><span class="line"><span class="string">  lr：学习率</span></span><br><span class="line"><span class="string">  num_iterations：迭代次数</span></span><br><span class="line"><span class="string">  """</span></span><br><span class="line">  b = starting_b</span><br><span class="line">  w = starting_w</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> step <span class="keyword">in</span> range(num_iterations):</span><br><span class="line">    <span class="comment"># 梯度下降函数，计算梯度，并且更新一次</span></span><br><span class="line">    b, w = step_gradient(b, w, np.array(points), lr)</span><br><span class="line">    <span class="comment"># 求均方误差函数</span></span><br><span class="line">    loss = mse(b, w, points)</span><br><span class="line">    <span class="keyword">if</span> step % <span class="number">50</span> ==<span class="number">0</span>:</span><br><span class="line">      <span class="comment"># 打印误差和实时 w,b 值</span></span><br><span class="line">      print(<span class="string">f"iteration:<span class="subst">&#123;step&#125;</span>, loss:<span class="subst">&#123;loss&#125;</span>, w:<span class="subst">&#123;w&#125;</span>m b:<span class="subst">&#123;b&#125;</span>"</span>)</span><br><span class="line">    <span class="keyword">return</span> [b, w]  <span class="comment"># 返回最后一次的w,b</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">  lr = <span class="number">0.01</span></span><br><span class="line">  <span class="comment"># 初始化参数</span></span><br><span class="line">  initial_b = <span class="number">0</span></span><br><span class="line">  initial_w = <span class="number">0</span></span><br><span class="line">  num_iterations = <span class="number">1000</span></span><br><span class="line">  [b,w,losses = gradient_descent(data, initial_b, initial_w, lr, num_iterations)]</span><br><span class="line">  loss = mse(b,w,data)  <span class="comment"># 计算最优数值解上的均方误差mse</span></span><br><span class="line">  print(<span class="string">f'Fianl loss:<span class="subst">&#123;loss&#125;</span>, w:<span class="subst">&#123;w&#125;</span>, b:<span class="subst">&#123;b&#125;</span>'</span>)</span><br></pre></td></tr></table></figure>
+<p>对于复杂的线性模型，通过梯度下降算法求解得到的w，b可能是局部最小值而不是全局最小值。</p>
+<h3 id="总结">总结</h3>
+<p>上面的栗子可以理解为一组连续值(向量)的预测问 题。</p>
+<ul>
+<li>给定数据集𝔻，我们需要从𝔻中学习到数据的真实模型，从而预测未见过的样本的输出值。</li>
+<li>在假定模型的类型后，学习过程就变成了搜索模型参数的问题</li>
+<li>对于任意的x输入，使用学习模型输出值作为真实值的近似</li>
+</ul>
+<p>上述问题是属于<strong>连续性预测问题</strong>，这类问题属于<strong>回归问题</strong></p>
+<h4 id="应用">应用</h4>
+<ul>
+<li>股票的走势问题</li>
+<li>天气预报中温度和湿度的预测</li>
+<li>年龄预测</li>
+<li>交通流量的预测</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/11/26/TF-char2.html">TF-char2-回归问题</a></p>
+  <p><span>发布时间:</span>2019年11月26日 - 10:11</p>
+  <p><span>原始链接:</span><a href="/2019/11/26/TF-char2.html" title="TF-char2-回归问题">http://www.renpeter.cn/2019/11/26/TF-char2.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2019/11/26/TF-char2.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D/" rel="tag"># 梯度下降</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/25/TF-char1.html" rel="next" title="TF-char1-简介">
+                <i class="fa fa-chevron-left"></i> TF-char1-简介
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/26/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B03.html" rel="prev" title="吴恩达笔记3">
+                吴恩达笔记3 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#神经元模型"><span class="nav-number">1.</span> <span class="nav-text">神经元模型</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#介绍神经元"><span class="nav-number">1.0.1.</span> <span class="nav-text">介绍神经元</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#具体解释"><span class="nav-number">1.0.2.</span> <span class="nav-text">具体解释</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单输入问题"><span class="nav-number">1.1.</span> <span class="nav-text">单输入问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优化方法"><span class="nav-number">2.</span> <span class="nav-text">优化方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#梯度下降法"><span class="nav-number">2.1.</span> <span class="nav-text">梯度下降法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#系数求解"><span class="nav-number">2.2.</span> <span class="nav-text">系数求解</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线性模型实例-demo"><span class="nav-number">3.</span> <span class="nav-text">线性模型实例-demo</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#采样数据"><span class="nav-number">3.1.</span> <span class="nav-text">采样数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#计算误差"><span class="nav-number">3.2.</span> <span class="nav-text">计算误差</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#计算梯度"><span class="nav-number">3.3.</span> <span class="nav-text">计算梯度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#梯度更新"><span class="nav-number">3.4.</span> <span class="nav-text">梯度更新</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#应用"><span class="nav-number">4.1.</span> <span class="nav-text">应用</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2019/11/26/TF-char2.html';
+          this.page.identifier = '2019/11/26/TF-char2.html';
+          this.page.title = 'TF-char2-回归问题';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="NLP,字典," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="NLP札记4-字典树 完全切分、正向最长匹配和逆向最长匹配这三种算法的缺点就是如何判断集合中是否含有字符串。  如果使用有序集合，复杂度高； 使用散列表，时间复杂度降低，但是内存复杂度上去   使用字典树这种数据结构，速度快、内存还省">
+<meta name="keywords" content="NLP,字典">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NLP札记4-字典分词">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2019&#x2F;12&#x2F;20&#x2F;NLP%E6%9C%AD%E8%AE%B04-%E5%AD%97%E5%85%B8%E5%88%86%E8%AF%8D.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="NLP札记4-字典树 完全切分、正向最长匹配和逆向最长匹配这三种算法的缺点就是如何判断集合中是否含有字符串。  如果使用有序集合，复杂度高； 使用散列表，时间复杂度降低，但是内存复杂度上去   使用字典树这种数据结构，速度快、内存还省">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1ga0omuml2lj30rk102b29.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1ga30x7r9tlj30vg0fydhr.jpg">
+<meta property="og:updated_time" content="2019-12-20T07:22:46.383Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1ga0omuml2lj30rk102b29.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2019/12/20/NLP札记4-字典分词.html"/>
+
+
+
+
+
+  <title>NLP札记4-字典分词 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2019/12/20/NLP%E6%9C%AD%E8%AE%B04-%E5%AD%97%E5%85%B8%E5%88%86%E8%AF%8D.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">NLP札记4-字典分词</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-12-20T15:20:51+08:00">
+                2019-12-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NLP/" itemprop="url" rel="index">
+                    <span itemprop="name">NLP</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NLP/%E5%85%A5%E9%97%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">入门</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/12/20/NLP%E6%9C%AD%E8%AE%B04-%E5%AD%97%E5%85%B8%E5%88%86%E8%AF%8D.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/12/20/NLP札记4-字典分词.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  7
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>NLP札记4-字典树</p>
+<p><strong>完全切分、正向最长匹配和逆向最长匹配</strong>这三种算法的缺点就是<strong>如何判断集合中是否含有字符串</strong>。</p>
+<ul>
+<li>如果使用有序集合，复杂度高；</li>
+<li>使用散列表，时间复杂度降低，但是内存复杂度上去</li>
+</ul>
+<blockquote>
+<p>使用字典树这种数据结构，速度快、内存还省</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="字典树">字典树</h3>
+<h4 id="什么是字典树">什么是字典树</h4>
+<p>字符串集合常用字典树（trie树、前缀树）存储，字符串上的树形结构。特点如下</p>
+<ul>
+<li>每条边对应一个数字</li>
+<li>从根节点往下构成一个个字符串</li>
+<li>字典树不是在节点上存储字符串，将词语视作根节点到某个节点之间的一条路径</li>
+<li>字符串就是一条路径，从根节点开始，沿着路径往下走，就可以查询到该词语</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1ga0omuml2lj30rk102b29.jpg" alt=""></p>
+<h4 id="字典树的节点实现">字典树的节点实现</h4>
+<p>每个节点至少有自己的子节点和对应的边，以及自己是否对应一个词。如果是map映射而不是集合set ，还需要自己对应的值。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 节点Node实现</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span><span class="params">(object)</span>:</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, value)</span>:</span></span><br><span class="line">    self._children = &#123;&#125;</span><br><span class="line">    self._value = value</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">_add_child</span><span class="params">(self, char, value, overwrite=False)</span>:</span></span><br><span class="line">    child = self._children.get(char)   <span class="comment"># 先检查是否存在字符char对应的child</span></span><br><span class="line">    <span class="keyword">if</span> child <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">      child = Node(value)</span><br><span class="line">      self._children[char] = child</span><br><span class="line">    <span class="keyword">elif</span> overwrite:  <span class="comment"># 覆盖</span></span><br><span class="line">      child._value = value</span><br><span class="line">    <span class="keyword">return</span> child</span><br></pre></td></tr></table></figure>
+<h4 id="字典树的增删改查">字典树的增删改查</h4>
+<p>每个节点都是一个状态，从父节点到子节点的转义看做是一次状态转移。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 字典树的实现</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span><span class="params">(Node)</span>:</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">    super().__init__(<span class="literal">None</span>)  <span class="comment"># 魔术方法重载</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__contains__</span><span class="params">(self, key)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> self[key] <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span><span class="params">(self, key)</span>:</span></span><br><span class="line">    state = self</span><br><span class="line">    <span class="keyword">for</span> char <span class="keyword">in</span> key:</span><br><span class="line">      state = state._children.get(char)</span><br><span class="line">      <span class="keyword">if</span> state <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">    <span class="keyword">return</span> state._value</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__setitem__</span><span class="params">(self, key, value)</span>:</span></span><br><span class="line">    state = self</span><br><span class="line">    <span class="keyword">for</span> i, char <span class="keyword">in</span>  enumerate(key):</span><br><span class="line">      <span class="keyword">if</span> i &lt; len(key) - <span class="number">1</span>:</span><br><span class="line">        state = state._add_child(char, <span class="literal">None</span>, <span class="literal">False</span>)</span><br><span class="line">      <span class="keyword">else</span>:</span><br><span class="line">        state = state._add_child(char, value, <span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试代码</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">  trie = Trie()</span><br><span class="line">  <span class="comment"># 增</span></span><br><span class="line">  trie[<span class="string">'自然'</span>] = <span class="string">"nature"</span></span><br><span class="line">  trie[<span class="string">'自然人'</span>] = <span class="string">"human"</span></span><br><span class="line">  <span class="keyword">assert</span> <span class="string">"自然"</span> <span class="keyword">in</span> trie</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 删</span></span><br><span class="line">  trie[<span class="string">'自然'</span>] = <span class="literal">None</span></span><br><span class="line">  <span class="keyword">assert</span> <span class="string">'自然'</span> <span class="keyword">not</span> <span class="keyword">in</span> trie</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 改</span></span><br><span class="line">  trie[<span class="string">'自然语言'</span>] = <span class="string">'human language'</span></span><br><span class="line">  <span class="keyword">assert</span> trie[<span class="string">'自然语言'</span>] == <span class="string">'human language'</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 查</span></span><br><span class="line">  <span class="keyword">assert</span> trie[<span class="string">'入门'</span>] == <span class="string">'introduction'</span></span><br></pre></td></tr></table></figure>
+<h4 id="首字散列其余二分的字典树">首字散列其余二分的字典树</h4>
+<p>散列函数：将对象转换成整数（散列值）。散列函数的基本要求：对象相同，散列值必须相同。如果对象不同，则散列值也不同，称之为<strong>完美散列</strong>。<strong>BinTrie的特点</strong>是根节点上实施散列策略，其余节点采用二分查找。</p>
+<h3 id="双数组字典树">双数组字典树</h3>
+<h4 id="DAT构成">DAT构成</h4>
+<p>双数组字典树，<code>Double Array Trie，DAT</code>，是状态转移为常数的数据结构。</p>
+<ul>
+<li>元素base</li>
+<li>下标check</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 状态b接受字符c转移到状态p</span></span><br><span class="line"><span class="comment"># 执行一次加法和整数比较的过程</span></span><br><span class="line">p = base[b] + c</span><br><span class="line">check[p] = base[b]</span><br></pre></td></tr></table></figure>
+<h4 id="实现DAT">实现DAT</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DoubleArrayTrie</span><span class="params">(object)</span>:</span>  <span class="comment"># 定义双数组</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,dic)</span>:</span></span><br><span class="line">    m = JClass(<span class="string">"java.util.TreeMap"</span>)()</span><br><span class="line">    <span class="keyword">for</span> k, v <span class="keyword">in</span> dic.items():</span><br><span class="line">      m[k] = v</span><br><span class="line">    dat = JClass(<span class="string">"com.hankcs.hanlp.collection.trie.DoubleArrayTrie"</span>)(m)</span><br><span class="line">    self.base = dat.base</span><br><span class="line">    self.check = dat.check</span><br><span class="line">    self.value = dat.v</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">char_hash</span><span class="params">(c)</span>:</span>  <span class="comment"># python默认的方法是不适合散列函数的，通过Java的hashCode方法</span></span><br><span class="line">  <span class="keyword">return</span> JClass(<span class="string">'java.lang.Character'</span>)(c).hashCode()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">transition</span><span class="params">(self, c, b)</span>:</span>  <span class="comment"># 转移函数实现</span></span><br><span class="line">  p = self.base(b) + self.char_hase(c) + <span class="number">1</span></span><br><span class="line">  <span class="keyword">if</span> self.base[b] == self.check[p]:</span><br><span class="line">    <span class="keyword">return</span> p</span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span><span class="params">(self, key)</span>:</span>  <span class="comment"># 查询函数</span></span><br><span class="line">  b = <span class="number">0</span></span><br><span class="line">  <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, len(key)):</span><br><span class="line">    p = self.transition(key[i], b)</span><br><span class="line">    <span class="keyword">if</span> p <span class="keyword">is</span> <span class="keyword">not</span> <span class="number">-1</span>:</span><br><span class="line">      b = p</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">  p = self.base[b]</span><br><span class="line">  n = self.base[p]</span><br><span class="line">  <span class="keyword">if</span> p == self.check[p] <span class="keyword">and</span> n &lt; <span class="number">0</span>:</span><br><span class="line">    index = -n - <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> self.value[index]</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">None</span></span><br></pre></td></tr></table></figure>
+<h3 id="AC自动机">AC自动机</h3>
+<p>DAT全切分的复杂度是$O(n^2)$，AC自动机的复杂度是$O(n)$，常用于多字符串搜索。字典树是前缀树，从根节点上下来的路径对应公共路径。AC自动机在前缀树的基础上，添加了后缀树，节省了大量的查询时间，它的组成分为3个表：</p>
+<ul>
+<li>goto表（success表），本质上就是字典树</li>
+<li>fail表</li>
+<li>output表</li>
+</ul>
+<h3 id="基于双数组的AC自动机">基于双数组的AC自动机</h3>
+<p>基本原理是替换<code>AC</code>自动机的<code>goto</code>表，看作为一颗双数组字典树的每个状态附上额外的信息。构建原理是为每个状态<code>base[i]</code>和<code>check[i]</code>构建<code>output[i]</code>和<code>fail[i]</code>，具体分为3步：</p>
+<ol>
+<li>构建普通的字典树，让终结点记住对应模式串的字典顺序</li>
+<li>构建双数组字典树，在将每个状态映射到双数组中时，记住每个状态在双数组中的下标位置</li>
+<li>构建<code>AC</code>自动机，<code>fail</code>表中存储的就是状态的下标</li>
+</ol>
+<h3 id="准确率评测">准确率评测</h3>
+<h4 id="混淆矩阵">混淆矩阵</h4>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1ga30x7r9tlj30vg0fydhr.jpg" alt=""></p>
+<p>四种组合的解释：</p>
+<ol>
+<li>TP：预测是P，真实值也是P———真阳</li>
+<li>FP：预测是P，真实值是N———假阳</li>
+<li>FN：预测是N，真实值是P———假阴</li>
+<li>TN：预测是N，真实值也是N———真阴</li>
+</ol>
+<h4 id="精准率precision">精准率precision</h4>
+<p><strong>精准率</strong>指的是，在<strong>预测为P的结果</strong>中，正类数量占据全部结果的比率。<strong>分母是预测为阳性的数目</strong><br>
+$$<br>
+P=\frac{TP}{TP+FP}<br>
+$$</p>
+<h4 id="召回率recall">召回率recall</h4>
+<p><strong>召回率</strong>指的是，在正类样本中，被找出来的比率。在搜索引擎评测中，召回率为相关网页被搜索到的比率。<strong>分母是真实值为阳性的数目</strong><br>
+$$<br>
+R=\frac{TP}{TP+FN}<br>
+$$</p>
+<blockquote>
+<p>笔记：P和R是两个相互对立的指标：一个变大，另一个必然变小</p>
+</blockquote>
+<h4 id="F1值">F1值</h4>
+<p>$F_1$值指的是精准率和召回率的<strong>调和平均值</strong><br>
+$$<br>
+F_1=\frac{2<em>P</em>R}{P+R}<br>
+$$</p>
+<h4 id="中文分词中P-R-F-1的计算">中文分词中P\R\F_1的计算</h4>
+<p>混淆矩阵针对的是答案和预测数量相等的情况。中文分词中，标准答案和分词结果的单词书不一定是相等的。</p>
+<ul>
+<li>混淆矩阵针对的是<strong>分类</strong>问题</li>
+<li>中文分词针对的是<strong>分块</strong>问题</li>
+</ul>
+<blockquote>
+<p>长度为n的字符串，分词结果是一系列的单词，单词在文本的起止位置记作区间$[i,j],1\leq i \leq j \leq n $。如下假设：</p>
+<p><strong>标准答案构成区间为A</strong>，作为正类（答案为P），区间之外构成负类</p>
+<p>记分词结果所有单词区间构成<strong>集合B（预测结果为P）</strong></p>
+</blockquote>
+<p>$$<br>
+\begin{array}{l}{P=\frac{|A \cap B|}{|B|}} \ {R=\frac{|A \cap B|}{|A|}}\end{array}<br>
+$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">to_region</span><span class="params">(segmentation)</span>:</span></span><br><span class="line">  region = []</span><br><span class="line">  start = <span class="number">0</span></span><br><span class="line">  <span class="keyword">for</span> word <span class="keyword">in</span> re.compile(<span class="string">"\\s+"</span>).split(segmentation.strip()):</span><br><span class="line">    end = start + len(word)</span><br><span class="line">    region.append((start, end))</span><br><span class="line">    start = end</span><br><span class="line">  <span class="keyword">return</span> region</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">prf</span><span class="params">(gold, pred)</span>:</span></span><br><span class="line">  sizeA, sizeB, capAB = <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">  <span class="keyword">with</span> open(gold) <span class="keyword">as</span> gd, open(pred) <span class="keyword">as</span> pd:</span><br><span class="line">    <span class="keyword">for</span> g, p <span class="keyword">in</span> zip(gd, pd):</span><br><span class="line">      A, B = set(to_region(g)), set(to_region(p))</span><br><span class="line">      sizeA += len(A)</span><br><span class="line">      sizeB += len(B)</span><br><span class="line">      capAB += len(A &amp;  B)</span><br><span class="line">  p,r = capAB / sizeB, capAB / sizeA</span><br><span class="line">  <span class="keyword">return</span> p, r, <span class="number">2</span>*p*r/(p*r)</span><br></pre></td></tr></table></figure>
+<h3 id="字典树的其他应用">字典树的其他应用</h3>
+<ol>
+<li>停用词过滤</li>
+</ol>
+<p>停用词指的是没有什么意义的词语，比如“的”、“甚至”等，去掉了对整个句子没有什么影响</p>
+<ol start="2">
+<li>简繁转化</li>
+</ol>
+<p>简体中文和繁体中文之间的相互转化。HanLP将中文分为简体s、繁体t、台湾正体tw、香港繁体hk4这4种。</p>
+<ol start="3">
+<li>拼音转换</li>
+</ol>
+<p>将拼音转换为汉字的问题。</p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/12/20/NLP%E6%9C%AD%E8%AE%B04-%E5%AD%97%E5%85%B8%E5%88%86%E8%AF%8D.html">NLP札记4-字典分词</a></p>
+  <p><span>发布时间:</span>2019年12月20日 - 15:12</p>
+  <p><span>原始链接:</span><a href="/2019/12/20/NLP%E6%9C%AD%E8%AE%B04-%E5%AD%97%E5%85%B8%E5%88%86%E8%AF%8D.html" title="NLP札记4-字典分词">http://www.renpeter.cn/2019/12/20/NLP%E6%9C%AD%E8%AE%B04-%E5%AD%97%E5%85%B8%E5%88%86%E8%AF%8D.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2019/12/20/NLP%E6%9C%AD%E8%AE%B04-%E5%AD%97%E5%85%B8%E5%88%86%E8%AF%8D.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/NLP/" rel="tag"># NLP</a>
+          
+            <a href="/tags/%E5%AD%97%E5%85%B8/" rel="tag"># 字典</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/19/kaggle-Titanic.html" rel="next" title="kaggle案例1-Titanic">
+                <i class="fa fa-chevron-left"></i> kaggle案例1-Titanic
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/21/%E5%85%85%E5%AE%9E%E7%9A%84%E4%B8%80%E5%A4%A9.html" rel="prev" title="充实的一天">
+                充实的一天 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#字典树"><span class="nav-number">1.</span> <span class="nav-text">字典树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是字典树"><span class="nav-number">1.1.</span> <span class="nav-text">什么是字典树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#字典树的节点实现"><span class="nav-number">1.2.</span> <span class="nav-text">字典树的节点实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#字典树的增删改查"><span class="nav-number">1.3.</span> <span class="nav-text">字典树的增删改查</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#首字散列其余二分的字典树"><span class="nav-number">1.4.</span> <span class="nav-text">首字散列其余二分的字典树</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#双数组字典树"><span class="nav-number">2.</span> <span class="nav-text">双数组字典树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DAT构成"><span class="nav-number">2.1.</span> <span class="nav-text">DAT构成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现DAT"><span class="nav-number">2.2.</span> <span class="nav-text">实现DAT</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AC自动机"><span class="nav-number">3.</span> <span class="nav-text">AC自动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于双数组的AC自动机"><span class="nav-number">4.</span> <span class="nav-text">基于双数组的AC自动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#准确率评测"><span class="nav-number">5.</span> <span class="nav-text">准确率评测</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#混淆矩阵"><span class="nav-number">5.1.</span> <span class="nav-text">混淆矩阵</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#精准率precision"><span class="nav-number">5.2.</span> <span class="nav-text">精准率precision</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#召回率recall"><span class="nav-number">5.3.</span> <span class="nav-text">召回率recall</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#F1值"><span class="nav-number">5.4.</span> <span class="nav-text">F1值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#中文分词中P-R-F-1的计算"><span class="nav-number">5.5.</span> <span class="nav-text">中文分词中P\R\F_1的计算</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字典树的其他应用"><span class="nav-number">6.</span> <span class="nav-text">字典树的其他应用</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2019/12/20/NLP%E6%9C%AD%E8%AE%B04-%E5%AD%97%E5%85%B8%E5%88%86%E8%AF%8D.html';
+          this.page.identifier = '2019/12/20/NLP札记4-字典分词.html';
+          this.page.title = 'NLP札记4-字典分词';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

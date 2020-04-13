@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="SVM," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Week7-SVM 本周主要是讲解了支持向量机SVM的相关知识点  硬间隔 支持向量 软间隔 对偶问题">
+<meta name="keywords" content="SVM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="吴恩达笔记7">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2019&#x2F;12&#x2F;03&#x2F;%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B07.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="Week7-SVM 本周主要是讲解了支持向量机SVM的相关知识点  硬间隔 支持向量 软间隔 对偶问题">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9jb3l5iqsj30ws0h0jwr.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9jbtyk7aej31440metmd.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9jc3uucfbj313u0lmne1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9jce0d8luj31500l8akx.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9jch4a4r2j314e0ie493.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9jck7m31aj31360iqdoz.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9jcntequoj30uo0f8q98.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9jut9jb7tj30pg0oodpu.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9jdjknd3gj30zv0u0u0x.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9jkhlqhotj30n80i23zp.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9jee5offyj313c0u0e0c.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9js3ob78mj316a0u0npd.jpg">
+<meta property="og:updated_time" content="2019-12-05T08:29:20.414Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9jb3l5iqsj30ws0h0jwr.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2019/12/03/吴恩达笔记7.html"/>
+
+
+
+
+
+  <title>吴恩达笔记7 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2019/12/03/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B07.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">吴恩达笔记7</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-12-03T23:24:39+08:00">
+                2019-12-3
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/%E5%90%B4%E6%81%A9%E8%BE%BE/" itemprop="url" rel="index">
+                    <span itemprop="name">吴恩达</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/12/03/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B07.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/12/03/吴恩达笔记7.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Week7-SVM</p>
+<p>本周主要是讲解了支持向量机SVM的相关知识点</p>
+<ul>
+<li>硬间隔</li>
+<li>支持向量</li>
+<li>软间隔</li>
+<li>对偶问题</li>
+</ul>
+<a id="more"></a>
+<h3 id="优化目标Optimization-Objectives">优化目标Optimization Objectives</h3>
+<p>主要是讲解如何从逻辑回归慢慢的推导出本质上的支持向量机。逻辑回归的假设形式：</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1g9jb3l5iqsj30ws0h0jwr.jpg" alt=""></p>
+<ul>
+<li>左边是假设函数</li>
+<li>右边是<code>Sigmoid</code>激活函数</li>
+</ul>
+<p>令$z=\theta^Tx$，如果满足：</p>
+<ol>
+<li>若$y=1$，希望$h(\theta)$约为1，将样本正确分类，那么z必须满足$z&gt;&gt;0$</li>
+<li>若$y=0$，希望$h(\theta)$约为0，将样本正确分类，那么z必须满足$z&lt;&lt;0$</li>
+</ol>
+<blockquote>
+<p>样本正确分类指的是：假设函数h(x)得到的结果和真实值y是一致的</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1g9jbtyk7aej31440metmd.jpg" alt=""></p>
+<p>总代价函数通常是对所有的训练样本进行求和，并且每个样本都会为总代价函数增加上式的最后一项（还有个系数$\frac{1}{m}$，系数忽略掉）</p>
+<ol>
+<li>如果$y=1$，目标函数中只有第一项起作用，得到了表达式<br>
+$$<br>
+y=1-log(1-\frac{1}{1+e^{-z}})<br>
+$$</li>
+</ol>
+<h3 id="支持向量机">支持向量机</h3>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9jc3uucfbj313u0lmne1.jpg" alt=""></p>
+<p>根据逻辑回归推导得到的支持向量机的公式<br>
+$$<br>
+min C\sum<sup>m_{i=1}[y</sup>{(i)}cost_1(\theta<sup>Tx</sup>{(i)})+(1-y<sup>{(i)})cost_0(\theta</sup>Tx<sup>{(i)}]+\frac{1}{2}\sum</sup>n_{i=1}\theta_{j}^2<br>
+$$<br>
+两个$cost$函数是上面提到的两条直线。</p>
+<p>对于逻辑回归，在目标函数中有两项：第一个是训练样本的代价，第二个是正则化项</p>
+<h3 id="大边界的直观解释">大边界的直观解释</h3>
+<p>下面是支持向量机的代价函数模型。</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9jce0d8luj31500l8akx.jpg" alt=""></p>
+<h4 id="SVM决策边界">SVM决策边界</h4>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1g9jch4a4r2j314e0ie493.jpg" alt=""></p>
+<p><strong>SVM鲁棒性</strong>：间隔最大化，是一种大间距分类器。</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1g9jck7m31aj31360iqdoz.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9jcntequoj30uo0f8q98.jpg" alt=""></p>
+<p>关于上图的解释：</p>
+<ol>
+<li>C太大的话，将是粉色的线</li>
+<li>C不是过大的话，将是黑色的线</li>
+</ol>
+<blockquote>
+<p>大间距分类器的描述，仅仅是从直观上给出了正则化参数C非常大的情形，C的作用类似于之前使用过的正则化参数$\frac{1}{\lambda}$</p>
+</blockquote>
+<ul>
+<li>C较大，可能导致过拟合，高方差</li>
+<li>C较小，可能导致低拟合，高偏差</li>
+</ul>
+<h4 id="硬间隔模型">硬间隔模型</h4>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9jut9jb7tj30pg0oodpu.jpg" alt=""></p>
+<h3 id="间隔和支持向量">间隔和支持向量</h3>
+<p>注释：本文中全部采用列向量$w=(w_1,w_2,…,w_n)$</p>
+<p>给定一个样本训练集$D={(x_1,y_1),(x_2,y_2),…,(x_m,y_m)}$，其中$y_i \in {-1,+1}$分类学习的基本思想就是：基于训练集D在样本空间上找到一个划分的超平面</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9jdjknd3gj30zv0u0u0x.jpg" alt=""></p>
+<p>上面红色的线是最好的。所产生的分类结果是最鲁棒的，最稳定的，泛化能力是最好的。</p>
+<p>划分超平面的的线性描述：<br>
+$$<br>
+w \cdot x+b=0<br>
+$$<br>
+$w$称之为法向量（看做是列向量），决定平面的方向；$b$是位移项，决定了超平面和原点之间的距离。</p>
+<p>空间中任意一点$x$到超平面$(w,b)$的距离是<br>
+$$<br>
+r=\frac{|w \cdot x + b|}{||w||}<br>
+$$<br>
+在$+$区域的点满足$y=+1$：<br>
+$$<br>
+w \cdot x_+ + b \geq1<br>
+$$<br>
+在$-$区域的点满足$y=-1$：<br>
+$$<br>
+w \cdot x_- + b \leq-1<br>
+$$<br>
+综合上面的两个式子有：<br>
+$$<br>
+y(w \cdot x_+ + b )-1 \geq0<br>
+$$</p>
+<h4 id="支持向量">支持向量</h4>
+<p>距离超平面最近的几个点（带上圆圈的几个点）称之为“支持向量support vector”，这个点到超平面到距离称之为“间隔margin”</p>
+<p>刚好在决策边界上的点（下图中带上圆圈的点）满足上式中的等号成立：<br>
+$$<br>
+y_i(w \cdot x + b) -1=0<br>
+$$</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1g9jkhlqhotj30n80i23zp.jpg" alt=""></p>
+<h4 id="间距margin">间距margin</h4>
+<p>求解间距<code>margin</code>就是求解向量$(x_±x_-)$在法向量上的投影<br>
+$$<br>
+\begin{align}margin&amp; = (x_±x_-)\cdot \frac{w}{||w||} \&amp; = \frac {(x_+ \cdot w-x_-\cdot w}{||w||}\end{align}<br>
+$$<br>
+决策边界上的正例表示为：<br>
+$$<br>
+y_i=+1 \rightarrow 1*(w\cdot x_+ +b) - 1 =0 \rightarrow w\cdot x_+ =1-b<br>
+$$<br>
+决策边界行的负例表示为：<br>
+$$<br>
+y_i=-1 \rightarrow -1*(w\cdot x_- +b) - 1 =0 \rightarrow w\cdot x_- =-1-b<br>
+$$<br>
+将两个结果带入<code>margin</code> 的表达式中<br>
+$$<br>
+margin=\frac {1-b-(-1-b)}{||w||}=\frac{2}{||w||}<br>
+$$</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9jee5offyj313c0u0e0c.jpg" alt=""></p>
+<h4 id="SVM的基本模型">SVM的基本模型</h4>
+<p>最大间隔化只需要将$||w||$最小化即可<br>
+$$<br>
+\min_{w,b}\frac{1}{2}||w||^2 \s.t.   y_i(w\cdot x_i+b) \geq 1 ;i=1,2,…,m<br>
+$$</p>
+<h3 id="SVM-对偶模型">SVM-对偶模型</h3>
+<h4 id="模型参数推导">模型参数推导</h4>
+<p>希望求解上面基本模型对应超平面的模型<br>
+$$<br>
+f(x)= w\cdot x+b<br>
+$$<br>
+利用拉格朗日乘子$\alpha_i$，改成拉格朗日函数<br>
+$$<br>
+L(w,b,\alpha)=\frac{1}{2}||w||<sup>2+\sum</sup>m_{i=1}\alpha_i(1-y_i(w^Tx_i+b))<br>
+$$<br>
+分别对$w,b$求导，可以得到<br>
+$$<br>
+w = \sum^m_{i=1}\alpha_iy_ix_i  \ 0 = \sum^m_{i=1}\alpha_iy_i<br>
+$$</p>
+<h4 id="对偶模型">对偶模型</h4>
+<p>原始问题是极大<br>
+$$<br>
+\min_{w,b}\max_{\alpha}L(w,b,\alpha)\rightarrow\max_{\alpha}\min_{w,b}L(w,b,\alpha)<br>
+$$<br>
+最大值问题：带入拉格朗日函数中，得到对偶问题（全部是关于$\alpha$系数）<br>
+$$<br>
+\max <em>{\alpha}\sum<sup>m_{i=1}\alpha_i-\frac{1}{2}\sum</sup>m</em>{i=1}\sum^m_{j=1}\alpha_i\alpha_jy_i y_jx_i^Tx_j \s.t. \sum^m_{i=1}\alpha_iy_i=0 \\alpha_i \geq0;i=1,2,…,m<br>
+$$<br>
+转换一下，变成最小值问题（上面的式子加上负号）：<br>
+$$<br>
+\min <em>{\alpha}\frac{1}{2}\sum<sup>m_{i=1}\sum</sup>m</em>{j=1}\alpha_i\alpha_jy_i y_jx_i^Tx_j - \sum^m_{i=1}\alpha_i\s.t. \sum^m_{i=1}\alpha_iy_i=0 \\alpha_i \geq0;i=1,2,…,m<br>
+$$</p>
+<p>那么超平面的模型<br>
+$$<br>
+\begin{align}f(x)&amp; = w\cdot x+b \&amp; = \sum<sup>m_{i=1}\alpha_iy_ix_i</sup>Tx+b \end{align}<br>
+$$</p>
+<h3 id="SMO算法">SMO算法</h3>
+<h4 id="思想">思想</h4>
+<p>SMO算法指的是<code>Sequential Minimal Optimization</code>，序列最小优化算法。算法的根本思路是：</p>
+<p>所有的$\alpha$满足$\sum^m_{i=1}\alpha_iy_i=0 $：</p>
+<ol>
+<li>先选取需要更新的变量$\alpha_i$和$\alpha_j$</li>
+<li>固定变量$\alpha_i$和$\alpha_j$以外的参数，求解更新后的变量$\alpha_i$和$\alpha_j$</li>
+</ol>
+<p>$$<br>
+\alpha_iy_i+\alpha_jy_j=c<br>
+$$</p>
+<p>其中$c$使得上式成立：<br>
+$$<br>
+c= \sum_{k \neq i,j}\alpha_ky_k<br>
+$$</p>
+<ol start="3">
+<li>将变量$\alpha_i$和$\alpha_j$的其中一个用另一个来表示，得到关于$\alpha_i$的单变量二次规划问题，就可以求出来变量$\alpha_i$</li>
+</ol>
+<h3 id="软间隔最大化">软间隔最大化</h3>
+<p>上面的结论和推导都是针对的线性可分的数据。线性不可分数据意味着某些样本点$(x_i,y_i)$不再满足函数间隔大于等于1的约束条件，比如下图中的红圈中的点，故引入了松弛变量$\xi_i \geq0$，满足：<br>
+$$<br>
+y_i(w \cdot x_i +b) +\xi_i \geq 1 \ y_i(w \cdot x_i +b) \geq 1-\xi_i<br>
+$$<br>
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9js3ob78mj316a0u0npd.jpg" alt=""></p>
+<p>因此，<strong>目标函数</strong>由原来的$\frac{1}{2}||w||^2$变成了<br>
+$$<br>
+\frac{1}{2}||w||<sup>2+C\sum</sup>N_{i=1}\xi _i<br>
+$$<br>
+其中$C\geq0$是惩罚项参数，C值越大对误分类的越大，C越小对误分类的惩罚越小。</p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/12/03/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B07.html">吴恩达笔记7</a></p>
+  <p><span>发布时间:</span>2019年12月03日 - 23:12</p>
+  <p><span>原始链接:</span><a href="/2019/12/03/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B07.html" title="吴恩达笔记7">http://www.renpeter.cn/2019/12/03/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B07.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2019/12/03/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B07.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/SVM/" rel="tag"># SVM</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/02/TF-char6.html" rel="next" title="TF-char6">
+                <i class="fa fa-chevron-left"></i> TF-char6
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/04/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B08.html" rel="prev" title="吴恩达笔记8-KMeans">
+                吴恩达笔记8-KMeans <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#优化目标Optimization-Objectives"><span class="nav-number">1.</span> <span class="nav-text">优化目标Optimization Objectives</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#支持向量机"><span class="nav-number">2.</span> <span class="nav-text">支持向量机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#大边界的直观解释"><span class="nav-number">3.</span> <span class="nav-text">大边界的直观解释</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SVM决策边界"><span class="nav-number">3.1.</span> <span class="nav-text">SVM决策边界</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#硬间隔模型"><span class="nav-number">3.2.</span> <span class="nav-text">硬间隔模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#间隔和支持向量"><span class="nav-number">4.</span> <span class="nav-text">间隔和支持向量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#支持向量"><span class="nav-number">4.1.</span> <span class="nav-text">支持向量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#间距margin"><span class="nav-number">4.2.</span> <span class="nav-text">间距margin</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SVM的基本模型"><span class="nav-number">4.3.</span> <span class="nav-text">SVM的基本模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SVM-对偶模型"><span class="nav-number">5.</span> <span class="nav-text">SVM-对偶模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#模型参数推导"><span class="nav-number">5.1.</span> <span class="nav-text">模型参数推导</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对偶模型"><span class="nav-number">5.2.</span> <span class="nav-text">对偶模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SMO算法"><span class="nav-number">6.</span> <span class="nav-text">SMO算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#思想"><span class="nav-number">6.1.</span> <span class="nav-text">思想</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#软间隔最大化"><span class="nav-number">7.</span> <span class="nav-text">软间隔最大化</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2019/12/03/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B07.html';
+          this.page.identifier = '2019/12/03/吴恩达笔记7.html';
+          this.page.title = '吴恩达笔记7';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

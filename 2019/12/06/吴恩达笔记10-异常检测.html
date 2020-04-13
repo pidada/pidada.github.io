@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="异常检测," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Week9-异常检测  “黑中有白，白中有黑，没有绝对的白，也没有绝对的黑，黑可衬白，白可映黑。万物皆可转换”。  本文中对异常检测算法做了小结，主要包含：  问题产生 高斯分布 算法使用场景 八种无监督异常检测技术 异常检测和监督学习对比 特征选择">
+<meta name="keywords" content="异常检测">
+<meta property="og:type" content="article">
+<meta property="og:title" content="吴恩达笔记10-异常检测">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2019&#x2F;12&#x2F;06&#x2F;%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B010-%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="Week9-异常检测  “黑中有白，白中有黑，没有绝对的白，也没有绝对的黑，黑可衬白，白可映黑。万物皆可转换”。  本文中对异常检测算法做了小结，主要包含：  问题产生 高斯分布 算法使用场景 八种无监督异常检测技术 异常检测和监督学习对比 特征选择">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9mqx90uuxj30zu0jsgvo.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9mratv2bzj30ye0ja44a.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9mrpxsqacj30vu0gg48h.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9mrvm1gtej31140eadlz.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9msq0bk28j30nk0g4k28.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9msjnck6dj315e0n8k4a.jpg">
+<meta property="og:updated_time" content="2019-12-06T03:50:43.171Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9mqx90uuxj30zu0jsgvo.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2019/12/06/吴恩达笔记10-异常检测.html"/>
+
+
+
+
+
+  <title>吴恩达笔记10-异常检测 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2019/12/06/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B010-%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">吴恩达笔记10-异常检测</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-12-06T11:35:39+08:00">
+                2019-12-6
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/%E5%90%B4%E6%81%A9%E8%BE%BE/" itemprop="url" rel="index">
+                    <span itemprop="name">吴恩达</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/12/06/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B010-%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/12/06/吴恩达笔记10-异常检测.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Week9-异常检测</p>
+<blockquote>
+<p>“黑中有白，白中有黑，没有绝对的白，也没有绝对的黑，黑可衬白，白可映黑。万物皆可转换”。</p>
+</blockquote>
+<p>本文中对异常检测算法做了小结，主要包含：</p>
+<ol>
+<li>问题产生</li>
+<li>高斯分布</li>
+<li>算法使用场景</li>
+<li>八种无监督异常检测技术</li>
+<li>异常检测和监督学习对比</li>
+<li>特征选择</li>
+</ol>
+<a id="more"></a>
+<h3 id="异常检测Novelty-Detection">异常检测Novelty Detection</h3>
+<blockquote>
+<p>异常是相对于其他观测数据而言有明显偏离的，以至于怀疑它与正常点不属于同一个数据分布。</p>
+</blockquote>
+<p>异常检测是一种<strong>用于识别不符合预期行为的异常模式的技术</strong>，又称之为异常值检测。在商业中也有许多应用，如网络入侵检测（识别可能发出黑客攻击的网络流量中的特殊模式）、系统健康性监测、信用卡交易欺诈检测、设备故障检测、风险识别等</p>
+<h4 id="问题动机">问题动机</h4>
+<p>异常检测主要是运用于非监督学习的算法。问题的引出：通过飞机的检测开始。</p>
+<blockquote>
+<p>检测飞机的引擎制造商生产了一批飞机引擎，测试了其中的一些特征变量，比如引擎运转时产生的热量，或者引擎的振动等，假设有m个引擎，$x<sup>{(1)},x</sup>{(2)},…,x^{(m)}$。绘制出如下图表：</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1g9mqx90uuxj30zu0jsgvo.jpg" alt=""></p>
+<p>对于给定的数据集，需要检测$x_{test}$是不是异常的，即这个测试数据不属于这组数据的几率是多少。从上图看出，在蓝色圈内属于该组的概率高，越是偏远的概率，属于该组的可能性就越低。<br>
+$$<br>
+\text { if } \quad p(x)\left{\begin{array}{ll}{&lt;\varepsilon} &amp; {\text { anomaly }} \ {&gt;=\varepsilon} &amp; {\text { normal }}\end{array}\right.<br>
+$$<br>
+另外两个异常检测的应用例子是</p>
+<ul>
+<li>识别欺骗行为，通过用户多久登陆一次、访问过的页面、发布帖子的数量等建立模型，通过模型来识别那些不符合该模型的用户。</li>
+<li>检测数据中心的使用情况：内存使用、被访问的磁盘数量、CPU负载等</li>
+</ul>
+<h4 id="高斯分布">高斯分布</h4>
+<p>高斯分布也叫正态分布。分布满足：<br>
+$$<br>
+x \sim N\left(\mu, \sigma^{2}\right)<br>
+$$<br>
+概率密度函数为<br>
+$$<br>
+p\left(x, \mu, \sigma^{2}\right)=\frac{1}{\sqrt{2 \pi} \sigma} \exp \left(-\frac{(x-\mu)^{2}}{2 \sigma^{2}}\right)<br>
+$$<br>
+均值$\mu$为<br>
+$$<br>
+\mu=\frac{1}{m} \sum_{i=1}^{m} x^{(i)}<br>
+$$<br>
+方差$\sigma^2$为<br>
+$$<br>
+\sigma^{2}=\frac{1}{m} \sum_{i=1}<sup>{m}\left(x</sup>{(i)}-\mu\right)^{2}<br>
+$$<br>
+<strong>高斯分布的样例为</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9mratv2bzj30ye0ja44a.jpg" alt=""></p>
+<p>当均值$\mu$相同的时候</p>
+<ul>
+<li>方差的平方越大，图形是矮胖的</li>
+<li>方差的平方越小，图形是瘦高型的</li>
+</ul>
+<h4 id="使用场景">使用场景</h4>
+<p>异常检测算法的使用场景一般是三种：</p>
+<ol>
+<li>在做特征工程的时候需要<strong>对异常的数据做过滤</strong>，防止对归一化等处理的结果产生影响</li>
+<li>对<strong>没有标记输出</strong>的特征数据<strong>做筛选</strong>，找出异常的数据</li>
+<li>对有标记输出的特征数据做二分类时，由于某些类别的训练<strong>样本非常少，类别严重不平衡</strong>，此时也可以考虑用非监督的异常点检测算法来做</li>
+</ol>
+<h4 id="算法">算法</h4>
+<p>算法的具体过程是</p>
+<ol>
+<li>对于给定的数据集$x^{(1)}, x^{(2)}, \ldots, x<sup>{(m)}$，计算每个特征的$\mu;\sigma</sup>2$<br>
+$$<br>
+\mu_j=\frac{1}{m} \sum_{i=1}^{m} x^{(i)}_j<br>
+$$</li>
+</ol>
+<p>$$<br>
+\sigma^{2}<em>j=\frac{1}{m} \sum</em>{i=1}<sup>{m}\left(x</sup>{(i)}_j-\mu_j\right)^{2}<br>
+$$</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9mrpxsqacj30vu0gg48h.jpg" alt=""></p>
+<ol start="2">
+<li>利用高斯分布进行计算$p(x)$</li>
+</ol>
+<p>$$<br>
+p(x)=\Pi<sup>n_{j=1}p(x_j;\mu_j;\sigma</sup>2_j)=\Pi^n_{j=1}\frac{1}{\sqrt{2 \pi} \sigma_j} \exp \left(-\frac{(x_j-\mu_j)^{2}}{2 \sigma^{2}_j}\right)<br>
+$$</p>
+<ol start="3">
+<li>两个特征的训练集及特征非部分情况</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9mrvm1gtej31140eadlz.jpg" alt=""></p>
+<ol start="4">
+<li>三维图表示的是密度函数，$z$轴为根据两个特征的值估计的$p(x)$的值</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1g9msq0bk28j30nk0g4k28.jpg" alt=""></p>
+<p>当 $p(x) &gt; \varepsilon$时候，预测是正常数据， 否则为异常</p>
+<h4 id="异常算法的设计">异常算法的设计</h4>
+<blockquote>
+<p>当我们开发一个异常检测系统时，从带标记（异常或正常）的数据着手</p>
+<ul>
+<li>从其中选择一部分正常数据用于构建训练集</li>
+<li>然后用剩下的正常数据和异常数据混合的数据构成交叉检验集和测试集。</li>
+</ul>
+</blockquote>
+<h3 id="八种无监督异常检测技术">八种无监督异常检测技术</h3>
+<ol>
+<li>基于统计的异常检测技术
+<ol>
+<li>MA滑动平均法</li>
+<li>3—Sigma（拉依达准则）</li>
+</ol>
+</li>
+<li>基于密度的异常检测</li>
+<li>基于聚类的异常检测</li>
+<li>基于K-Means聚类的异常检测</li>
+<li>One Class SVM的异常检测</li>
+<li>Isolation Forest的异常检测</li>
+<li>PCA+MD的异常检测</li>
+<li>AutoEncoder异常检测</li>
+</ol>
+<h3 id="异常检测和监督学习对比">异常检测和监督学习对比</h3>
+<p>异常检测中采用的也是带标记的数据，和监督学习类似。二者对比为：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">异常检测</th>
+<th style="text-align:left">监督学习</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">非常少量的正向类（异常数据 $y=1$）,<br />大量的负向类（$y=0$）</td>
+<td style="text-align:left">同时有大量的正向类和负向类</td>
+</tr>
+<tr>
+<td style="text-align:left">许多不同种类的异常，非常难。根据非常 少量的正向类数据来训练算法。</td>
+<td style="text-align:left">有足够多的正向类实例，足够用于训练 算法，未来遇到的正向类实例可能与训练集中的非常近似。</td>
+</tr>
+<tr>
+<td style="text-align:left">未来遇到的异常可能与已掌握的异常、非常的不同。</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">例如： 欺诈行为检测 生产（例如飞机引擎）检测数据中心的计算机运行状况</td>
+<td style="text-align:left">例如：邮件过滤器 天气预报 肿瘤分类</td>
+</tr>
+</tbody>
+</table>
+<p>当<strong>正样本的数量很少</strong>，甚至有时候是0，即出现了太多没见过的不同的异常类型，对于这些问题，通常应该使用的算法就是异常检测算法。</p>
+<h3 id="特征选择">特征选择</h3>
+<p>异常检测算法是基于高斯分布的。当然不满足高斯分布也能处理，但是最好转成高斯分布。误差分析是特征选择中很重要的点。</p>
+<p>有些异常数据可能出现较高的$p(x)$的值，被算法当做是正常数据。通过误差分析，增加新的特征得到新的算法，帮助我们更好地进行异常检测。</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1g9msjnck6dj315e0n8k4a.jpg" alt=""></p>
+<p>新特征获取：通过原有特征进行组合，得到新的特征</p>
+<h3 id="参考资料">参考资料</h3>
+<ol>
+<li>李航-统计学习方法</li>
+<li><a href="https://www.csuldw.com/2019/03/24/2019-03-24-anomaly-detection-introduction/" target="_blank" rel="noopener">八种无监督异常检测技术</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/12/06/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B010-%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B.html">吴恩达笔记10-异常检测</a></p>
+  <p><span>发布时间:</span>2019年12月06日 - 11:12</p>
+  <p><span>原始链接:</span><a href="/2019/12/06/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B010-%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B.html" title="吴恩达笔记10-异常检测">http://www.renpeter.cn/2019/12/06/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B010-%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2019/12/06/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B010-%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B/" rel="tag"># 异常检测</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/05/%E5%8F%98%E5%A4%A9.html" rel="next" title="变天">
+                <i class="fa fa-chevron-left"></i> 变天
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/08/random%E4%BD%BF%E7%94%A8.html" rel="prev" title="random使用">
+                random使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#异常检测Novelty-Detection"><span class="nav-number">1.</span> <span class="nav-text">异常检测Novelty Detection</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#问题动机"><span class="nav-number">1.1.</span> <span class="nav-text">问题动机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高斯分布"><span class="nav-number">1.2.</span> <span class="nav-text">高斯分布</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用场景"><span class="nav-number">1.3.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法"><span class="nav-number">1.4.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#异常算法的设计"><span class="nav-number">1.5.</span> <span class="nav-text">异常算法的设计</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#八种无监督异常检测技术"><span class="nav-number">2.</span> <span class="nav-text">八种无监督异常检测技术</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异常检测和监督学习对比"><span class="nav-number">3.</span> <span class="nav-text">异常检测和监督学习对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特征选择"><span class="nav-number">4.</span> <span class="nav-text">特征选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2019/12/06/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B010-%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B.html';
+          this.page.identifier = '2019/12/06/吴恩达笔记10-异常检测.html';
+          this.page.title = '吴恩达笔记10-异常检测';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

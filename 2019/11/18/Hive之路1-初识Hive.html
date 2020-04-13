@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="sql,hadoop,hive," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Hive之路1-初识Hive Hive简介 什么是Hive  Hive是由Facebook实现并且开源 基于Hadoop的开源的数据仓工具，完成ETL（extract transform load），报表及数据分析等 Hive能够将结构化的数据映射称为一张表 Hive提供HQL（Hive SQL）的查询功能 底层的数据是存储在HDFS之上，使用于离线的批量数据计算 Hive的本质是将SQL语句转换">
+<meta name="keywords" content="sql,hadoop,hive">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hive之路1-初识Hive">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2019&#x2F;11&#x2F;18&#x2F;hive%E4%B9%8B%E8%B7%AF1-%E5%88%9D%E8%AF%86Hive.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="Hive之路1-初识Hive Hive简介 什么是Hive  Hive是由Facebook实现并且开源 基于Hadoop的开源的数据仓工具，完成ETL（extract transform load），报表及数据分析等 Hive能够将结构化的数据映射称为一张表 Hive提供HQL（Hive SQL）的查询功能 底层的数据是存储在HDFS之上，使用于离线的批量数据计算 Hive的本质是将SQL语句转换">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;18&#x2F;M6AK54.png">
+<meta property="og:updated_time" content="2019-11-18T08:48:54.724Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;18&#x2F;M6AK54.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2019/11/18/hive之路1-初识Hive.html"/>
+
+
+
+
+
+  <title>Hive之路1-初识Hive | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2019/11/18/hive%E4%B9%8B%E8%B7%AF1-%E5%88%9D%E8%AF%86Hive.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Hive之路1-初识Hive</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-11-18T15:08:24+08:00">
+                2019-11-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/hive/" itemprop="url" rel="index">
+                    <span itemprop="name">hive</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/11/18/hive%E4%B9%8B%E8%B7%AF1-%E5%88%9D%E8%AF%86Hive.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/11/18/hive之路1-初识Hive.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="Hive之路1-初识Hive">Hive之路1-初识Hive</h3>
+<h4 id="Hive简介">Hive简介</h4>
+<h5 id="什么是Hive">什么是Hive</h5>
+<ol>
+<li><code>Hive</code>是由<code>Facebook</code>实现并且开源</li>
+<li>基于<code>Hadoop</code>的开源的数据仓工具，完成<code>ETL（extract transform load）</code>，报表及数据分析等</li>
+<li><code>Hive</code>能够将结构化的数据映射称为一张表</li>
+<li><code>Hive</code>提供<code>HQL（Hive SQL）</code>的查询功能</li>
+<li>底层的数据是存储在<code>HDFS</code>之上，使用于离线的批量数据计算</li>
+<li><code>Hive</code>的本质是将<code>SQL</code>语句转换成<code>MapReduce</code>任务进行运行</li>
+<li><code>LLAP（Live Long And Process）</code>，使<code>Hive</code>实现内存计算</li>
+</ol>
+<a id="more"></a>
+<blockquote>
+<p>Hive 依赖于 HDFS 存储数据，Hive 将 HQL 转换成 MapReduce 执行，所以说 Hive 是基于 Hadoop 的一个数据仓库工具，实质就是一款基于 HDFS 的MapReduce 计算框架，对存储在 HDFS 中的数据进行分析和管理</p>
+</blockquote>
+<hr>
+<h5 id="为什么使用Hive">为什么使用Hive</h5>
+<ol>
+<li>更友好的接口：操作接口采用类 SQL 的语法，提供快速开发的能力</li>
+<li>更低的学习成本：避免了写 MapReduce，减少开发人员的学习成本</li>
+<li>更好的扩展性：可自由扩展集群规模而无需重启服务，还支持用户自定义函数</li>
+</ol>
+<h4 id="Hive-内置数据格式">Hive 内置数据格式</h4>
+<ul>
+<li>逗号和Tab字段分隔的文本文件</li>
+<li>Apache Parquet文件</li>
+<li>Apache ORC文件</li>
+<li>其他格式</li>
+</ul>
+<h4 id="Hive内置函数">Hive内置函数</h4>
+<ol>
+<li>标准的SQL函数</li>
+<li>用户自定义函数UDF</li>
+<li>用户自定义聚合函数UDAF</li>
+<li>用户自定义表函数UDTF</li>
+</ol>
+<hr>
+<h4 id="Hive特点">Hive特点</h4>
+<p><strong>优点</strong></p>
+<ol>
+<li>
+<p>可扩展性、横向扩展</p>
+<p>Hive可以自由地扩展集群的规模，一般情况下不需要重启服务；</p>
+</li>
+<li>
+<p>延展性</p>
+<p>Hive支持自定义函数，用户能够根据自己的要求来实现自己的函数</p>
+</li>
+<li>
+<p>良好的容错性</p>
+<p>即使部分节点出现问题，SQL语句仍可以正常运行</p>
+</li>
+</ol>
+<p><strong>缺点</strong></p>
+<ol>
+<li>不支持记录级别的增删改操作，但是用户可以通过查询生成新的表格</li>
+<li>Hive的查询延时很严重，因为 MapReduce Job 的启动过程消耗很长时间，所以不能用在交互查询系统中</li>
+<li>Hive不支持事务功能，没有增删改，主要是用来做OLAP（联机分析处理），而不是OLTP（联机事务处理）</li>
+</ol>
+<hr>
+<h4 id="Hive架构">Hive架构</h4>
+<p><img src="https://s2.ax1x.com/2019/11/18/M6AK54.png" alt="M6AK54.png"></p>
+<p>架构图分为3大块：</p>
+<h5 id="用户接口">用户接口</h5>
+<p>Hive中有3种访问方式</p>
+<ol>
+<li>CLI ：command line interface，命令行接口，采用交互式使用Hive命令和Hive进行交互，最常用</li>
+<li>JDBC/ODBC：客户端中执行，需要指定相应的运行节点，并在节点上启动Hive Server</li>
+<li>Web UI：通过浏览器来访问</li>
+</ol>
+<h5 id="元数据存储系统">元数据存储系统</h5>
+<blockquote>
+<p><code>Metastore</code>元数据就是存储在Hive中的数据的描述信息，包含：</p>
+<ul>
+<li>表的名字</li>
+<li>表的列和分区及属性</li>
+<li>表的属性（内部表和外部表）</li>
+<li>表的数据所在的目录等</li>
+</ul>
+</blockquote>
+<p><code>Metastore</code>元数据<strong>默认是存储在关系型的Derby数据库</strong>中，管理极度不方便，且不适合多用户操作</p>
+<p>解决方案：采用自建的<code>MySQL</code>数据库。Hive和MySQL之间通过MetaStore服务进行交互。</p>
+<h5 id="Driver">Driver</h5>
+<blockquote>
+<p>Driver中包含了各种驱动器Driver，编译器Compiler，优化器Optimizer，执行器等；</p>
+<p>Driver组件完成 HQL 查询语句从词法分析，语法分析，编译，优化，以及生成逻辑执行 计划的生成。最终的查询计划保存在HDFS中，并且由mapreduce调用执行，转成mapreduce的作业。</p>
+</blockquote>
+<p>Hive的核心是驱动引擎， 驱动引擎由四部分组成：</p>
+<ul>
+<li>
+<p>解释器：解释器的作用是将 HiveSQL 语句转换为抽象语法树（AST）</p>
+</li>
+<li>
+<p>编译器：编译器是将语法树编译为逻辑执行计划</p>
+</li>
+<li>
+<p>优化器：优化器是对逻辑执行计划进行优化</p>
+</li>
+<li>
+<p>执行器：执行器是调用底层的运行框架执行逻辑执行计划</p>
+</li>
+</ul>
+<hr>
+<h4 id="Hive元数据连接模式">Hive元数据连接模式</h4>
+<ul>
+<li>单用户模式：默认是存储在Derby中，只支持一个会话连接，适合简单的测试，实际生产环境中不适用</li>
+<li>多用户模式：为了支持多会话模式，需要一个独立的元数据库，一般采用mysql</li>
+<li>远程模式</li>
+</ul>
+<h4 id="Hive执行流程">Hive执行流程</h4>
+<ol>
+<li>Hive SQL通过命令行或者客户端进行提交</li>
+<li>经过编译器，运用元数据进行检测和语法分析，生成一个逻辑方案</li>
+<li>通过优化处理，产生一个MapReduce作业进行处理</li>
+</ol>
+<h4 id="Hive数据组织">Hive数据组织</h4>
+<blockquote>
+<p>Hive中的存储结构包含<code>数据库、表、视图、分和表数据</code>等。数据库，表，分区等等都对 应 HDFS 上的一个目录。表数据对应 HDFS 对应目录下的文件。</p>
+</blockquote>
+<ol>
+<li>
+<p>Hive 的中数据都是存储在HDFS中，没有专门的数据存储格式</p>
+</li>
+<li>
+<p>在创建表的时候需要指定数据中的行列分隔符：</p>
+<ul>
+<li>
+<p>默认列分隔符：控制符<code>Ctrl + A</code></p>
+</li>
+<li>
+<p>默认行分隔符：换行符<code>\n</code></p>
+</li>
+</ul>
+</li>
+<li>
+<p>Hive中包含的数据模型</p>
+<ul>
+<li>
+<p><strong>database</strong>：在 HDFS 中表现为<code>${hive.metastore.warehouse.dir}</code>目录下一个文件夹</p>
+</li>
+<li>
+<p><strong>table</strong>：在 HDFS 中表现所属 database 目录下一个文件夹</p>
+</li>
+<li>
+<p><strong>external table</strong>：与 table 类似，不过其数据存放位置可以指定<strong>任意 HDFS 目录路径</strong></p>
+</li>
+<li>
+<p><strong>partition</strong>：在 HDFS 中表现为 table 目录下的子目录</p>
+</li>
+<li>
+<p><strong>bucket</strong>：在 HDFS 中表现为同一个表目录或者分区目录下根据某个字段的值进行 hash 散 列之后的多个文件</p>
+</li>
+<li>
+<p><strong>view</strong>：与传统数据库类似，只读，基于基本表创建</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Hive中的<strong>元数据存储在RDMBS</strong>中，除元数据之外的其他数据都是基于HDFS存</p>
+</li>
+</ol>
+<h4 id="Hive中的表">Hive中的表</h4>
+<p>Hive中的表分为：<strong>内部表、外部表、分区表和桶表</strong></p>
+<p><strong>内部表和外部表的使用选择：</strong></p>
+<ol>
+<li>多数情况下，二者区别不明显；如果所有的数据都在Hive中进行处理，选择内部表；如果是Hive和其他工具的结合使用，选择外部表</li>
+<li>使用外部表访问存储在HDFS上的数据，通过Hive转换数据并且存到内部表中</li>
+</ol>
+<p><strong>分区表和分桶表：</strong></p>
+<ol>
+<li>Hive数据表根据字段进行分区操作，细化数据管理，加快查询数据</li>
+<li>表和分区可以进一步划分成<code>Buckets</code></li>
+<li>分区表是手动添加分区的，Hive是读模式，对添加进分区的数据不做模式校验</li>
+<li>分桶表中的数据是按照某些字段进行hash散列行成的文件，数据的准确性更高</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/11/18/hive%E4%B9%8B%E8%B7%AF1-%E5%88%9D%E8%AF%86Hive.html">Hive之路1-初识Hive</a></p>
+  <p><span>发布时间:</span>2019年11月18日 - 15:11</p>
+  <p><span>原始链接:</span><a href="/2019/11/18/hive%E4%B9%8B%E8%B7%AF1-%E5%88%9D%E8%AF%86Hive.html" title="Hive之路1-初识Hive">http://www.renpeter.cn/2019/11/18/hive%E4%B9%8B%E8%B7%AF1-%E5%88%9D%E8%AF%86Hive.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2019/11/18/hive%E4%B9%8B%E8%B7%AF1-%E5%88%9D%E8%AF%86Hive.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/sql/" rel="tag"># sql</a>
+          
+            <a href="/tags/hadoop/" rel="tag"># hadoop</a>
+          
+            <a href="/tags/hive/" rel="tag"># hive</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/17/hadoop%E4%B9%8B%E6%97%851.html" rel="next" title="hadoop之旅1">
+                <i class="fa fa-chevron-left"></i> hadoop之旅1
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/18/sqoop%E4%B9%8B%E6%97%851-%E5%88%9D%E8%AF%86%E4%B8%8E%E5%AE%89%E8%A3%85.html" rel="prev" title="sqoop之旅1-初识与安装">
+                sqoop之旅1-初识与安装 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hive之路1-初识Hive"><span class="nav-number">1.</span> <span class="nav-text">Hive之路1-初识Hive</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Hive简介"><span class="nav-number">1.1.</span> <span class="nav-text">Hive简介</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#什么是Hive"><span class="nav-number">1.1.1.</span> <span class="nav-text">什么是Hive</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#为什么使用Hive"><span class="nav-number">1.1.2.</span> <span class="nav-text">为什么使用Hive</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hive-内置数据格式"><span class="nav-number">1.2.</span> <span class="nav-text">Hive 内置数据格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hive内置函数"><span class="nav-number">1.3.</span> <span class="nav-text">Hive内置函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hive特点"><span class="nav-number">1.4.</span> <span class="nav-text">Hive特点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hive架构"><span class="nav-number">1.5.</span> <span class="nav-text">Hive架构</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#用户接口"><span class="nav-number">1.5.1.</span> <span class="nav-text">用户接口</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#元数据存储系统"><span class="nav-number">1.5.2.</span> <span class="nav-text">元数据存储系统</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Driver"><span class="nav-number">1.5.3.</span> <span class="nav-text">Driver</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hive元数据连接模式"><span class="nav-number">1.6.</span> <span class="nav-text">Hive元数据连接模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hive执行流程"><span class="nav-number">1.7.</span> <span class="nav-text">Hive执行流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hive数据组织"><span class="nav-number">1.8.</span> <span class="nav-text">Hive数据组织</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hive中的表"><span class="nav-number">1.9.</span> <span class="nav-text">Hive中的表</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2019/11/18/hive%E4%B9%8B%E8%B7%AF1-%E5%88%9D%E8%AF%86Hive.html';
+          this.page.identifier = '2019/11/18/hive之路1-初识Hive.html';
+          this.page.title = 'Hive之路1-初识Hive';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

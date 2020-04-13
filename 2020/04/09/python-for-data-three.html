@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="透视表,groupby," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="第十章主要讲解的数据聚合与分组操作。对数据集进行分类，并在每一个组上应用一个聚合函数或者转换函数，是常见的数据分析的工作。 本文结合pandas的官方文档整理而来。">
+<meta name="keywords" content="透视表,groupby">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python-for-data-groupby使用和透视表">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2020&#x2F;04&#x2F;09&#x2F;python-for-data-three.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="第十章主要讲解的数据聚合与分组操作。对数据集进行分类，并在每一个组上应用一个聚合函数或者转换函数，是常见的数据分析的工作。 本文结合pandas的官方文档整理而来。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;00831rSTgy1gdn7v2gflaj30ue036dg8.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;00831rSTgy1gdn73d3tyqj30xc0j2wi8.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;00831rSTgy1gdnjzbibl3j30rw0v00x0.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;00831rSTgy1gdnkaxghsej30w80ja77e.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;00831rSTgy1gdnps8f6fjj30ta0a4405.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;00831rSTgy1gdnkcc7xxyj30k00i20uh.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;00831rSTgy1gdnkgyj62mj30ms0ic405.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;00831rSTgy1gdnkr8ugmtj30xx0u00xe.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;00831rSTgy1gdnkscdkbrj30x80hemzy.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;00831rSTgy1gdnkxdjprbj312c0jg784.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;00831rSTgy1gdnpidjc0cj30zi0pagok.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;00831rSTgy1gdnpjsfjq4j30ns092wf4.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;00831rSTgy1gdnqbg89o6j30ff0esmy5.jpg">
+<meta property="og:updated_time" content="2020-04-10T08:38:51.930Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;00831rSTgy1gdn7v2gflaj30ue036dg8.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2020/04/09/python-for-data-three.html"/>
+
+
+
+
+
+  <title>python-for-data-groupby使用和透视表 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2020/04/09/python-for-data-three.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">python-for-data-groupby使用和透视表</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-04-09T19:18:14+08:00">
+                2020-4-9
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/%E5%88%A9%E7%94%A8Python%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" itemprop="url" rel="index">
+                    <span itemprop="name">利用Python进行数据分析</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/04/09/python-for-data-three.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/04/09/python-for-data-three.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  4
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>第十章</strong>主要讲解的<strong>数据聚合与分组操作</strong>。对数据集进行分类，并在每一个组上应用一个聚合函数或者转换函数，是常见的数据分析的工作。</p>
+<p>本文结合<code>pandas</code>的<a href="https://pandas.pydata.org/pandas-docs/stable/user_guide/groupby.html" target="_blank" rel="noopener">官方文档</a>整理而来。</p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTgy1gdn7v2gflaj30ue036dg8.jpg" alt=""></p>
+<a id="more"></a>
+<h3 id="groupby机制">groupby机制</h3>
+<p>组操作的术语：拆分-应用-联合<code>split-apply-combine</code>。分离是在特定的轴上进行的，axis=0表示行，axis=1表示列。</p>
+<ul>
+<li><strong>Splitting</strong> the data into groups based on some criteria.</li>
+<li><strong>Applying</strong> a function to each group independently.</li>
+<li><strong>Combining</strong> the results into a data structure.</li>
+</ul>
+<p><strong>分组聚合示意图</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTgy1gdn73d3tyqj30xc0j2wi8.jpg" alt=""></p>
+<h3 id="groupby参数">groupby参数</h3>
+<p>Parameters参数</p>
+<ul>
+<li>
+<p>**by：**mapping, function, label, or list of labels</p>
+<p>Used to determine the groups for the groupby. If <code>by</code> is a function, it’s called on each value of the object’s index. If a dict or Series is passed, the Series or dict VALUES will be used to determine the groups (the Series’ values are first aligned; see <code>.align()</code> method). If an ndarray is passed, the values are used as-is determine the groups. A label or list of labels may be passed to group by the columns in <code>self</code>. Notice that a tuple is interpreted as a (single) key.</p>
+</li>
+<li>
+<p><strong>axis：</strong>{0 or ‘index’, 1 or ‘columns’}, default 0</p>
+<p>Split along rows (0) or columns (1).</p>
+</li>
+<li>
+<p><strong>level</strong>：int, level name, or sequence of such, default None</p>
+<p>If the axis is a MultiIndex (hierarchical), group by a particular level or levels.</p>
+</li>
+<li>
+<p><strong>as_index</strong>：bool, default True</p>
+<p>For aggregated output, return object with group labels as the index. Only relevant for DataFrame input. as_index=False is effectively “SQL-style” grouped output.</p>
+</li>
+<li>
+<p><strong>sort</strong>：bool, default True</p>
+<p>Sort group keys. Get better performance by turning this off. Note this does not influence the order of observations within each group. Groupby preserves the order of rows within each group.</p>
+</li>
+<li>
+<p><strong>group_keys</strong>：bool, default True</p>
+<p>When calling apply, add group keys to index to identify pieces.</p>
+</li>
+<li>
+<p><strong>squeeze</strong>：bool, default False</p>
+<p>Reduce the dimensionality of the return type if possible, otherwise return a consistent type.</p>
+</li>
+<li>
+<p><strong>observed</strong>：bool, default False</p>
+<p>This only applies if any of the groupers are Categoricals. If True: only show observed values for categorical groupers. If False: show all values for categorical groupers.<em>New in version 0.23.0.</em></p>
+</li>
+</ul>
+<p>Returns返回值</p>
+<ul>
+<li>
+<p>DataFrameGroupBy</p>
+<p>Returns a groupby object that contains information about the groups.</p>
+</li>
+</ul>
+<h4 id="分组键">分组键</h4>
+<p>分组键可以是多种形式，并且键不一定是完全相同的类型：</p>
+<ol>
+<li>与需要分组的轴向长度一致的值列表或者值数组</li>
+<li><code>DataFrame</code>列名的值</li>
+<li>可以在轴索引或索引中的单个标签上调用的函数</li>
+<li>可以将分组轴向上的值和分组名称相匹配的字典或者<code>Series</code></li>
+</ol>
+<h4 id="特点">特点</h4>
+<ul>
+<li>分组键可以是正确长度的任何数组</li>
+<li>通用的groupby方法是size，返回的是一个包含组大小信息的Series</li>
+<li>分组中的任何缺失值将会被排除在外</li>
+<li>默认情况下，groupby是在axis=0情况下进行的</li>
+</ul>
+<p><strong>语法糖</strong>现象：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">df.groupby(<span class="string">'key1'</span>)[<span class="string">'data1'</span>]</span><br><span class="line"></span><br><span class="line">df[<span class="string">'data1'</span>].groupby(df[<span class="string">'key1'</span>])</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果传递的是列表或者数组，返回的是分组的<code>DataFrame</code>；如果传递的是单个列名，则返回的是<code>Series</code>。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">df.groupby([<span class="string">'key1'</span>,<span class="string">'key2'</span>])[[<span class="string">'data2'</span>]].mean()  <span class="comment"># 传递列表形式</span></span><br><span class="line"></span><br><span class="line">df.groupby([<span class="string">'key1'</span>,<span class="string">'ley2'</span>])[<span class="string">'data2'</span>].mean()   <span class="comment"># 传递的是单个列名</span></span><br></pre></td></tr></table></figure>
+<h3 id="数据聚合">数据聚合</h3>
+<p><strong>聚合指的是所有根据数组产生标量值的数据转换过程</strong>。常见的聚合函数：</p>
+<ol>
+<li>
+<p>count</p>
+</li>
+<li>
+<p>sum</p>
+</li>
+<li>
+<p>mean</p>
+</li>
+<li>
+<p>median</p>
+</li>
+<li>
+<p>std、var</p>
+</li>
+<li>
+<p>min、max</p>
+</li>
+<li>
+<p>prod</p>
+</li>
+<li>
+<p>fisrt、last</p>
+</li>
+<li>
+<p><strong>如果想使用自己的聚合函数</strong>，可以将函数传递给<code>aggregate</code>或者<code>agg</code>方法</p>
+</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTgy1gdnjzbibl3j30rw0v00x0.jpg" alt=""></p>
+<blockquote>
+<p>笔记1：自定义的聚合函数通常比较慢，需要额外的开销：函数调用、数据重新排列等</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line">tips = pd.read_csv(path)</span><br><span class="line">tips[<span class="string">'tip_pct'</span>] = tips[<span class="string">'tip'</span>] / tips[<span class="string">'total_bill'</span>]</span><br><span class="line"></span><br><span class="line">grouped = tips.groupby([<span class="string">'day'</span>,<span class="string">'smoker'</span>])  <span class="comment"># 根据两个属性先分组</span></span><br><span class="line">grouped_pct = grouped[<span class="string">'tip_pct'</span>]</span><br><span class="line">grouped_pct.agg(<span class="string">'mean'</span>)   <span class="comment"># 函数名通过字符串的形式传递</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>如果传递的是函数或者函数名的列表，则生成的DF数据的列名将会是这些函数名：</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTgy1gdnkaxghsej30w80ja77e.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTgy1gdnps8f6fjj30ta0a4405.jpg" alt=""></p>
+<ol start="3">
+<li>如果传递的是(name,function)形式，则每个元组的<code>name</code>将会被作为<code>DF</code>数据的列名：</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTgy1gdnkcc7xxyj30k00i20uh.jpg" alt=""></p>
+<ol start="4">
+<li>不同的函数应用到一个或者多个列上</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTgy1gdnkgyj62mj30ms0ic405.jpg" alt=""></p>
+<blockquote>
+<p>笔记2：<strong>只有当多个函数应用到至少一个列时，DF才具有分层列</strong></p>
+</blockquote>
+<ol start="5">
+<li><strong>返回不含行索引的聚合数据</strong>：通过向<code>groupby</code>传递<code>as_index=False</code>来实现</li>
+</ol>
+<h3 id="数据透视表和交叉表">数据透视表和交叉表</h3>
+<p>DF中的pivot-table方法能够实现透视表，默认求的是平均值<code>mean</code>。<strong>交叉表是透视表的特殊情况</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTgy1gdnkr8ugmtj30xx0u00xe.jpg" alt=""></p>
+<p>另一种方法：<code>groupby+mean</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTgy1gdnkscdkbrj30x80hemzy.jpg" alt=""></p>
+<p>透视表中常用的几个参数：</p>
+<ul>
+<li>index：行索引</li>
+<li>columns：列属性</li>
+<li>aggfunc：聚合函数</li>
+<li>fill_value：填充NULL值</li>
+<li>margins ：显示ALL属性或者索引</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTgy1gdnkxdjprbj312c0jg784.jpg" alt=""></p>
+<h3 id="Groupby-Dataframe-with-Index-levels-and-columns">Groupby Dataframe with Index levels and columns</h3>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTgy1gdnpidjc0cj30zi0pagok.jpg" alt=""></p>
+<p>三种不同的方式来实现</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">df.groupby([pd.Grouper(level=<span class="number">1</span>), <span class="string">'A'</span>]).sum()</span><br><span class="line"><span class="comment"># df.groupby([pd.Grouper(level='second'), 'A']).sum()</span></span><br><span class="line"><span class="comment"># df.groupby(['second', 'A']).sum()</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTgy1gdnpjsfjq4j30ns092wf4.jpg" alt=""></p>
+<h3 id="一图看懂透视表">一图看懂透视表</h3>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTgy1gdnqbg89o6j30ff0esmy5.jpg" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2020/04/09/python-for-data-three.html">python-for-data-groupby使用和透视表</a></p>
+  <p><span>发布时间:</span>2020年04月09日 - 19:04</p>
+  <p><span>原始链接:</span><a href="/2020/04/09/python-for-data-three.html" title="python-for-data-groupby使用和透视表">http://www.renpeter.cn/2020/04/09/python-for-data-three.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2020/04/09/python-for-data-three.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E9%80%8F%E8%A7%86%E8%A1%A8/" rel="tag"># 透视表</a>
+          
+            <a href="/tags/groupby/" rel="tag"># groupby</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/08/%E6%B7%B1%E5%9C%B3%E9%9A%94%E7%A6%BB-%E7%89%9B%E8%82%89%E6%B2%B9%E9%BA%A6%E5%8F%B6%E7%82%92%E9%9D%A2.html" rel="next" title="深圳隔离-牛肉油麦叶炒面">
+                <i class="fa fa-chevron-left"></i> 深圳隔离-牛肉油麦叶炒面
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/04/09/%E6%B7%B1%E5%9C%B3%E9%9A%94%E7%A6%BB-%E7%89%9B%E8%82%89%E7%82%92%E8%83%A1%E8%90%9D%E5%8D%9C%E4%B8%9D.html" rel="prev" title="深圳隔离-牛肉炒胡萝卜丝">
+                深圳隔离-牛肉炒胡萝卜丝 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#groupby机制"><span class="nav-number">1.</span> <span class="nav-text">groupby机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#groupby参数"><span class="nav-number">2.</span> <span class="nav-text">groupby参数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分组键"><span class="nav-number">2.1.</span> <span class="nav-text">分组键</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特点"><span class="nav-number">2.2.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据聚合"><span class="nav-number">3.</span> <span class="nav-text">数据聚合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据透视表和交叉表"><span class="nav-number">4.</span> <span class="nav-text">数据透视表和交叉表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Groupby-Dataframe-with-Index-levels-and-columns"><span class="nav-number">5.</span> <span class="nav-text">Groupby Dataframe with Index levels and columns</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一图看懂透视表"><span class="nav-number">6.</span> <span class="nav-text">一图看懂透视表</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2020/04/09/python-for-data-three.html';
+          this.page.identifier = '2020/04/09/python-for-data-three.html';
+          this.page.title = 'python-for-data-groupby使用和透视表';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

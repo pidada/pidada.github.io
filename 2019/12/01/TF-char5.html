@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="TensorFlow,concat,split,stack," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="char5-TF高阶操作 第五章主要是介绍了TensorFlow2的几个高阶操作，包含：  合并与分割 数据统计 张量比较 填充与复制 数据限幅 张量的高级操作 数据加载及预处理">
+<meta name="keywords" content="TensorFlow,concat,split,stack">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TF-char5">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2019&#x2F;12&#x2F;01&#x2F;TF-char5.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="char5-TF高阶操作 第五章主要是介绍了TensorFlow2的几个高阶操作，包含：  合并与分割 数据统计 张量比较 填充与复制 数据限幅 张量的高级操作 数据加载及预处理">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9hfoblgu6j30xy0u01ky.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9hg2pul02j309006st91.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9hihp40hij30di06iglx.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9hlx66co1j30n005sgm2.jpg">
+<meta property="og:updated_time" content="2019-12-01T15:20:16.034Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9hfoblgu6j30xy0u01ky.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2019/12/01/TF-char5.html"/>
+
+
+
+
+
+  <title>TF-char5 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2019/12/01/TF-char5.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TF-char5</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-12-01T23:17:17+08:00">
+                2019-12-1
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/TensorFlow/" itemprop="url" rel="index">
+                    <span itemprop="name">TensorFlow</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/12/01/TF-char5.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/12/01/TF-char5.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  2.5k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  10
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>char5-TF高阶操作</p>
+<p>第五章主要是介绍了<code>TensorFlow2</code>的几个高阶操作，包含：</p>
+<ul>
+<li>合并与分割</li>
+<li>数据统计</li>
+<li>张量比较</li>
+<li>填充与复制</li>
+<li>数据限幅</li>
+<li>张量的高级操作</li>
+<li>数据加载及预处理</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9hfoblgu6j30xy0u01ky.jpg" alt=""></p>
+<a id="more"></a>
+<h3 id="合并与分割">合并与分割</h3>
+<h4 id="合并">合并</h4>
+<p>将多个张量在一个维度上合并成一个张量。合并有分为两种：拼接<code>concatenate</code>和堆叠<code>stack</code>。</p>
+<ol>
+<li>拼接<code>tf.concat(x, axis)</code></li>
+</ol>
+<ul>
+<li>不会产生新的维度</li>
+<li>约束条件是：非合并的维度必须是一致的</li>
+<li><code>axis</code>指定拼接的轴；<code>x</code>条件是待合并的张量</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow</span><br><span class="line"></span><br><span class="line">a = tf.random.normal([<span class="number">4</span>,<span class="number">8</span>,<span class="number">5</span>])</span><br><span class="line">b = tf.random.normal([<span class="number">6</span>,<span class="number">8</span>,<span class="number">5</span>])</span><br><span class="line">tf.concat([a,b], axis=<span class="number">0</span>)   <span class="comment"># 结果是[10,8,5]</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>堆叠<code>tf.stack(x, axis)</code></li>
+</ol>
+<ul>
+<li>创建新的维度，新维度的位置是任意的</li>
+<li>可以同时堆叠多个张量</li>
+<li>进行堆叠的张量维度必须一致</li>
+<li><code>axis</code>的用法和<code>tf.expand_dims</code>中相同：
+<ul>
+<li>$axis \geq 0$ 表示当前维度之前插入</li>
+<li>$axis &lt; 0$表示当前维度之后插入</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9hg2pul02j309006st91.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow</span><br><span class="line"></span><br><span class="line">a = tf.random.normal([<span class="number">6</span>,<span class="number">8</span>])</span><br><span class="line">b = tf.random.normal([<span class="number">6</span>,<span class="number">8</span>])</span><br><span class="line">tf.stack([a,b], axis=<span class="number">0</span>)   <span class="comment"># 结果是[2,6,8]</span></span><br><span class="line">tf.stack([a,b], axis=<span class="number">-1</span>)  <span class="comment"># 结果是[6,8,-1]</span></span><br></pre></td></tr></table></figure>
+<h4 id="分割">分割</h4>
+<p>合并的逆操作，将一个张量分成多个张量，通过<code>tf.split(x,axis,num_or_size_splits)</code>实现</p>
+<ul>
+<li><code>x</code>：待分割张量</li>
+<li><code>axis</code>：分割的维度索引号</li>
+<li><code>num_or_size_splits</code>：切割方案
+<ul>
+<li>当<code>num_or_size_splits</code>为单个数值时，如10，表示切割 为 10 份</li>
+<li>当 <code>num_or_size_splits</code>为<code> List</code> 时，每个元素表示每份的长度，如[2,4,2,2]表示 切割为 4 份，每份的长度分别为 2,4,2,2</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x = tf.random.normal([<span class="number">10</span>,<span class="number">35</span>,<span class="number">8</span>])</span><br><span class="line">result = tf.split(x, axis=<span class="number">0</span>, num_or_size_splits=<span class="number">10</span>)   <span class="comment"># 结果是[1,35,8]</span></span><br><span class="line"></span><br><span class="line">result = tf.split(x,axis=<span class="number">0</span>,num_or_size_splits=[<span class="number">4</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>])  <span class="comment"># 10=4+2+2+2，第一个维度上进行分割</span></span><br><span class="line">result[<span class="number">0</span>]  <span class="comment"># 查看第一个张量</span></span><br></pre></td></tr></table></figure>
+<p>如果希望在某个维度上全部按照长度为1进行分割，使用<code>tf.unstack</code>，切割长度固定为1。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x = tf.random.normal([<span class="number">10</span>,<span class="number">35</span>,<span class="number">8</span>])</span><br><span class="line">result = tf.unstack(x,axis=<span class="number">0</span>)</span><br><span class="line">len(result)  <span class="comment"># 结果为10；shape为[35,8]</span></span><br></pre></td></tr></table></figure>
+<h3 id="数据统计">数据统计</h3>
+<h4 id="向量范数Vector-norm">向量范数<code>Vector norm</code></h4>
+<p>通过函数<code>tf.norm(x, ord)</code></p>
+<ul>
+<li><code>x</code>：表示张量</li>
+<li><code>norm</code>：指定范数类型</li>
+</ul>
+<p>常见的<code>3</code>种范数有：</p>
+<ul>
+<li>
+<p>$L_1$范数：所有元素绝对值之和<br>
+$$<br>
+||x||<em>1=\sum</em>{i=1}|x_i|<br>
+$$</p>
+</li>
+<li>
+<p>$L_2$范数：所有元素的平方和，再开根号</p>
+</li>
+</ul>
+<p>$$<br>
+||x||_2=\sqrt{\sum_i|x_i|^2}<br>
+$$</p>
+<ul>
+<li>无穷范数：所有元素绝对值的最大值</li>
+</ul>
+<p>$$<br>
+||x||_\infin = max_i(|x_i|)<br>
+$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> tensorflow tf</span><br><span class="line"></span><br><span class="line">x=tf.ones([<span class="number">2</span>,<span class="number">3</span>])</span><br><span class="line">tf.norm(x,ord=<span class="number">1</span>)</span><br><span class="line">tf.norm(x,ord=<span class="number">2</span>)</span><br><span class="line">tf.norm(x,ord=np.inf)   <span class="comment"># 无穷</span></span><br></pre></td></tr></table></figure>
+<h4 id="最大-最小、均值、和">最大/最小、均值、和</h4>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tf.reduce_max</td>
+<td>最大</td>
+</tr>
+<tr>
+<td>tf.reduce_min</td>
+<td>最小</td>
+</tr>
+<tr>
+<td>tf.reduce.mean</td>
+<td>均值</td>
+</tr>
+<tr>
+<td>tf.reduce_sum</td>
+<td>和</td>
+</tr>
+</tbody>
+</table>
+<p>上述的函数都可以指定<code>axis</code>；如果不指定，<code>tf.reduce_.*</code>函数会求解出全局元素的最大、最小、均值、和。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">out = tf.random.normal([<span class="number">4</span>,<span class="number">10</span>])</span><br><span class="line">y = tf.constant([<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">0</span>])</span><br><span class="line">y = tf.one_hot(y, depth=<span class="number">10</span>)  <span class="comment"># 热编码</span></span><br><span class="line">loss = keras.losses.mse(loss)</span><br><span class="line">loss = tf.reduce_mean(loss)  <span class="comment"># 平均误差</span></span><br></pre></td></tr></table></figure>
+<h4 id="最值的索引号">最值的索引号</h4>
+<p>通过<code>tf.argmax(x, axis)</code>和<code>tf.argmin(x, axis)</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">out = tf.random.normal([<span class="number">2</span>,<span class="number">10</span>])</span><br><span class="line">out = tf.nn.softmax(out, axis=<span class="number">1</span>)  <span class="comment"># 通过softmax转成概率</span></span><br><span class="line">pred = tf.argmax(out, axis=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="张量比较">张量比较</h3>
+<p><code>tf.equal(a,b)</code>和<code>tf.math.equal(a,b)</code>比较两个张量是否相等，<strong>返回的是布尔型张量</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">out = tf.random.normal([<span class="number">100</span>,<span class="number">10</span>])</span><br><span class="line">out = tf.nn.softmax(out, axis=<span class="number">1</span>) <span class="comment"># 输出转换为概率</span></span><br><span class="line">pred = tf.argmax(out, axis=<span class="number">1</span>) <span class="comment"># 选取预测值</span></span><br><span class="line">y = tf.random.uniform([<span class="number">100</span>],dtype=tf.int64,maxval=<span class="number">10</span>)</span><br><span class="line">out = tf.equal(pred,y)   <span class="comment"># 返回的是bool值</span></span><br><span class="line">out = tf.cast(out, dtype=tf.float32)</span><br><span class="line">correct = tf.reduce_sum(out)  <span class="comment"># 统计True的个数</span></span><br></pre></td></tr></table></figure>
+<h3 id="填充与复制">填充与复制</h3>
+<h4 id="填充tf-pad">填充tf.pad</h4>
+<p>需要补充的信号开始或者结束处填充足够的特定数值；通过<code>tf.pad(x, axis)</code>实现</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a = tf.constant([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>])</span><br><span class="line">b = tf.constant([<span class="number">9</span>,<span class="number">8</span>,<span class="number">7</span>])</span><br><span class="line">b = tf.pad(b, [[<span class="number">6</span>,<span class="number">0</span>]])  <span class="comment"># 填充</span></span><br><span class="line">tf.stack([a,b], axis=<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<p>在NLP中，需要加载不同长度的句子，需要设定一个阈值来固定最大的句子长度</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">total_words = <span class="number">10000</span></span><br><span class="line">max_review_len = <span class="number">80</span></span><br><span class="line">embedding_len = <span class="number">100</span>  <span class="comment"># 词向量长度</span></span><br><span class="line">(x_train, y_train), (x_test, y_test) = keras.datasets.imdb.load_data(num_words=total_words)</span><br><span class="line">x_train = keras.preprocessing.sequence.pad_sequences(x_train, maxlen=max_review_len,truncating=<span class="string">'post'</span>,padding=<span class="string">'post'</span>)</span><br><span class="line">x_test = keras.preprocessing.sequence.pad_sequences(x_test,maxlen=max_review_len,truncating=<span class="string">'post'</span>,padding=<span class="string">'post'</span>)</span><br><span class="line">print(x_train.shape,x_test.shape)</span><br></pre></td></tr></table></figure>
+<p><code>keras.preprocessing.sequence.pad_sequences</code>迅速完成句子的填充与截断工作</p>
+<h4 id="复制tf-tile">复制tf.tile</h4>
+<p><code>tf.tile()</code>函数实现长度为1的维度复制的功能；<code>tf.tile()</code> 函数可以在任意维度将数据重复复制多份</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x = tf.random.normal([<span class="number">4</span>,<span class="number">32</span>,<span class="number">32</span>,<span class="number">3</span>])</span><br><span class="line">tf.tile(x, [<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<h3 id="数据限幅">数据限幅</h3>
+<ul>
+<li><code>tf.maximum()</code>实现下限幅</li>
+<li><code>tf.minimum()</code>实现上限幅</li>
+<li><code>tf.clip_by_vlaue</code>实现双边限幅</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x = tf.range(<span class="number">9</span>)</span><br><span class="line">tf.maximum(x, <span class="number">2</span>)  <span class="comment"># 下</span></span><br><span class="line">tf.minimum(x, <span class="number">7</span>)  <span class="comment"># 上</span></span><br><span class="line">tf.clip_by_vlaue(x, <span class="number">2</span>, <span class="number">7</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="高级操作">高级操作</h3>
+<h4 id="tf-gather"><code>tf.gather</code></h4>
+<p>根据索引号收集数据<code>tf.gather</code>；对于不规则的索引也非常适合。索引从0开始</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x = tf.random.uniform([<span class="number">4</span>,<span class="number">35</span>,<span class="number">8</span>],maxval=<span class="number">100</span>,dtype=tf.int32)</span><br><span class="line">tf.gather(x, [<span class="number">0</span>,<span class="number">1</span>], axis=<span class="number">0</span>)</span><br><span class="line">tf.gather(x, [<span class="number">0</span>,<span class="number">4</span>,<span class="number">2</span>,<span class="number">13</span>,<span class="number">30</span>], axis=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>假设希望：抽查第 2 个班级的第 2 个同学的所有科目， 第 3 个班级的第 3 个同学的所有科目，第 4 个班级的第 4 个同学的所有科目。那么怎么实现呢?</p>
+</blockquote>
+<p>方法1</p>
+<p>分别取出3个，再进行堆叠stack操作</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x = tf.random.uniform([<span class="number">4</span>,<span class="number">35</span>,<span class="number">8</span>],maxval=<span class="number">100</span>,dtype=tf.int32)</span><br><span class="line">x[<span class="number">1</span>,<span class="number">1</span>]   <span class="comment"># x[2,2]  x[3,3]</span></span><br><span class="line">tf.stack([x[<span class="number">1</span>,<span class="number">1</span>], x[<span class="number">2</span>,<span class="number">2</span>], x[<span class="number">3</span>,<span class="number">3</span>]])</span><br></pre></td></tr></table></figure>
+<h4 id="tf-gather-nd"><code>tf.gather_nd</code></h4>
+<p>指定每次采样点的坐标来实现采样多个点的目的。上面问题的解决</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tf.gather_nd(x, [[<span class="number">1</span>,<span class="number">1</span>], [<span class="number">2</span>,<span class="number">2</span>], [<span class="number">3</span>,<span class="number">3</span>]])</span><br></pre></td></tr></table></figure>
+<h4 id="tf-boolean-mask"><code>tf.boolean_mask</code></h4>
+<p>通过掩码的方式来获取数据采样；掩码的长度必须和对应维度的长度一致</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x = tf.random.uniform([<span class="number">4</span>,<span class="number">35</span>,<span class="number">8</span>],maxval=<span class="number">100</span>,dtype=tf.int32)</span><br><span class="line"><span class="comment"># mask = [True, False, True, False]</span></span><br><span class="line">tf.boolean_mask(x, mask = [<span class="literal">True</span>, <span class="literal">False</span>, <span class="literal">True</span>, <span class="literal">False</span>], axis=<span class="number">0</span>)  <span class="comment"># 第一个维度是班级</span></span><br></pre></td></tr></table></figure>
+<p>多维度掩码采样方式</p>
+<blockquote>
+<p>希望采样第 1 个班级的第 1-2 号学生，第 2 个班级的第 2-3 号学生</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x = tf.random.uniform([<span class="number">2</span>,<span class="number">3</span>,<span class="number">8</span>],maxval=<span class="number">100</span>,dtype=tf.int32)</span><br><span class="line">tf.gather_nd(x,[[<span class="number">0</span>,<span class="number">0</span>],[<span class="number">0</span>,<span class="number">1</span>],[<span class="number">1</span>,<span class="number">1</span>],[<span class="number">1</span>,<span class="number">2</span>]]) <span class="comment"># 多维坐标采集</span></span><br><span class="line">tf.boolean_mask(x,[[<span class="literal">True</span>,<span class="literal">True</span>,<span class="literal">False</span>],[<span class="literal">False</span>,<span class="literal">True</span>,<span class="literal">True</span>]]) <span class="comment"># 多维度掩码采样</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9hihp40hij30di06iglx.jpg" alt=""></p>
+<h4 id="tf-where"><code>tf.where</code></h4>
+<ul>
+<li>通过<code>tf.where(cond, a, b)</code>操作可以根据<code>cond</code>条件的真假从<code>a </code>或 <code>b</code> 中读取数据</li>
+<li>当<code>a=b=None</code>即<code> a,b</code> 参数不指定时，``tf.where<code>会返回</code>cond<code>张量中所有</code>True`的元素的索引坐标</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">a = tf.ones([<span class="number">3</span>,<span class="number">3</span>]) <span class="comment"># 构造 a 为全 1</span></span><br><span class="line">b = tf.zeros([<span class="number">3</span>,<span class="number">3</span>]) <span class="comment"># 构造 b 为全 0</span></span><br><span class="line">tf.constant([[<span class="literal">True</span>,<span class="literal">False</span>,<span class="literal">False</span>],[<span class="literal">False</span>,<span class="literal">True</span>,<span class="literal">False</span>],[<span class="literal">True</span>,<span class="literal">True</span>,<span class="literal">False</span>]])</span><br><span class="line">tf.where(cond,a,b) <span class="comment"># 根据条件从 a,b 中采样</span></span><br><span class="line"></span><br><span class="line">tf.where(cond) <span class="comment"># 获取 cond 中为 True 的元素索引</span></span><br></pre></td></tr></table></figure>
+<h4 id="demo">demo</h4>
+<p>获取张量中的正数及其索引</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">x = tf.random.normal([<span class="number">3</span>,<span class="number">3</span>]) <span class="comment"># 构造 a</span></span><br><span class="line">mask=x&gt;<span class="number">0</span> <span class="comment"># 比较操作，等同于 tf.equal()</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 方式1</span></span><br><span class="line">tf.boolean_mask(x,mask)   <span class="comment"># 通过掩码的方式获取数据</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 方式2</span></span><br><span class="line">indices=tf.where(mask) <span class="comment"># 提取所有大于 0 的元素索引</span></span><br><span class="line">tf.gather_nd(x,indices) <span class="comment"># 拿到索引后，提取正数的元素值</span></span><br></pre></td></tr></table></figure>
+<h4 id="scatter-nd">scatter_nd</h4>
+<p>通过<code>tf.scatter_nd(indices, updates,shape)</code>实现刷新张量的部分数据。只能在全0张量的白板上进行刷新，可能需要结合其他操作来实现现有张量的数据刷新功能。</p>
+<ul>
+<li>shape：白板的形状</li>
+<li>indices：需要刷新数据的索引</li>
+<li>updates：需要插入进去的新数据</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9hlx66co1j30n005sgm2.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">indices = tf.constant([[<span class="number">4</span>], [<span class="number">3</span>], [<span class="number">1</span>], [<span class="number">7</span>]])   <span class="comment"># 索引位置</span></span><br><span class="line">updates = tf.constant([<span class="number">4.4</span>, <span class="number">3.3</span>, <span class="number">1.1</span>, <span class="number">7.7</span>])  <span class="comment"># 新数据</span></span><br><span class="line">tf.scatter_nd(indices, updates, [<span class="number">8</span>])  <span class="comment"># 长度为8的白板上刷新数据</span></span><br></pre></td></tr></table></figure>
+<h4 id="tf-meshgrid">tf.meshgrid</h4>
+<p>通过<code>tf.meshgrid</code>方便地生成二维网格采样点坐标，方便可视化</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">x = tf.linspace(<span class="number">-8.</span>,<span class="number">8</span>,<span class="number">100</span>) <span class="comment"># 设置 x 坐标的间隔</span></span><br><span class="line">y = tf.linspace(<span class="number">-8.</span>,<span class="number">8</span>,<span class="number">100</span>) <span class="comment"># 设置 y 坐标的间隔</span></span><br><span class="line">x,y = tf.meshgrid(x,y) <span class="comment"># 生成网格点，并拆分后返回</span></span><br><span class="line">x.shape,y.shape <span class="comment"># 打印拆分后的所有点的 x,y 坐标张量 shape</span></span><br><span class="line"></span><br><span class="line">[out]: (TensorShape([<span class="number">100</span>, <span class="number">100</span>]), TensorShape([<span class="number">100</span>, <span class="number">100</span>]))</span><br></pre></td></tr></table></figure>
+<h3 id="数据加载操作">数据加载操作</h3>
+<h4 id="常用数据">常用数据</h4>
+<ul>
+<li><code>Boston Housing</code> 波士顿房价趋势数据集，用于回归模型训练与测试</li>
+<li>CIFAR10/100 真实图片数据集，用于图片分类任务</li>
+<li>MNIST/Fashion_MNIST 手写数字图片数据集，用于图片分类任务</li>
+<li>IMDB 情感分类任务数据集</li>
+</ul>
+<h4 id="数据处理过程">数据处理过程</h4>
+<p>在TF中，<code>keras.datasets</code>模块提供经典数据的自动下载、管理、加载等功能</p>
+<ol>
+<li>数据集合对象</li>
+</ol>
+<p><code>tf.data.Dataset</code></p>
+<ol start="2">
+<li>数据加载</li>
+</ol>
+<p><code>datasets.xxx.load_data()</code></p>
+<p>其中，<code>CIFAR10、MNIST</code>数据集返回的是两个元组，一个保存训练的数据，一个保存的是测试的数据。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">from</span> tensorflow <span class="keyword">import</span> keras</span><br><span class="line"><span class="keyword">from</span> tensorflow.keras <span class="keyword">import</span> datasets <span class="comment"># 导入经典数据集加载模块 # 加载 MNIST 数据集</span></span><br><span class="line">(x, y), (x_test, y_test) = datasets.mnist.load_data()  <span class="comment"># 自动加载</span></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>数据转成<code>Dataset</code>对象</li>
+</ol>
+<p>数据加载进入内存后，需要转换成 <code>Dataset</code> 对象，以利用<code>TensorFlow</code> 提供的各种便捷功能</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">train_db = tf.data.Dataset.from_tensor_slices((x, y))</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>随机散打</li>
+</ol>
+<p>通过函数<code>Dataset.shuffle(buffer_size)</code>来实现，<code>buffer_size</code>指定缓冲池的大小，一般设置成一个较大的数字</p>
+<ol start="5">
+<li>批训练</li>
+</ol>
+<blockquote>
+<p>一般在网络的计算过程中会同时计算多个样本，这种方式叫做批训练</p>
+</blockquote>
+<ul>
+<li>样本数量：batch size</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">train_db = train_db.batch(<span class="number">128</span>)  <span class="comment"># 将Dataset设置成批训练方式</span></span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li>预处理</li>
+</ol>
+<p><code>Dataset</code>对象通过提供<code>map(func)</code>工具函数来实现预处理</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 预处理函数实现在 preprocess 函数中，传入函数引用即可</span></span><br><span class="line">train_db = train_db.map(preprocess)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">preprocess</span><span class="params">(x, y)</span>:</span> <span class="comment"># 自定义的预处理函数</span></span><br><span class="line">    <span class="comment"># 调用此函数时会自动传入 x,y 对象，shape 为[b, 28, 28], [b] # 标准化到 0~1</span></span><br><span class="line">    x = tf.cast(x, dtype=tf.float32) / <span class="number">255.</span></span><br><span class="line">    x = tf.reshape(x, [<span class="number">-1</span>, <span class="number">28</span>*<span class="number">28</span>])</span><br><span class="line">    y = tf.cast(y, dtype=tf.int32)</span><br><span class="line">    y = tf.one_hot(y, depth=<span class="number">10</span>)</span><br><span class="line">    <span class="comment"># 返回的 x,y 将替换传入的 x,y 参数，从而实现数据的预处理功能</span></span><br><span class="line">    <span class="keyword">return</span> x,y</span><br></pre></td></tr></table></figure>
+<ol start="7">
+<li>循环训练</li>
+</ol>
+<ul>
+<li>step：完成一个batch的数据训练</li>
+<li>通过多个step来完成整个训练集的一次迭代</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(<span class="number">20</span>): <span class="comment"># 训练 Epoch 数</span></span><br><span class="line">    <span class="keyword">for</span> step, (x,y) <span class="keyword">in</span> enumerate(train_db): <span class="comment"># 迭代 Step 数</span></span><br><span class="line">           <span class="comment"># training...</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/12/01/TF-char5.html">TF-char5</a></p>
+  <p><span>发布时间:</span>2019年12月01日 - 23:12</p>
+  <p><span>原始链接:</span><a href="/2019/12/01/TF-char5.html" title="TF-char5">http://www.renpeter.cn/2019/12/01/TF-char5.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2019/12/01/TF-char5.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/TensorFlow/" rel="tag"># TensorFlow</a>
+          
+            <a href="/tags/concat/" rel="tag"># concat</a>
+          
+            <a href="/tags/split/" rel="tag"># split</a>
+          
+            <a href="/tags/stack/" rel="tag"># stack</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/01/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B06.html" rel="next" title="吴恩达笔记6">
+                <i class="fa fa-chevron-left"></i> 吴恩达笔记6
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/02/TF-char6.html" rel="prev" title="TF-char6">
+                TF-char6 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#合并与分割"><span class="nav-number">1.</span> <span class="nav-text">合并与分割</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#合并"><span class="nav-number">1.1.</span> <span class="nav-text">合并</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分割"><span class="nav-number">1.2.</span> <span class="nav-text">分割</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据统计"><span class="nav-number">2.</span> <span class="nav-text">数据统计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#向量范数Vector-norm"><span class="nav-number">2.1.</span> <span class="nav-text">向量范数Vector norm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#最大-最小、均值、和"><span class="nav-number">2.2.</span> <span class="nav-text">最大/最小、均值、和</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#最值的索引号"><span class="nav-number">2.3.</span> <span class="nav-text">最值的索引号</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#张量比较"><span class="nav-number">3.</span> <span class="nav-text">张量比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#填充与复制"><span class="nav-number">4.</span> <span class="nav-text">填充与复制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#填充tf-pad"><span class="nav-number">4.1.</span> <span class="nav-text">填充tf.pad</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#复制tf-tile"><span class="nav-number">4.2.</span> <span class="nav-text">复制tf.tile</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据限幅"><span class="nav-number">5.</span> <span class="nav-text">数据限幅</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#高级操作"><span class="nav-number">6.</span> <span class="nav-text">高级操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#tf-gather"><span class="nav-number">6.1.</span> <span class="nav-text">tf.gather</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tf-gather-nd"><span class="nav-number">6.2.</span> <span class="nav-text">tf.gather_nd</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tf-boolean-mask"><span class="nav-number">6.3.</span> <span class="nav-text">tf.boolean_mask</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tf-where"><span class="nav-number">6.4.</span> <span class="nav-text">tf.where</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#demo"><span class="nav-number">6.5.</span> <span class="nav-text">demo</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#scatter-nd"><span class="nav-number">6.6.</span> <span class="nav-text">scatter_nd</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tf-meshgrid"><span class="nav-number">6.7.</span> <span class="nav-text">tf.meshgrid</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据加载操作"><span class="nav-number">7.</span> <span class="nav-text">数据加载操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#常用数据"><span class="nav-number">7.1.</span> <span class="nav-text">常用数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据处理过程"><span class="nav-number">7.2.</span> <span class="nav-text">数据处理过程</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2019/12/01/TF-char5.html';
+          this.page.identifier = '2019/12/01/TF-char5.html';
+          this.page.title = 'TF-char5';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

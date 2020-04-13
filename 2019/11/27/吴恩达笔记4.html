@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="神经网络,ML," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="吴恩达笔记4 在本章节中主要讲解的是神经网络的基础知识：  非线性假设 神经元和大脑 模型表示 特征和直观理解 多类分类问题">
+<meta name="keywords" content="神经网络,ML">
+<meta property="og:type" content="article">
+<meta property="og:title" content="吴恩达笔记4">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2019&#x2F;11&#x2F;27&#x2F;%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B04.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="吴恩达笔记4 在本章节中主要讲解的是神经网络的基础知识：  非线性假设 神经元和大脑 模型表示 特征和直观理解 多类分类问题">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;27&#x2F;QCQ1HA.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;27&#x2F;QCQcCV.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;27&#x2F;QClMGV.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;25&#x2F;MxiT4P.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;25&#x2F;MxkdoR.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;27&#x2F;QC1BYq.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;27&#x2F;QC3J41.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;27&#x2F;QCYGqO.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;27&#x2F;QC02nI.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;27&#x2F;QCry3F.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;27&#x2F;QCsFDs.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;27&#x2F;QC5cvt.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;27&#x2F;QCIpG9.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;27&#x2F;QpgRT1.png">
+<meta property="og:updated_time" content="2019-12-01T15:57:00.501Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;27&#x2F;QCQ1HA.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2019/11/27/吴恩达笔记4.html"/>
+
+
+
+
+
+  <title>吴恩达笔记4 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2019/11/27/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B04.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">吴恩达笔记4</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-11-27T23:29:01+08:00">
+                2019-11-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/%E5%90%B4%E6%81%A9%E8%BE%BE/" itemprop="url" rel="index">
+                    <span itemprop="name">吴恩达</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/11/27/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B04.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/11/27/吴恩达笔记4.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>吴恩达笔记4</p>
+<p>在本章节中主要讲解的是神经网络的基础知识：</p>
+<ul>
+<li>非线性假设</li>
+<li>神经元和大脑</li>
+<li>模型表示</li>
+<li>特征和直观理解</li>
+<li>多类分类问题</li>
+</ul>
+<a id="more"></a>
+<h3 id="非线性假设Non-linear-Hypotheses">非线性假设Non-linear Hypotheses</h3>
+<p>线性回归和逻辑回归的缺点：<strong>特征太多的时候，计算负荷会非常大</strong></p>
+<p>假设我们希望训练一个模型来识别视觉对象（例如识别一张图片上是否是一辆汽车），我们怎样才能这么做呢？一种方法是我们利用很多汽车的图片和很多非汽车的图片，然后利用这些图片上一个个像素的值（饱和度或亮度）来作为特征。</p>
+<p><img src="https://s2.ax1x.com/2019/11/27/QCQ1HA.png" alt="QCQ1HA.png"></p>
+<p><img src="https://s2.ax1x.com/2019/11/27/QCQcCV.png" alt="QCQcCV.png"></p>
+<p>假设采用的是50*50像素的小图片，将所有的像素视为特征，则有2500个特征。普通的逻辑回归模型不能处理的，需要使用神经网络。</p>
+<h3 id="神经元和大脑">神经元和大脑</h3>
+<p><img src="https://s2.ax1x.com/2019/11/27/QClMGV.png" alt="QClMGV.png"></p>
+<h3 id="模型表示">模型表示</h3>
+<h4 id="模型表示1">模型表示1</h4>
+<p>每个神经元是可以被认为一个处理单元/神经核<strong>processing unit</strong>/<strong>Nucleus</strong>，主要包含：</p>
+<ul>
+<li>多个输入/树突（<strong>input</strong>/<strong>Dendrite</strong></li>
+<li>一个输出/轴突（<strong>output</strong>/<strong>Axon</strong>）</li>
+</ul>
+<blockquote>
+<p>神经网络是大量神经元相互链接并通过电脉冲来交流的一个网络</p>
+</blockquote>
+<p><img src="https://s2.ax1x.com/2019/11/25/MxiT4P.png" alt="MxiT4P.png"></p>
+<ol>
+<li>神经网络模型建立在很多神经元之上，每一个神经元又是一个个学习模型</li>
+<li>神经元称之为激活单元<strong>activation unit</strong>；在神经网络中，参数又可被成为权重（<strong>weight</strong>）</li>
+<li>类似神经元的神经网络</li>
+</ol>
+<p><img src="https://s2.ax1x.com/2019/11/25/MxkdoR.png" alt="MxkdoR.png"></p>
+<h4 id="神经网络">神经网络</h4>
+<p>下图是逻辑回归模型作为自身学习模型的神经元示例</p>
+<p><img src="https://s2.ax1x.com/2019/11/27/QC1BYq.png" alt="QC1BYq.png"></p>
+<p><strong>类似神经元的神经网络结构</strong></p>
+<p><img src="https://s2.ax1x.com/2019/11/27/QC3J41.png" alt="QC3J41.png"></p>
+<ul>
+<li>
+<p>$x_1,x_2,x_3$是输入单元，将原始数据输入给它们</p>
+</li>
+<li>
+<p><strong>几个比较基础的概念</strong></p>
+<ul>
+<li>输入层：数据节点所在的层</li>
+<li>网络层：输出$h_i$连同它的网络层参数$w,b$</li>
+<li>隐藏层：网络层中间的层</li>
+<li>输出层：最后一层</li>
+<li>偏置单元：bias unit，每层加上偏置单元</li>
+</ul>
+<p>上面模型的激活单元和输出分别表示为：</p>
+<p><img src="https://s2.ax1x.com/2019/11/27/QCYGqO.png" alt="QCYGqO.png"></p>
+<p><strong>三个激活单元：</strong><br>
+$$<br>
+a^{(2)}<em>1 = g(\Theta<sup>{(1)}_{10}x_0+\Theta</sup>{(1)}</em>{11}x_1+\Theta<sup>{(1)}_{12}x_2+\Theta</sup>{(1)}_{13}x_3)<br>
+$$</p>
+<p>$$<br>
+a^{(2)}<em>2 = g(\Theta<sup>{(1)}_{20}x_0+\Theta</sup>{(1)}</em>{21}x_1+\Theta<sup>{(1)}_{22}x_2+\Theta</sup>{(1)}_{23}x_3)<br>
+$$</p>
+<p>$$<br>
+a^{(2)}<em>3	= g(\Theta<sup>{(1)}_{30}x_0+\Theta</sup>{(1)}</em>{31}x_1+\Theta<sup>{(1)}_{32}x_2+\Theta</sup>{(1)}_{33}x_3)<br>
+$$</p>
+<p><strong>输出的表达式为：</strong><br>
+$$<br>
+h_{\Theta}^{(x)} = g(\Theta<sup>{(2)}_{10}a</sup>{(2)}_0)+g(\Theta<sup>{(2)}_{11}a</sup>{(2)}_1)+g(\Theta<sup>{(2)}_{12}a</sup>{(2)}_2)+g(\Theta<sup>{(2)}_{13}a</sup>{(2)}_3)<br>
+$$</p>
+<blockquote>
+<p>将特征矩阵的每行（一个训练实例）喂给了神经网络，最终需要将整个训练集都喂给神经网络。这种从左到右计算的算法称之为：<strong>前向传播法FORWARD PROPAGATION</strong></p>
+</blockquote>
+<h4 id="模型标记的记忆方法">模型标记的记忆方法</h4>
+</li>
+<li>
+<p>$a^{(j)}_i$表示的是第$j$层的第$i$个激活单元</p>
+</li>
+<li>
+<p>$\theta<sup>{(j)}$代表从第$j$层映射到第$j+1$层的权重矩阵；例如：上图所示的神经网络中$\theta</sup>{(1)}$的尺寸为 3*4。其尺寸具体表示为</p>
+<ul>
+<li>
+<p>以第$j$ 层的激活单元数量为<strong>行数</strong></p>
+</li>
+<li>
+<p>以第 $j+1$层的激活单元数+1为<strong>列数</strong>的矩阵</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="模型表示2">模型表示2</h4>
+<p><strong>（FORWARD PROPAGATION</strong> ) 相对于使用循环来编码，利用向量化的方法会使得计算更为简便。<br>
+$$<br>
+x=\begin{bmatrix}x_0\ x_1\ x_2\x_3\ \end{bmatrix}<br>
+$$</p>
+<p>$$<br>
+z<sup>{(2)}=\begin{bmatrix}z_1</sup>{(2)}\ z_2^{(2)}\ z_3^{(2)}\\end{bmatrix}<br>
+$$</p>
+<p>其中<br>
+$$<br>
+z<sup>{(2)}=\Theta</sup>{(1)}x<br>
+$$<br>
+就是上面三个激活单元式子中的括号里面部分<br>
+$$<br>
+a<sup>{(2)}=g(z</sup>{(2)})<br>
+$$<br>
+将输入$x$看成是$a^{(1)}$，则<br>
+$$<br>
+z<sup>{(2)}=\Theta</sup>{(1)} a^{(1)}<br>
+$$</p>
+<p>$$<br>
+a<sup>{(2)}=g(z</sup>{(2)})<br>
+$$</p>
+<p>$$<br>
+z<sup>{(3)}=\Theta</sup>{(2)} a^{(2)}<br>
+$$</p>
+<p>那么输出h可以表示为<br>
+$$<br>
+h_{\Theta}(x)=a<sup>{(3)}=g(z</sup>{(3)})<br>
+$$</p>
+<p><img src="https://s2.ax1x.com/2019/11/27/QC02nI.png" alt="QC02nI.png"></p>
+<h3 id="特征和直观理解">特征和直观理解</h3>
+<p>神经网络中，单层神经元（无中间层）的计算可用来表示逻辑运算，比如逻辑与(<strong>AND</strong>)、逻辑或(<strong>OR</strong>)</p>
+<h4 id="实现逻辑”与AND”">实现逻辑”与AND”</h4>
+<table>
+<thead>
+<tr>
+<th>x_1</th>
+<th>x_2</th>
+<th>h</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p><img src="https://s2.ax1x.com/2019/11/27/QCry3F.png" alt="QCry3F.png"></p>
+<h4 id="实现逻辑-或OR">实现逻辑&quot;或OR&quot;</h4>
+<table>
+<thead>
+<tr>
+<th>x_1</th>
+<th>x_2</th>
+<th>h</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p><img src="https://s2.ax1x.com/2019/11/27/QCsFDs.png" alt="QCsFDs.png"></p>
+<h4 id="实现逻辑“非not”">实现逻辑“非not”</h4>
+<p><img src="https://s2.ax1x.com/2019/11/27/QC5cvt.png" alt="QC5cvt.png"></p>
+<h3 id="多类分类问题">多类分类问题</h3>
+<p>当输出中不止有两中分类时，比如使用神经网络算法来识别路人、汽车、摩托车等。</p>
+<p><img src="https://s2.ax1x.com/2019/11/27/QCIpG9.png" alt="QCIpG9.png"></p>
+<ul>
+<li>输入向量有3个维度，两个中间层</li>
+<li>输出层有4个神经元表示4中分类，也就是每一个数据在输出层都会出现$[a,b,c,d]^T$，且$[a,b,c,d]$中仅有一个为1，表示当前类</li>
+</ul>
+<h3 id="TF中解决办法">TF中解决办法</h3>
+<p>上述多类分类问题和TF中手写数字问题类似，解决办法如下：</p>
+<ul>
+<li>将输出设置为$d_{out}$个输出节点的向量，$d_{out}$与类别数相同</li>
+<li>让第$i \in [1,d_{out}]$个输出值表示当前样本属于类别i的概率P</li>
+<li><strong>如果属于第$i$类，索引为$i$的位置设置为1，其余为0！！！！</strong></li>
+<li>下图中：对于所有猫的图片，数字编码是0，one-hot编码为[1,0,0,0]；其他类推</li>
+</ul>
+<p><img src="https://s2.ax1x.com/2019/11/27/QpgRT1.png" alt="QpgRT1.png"></p>
+<ol start="3">
+<li>手写数字图片数据</li>
+</ol>
+<p>总类别数是10，即输出节点总数值$d_{out}=10$，假设某个样本的类别是i，即图片中的数字是$i$，需要一个长度为10的向量$y$，索引号为$i$的位置设置为1，其余是0。</p>
+<ul>
+<li>0的one-hot编码是[1,0,0,0,….]</li>
+<li>1的one-hot编码是[0,1,0,0,….]</li>
+<li>其余类推</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/11/27/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B04.html">吴恩达笔记4</a></p>
+  <p><span>发布时间:</span>2019年11月27日 - 23:11</p>
+  <p><span>原始链接:</span><a href="/2019/11/27/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B04.html" title="吴恩达笔记4">http://www.renpeter.cn/2019/11/27/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B04.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2019/11/27/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B04.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag"># 神经网络</a>
+          
+            <a href="/tags/ML/" rel="tag"># ML</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/27/TF-char3.html" rel="next" title="TF-char3-分类问题">
+                <i class="fa fa-chevron-left"></i> TF-char3-分类问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/29/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B05.html" rel="prev" title="吴恩达笔记5">
+                吴恩达笔记5 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#非线性假设Non-linear-Hypotheses"><span class="nav-number">1.</span> <span class="nav-text">非线性假设Non-linear Hypotheses</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#神经元和大脑"><span class="nav-number">2.</span> <span class="nav-text">神经元和大脑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型表示"><span class="nav-number">3.</span> <span class="nav-text">模型表示</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#模型表示1"><span class="nav-number">3.1.</span> <span class="nav-text">模型表示1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#神经网络"><span class="nav-number">3.2.</span> <span class="nav-text">神经网络</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#模型标记的记忆方法"><span class="nav-number">3.3.</span> <span class="nav-text">模型标记的记忆方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#模型表示2"><span class="nav-number">3.4.</span> <span class="nav-text">模型表示2</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特征和直观理解"><span class="nav-number">4.</span> <span class="nav-text">特征和直观理解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#实现逻辑”与AND”"><span class="nav-number">4.1.</span> <span class="nav-text">实现逻辑”与AND”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现逻辑-或OR"><span class="nav-number">4.2.</span> <span class="nav-text">实现逻辑&quot;或OR&quot;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现逻辑“非not”"><span class="nav-number">4.3.</span> <span class="nav-text">实现逻辑“非not”</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多类分类问题"><span class="nav-number">5.</span> <span class="nav-text">多类分类问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TF中解决办法"><span class="nav-number">6.</span> <span class="nav-text">TF中解决办法</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2019/11/27/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B04.html';
+          this.page.identifier = '2019/11/27/吴恩达笔记4.html';
+          this.page.title = '吴恩达笔记4';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

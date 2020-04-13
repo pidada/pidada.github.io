@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="go,OOP,继承,封装,多态," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="面向对象的三大特性 面向对象编程中的三大特性指的是：继承、多态和封装。多态是基于接口实现的。  继承 封装 接口 多态   当我们定义一个结构体的时候，实际上就是把一类事物的共有属性（字段）和行为（方法）提取出来，形成一个物理模型，这种研究问题的方法就是抽象。">
+<meta name="keywords" content="go,OOP,继承,封装,多态">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang之旅37-继承、封装和多态">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2019&#x2F;11&#x2F;16&#x2F;Golang%E4%B9%8B%E6%97%8537-%E7%BB%A7%E6%89%BF%E3%80%81%E5%B0%81%E8%A3%85%E5%92%8C%E5%A4%9A%E6%80%81.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="面向对象的三大特性 面向对象编程中的三大特性指的是：继承、多态和封装。多态是基于接口实现的。  继承 封装 接口 多态   当我们定义一个结构体的时候，实际上就是把一类事物的共有属性（字段）和行为（方法）提取出来，形成一个物理模型，这种研究问题的方法就是抽象。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;16&#x2F;MwZ7fx.png">
+<meta property="og:updated_time" content="2019-11-17T04:05:29.575Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;16&#x2F;MwZ7fx.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2019/11/16/Golang之旅37-继承、封装和多态.html"/>
+
+
+
+
+
+  <title>Golang之旅37-继承、封装和多态 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2019/11/16/Golang%E4%B9%8B%E6%97%8537-%E7%BB%A7%E6%89%BF%E3%80%81%E5%B0%81%E8%A3%85%E5%92%8C%E5%A4%9A%E6%80%81.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Golang之旅37-继承、封装和多态</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-11-16T19:14:38+08:00">
+                2019-11-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/go/" itemprop="url" rel="index">
+                    <span itemprop="name">go</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/11/16/Golang%E4%B9%8B%E6%97%8537-%E7%BB%A7%E6%89%BF%E3%80%81%E5%B0%81%E8%A3%85%E5%92%8C%E5%A4%9A%E6%80%81.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/11/16/Golang之旅37-继承、封装和多态.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  3.1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  13
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="面向对象的三大特性">面向对象的三大特性</h3>
+<p>面向对象编程中的三大特性指的是：继承、多态和封装。多态是基于接口实现的。</p>
+<ul>
+<li>继承</li>
+<li>封装</li>
+<li>接口</li>
+<li>多态</li>
+</ul>
+<blockquote>
+<p>当我们定义一个结构体的时候，实际上就是把一类事物的共有属性（字段）和行为（方法）提取出来，形成一个物理模型，这种研究问题的方法就是<strong>抽象</strong>。</p>
+</blockquote>
+<a id="more"></a>
+<h4 id="银行存取款">银行存取款</h4>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义账户结构体</span></span><br><span class="line"><span class="comment">// 账户、密码、余额</span></span><br><span class="line"><span class="keyword">type</span> Account <span class="keyword">struct</span>&#123;</span><br><span class="line">  Number <span class="keyword">string</span></span><br><span class="line">  Pwd <span class="keyword">string</span></span><br><span class="line">  Balance <span class="keyword">float64</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 存款</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(account *Account)</span> <span class="title">Deposite</span><span class="params">(money <span class="keyword">float64</span>, pwd <span class="keyword">string</span>)</span></span>&#123;</span><br><span class="line">  <span class="keyword">if</span> pwd != account.Pwd&#123;</span><br><span class="line">    fmt.Println(<span class="string">"输入的密码不正确"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> money &lt; <span class="number">0</span>&#123;</span><br><span class="line">    fmt.Println(<span class="string">"余额不足"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  account.Balance += money   <span class="comment">// 余额+money</span></span><br><span class="line">  fmt.Println(<span class="string">"存款成功"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 取款</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(account *Account)</span> <span class="title">WithDraw</span><span class="params">(money <span class="keyword">float64</span>, pwd <span class="keyword">string</span>)</span></span>&#123;</span><br><span class="line">  <span class="comment">// 下面的步骤有体现封装对数据校验特性</span></span><br><span class="line">  <span class="keyword">if</span> pwd != account.Pwd&#123;</span><br><span class="line">    fmt.Println(<span class="string">"输入的密码不正确"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> money &lt;= <span class="number">0</span> || money &gt; account.Balance&#123;  <span class="comment">// 所取的钱不能小于等于0，或者大于余额</span></span><br><span class="line">    fmt.Println(<span class="string">"余额不足"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  account.Balance -= money   <span class="comment">// 余额 - money</span></span><br><span class="line">  fmt.Println(<span class="string">"取款成功"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 查询</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(account *Account)</span> <span class="title">Query</span><span class="params">(pwd <span class="keyword">string</span>)</span></span>&#123;</span><br><span class="line">  <span class="keyword">if</span> pwd != account.Pwd&#123;</span><br><span class="line">    fmt.Println(<span class="string">"输入的密码不正确"</span>)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line">  fmt.Printf(<span class="string">"你的账号是=%v 余额=%v \n"</span>, account.Number, account.Balance)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  account := &amp;Account&#123;</span><br><span class="line">    Number: <span class="string">"gs12345"</span>,</span><br><span class="line">    Pwd: <span class="string">"666666"</span>,</span><br><span class="line">    Balance: <span class="number">100</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  account.Query(<span class="string">"666666"</span>)   <span class="comment">//100</span></span><br><span class="line">  account.Deposite(<span class="number">200</span>, <span class="string">"666666"</span>)</span><br><span class="line">  account.Query(<span class="string">"666666"</span>)  <span class="comment">//300</span></span><br><span class="line">  account.WithDraw(<span class="number">150</span>, <span class="string">"666666"</span>)</span><br><span class="line">  account.Query(<span class="string">"666666"</span>)  <span class="comment">//150</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="继承">继承</h4>
+<h5 id="继承入门">继承入门</h5>
+<p>继承可以解决代码复用，当结构体中存在相同的属性和方法时，可以从这些结构体中抽象出结构体，其他的结构体中不需要重新定义这些相同的属性和方法。</p>
+<p><strong>如果一个结构体中嵌套了另一个匿名结构体，那么这个结构体可以直接访问匿名结构体的字段和方法，从而实现了继承特性。</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Goods <span class="keyword">struct</span>&#123;</span><br><span class="line">  Name <span class="keyword">string</span></span><br><span class="line">  Price <span class="keyword">float64</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Book <span class="keyword">struct</span> &#123;</span><br><span class="line">  Goods    <span class="comment">// 嵌套上面的匿名结构体</span></span><br><span class="line">  Writer <span class="keyword">string</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 关于学生的继承栗子</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Student <span class="keyword">struct</span>&#123;</span><br><span class="line">  Name <span class="keyword">string</span></span><br><span class="line">  Age <span class="keyword">int</span></span><br><span class="line">  Score <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将共有的方法进行绑定</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(stu *Student)</span> <span class="title">ShowInfo</span><span class="params">()</span></span>&#123;</span><br><span class="line">  fmt.Println(stu.Name, stu.Age, stu,Score)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(stu *Student)</span> <span class="title">SetScore</span><span class="params">(score <span class="keyword">int</span>)</span></span>&#123;</span><br><span class="line">  stu.Socre = score</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 给 *student 增加一个方法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(stu *Student)</span> <span class="title">GetSum</span><span class="params">(a, b <span class="keyword">int</span>)</span> <span class="title">int</span></span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 小学生</span></span><br><span class="line"><span class="keyword">type</span> Pupil <span class="keyword">struct</span>&#123;</span><br><span class="line">  Student   <span class="comment">// 匿名结构体</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 独有的方法进行保留</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *Pupil)</span> <span class="title">testing</span></span>&#123;</span><br><span class="line">  fmt.Println(<span class="string">"小学生正在考试..."</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//大学生</span></span><br><span class="line"><span class="keyword">type</span> Graduate <span class="keyword">struct</span>&#123;</span><br><span class="line">  Student   <span class="comment">// 匿名结构体</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(g *Graduate)</span> <span class="title">testing</span></span>&#123;</span><br><span class="line">  fmt.Println(<span class="string">"大学生正在考试..."</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="comment">// 小学生</span></span><br><span class="line">  pupil := &amp;Pupil&#123;&#125;</span><br><span class="line">  pupil.Student.Name = <span class="string">"小明"</span></span><br><span class="line">  pupil.Student.Age = <span class="number">18</span></span><br><span class="line">  pupil.Student.SetScore(<span class="number">70</span>)</span><br><span class="line">  pup.Student.ShowIfno()</span><br><span class="line">  fmt.Println(<span class="string">"res="</span>, pupil.Student.GetSum(<span class="number">1</span>, <span class="number">2</span>))</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 大学生</span></span><br><span class="line">  graduate := &amp;Graduate&#123;&#125;</span><br><span class="line">  pupil.Student.Name = <span class="string">"小红"</span></span><br><span class="line">  pupil.Student.Age = <span class="number">24</span></span><br><span class="line">  pupil.Student.SetScore(<span class="number">89</span>)</span><br><span class="line">  pup.Student.ShowIfno()</span><br><span class="line">  fmt.Println(<span class="string">"res="</span>, graduate.Student.GetSum(<span class="number">1</span>, <span class="number">2</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="继承深入">继承深入</h5>
+<ol>
+<li>结构体可以使用匿名结构体的所有字段，包含大写和小写都可以</li>
+<li>匿名结构体字段访问可以简化</li>
+<li>如果结构体和匿名结构体中含有相同字段，编译器采用的是<strong>就近访问原则</strong>；如果需要希望访问匿名结构体的字段和方法，可以通过匿名结构体名来进行区分</li>
+<li>结构体中嵌入两个或者多个匿名结构体，如果两个结构体中有相同的字段或者方法（同时结构体本身没有同名的字段或者方法），在访问的时候，必须指明匿名结构体名字，否则编译报错。</li>
+<li>如果结构体中嵌套了有名结构体，这种模式就是组合，此时访问结构体中的字段或者属性，必须带上结构体的名字。</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> A <span class="keyword">struct</span>&#123;</span><br><span class="line">  Name <span class="keyword">string</span></span><br><span class="line">  age <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(a *A)</span> <span class="title">Sayok</span><span class="params">()</span></span>&#123;</span><br><span class="line">  fmt.Println(<span class="string">"A Sayok()"</span>, a.Name)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(a *A)</span> <span class="title">hello</span><span class="params">()</span></span>&#123;</span><br><span class="line">  fmt.Println(<span class="string">"A hello()"</span>, a.Name)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> B <span class="keyword">struct</span>&#123;</span><br><span class="line">  A</span><br><span class="line">  Name <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(b *B)</span> <span class="title">Sayok</span><span class="params">()</span></span>&#123;</span><br><span class="line">  fmt.Println(<span class="string">"B Sayok()"</span>, b.Name)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> C <span class="keyword">struct</span>&#123;</span><br><span class="line">  A</span><br><span class="line">  B</span><br><span class="line">  <span class="comment">// Name string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> D <span class="keyword">struct</span>&#123;</span><br><span class="line">  a A <span class="comment">// 有名结构体</span></span><br><span class="line">  Name <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="keyword">var</span> b B</span><br><span class="line">  b.A.Name = <span class="string">"tom"</span></span><br><span class="line">  b.A.age = <span class="number">18</span></span><br><span class="line">  b.A.Sayok()  <span class="comment">// 大小写均可访问</span></span><br><span class="line">  b.A.hello()</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 第二点：上面的简化写法</span></span><br><span class="line">  b.Name = <span class="string">"smith"</span></span><br><span class="line">  b.A.Name = <span class="string">"jackson"</span></span><br><span class="line">  b.age = <span class="number">27</span></span><br><span class="line">  b.Sayok()   <span class="comment">// 第三点：访问的是本身的Sayok()方法</span></span><br><span class="line">  b.hello()   <span class="comment">// A Sayok jackson</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> c C</span><br><span class="line">  c.A.Name = <span class="string">"john"</span></span><br><span class="line">  fmt.Println(<span class="string">"c"</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> d D</span><br><span class="line">  d.a.Name = <span class="string">"mike"</span>   <span class="comment">// 如果D中没有，则必须带上结构体的名字</span></span><br><span class="line">  d.Name = <span class="string">"jack"</span>   <span class="comment">// 先找D本身中有没有 Name 字段</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="封装encapsulation">封装encapsulation</h4>
+<p>把抽象的字段和对字段的操作封装在一起，数据被保护在内部。程序的其他包只能通过被授权的方式才能对其进行操作。<strong>电视机的操作就是典型的封装</strong></p>
+<ul>
+<li>隐藏实现细节</li>
+<li>可以对数据进行验证，保证安全合理</li>
+<li>对结构体的属性进行封装</li>
+<li>通过方法和包等实现封装</li>
+</ul>
+<p><img src="https://s2.ax1x.com/2019/11/16/MwZ7fx.png" alt="MwZ7fx.png"></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// model/person.go</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> model</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> person <span class="keyword">struct</span>&#123;</span><br><span class="line">	Name <span class="keyword">string</span></span><br><span class="line">	age <span class="keyword">int</span>   <span class="comment">// 不可导出的字段</span></span><br><span class="line">	sal <span class="keyword">float64</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 写一个工厂函数，类似构造函数</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewPerson</span><span class="params">(name <span class="keyword">string</span>)</span> *<span class="title">person</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;person&#123;</span><br><span class="line">		Name: name,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 访问age和sal</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *person)</span> <span class="title">SetAge</span><span class="params">(age <span class="keyword">int</span>)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> age &gt; <span class="number">0</span> &amp;&amp; age &lt; <span class="number">150</span>&#123;</span><br><span class="line">		p.age = age</span><br><span class="line">	&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">"年龄范围不对"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *person)</span> <span class="title">GetAge</span><span class="params">()</span> <span class="title">int</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> p.age</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 对薪水的操作</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *person)</span> <span class="title">SetSal</span><span class="params">(sal <span class="keyword">float64</span>)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> sal &gt; <span class="number">3000</span> &amp;&amp; sal &lt; <span class="number">30000</span>&#123;</span><br><span class="line">		p.sal = sal</span><br><span class="line">	&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">"薪水范围不对"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *person)</span> <span class="title">GetSal</span><span class="params">()</span> <span class="title">float64</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> p.sal</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// main/main.go</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"code/char27-encapsulation/model"</span></span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	p := model.NewPerson(<span class="string">"xiaoming"</span>)</span><br><span class="line"></span><br><span class="line">	p.SetAge(<span class="number">18</span>)</span><br><span class="line">	p.SetSal(<span class="number">5000</span>)</span><br><span class="line">	fmt.Println(p)   <span class="comment">// xiaoming 0 0</span></span><br><span class="line"></span><br><span class="line">	fmt.Println(p.Name, <span class="string">"age="</span>, p.GetAge(), <span class="string">"sal="</span>, p.GetSal())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="接口interface">接口interface</h4>
+<h5 id="简介">简介</h5>
+<p>接口是一种抽象的类型，基于方法实现的。<code>interface</code>是一组<code>method</code>的集合。接口做的事情就像是定义了一个协议（规则）。<strong>高内聚低耦合</strong>特性。<strong>接口是引用类型</strong></p>
+<p>Go语言提倡面向接口编程。每个接口由数个方法组成，接口的定义格式如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> 接口类型名 <span class="keyword">interface</span>&#123;</span><br><span class="line">    方法名<span class="number">1</span>( 参数列表<span class="number">1</span> ) 返回值列表<span class="number">1</span></span><br><span class="line">    方法名<span class="number">2</span>( 参数列表<span class="number">2</span> ) 返回值列表<span class="number">2</span></span><br><span class="line">    …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li>接口名：使用<code>type</code>将接口定义为自定义的类型名。Go语言的接口在命名时，一般会在单词后面添加<code>er</code>，如有写操作的接口叫<code>Writer</code>，有字符串功能的接口叫<code>Stringer</code>等。接口名最好要能突出该接口的类型含义。</li>
+<li>方法名：当方法名首字母是大写且这个接口类型名首字母也是大写时，这个方法可以被接口所在的包（package）之外的代码访问。</li>
+<li>参数列表、返回值列表：参数列表和返回值列表中的参数变量名可以省略。</li>
+</ul>
+<p>举个例子：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> writer <span class="keyword">interface</span>&#123;</span><br><span class="line">    Write([]<span class="keyword">byte</span>) error</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义接口</span></span><br><span class="line"><span class="comment">// 在接口中定义方法</span></span><br><span class="line"><span class="keyword">type</span> Usber <span class="keyword">interface</span>&#123;</span><br><span class="line">  Start()</span><br><span class="line">  Stop()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义两个结构体</span></span><br><span class="line"><span class="keyword">type</span> Phone <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Camera <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 给 phone 实现接口中全部的方法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p Phone)</span> <span class="title">Start</span><span class="params">()</span></span>&#123;</span><br><span class="line">  fmt.Println(<span class="string">"手机开始工作"</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p Phone)</span> <span class="title">Stop</span><span class="params">()</span></span>&#123;</span><br><span class="line">  fmt.Println(<span class="string">"手机停止工作"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 给 camera 实现接口中全部的方法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c Camera)</span> <span class="title">Start</span><span class="params">()</span></span>&#123;</span><br><span class="line">  fmt.Println(<span class="string">"相机开始工作"</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c Camera)</span> <span class="title">Stop</span><span class="params">()</span></span>&#123;</span><br><span class="line">  fmt.Println(<span class="string">"相机停止工作"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// computer 结构体</span></span><br><span class="line"><span class="keyword">type</span> Computer <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 只要实现了接口，就实现了该接口中声明的全部方法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c Computer)</span> <span class="title">Working</span><span class="params">(usb Usber)</span></span>&#123;</span><br><span class="line">  <span class="comment">// 通过接口变量 usb 来调用接口 Usber 中的方法</span></span><br><span class="line">  usb.Start()</span><br><span class="line">  usb.Stop()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="comment">// 创建结构体变量</span></span><br><span class="line">  computer := Computer&#123;&#125;</span><br><span class="line">  phone := Phone&#123;&#125;</span><br><span class="line">  camera := Camere&#123;&#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// usb随着传入的变量不同，执行不同的工作，体现多态</span></span><br><span class="line">  computer.Working(phone)</span><br><span class="line">  computer.Working(camera)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="注意事项和细节">注意事项和细节</h5>
+<ol>
+<li>接口本身不能创建实例，但是可以指向一个实现了该接口的自定义类型的变量</li>
+<li>一个自定义类型需要实现接口中全部的方法</li>
+<li>只要是自定义数据类型，就可以实现接口，不仅仅是结构体类型</li>
+<li>一个自定义类型可以实现多个接口</li>
+<li>接口之间可以存在继承关系</li>
+<li><code>interface</code>默认是一个指针（引用类型）</li>
+<li>空接口没有任何方法，所有类型都实现了空接口，可以把任何一个变量赋值给空接口。</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Writer <span class="keyword">interface</span>&#123;</span><br><span class="line">  Say()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Stu <span class="keyword">struct</span>&#123;</span><br><span class="line">  Name <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(stu Stu)</span> <span class="title">Say</span><span class="params">()</span></span>&#123;</span><br><span class="line">  fmt.Println(<span class="string">"Stu Say()"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> integer <span class="keyword">int</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span><span class="params">(i integer)</span> <span class="title">Writer</span><span class="params">()</span></span>&#123;</span><br><span class="line">  fmt.Println(<span class="string">"integer Writer i="</span>, i)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> T <span class="keyword">interface</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="keyword">var</span> stu Stu   <span class="comment">// 结构体实现了接口的方法</span></span><br><span class="line">  <span class="keyword">var</span> a Writer = stu</span><br><span class="line">  a.Say()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> i integer = <span class="number">10</span></span><br><span class="line">  <span class="keyword">var</span> b Writer = i</span><br><span class="line">  b.Say()  <span class="comment">// integer Say i = 10</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 空接口使用</span></span><br><span class="line">  <span class="keyword">var</span> t T = stu  <span class="comment">// 空接口</span></span><br><span class="line">  fmt.Println(t)</span><br><span class="line">  <span class="keyword">var</span> t2 inteface&#123;&#125; = stu   <span class="comment">// 空接口</span></span><br><span class="line">  <span class="keyword">var</span> num1 <span class="keyword">float64</span> = <span class="number">8.8</span></span><br><span class="line">  t2 = num1</span><br><span class="line">  t = num1</span><br><span class="line">  fmt.Println(t2, t)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Usb <span class="keyword">interface</span>&#123;</span><br><span class="line">  Say()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Stu <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(this *Stu)</span> <span class="title">Say</span><span class="params">()</span></span>&#123;   <span class="comment">// 用指针实现Say()方法</span></span><br><span class="line">  fmt.Println(<span class="string">"Say()"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="keyword">var</span> stu Stu = Stu&#123;&#125;</span><br><span class="line">  <span class="comment">// Stu 类型没有实现 Usb 接口</span></span><br><span class="line">  <span class="keyword">var</span> u Usb = &amp;stu   <span class="comment">// 带上&amp;</span></span><br><span class="line">  u.Say()</span><br><span class="line">  fmt.Println(u)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="结构体切片排序">结构体切片排序</h5>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">"fmt"</span></span><br><span class="line">  <span class="string">"sort"</span></span><br><span class="line">  <span class="string">"math/rand"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1. 声明 Hero 结构体</span></span><br><span class="line"><span class="keyword">type</span> Hero <span class="keyword">struct</span>&#123;</span><br><span class="line">  Name <span class="keyword">string</span></span><br><span class="line">  Age <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 声明一个Hero结构体切片类型</span></span><br><span class="line"><span class="keyword">type</span> HeroSlice []Hero</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 实现 Interface 接口：文档中有三个方法都需要实现</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(hs HeroSlice)</span> <span class="title">Len</span><span class="params">()</span> <span class="title">int</span></span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">len</span>(hs)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 决定是使用哪种方法进行排序</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(hs HeroSlice)</span> <span class="title">Less</span><span class="params">(i, j <span class="keyword">int</span>)</span> <span class="title">bool</span></span>&#123;</span><br><span class="line">  <span class="keyword">return</span> hs[i].Age &lt; hs[j].Age</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(hs HeroSlice)</span> <span class="title">Swap</span><span class="params">(i, j <span class="keyword">int</span>)</span></span>&#123;</span><br><span class="line">  <span class="comment">//temp := hs[i]</span></span><br><span class="line">  <span class="comment">//hs[i] = hs[j]</span></span><br><span class="line">  <span class="comment">//hs[j] = temp</span></span><br><span class="line">  hs[i], hs[j] = hs[j], hs[i]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span>  <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="keyword">var</span> intSlice = []<span class="keyword">int</span>&#123;<span class="number">0</span>,<span class="number">-1</span>,<span class="number">9</span>,<span class="number">4</span>,<span class="number">2</span>,<span class="number">10</span>&#125;</span><br><span class="line">  <span class="comment">// 冒泡排序</span></span><br><span class="line">  <span class="comment">// 内置的sort函数</span></span><br><span class="line">  sort.Ints(intSlice)</span><br><span class="line">  fmt.Println(intSlice)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 结构体切片进行排序</span></span><br><span class="line">  <span class="keyword">var</span> heros HeroSlice</span><br><span class="line">  <span class="keyword">for</span> i := <span class="number">0</span>;i &lt; <span class="number">10</span>;i++&#123;</span><br><span class="line">    hero := Hero&#123;</span><br><span class="line">      Name: fmt.Sprintf(<span class="string">"英雄～%d"</span>, rand.Intn(<span class="number">100</span>)),</span><br><span class="line">      Age: rand.Intn(<span class="number">100</span>),  <span class="comment">// 如何生成随机数</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 将hero append到heros 切片中</span></span><br><span class="line">    heros = <span class="built_in">append</span>(heros, hero)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 排序前</span></span><br><span class="line">  <span class="keyword">for</span> _, v := <span class="keyword">range</span> heros &#123;</span><br><span class="line">    fmt.Println(v)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 排序后</span></span><br><span class="line">  <span class="comment">// 调用sort.Sort</span></span><br><span class="line">  sort.Sort(heros)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="接口和继承关系">接口和继承关系</h4>
+<blockquote>
+<p>当结构体需要扩展功能，同时不破坏继承关系，可以使用接口去实现。接口是对继承的一个补充</p>
+</blockquote>
+<p>继承：解决代码的<strong>复用性和可维护性</strong></p>
+<p>接口：<strong>设计好各种规范</strong>，让其他自定义类型去实现这些方法；接口在一定程度上能实现代码解藕。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Monkey <span class="keyword">struct</span>&#123;</span><br><span class="line">  Name <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(this *Monkey)</span> <span class="title">climbing</span><span class="params">()</span></span>&#123;</span><br><span class="line">  fmt.Println(this.Name, <span class="string">"生来会爬树"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 声明一个接口</span></span><br><span class="line"><span class="keyword">type</span> BirdAble <span class="keyword">interface</span>&#123;</span><br><span class="line">  Flying()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> FishAble <span class="keyword">interface</span>&#123;</span><br><span class="line">  Swimming()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">LittleMonkey</span> <span class="title">struct</span></span>&#123;</span><br><span class="line">  Monkey  <span class="comment">// 匿名结构体，继承</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(this *LittleMonkey)</span> <span class="title">Flying</span><span class="params">()</span></span>&#123;</span><br><span class="line">  fmt.Println(this.Name, <span class="string">"通过学习，会飞翔"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(this *LittleMonkey)</span> <span class="title">Swimming</span><span class="params">()</span></span>&#123;</span><br><span class="line">  fmt.Println(this.Name, <span class="string">"通过学习，会游泳"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="comment">// 创建一个实例</span></span><br><span class="line">  monkey := LittleMonkey&#123;</span><br><span class="line">    Monkey&#123;</span><br><span class="line">      Name: <span class="string">"悟空"</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line">  monkey.climbing()</span><br><span class="line">  monkey.Flying()</span><br><span class="line">  monkey.Swimming()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="多态poly">多态poly</h4>
+<p>变量具有多种形态，<strong>多态特征是通过接口来实现的</strong>。</p>
+<ul>
+<li>多态参数：<code>usb</code>就是多态参数</li>
+<li>多态数组：</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义接口</span></span><br><span class="line"><span class="comment">// 在接口中定义方法</span></span><br><span class="line"><span class="keyword">type</span> Usber <span class="keyword">interface</span>&#123;</span><br><span class="line">  Start()</span><br><span class="line">  Stop()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义两个结构体</span></span><br><span class="line"><span class="keyword">type</span> Phone <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Camera <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 给 phone 实现接口中全部的方法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p Phone)</span> <span class="title">Start</span><span class="params">()</span></span>&#123;</span><br><span class="line">  fmt.Println(<span class="string">"手机开始工作"</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p Phone)</span> <span class="title">Stop</span><span class="params">()</span></span>&#123;</span><br><span class="line">  fmt.Println(<span class="string">"手机停止工作"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 给 camera 实现接口中全部的方法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c Camera)</span> <span class="title">Start</span><span class="params">()</span></span>&#123;</span><br><span class="line">  fmt.Println(<span class="string">"相机开始工作"</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c Camera)</span> <span class="title">Stop</span><span class="params">()</span></span>&#123;</span><br><span class="line">  fmt.Println(<span class="string">"相机停止工作"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// computer 结构体</span></span><br><span class="line"><span class="keyword">type</span> Computer <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 只要实现了接口，就实现了该接口中声明的全部方法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c Computer)</span> <span class="title">Working</span><span class="params">(usb Usber)</span></span>&#123;</span><br><span class="line">  <span class="comment">// 通过接口变量 usb 来调用接口 Usber 中的方法</span></span><br><span class="line">  usb.Start()</span><br><span class="line">  usb.Stop()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="comment">// 创建结构体变量</span></span><br><span class="line">  computer := Computer&#123;&#125;</span><br><span class="line">  phone := Phone&#123;&#125;</span><br><span class="line">  camera := Camere&#123;&#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// usb随着传入的变量不同，执行不同的工作，体现多态</span></span><br><span class="line">  computer.Working(phone)</span><br><span class="line">  computer.Working(camera)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 多态数组</span></span><br><span class="line">  <span class="keyword">var</span> usbArr [<span class="number">3</span>]Usb</span><br><span class="line">  usbArr[<span class="number">0</span>] = Phone&#123;<span class="string">"vivo"</span>&#125;</span><br><span class="line">  usbArr[<span class="number">1</span>] = Phone&#123;<span class="string">"小米"</span>&#125;</span><br><span class="line">  usbArr[<span class="number">2</span>] = Camera&#123;<span class="string">"尼康"</span>&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/11/16/Golang%E4%B9%8B%E6%97%8537-%E7%BB%A7%E6%89%BF%E3%80%81%E5%B0%81%E8%A3%85%E5%92%8C%E5%A4%9A%E6%80%81.html">Golang之旅37-继承、封装和多态</a></p>
+  <p><span>发布时间:</span>2019年11月16日 - 19:11</p>
+  <p><span>原始链接:</span><a href="/2019/11/16/Golang%E4%B9%8B%E6%97%8537-%E7%BB%A7%E6%89%BF%E3%80%81%E5%B0%81%E8%A3%85%E5%92%8C%E5%A4%9A%E6%80%81.html" title="Golang之旅37-继承、封装和多态">http://www.renpeter.cn/2019/11/16/Golang%E4%B9%8B%E6%97%8537-%E7%BB%A7%E6%89%BF%E3%80%81%E5%B0%81%E8%A3%85%E5%92%8C%E5%A4%9A%E6%80%81.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2019/11/16/Golang%E4%B9%8B%E6%97%8537-%E7%BB%A7%E6%89%BF%E3%80%81%E5%B0%81%E8%A3%85%E5%92%8C%E5%A4%9A%E6%80%81.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/go/" rel="tag"># go</a>
+          
+            <a href="/tags/OOP/" rel="tag"># OOP</a>
+          
+            <a href="/tags/%E7%BB%A7%E6%89%BF/" rel="tag"># 继承</a>
+          
+            <a href="/tags/%E5%B0%81%E8%A3%85/" rel="tag"># 封装</a>
+          
+            <a href="/tags/%E5%A4%9A%E6%80%81/" rel="tag"># 多态</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/15/Golang%E4%B9%8B%E6%97%8536-%E6%96%B9%E6%B3%95%E5%92%8C%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F.html" rel="next" title="Golang之旅36-方法和工厂模式">
+                <i class="fa fa-chevron-left"></i> Golang之旅36-方法和工厂模式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/17/beego%E5%85%A5%E9%97%A8.html" rel="prev" title="beego入门">
+                beego入门 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#面向对象的三大特性"><span class="nav-number">1.</span> <span class="nav-text">面向对象的三大特性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#银行存取款"><span class="nav-number">1.1.</span> <span class="nav-text">银行存取款</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#继承"><span class="nav-number">1.2.</span> <span class="nav-text">继承</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#继承入门"><span class="nav-number">1.2.1.</span> <span class="nav-text">继承入门</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#继承深入"><span class="nav-number">1.2.2.</span> <span class="nav-text">继承深入</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#封装encapsulation"><span class="nav-number">1.3.</span> <span class="nav-text">封装encapsulation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#接口interface"><span class="nav-number">1.4.</span> <span class="nav-text">接口interface</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#简介"><span class="nav-number">1.4.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#注意事项和细节"><span class="nav-number">1.4.2.</span> <span class="nav-text">注意事项和细节</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#结构体切片排序"><span class="nav-number">1.4.3.</span> <span class="nav-text">结构体切片排序</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#接口和继承关系"><span class="nav-number">1.5.</span> <span class="nav-text">接口和继承关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多态poly"><span class="nav-number">1.6.</span> <span class="nav-text">多态poly</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2019/11/16/Golang%E4%B9%8B%E6%97%8537-%E7%BB%A7%E6%89%BF%E3%80%81%E5%B0%81%E8%A3%85%E5%92%8C%E5%A4%9A%E6%80%81.html';
+          this.page.identifier = '2019/11/16/Golang之旅37-继承、封装和多态.html';
+          this.page.title = 'Golang之旅37-继承、封装和多态';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

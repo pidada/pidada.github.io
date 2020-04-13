@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="sql,sqlzoo,self-join," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="sqlzoo练习16-self-join 连接查询包含3种方式：  内联结 外联结 交叉联结  本文中学习的是自连接self-join。涉及到的两个表及其相关的字段">
+<meta name="keywords" content="sql,sqlzoo,self-join">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sqlzoo练习16-self-join">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2020&#x2F;01&#x2F;31&#x2F;sqlzoo%E7%BB%83%E4%B9%A016-self-join.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="sqlzoo练习16-self-join 连接查询包含3种方式：  内联结 外联结 交叉联结  本文中学习的是自连接self-join。涉及到的两个表及其相关的字段">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gbg0nux0p1j30rm052jrw.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gbg0nxoqxvj31e408uwgs.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gbg0mco3puj30tg0gsq49.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gbg0dks4v8j31f80qk1kx.jpg">
+<meta property="og:updated_time" content="2020-01-31T13:21:55.040Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gbg0nux0p1j30rm052jrw.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2020/01/31/sqlzoo练习16-self-join.html"/>
+
+
+
+
+
+  <title>sqlzoo练习16-self-join | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2020/01/31/sqlzoo%E7%BB%83%E4%B9%A016-self-join.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">sqlzoo练习16-self-join</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-01-31T20:29:05+08:00">
+                2020-1-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MySQL/" itemprop="url" rel="index">
+                    <span itemprop="name">MySQL</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MySQL/sqlzoo%E7%BB%83%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">sqlzoo练习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/01/31/sqlzoo%E7%BB%83%E4%B9%A016-self-join.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/01/31/sqlzoo练习16-self-join.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="sqlzoo练习16-self-join">sqlzoo练习16-self-join</h3>
+<p>连接查询包含<code>3</code>种方式：</p>
+<ul>
+<li>内联结</li>
+<li>外联结</li>
+<li>交叉联结</li>
+</ul>
+<p>本文中学习的是自连接<code>self-join</code>。涉及到的两个表及其相关的字段</p>
+<a id="more"></a>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">stops(id, name)</span><br><span class="line">route(num, company, pos, <span class="keyword">stop</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="stops表">stops表</h4>
+<p>This is a list of areas served by buses. The detail does not really include each actual bus stop - just areas within Edinburgh and whole towns near Edinburgh.</p>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gbg0nux0p1j30rm052jrw.jpg" alt=""></p>
+</blockquote>
+<h4 id="route表">route表</h4>
+<p>A route is the path through town taken by a bus.</p>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gbg0nxoqxvj31e408uwgs.jpg" alt=""></p>
+</blockquote>
+<h3 id="练习">练习</h3>
+<p><strong>所有的题目运行都出问题，提示表是非法，不存在，why？</strong></p>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gbg0mco3puj30tg0gsq49.jpg" alt=""></p>
+</blockquote>
+<ol>
+<li>How many <strong>stops</strong> are in the database.</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(stops.id)</span><br><span class="line"><span class="keyword">from</span> stops;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>Find the <strong>id</strong> value for the stop ‘Craiglockhart’</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span></span><br><span class="line"><span class="keyword">from</span> stops</span><br><span class="line"><span class="keyword">where</span> <span class="keyword">name</span>=<span class="string">'Craiglockhart'</span>;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>Give the <strong>id</strong> and the <strong>name</strong> for the <strong>stops</strong> on the ‘4’ ‘LRT’ service.</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span>, <span class="keyword">name</span></span><br><span class="line"><span class="keyword">from</span> stops</span><br><span class="line"><span class="keyword">join</span> route <span class="keyword">on</span> stops.id=route.stop</span><br><span class="line"><span class="keyword">where</span> <span class="keyword">num</span>=<span class="number">4</span></span><br><span class="line"><span class="keyword">and</span> company=<span class="string">'LRT'</span>;</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>
+<p>The query shown gives the number of routes that visit either London  Road (149) or Craiglockhart (53). Run the query and notice the two  services that link these <strong>stops</strong> have a count of 2.</p>
+<p><strong>Add a HAVING clause to restrict the output to these two routes.</strong></p>
+</li>
+</ol>
+<blockquote>
+<p>笔记：</p>
+<ol>
+<li>显示了两条路线的总数</li>
+<li>分组和过滤</li>
+<li>要求：添加1个having子句来将结果限制成2条线路</li>
+</ol>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> company, <span class="keyword">num</span>, <span class="keyword">count</span>(*)</span><br><span class="line"><span class="keyword">from</span> route</span><br><span class="line"><span class="keyword">where</span> <span class="keyword">stop</span>=<span class="number">149</span> <span class="keyword">or</span> <span class="keyword">stop</span>=<span class="number">53</span></span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> company, <span class="keyword">num</span></span><br><span class="line"><span class="keyword">having</span> <span class="keyword">count</span>(*) = <span class="number">2</span>;  <span class="comment">-- 添加语句，过滤结果</span></span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>
+<p>Execute the self join shown and observe that b.stop gives all the places you can get to from Craiglockhart, without changing routes.</p>
+<p><strong>Change the query so that it shows the services from Craiglockhart(53) to  London Road(149).</strong></p>
+</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> a.company, a.num, a.stop, b.stop</span><br><span class="line"><span class="keyword">from</span> route a</span><br><span class="line"><span class="keyword">join</span> route b <span class="keyword">on</span> (a.company=b.company <span class="keyword">and</span> a.num=b.num)</span><br><span class="line"><span class="keyword">where</span> a.stop=<span class="number">53</span></span><br><span class="line"><span class="keyword">and</span> b.stop=<span class="number">149</span>;</span><br></pre></td></tr></table></figure>
+<hr>
+<blockquote>
+<p><strong>下面的部分需要重新做，参考了两个博主：</strong></p>
+</blockquote>
+<p><a href="https://github.com/edsfocci/SQL-SQL_Zoo/blob/master/09_self_join.sql" target="_blank" rel="noopener">https://github.com/edsfocci/SQL-SQL_Zoo/blob/master/09_self_join.sql</a></p>
+<p><a href="https://github.com/jisaw/sqlzoo-solutions/blob/master/self-join.sql" target="_blank" rel="noopener">https://github.com/jisaw/sqlzoo-solutions/blob/master/self-join.sql</a></p>
+<ol start="6">
+<li>
+<p>The query shown is similar to the previous one, however by joining two copies of the <strong>stops</strong> table we can refer to <strong>stops</strong> by <strong>name</strong> rather than by number.</p>
+<p><strong>Change the query so that the services between ‘Craiglockhart’ and  ‘London Road’ are shown. If you are tired of these places try  ‘Fairmilehead’ against 'Tollcross’</strong></p>
+</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> a.company, a.num, stopa.name, stopb.name</span><br><span class="line"><span class="keyword">from</span> route a</span><br><span class="line"><span class="keyword">join</span> route b <span class="keyword">on</span> (a.company=b.company <span class="keyword">and</span> a.num=b.num)</span><br><span class="line"><span class="keyword">join</span> stops stopa <span class="keyword">on</span> (a.stop=stopa.id)</span><br><span class="line"><span class="keyword">join</span> stops stopb <span class="keyword">on</span> (b.stop=stopb.id)</span><br><span class="line"><span class="keyword">where</span> stopa.name=<span class="string">'Craiglockhart'</span></span><br><span class="line"><span class="keyword">and</span> stopb.name=<span class="string">'London Road'</span>;</span><br></pre></td></tr></table></figure>
+<ol start="7">
+<li>Give a list of all the services which connect stops 115 and 137 (‘Haymarket’ and ‘Leith’)</li>
+</ol>
+<blockquote>
+<p>列出连接两个站点的全部服务信息</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">distinct</span> a.company, a.num</span><br><span class="line"><span class="keyword">from</span> route a</span><br><span class="line">    <span class="keyword">join</span> route b <span class="keyword">on</span> (a.num=b.num <span class="keyword">and</span> a.company=b.company)</span><br><span class="line">    <span class="keyword">join</span> stops stopa <span class="keyword">on</span> (a.stop=stopa.id)</span><br><span class="line">    <span class="keyword">join</span> stops stopb <span class="keyword">on</span> (b.stop=stopb.id)</span><br><span class="line"><span class="keyword">where</span> a.stop=<span class="number">115</span></span><br><span class="line"><span class="keyword">and</span> b.stop=<span class="number">137</span>;</span><br></pre></td></tr></table></figure>
+<ol start="8">
+<li>Give a list of the services which connect the <strong>stops</strong> ‘Craiglockhart’ and ‘Tollcross’</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">distinct</span> a.company, a.num</span><br><span class="line"><span class="keyword">from</span> route a</span><br><span class="line">    <span class="keyword">join</span> route b <span class="keyword">on</span> (a.num=b.num <span class="keyword">and</span> a.company=b.company)</span><br><span class="line">    <span class="keyword">join</span> stops stopa <span class="keyword">on</span> (a.stop=stopa.id)</span><br><span class="line">    <span class="keyword">join</span> stops stopb <span class="keyword">on</span> (b.stop=stopb.id)</span><br><span class="line"><span class="keyword">where</span> stopa.name=<span class="string">'Craiglockhart'</span></span><br><span class="line"><span class="keyword">and</span> stopb.name=<span class="string">'Tollcross'</span>;</span><br></pre></td></tr></table></figure>
+<ol start="9">
+<li>Give a distinct list of the <strong>stops</strong> which may be reached from  ‘Craiglockhart’ by taking one bus, including ‘Craiglockhart’ itself,  offered by the LRT company. Include the company and bus no. of the  relevant services.</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> stopa.name, a.company, a.num</span><br><span class="line"><span class="keyword">from</span> route a</span><br><span class="line">   <span class="keyword">join</span> route b <span class="keyword">on</span> (a.num=b.numa <span class="keyword">and</span> a.company=b.company)</span><br><span class="line">   <span class="keyword">join</span> stops stopa <span class="keyword">on</span> (a.stop=stopa.id)</span><br><span class="line">   <span class="keyword">join</span> stops stopa <span class="keyword">on</span> (b.stop=stopb.id)</span><br><span class="line"><span class="keyword">where</span> stopb.name=<span class="string">'Craiglockhart'</span>;</span><br></pre></td></tr></table></figure>
+<ol start="10">
+<li>Find the routes involving two buses that can go from <strong>Craiglockhart</strong> to <strong>Lochend</strong>.Show the bus no. and company for the first bus, the name of the stop for the transfer, and the bus no. and company for the second bus.</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> stopa.name, stopb.name</span><br><span class="line"><span class="keyword">from</span> route a</span><br><span class="line"><span class="keyword">join</span> route b <span class="keyword">on</span> (a.num=b.num)</span><br><span class="line"><span class="keyword">join</span> stops stopa <span class="keyword">on</span> (a.stop=stopa.id)</span><br><span class="line"><span class="keyword">join</span> stops stopb <span class="keyword">on</span> (b.stop=stopb.id)</span><br><span class="line"><span class="keyword">where</span> stopa.name = <span class="string">'Craiglockhart'</span></span><br><span class="line"><span class="keyword">and</span> stopb.name = <span class="string">'Sighthill'</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="self-join-quiz">self join quiz</h3>
+<ol>
+<li>Select the code that would show it is possible to get from Craiglockhart to Haymarket</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">distinct</span> a.name, b.name</span><br><span class="line"><span class="keyword">from</span> stops a </span><br><span class="line">   <span class="keyword">join</span> route z <span class="keyword">on</span> a.id=z.stop</span><br><span class="line">   <span class="keyword">join</span> route y <span class="keyword">on</span> y.num=z.num</span><br><span class="line">   <span class="keyword">join</span> stops b <span class="keyword">on</span> y.stop=b.id</span><br><span class="line"><span class="keyword">where</span> a.name=<span class="string">'Craiglockhart'</span> <span class="keyword">and</span> b.name=<span class="string">'Haymarket'</span>;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>Select the code that shows the stops that are on route.num ‘2A’ which can be reached with one bus from Haymarket?</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> s2.id, s2.name, r2.company, r2.num</span><br><span class="line"><span class="keyword">from</span> stops s1, stops s2, route r1, route r2</span><br><span class="line"><span class="keyword">where</span> s1.name=<span class="string">'Haymarket'</span> <span class="keyword">and</span> s1.id=r1.stop</span><br><span class="line"><span class="keyword">and</span> r1.company=r2.company </span><br><span class="line"><span class="keyword">and</span> r1.num=r2.num</span><br><span class="line"><span class="keyword">and</span> r2.stop=r2.id</span><br><span class="line"><span class="keyword">and</span> r2.num=<span class="string">'2A'</span>;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>Select the code that shows the services available from Tollcross?</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> a.company, a.num, stopa.name, stopb.name</span><br><span class="line"><span class="keyword">from</span> route a</span><br><span class="line"><span class="keyword">join</span> route b <span class="keyword">on</span> (a.company=b.company <span class="keyword">and</span> a.num=b.num)</span><br><span class="line"><span class="keyword">join</span> stops stopa <span class="keyword">on</span> (a.stop=b.stop)</span><br><span class="line"><span class="keyword">join</span> stops stopb <span class="keyword">on</span> (b.stop=stopb.id)</span><br><span class="line"><span class="keyword">where</span> stopa.name=<span class="string">'Tollcross'</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="demo">demo</h3>
+<p>油管上看到的一个例子，讲解如何通过不同的方式实现自连接。</p>
+<ul>
+<li>内联结：<code>inner join</code>，忽略空行</li>
+<li>外联结：<code>left/right/full join</code>，保留空行；</li>
+<li>交叉联结：<code>cross join</code>，保留空行</li>
+</ul>
+<p><strong>Oracle数据库支持full join，mysql是不支持full join的</strong></p>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gbg0dks4v8j31f80qk1kx.jpg" alt=""></p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2020/01/31/sqlzoo%E7%BB%83%E4%B9%A016-self-join.html">sqlzoo练习16-self-join</a></p>
+  <p><span>发布时间:</span>2020年01月31日 - 20:01</p>
+  <p><span>原始链接:</span><a href="/2020/01/31/sqlzoo%E7%BB%83%E4%B9%A016-self-join.html" title="sqlzoo练习16-self-join">http://www.renpeter.cn/2020/01/31/sqlzoo%E7%BB%83%E4%B9%A016-self-join.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2020/01/31/sqlzoo%E7%BB%83%E4%B9%A016-self-join.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/sql/" rel="tag"># sql</a>
+          
+            <a href="/tags/sqlzoo/" rel="tag"># sqlzoo</a>
+          
+            <a href="/tags/self-join/" rel="tag"># self-join</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/31/sqlzoo%E7%BB%83%E4%B9%A015-null-quiz.html" rel="next" title="sqlzoo练习15-null-quiz">
+                <i class="fa fa-chevron-left"></i> sqlzoo练习15-null-quiz
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/01/MySQL%E5%85%A5%E9%97%A8%E5%A4%A7%E5%85%A8.html" rel="prev" title="MySQL入门大全">
+                MySQL入门大全 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#sqlzoo练习16-self-join"><span class="nav-number">1.</span> <span class="nav-text">sqlzoo练习16-self-join</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#stops表"><span class="nav-number">1.1.</span> <span class="nav-text">stops表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#route表"><span class="nav-number">1.2.</span> <span class="nav-text">route表</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#练习"><span class="nav-number">2.</span> <span class="nav-text">练习</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#self-join-quiz"><span class="nav-number">3.</span> <span class="nav-text">self join quiz</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#demo"><span class="nav-number">4.</span> <span class="nav-text">demo</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2020/01/31/sqlzoo%E7%BB%83%E4%B9%A016-self-join.html';
+          this.page.identifier = '2020/01/31/sqlzoo练习16-self-join.html';
+          this.page.title = 'sqlzoo练习16-self-join';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

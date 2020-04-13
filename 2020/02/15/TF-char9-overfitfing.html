@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="overfitting,过拟合," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="TF-char9-overfitting 本章中主要讲解的是关于过拟合以及如何处理过拟合问题 $\color{red}{泛化能力}$：从训练集上学习到数据的真实模型，从而在未知的测试集上也能表现的良好的能力。 $\color{red}{独立假设同分布}$：训练集和测试集都是采自同一个数据分布，且采的样本是相互独立地。">
+<meta name="keywords" content="overfitting,过拟合">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TF-char9-overfittfing">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2020&#x2F;02&#x2F;15&#x2F;TF-char9-overfitfing.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="TF-char9-overfitting 本章中主要讲解的是关于过拟合以及如何处理过拟合问题 $\color{red}{泛化能力}$：从训练集上学习到数据的真实模型，从而在未知的测试集上也能表现的良好的能力。 $\color{red}{独立假设同分布}$：训练集和测试集都是采自同一个数据分布，且采的样本是相互独立地。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0082zybpgy1gbxgbaf8d5j30z50u078g.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0082zybpgy1gbxgbyyl62j317i0o8wgz.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0082zybpgy1gbxh9rr9isj30yq0bewfa.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0082zybpgy1gbxgdgdcawj30j20ggaav.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9txzcurc9j30ka0fwwgk.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9ty96dntrj30ls0dq79v.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9tyeuzbaej30nk0diac9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9tyl6vi5xj30z20u0h5e.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0082zybpgy1gbxhb2vld2j310t0u0jx4.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0082zybpgy1gbxhbg66njj31160u0te4.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0082zybpgy1gbxhc7jjblj30ni0dsdhx.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0082zybpgy1gbxhcmlqt1j311l0u0wk3.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0082zybpgy1gbxgozgk8lj30jo0fwwft.jpg">
+<meta property="og:updated_time" content="2020-02-15T15:06:14.646Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0082zybpgy1gbxgbaf8d5j30z50u078g.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2020/02/15/TF-char9-overfitfing.html"/>
+
+
+
+
+
+  <title>TF-char9-overfittfing | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2020/02/15/TF-char9-overfitfing.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TF-char9-overfittfing</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-15T22:23:35+08:00">
+                2020-2-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/TensorFlow/" itemprop="url" rel="index">
+                    <span itemprop="name">TensorFlow</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/02/15/TF-char9-overfitfing.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/02/15/TF-char9-overfitfing.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  2.5k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  10
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="TF-char9-overfitting">TF-char9-overfitting</h3>
+<p>本章中主要讲解的是关于<strong>过拟合以及如何处理过拟合问题</strong></p>
+<p>$\color{red}{泛化能力}$：从训练集上学习到数据的真实模型，从而在未知的测试集上也能表现的良好的能力。</p>
+<p>$\color{red}{独立假设同分布}$：训练集和测试集都是采自同一个数据分布，且采的样本是相互独立地。</p>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gbxgbaf8d5j30z50u078g.jpg" alt=""></p>
+</blockquote>
+<a id="more"></a>
+<h3 id="模型的容量">模型的容量</h3>
+<p>模型的容量或者说表达能力指的是模型拟合复杂函数的能力。一个评价指标是：<strong>模型的假设空间大小</strong>，即模型可以表示的函数集合的大小。</p>
+<ul>
+<li>假设空间越大越完备，从假设空间中搜索出逼近真实模型的函数的可能性也就越大。</li>
+<li>反之，若假设空间非常受限，很难找到逼近真实模型的函数。</li>
+</ul>
+<p><strong>过大的假设空间</strong>会增加搜索难度和计算代价，其中可能包含了大量表达能力过强的函数，能够将训练样本的观测误差也学习进来，从而伤害了模型的泛化能力。</p>
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gbxgbyyl62j317i0o8wgz.jpg" alt=""></p>
+<h3 id="过拟合与欠拟合">过拟合与欠拟合</h3>
+<p><strong>过拟合overfitting</strong>：当模型的容量过大，网络模型不仅在训练集上表现良好，同时也将额外的训练误差也学习到了，导致模型在未知的样本上表现不佳，也就是泛化能力偏弱。</p>
+<p><strong>欠拟合underfitting</strong>：模型在训练集和测试集上的表现都不是很好。</p>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gbxh9rr9isj30yq0bewfa.jpg" alt=""></p>
+</blockquote>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gbxgdgdcawj30j20ggaav.jpg" alt=""></p>
+</blockquote>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1g9txzcurc9j30ka0fwwgk.jpg" alt=""></p>
+</blockquote>
+<p>现代深度神经网络中过拟合现象非常容易出现，主要是因为神经网络的表达能力非常 强，很容易就出现了神经网络容量偏大的现象。下面是几种常见的$\color{red}{抑制过拟合}$的方法。</p>
+<h3 id="数据集划分">数据集划分</h3>
+<p>将数据集划分成训$\color{red}{练集、验证集和测试集}$。</p>
+<p>训练集：用于训练模型参数</p>
+<p>测试集：用于检验模型的泛化能力，测试集中样本不参与模型的训练，防止模型记住数据的特征，损害模型的泛化能力。</p>
+<h4 id="验证集和超参数">验证集和超参数</h4>
+<blockquote>
+<p>由于<strong>测试集的性能不能作为模型训练 的反馈</strong>，而我们需要在模型训练时能够挑选出较合适的模型超参数，判断模型是否过拟合等。</p>
+</blockquote>
+<p>验证集：用于选择模型的超参数（模型选择），主要功能包含：</p>
+<ol>
+<li><strong>根据验证集的性能来调整学习率、权值衰减系数、训练次数等</strong></li>
+<li>根据验证集的性能来判断是过拟合还是欠拟合</li>
+<li>根据验证集的性能来重新调整网络拓扑结构</li>
+</ol>
+<p>三者常用的划分比例为6：2：2</p>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1g9ty96dntrj30ls0dq79v.jpg" alt=""></p>
+</blockquote>
+<h4 id="提前停止">提前停止</h4>
+<p>当观测到<strong>过拟合现象</strong>时，可以从新设计网络模型的容量，使得模型的容量降低，从而减轻或去除过拟合现象</p>
+<ul>
+<li>降低网络的层数</li>
+<li>降低网络的参数量</li>
+<li>添加假设空间的约束等</li>
+</ul>
+<p>当观测到<strong>欠拟合现象</strong>时，可以尝试增大网络的容量</p>
+<ul>
+<li>加深网络的层数</li>
+<li>增加网络的参数量</li>
+<li>尝试更复杂的网络结构</li>
+</ul>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1g9tyeuzbaej30nk0diac9.jpg" alt=""></p>
+</blockquote>
+<p>当发现验证准确率连续多个<code>Epoch</code>没有下降时，可以预测已经达到了最适合的<code>epoch</code>（对训练集的所有样本循环迭代一次叫做一个 <code>Epoch</code>）的附近，从而提前<strong>停止训练</strong></p>
+<h3 id="模型设计">模型设计</h3>
+<p>网络的层数和采纳数量是网络容量的重要指标。如果是过拟合，需要减少网络的层数；如果是发现模型欠拟合，需要增大网络的容量。</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9tyl6vi5xj30z20u0h5e.jpg" alt="img"></p>
+<h3 id="正则化">正则化</h3>
+<p>模型的实际容量是可以四核网络参数的优化更新而产生变化的。通过限制网络的参数的稀疏性，可以啦约束网络的是实际容量</p>
+<p>这种约束的实现一般是通过在损失函数上加上<strong>额外的参数稀疏性惩罚项</strong>。</p>
+<p><strong>未加约束项</strong><br>
+$$<br>
+\text { Minimize } \mathcal{L}\left(f_{\theta}(\boldsymbol{x}), y\right),(\boldsymbol{x}, y) \in \mathbb{D}^{\text {train }}<br>
+$$<br>
+<strong>加上约束项</strong><br>
+$$<br>
+\text { Minimize } \mathcal{L}\left(f_{\theta}(x), y\right)+\lambda * \Omega(\theta),(x, y) \in \mathbb{D}^ \text { train }<br>
+$$<br>
+其中$\Omega$ 表示的是网络参数$\theta$的稀疏性约束函数，通过$L$范数来实现<br>
+$$<br>
+\Omega(\theta)=\sum_{\theta_{i}}\left|\theta_{i}\right|_{l}<br>
+$$<br>
+新的优化目标除了最小化原来的损失函数外，还需要约束网络参数$\theta$ 的稀疏性。权重关系通过超参数$\lambda$ 来平衡</p>
+<ul>
+<li>较大：网络的稀疏性更重要</li>
+<li>较小：网络的训练误差更重要</li>
+</ul>
+<h4 id="三种正则化方式">三种正则化方式</h4>
+<ol>
+<li>$L_0$正则化：指采用 $L_0$范数作为稀疏性惩罚项$\Omega(\theta)$的正则化方式</li>
+</ol>
+<p>$$<br>
+\Omega(\theta)=\sum_{\theta_{i}}\left|\theta_{i}\right|_{0}<br>
+$$</p>
+<p>该范数表示的非零元素的个数。</p>
+<ol start="2">
+<li>采用 $L_1$范数作为稀疏性惩罚项$\Omega(\theta)$的正则化方式，称之为$L_1$正则化</li>
+</ol>
+<p>$$<br>
+\Omega(\theta)=\sum_{\theta_{i}}\left|\theta_{i}\right|_{1}<br>
+$$</p>
+<p>该范数表示的是所有元素的绝对值之和。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">w1 = tf.random.normal([<span class="number">4</span>, <span class="number">2</span>])</span><br><span class="line">w2 = tf.random.normal([<span class="number">4</span>,<span class="number">3</span>])</span><br><span class="line"></span><br><span class="line">loss_reg = tf.reduce_sum(tf.match.abs(w1)) + tf.reduce_sum(tf.match.abs(w2)) <span class="comment"># 绝对值之和</span></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>采用 $L_2$范数作为稀疏性惩罚项$\Omega(\theta)$的正则化方式，称之为$L_2$正则化</li>
+</ol>
+<p>$$<br>
+\Omega(\theta)=\sum_{\theta_{i}}\left|\theta_{i}\right|_{2}<br>
+$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">loss_reg = tf.reduce_sum(tf.square(w1)) + tf.reduce_sum(tf.square(w2))  <span class="comment"># 平方之和</span></span><br></pre></td></tr></table></figure>
+<p>正则化系数$\lambda$的取值一般是：<code>0.000001,0.001,0.003,0.1,0.3,1,3</code>。</p>
+<p><strong>先尝试较小的正则化系数，观察是否出现过拟合现象；再逐渐增大网络参数稀疏性，提高泛化能力</strong>。过大的正则化系数可能导致网络不收敛，需要具体调节。</p>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gbxhb2vld2j310t0u0jx4.jpg" alt=""></p>
+</blockquote>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gbxhbg66njj31160u0te4.jpg" alt=""></p>
+</blockquote>
+<h3 id="Dropout">Dropout</h3>
+<p>Dropout通过随机断开神经网络的连接，较少每次训练时收集参与计算的模型的参数；在测试的时候，Dropout会恢复所有的连接，保证模型获得最好的性能。</p>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gbxhc7jjblj30ni0dsdhx.jpg" alt=""></p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x = tf.nn.dropout(x, rate=<span class="number">0.5</span>)</span><br><span class="line"><span class="comment"># 将Dropout当做一个层使用</span></span><br><span class="line">model.add(layers.Dropout(rate=<span class="number">0.5</span>))</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gbxhcmlqt1j311l0u0wk3.jpg" alt="img"></p>
+</blockquote>
+<h3 id="数据增强Data-Aumentation">数据增强Data Aumentation</h3>
+<p>增加数据集合大小是解决过拟合最重要的途径之一。通过数据增强加护可以增加训练的样本数量。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 缩放</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">preprocess</span><span class="params">(x, y)</span>:</span></span><br><span class="line">  x = tf.ii.read_file(x)  <span class="comment"># x 为图片路径</span></span><br><span class="line">  x = tf.image.decode_jpeg(x, channels=<span class="number">3</span>)</span><br><span class="line">  x = tf.image.resize(x, [<span class="number">244</span>,<span class="number">244</span>])  <span class="comment"># 进行图片的缩放</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 2. 翻转</span></span><br><span class="line">  x = tf.image.random_flip_left_right(x)  <span class="comment"># 水平翻转</span></span><br><span class="line">  x = tf.image.random_flip_up_down(x)  <span class="comment"># 垂直翻转</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 3. 旋转</span></span><br><span class="line">  x = tf.image.rot90(x, <span class="number">2</span>)  <span class="comment"># 旋转2个90度</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 4. 裁剪</span></span><br><span class="line">  x = tf.image.resize(x, [<span class="number">244</span>,<span class="number">244</span>])  <span class="comment"># 先缩放</span></span><br><span class="line">  x = tf.image.random_crop(x, [<span class="number">244</span>,<span class="number">244</span>,<span class="number">3</span>])  <span class="comment"># 再随机裁剪</span></span><br></pre></td></tr></table></figure>
+<h3 id="实战">实战</h3>
+<h4 id="构建数据集">构建数据集</h4>
+<p>采样<code>1000</code>个样本数据，同时添加标准差为<code>0.25</code>的高斯噪声数据。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入数据集生成工具</span></span><br><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> make_moons</span><br><span class="line"><span class="comment"># 从 moon 分布中随机采样 1000 个点，并切分为训练集-测试集</span></span><br><span class="line">X, y = make_moons(n_samples = N_SAMPLES, noise=<span class="number">0.25</span>, random_state=<span class="number">100</span>) X_train, X_test, y_train, y_test = train_test_split(X, y,</span><br><span class="line">                              test_size = TEST_SIZE, random_state=<span class="number">42</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># make_plot函数绘制出样本X和标签y的分布图</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_plot</span><span class="params">(X, y, plot_name, file_name, XX=None, YY=None, preds=None)</span>:</span></span><br><span class="line">plt.figure()</span><br><span class="line"><span class="comment"># sns.set_style("whitegrid")</span></span><br><span class="line">axes = plt.gca()</span><br><span class="line">axes.set_xlim([x_min,x_max])</span><br><span class="line">axes.set_ylim([y_min,y_max])</span><br><span class="line">axes.set(xlabel=<span class="string">"$x_1$"</span>, ylabel=<span class="string">"$x_2$"</span>)</span><br><span class="line"><span class="comment"># 根据网络输出绘制预测曲面</span></span><br><span class="line"><span class="keyword">if</span>(XX <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">and</span> YY <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">and</span> preds <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>):</span><br><span class="line">       plt.contourf(XX, YY, preds.reshape(XX.shape), <span class="number">25</span>, alpha = <span class="number">0.08</span>,</span><br><span class="line">                 cmap=cm.Spectral)</span><br><span class="line">       plt.contour(XX, YY, preds.reshape(XX.shape), levels=[<span class="number">.5</span>],cmap=<span class="string">"Greys"</span>,vmin=<span class="number">0</span>, vmax=<span class="number">.6</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制正负样本</span></span><br><span class="line">markers = [<span class="string">'o'</span> <span class="keyword">if</span> i == <span class="number">1</span> <span class="keyword">else</span> <span class="string">'s'</span> <span class="keyword">for</span> i <span class="keyword">in</span> y.ravel()]</span><br><span class="line">mscatter(X[:, <span class="number">0</span>], X[:, <span class="number">1</span>], c=y.ravel(), s=<span class="number">20</span>,cmap=plt.cm.Spectral, edgecolors=<span class="string">'none'</span>, m=markers)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 保存矢量图</span></span><br><span class="line">plt.savefig(OUTPUT_DIR+<span class="string">"/"</span>+file_name)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制数据集分布</span></span><br><span class="line">make_plot(X, y, <span class="literal">None</span>, <span class="string">"dataset.svg"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gbxgozgk8lj30jo0fwwft.jpg" alt="img"></p>
+<h4 id="网络层数的影响">网络层数的影响</h4>
+<p>进行<code>5</code>次训练，构建网络层数<code>n+2</code>层的全连接层；通过<code>Adam</code>优化器训练<code>500</code>个<code>Epoch</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">5</span>):</span><br><span class="line">  model = Sequential()  <span class="comment"># 创建容器</span></span><br><span class="line">  model.add(Dense(<span class="number">8</span>, input_dim=<span class="number">2</span>, activation=<span class="string">'relu'</span>))  <span class="comment"># 创建第一层</span></span><br><span class="line">  <span class="keyword">for</span> _ <span class="keyword">in</span> range(n):  <span class="comment"># 添加n层，总共n+2层</span></span><br><span class="line">    model.add(Dense(<span class="number">32</span>, activation=<span class="string">'relu'</span>))</span><br><span class="line">  model.add(Dense(<span class="number">1</span>, activation=<span class="string">'sigmoid'</span>)) <span class="comment"># 最后1层</span></span><br><span class="line"></span><br><span class="line">  model.compile(loss=<span class="string">'binary_crossentropy'</span>, optimizer=<span class="string">'addm'</span>,metrics=[<span class="string">'accuracy'</span>])  <span class="comment"># 模型装载与训练</span></span><br><span class="line">  history = model.fit(X_train, y_train, epochs=N_EPOCHS, verbose=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 绘制不同的层数的网络决策边界曲线</span></span><br><span class="line">  preds = model.predict_classes(np.c_[XX.ravel(), YY.ravel()])</span><br><span class="line">  title = <span class="string">"网络层数(&#123;&#125;)"</span>.format(n)</span><br><span class="line">  file = <span class="string">"网络容量%f.png"</span>%(<span class="number">2</span>+n*<span class="number">1</span>)</span><br><span class="line">  make_plot(X_train, y_train, title, file, XX, YY, preds)</span><br></pre></td></tr></table></figure>
+<h4 id="Dropout影响">Dropout影响</h4>
+<ul>
+<li>进行<code>5</code>次试验，每次试验使用<code>7</code>层的全连接网络进行训练</li>
+<li>插入了<code>0-4</code>个<code>Dropout</code>层</li>
+<li>通过<code>Adam</code>优化器训练 <code>500</code> 个<code>Epoch</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> range(<span class="number">5</span>):  <span class="comment"># 构建5种不同数量的Dropout层的网络</span></span><br><span class="line">  model = Sequential()  <span class="comment"># 构建容器</span></span><br><span class="line">  model.add(Dense(<span class="number">8</span>, input_dim=<span class="number">2</span>, activation=<span class="string">'relu'</span>))  <span class="comment"># 创建第一层</span></span><br><span class="line">  count = <span class="number">0</span></span><br><span class="line">  <span class="keyword">for</span> _ <span class="keyword">in</span> range(<span class="number">5</span>):  <span class="comment"># 固定层数为5</span></span><br><span class="line">    model.add(Dense(<span class="number">64</span>,  activation=<span class="string">'relu'</span>))</span><br><span class="line">    <span class="keyword">if</span> counter &lt; n:  <span class="comment"># 添加n个的dropout层</span></span><br><span class="line">      counter += <span class="number">1</span></span><br><span class="line">      model.add(layers.Dropout(rate=<span class="number">0.5</span>))</span><br><span class="line"></span><br><span class="line">  model.add(Dense(<span class="number">1</span>, activation=<span class="string">'sigmoid'</span>))   <span class="comment"># 输出层</span></span><br><span class="line">  model.compile(loss=<span class="string">'binary_crossentropy'</span>, optimizer=<span class="string">"adam"</span>, metrics=[<span class="string">'accuracy'</span>])  <span class="comment"># 模型装配与训练</span></span><br><span class="line">  history = model.fit(X_train, y_train, epochs=N_EPOCHS, verbose=<span class="number">1</span>)</span><br><span class="line">  preds = model.predict_classes(np.c_[XX.ravel(), YY.ravel()])</span><br><span class="line">  title = <span class="string">"Dropout(&#123;&#125;)"</span>.format(n)</span><br><span class="line">  file = <span class="string">"Dropout%f.png"</span>%(n)</span><br><span class="line">  make_plot(X_train, y_train, title, file,XX, YY, preds)</span><br></pre></td></tr></table></figure>
+<h4 id="正则化影响">正则化影响</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">build_model_regularization</span><span class="params">(_lambda)</span>:</span></span><br><span class="line">  <span class="comment"># 创建带有正则项的神经网络</span></span><br><span class="line">  model = Sequential()</span><br><span class="line">  model.add(Dense(<span class="number">8</span>, input_dim=<span class="number">2</span>, activation=<span class="string">'relu'</span>))</span><br><span class="line">  model.add(Dense(<span class="number">256</span>, activation=<span class="string">'relu'</span>, kernel_regularizer=regularizers<span class="number">.12</span>(_lamnbda)))</span><br><span class="line">  model.add(Dense(<span class="number">256</span>, activation=<span class="string">'relu'</span>, kernel_regularizer=regularizers<span class="number">.12</span>(_lamnbda)))</span><br><span class="line">  model.add(Dense(<span class="number">256</span>, activation=<span class="string">'relu'</span>, kernel_regularizer=regularizers<span class="number">.12</span>(_lamnbda)))</span><br><span class="line"></span><br><span class="line">  model.add(Dense(<span class="number">1</span>, activation=<span class="string">'sigmoid'</span>))  <span class="comment"># 输出层</span></span><br><span class="line">  model.compile(loss=<span class="string">'binary_crossentropy'</span>, optimizer=<span class="string">"adam"</span>, metrics=<span class="string">"[accuracy]"</span>)  <span class="comment"># 模型装配</span></span><br><span class="line">  <span class="keyword">return</span> model</span><br><span class="line"></span><br><span class="line"><span class="comment"># 保持网络结构不变，通过调整正则系数来测试网络的训练效果</span></span><br><span class="line"><span class="keyword">for</span> _lambda <span class="keyword">in</span> [<span class="number">1e-5</span>, <span class="number">1e-3</span>, <span class="number">1e-1</span>, <span class="number">0.12</span>, <span class="number">0.13</span>]:  <span class="comment"># 设置不同的正则化系数</span></span><br><span class="line">  model = build_model_regularization(_lambda)  <span class="comment"># 创建带有正则化系数的模型</span></span><br><span class="line">  history = model.fit(X_train, y_train, epochs=N_EPOCHS, verbose=<span class="number">1</span>)  <span class="comment"># 模型训练</span></span><br><span class="line">  layer_index = <span class="number">2</span></span><br><span class="line">  plot_title = <span class="string">"正则化-[lambda = &#123;&#125;]"</span>.format(str(_lambda))</span><br><span class="line">  file_name = <span class="string">"正则化_"</span> + str(_lambda)</span><br><span class="line">  <span class="comment"># 绘制网络权值范围图</span></span><br><span class="line">  plot_weights_matrix(model, layer_index, plot_title, file_name)</span><br><span class="line">  <span class="comment"># 绘制不同正则化系数的决策边界曲线</span></span><br><span class="line">  preds = model.predict_classes(np.c_[XX.ravel(), YY.ravel()])</span><br><span class="line">  title = <span class="string">"正则化&#123;&#125;"</span>.format(_lambda)</span><br><span class="line">  file = <span class="string">"正则化%f.svg"</span> %_lambda</span><br><span class="line">  make_plot(X_train, y_train, title, file,XX, YY, preds)</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2020/02/15/TF-char9-overfitfing.html">TF-char9-overfittfing</a></p>
+  <p><span>发布时间:</span>2020年02月15日 - 22:02</p>
+  <p><span>原始链接:</span><a href="/2020/02/15/TF-char9-overfitfing.html" title="TF-char9-overfittfing">http://www.renpeter.cn/2020/02/15/TF-char9-overfitfing.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2020/02/15/TF-char9-overfitfing.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/overfitting/" rel="tag"># overfitting</a>
+          
+            <a href="/tags/%E8%BF%87%E6%8B%9F%E5%90%88/" rel="tag"># 过拟合</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/15/Leetcode-sql-two.html" rel="next" title="Leetcode-sql-two">
+                <i class="fa fa-chevron-left"></i> Leetcode-sql-two
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/17/%E7%BE%8E%E4%BA%BA%E9%B1%BC.html" rel="prev" title="美人鱼">
+                美人鱼 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#TF-char9-overfitting"><span class="nav-number">1.</span> <span class="nav-text">TF-char9-overfitting</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型的容量"><span class="nav-number">2.</span> <span class="nav-text">模型的容量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#过拟合与欠拟合"><span class="nav-number">3.</span> <span class="nav-text">过拟合与欠拟合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据集划分"><span class="nav-number">4.</span> <span class="nav-text">数据集划分</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#验证集和超参数"><span class="nav-number">4.1.</span> <span class="nav-text">验证集和超参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#提前停止"><span class="nav-number">4.2.</span> <span class="nav-text">提前停止</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型设计"><span class="nav-number">5.</span> <span class="nav-text">模型设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正则化"><span class="nav-number">6.</span> <span class="nav-text">正则化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#三种正则化方式"><span class="nav-number">6.1.</span> <span class="nav-text">三种正则化方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dropout"><span class="nav-number">7.</span> <span class="nav-text">Dropout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据增强Data-Aumentation"><span class="nav-number">8.</span> <span class="nav-text">数据增强Data Aumentation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实战"><span class="nav-number">9.</span> <span class="nav-text">实战</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#构建数据集"><span class="nav-number">9.1.</span> <span class="nav-text">构建数据集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#网络层数的影响"><span class="nav-number">9.2.</span> <span class="nav-text">网络层数的影响</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Dropout影响"><span class="nav-number">9.3.</span> <span class="nav-text">Dropout影响</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#正则化影响"><span class="nav-number">9.4.</span> <span class="nav-text">正则化影响</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2020/02/15/TF-char9-overfitfing.html';
+          this.page.identifier = '2020/02/15/TF-char9-overfitfing.html';
+          this.page.title = 'TF-char9-overfittfing';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

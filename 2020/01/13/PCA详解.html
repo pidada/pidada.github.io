@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="降维,PCA," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="西瓜书第10章讲解的是降维和度量学习的相关内容">
+<meta name="keywords" content="降维,PCA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PCA详解">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2020&#x2F;01&#x2F;13&#x2F;PCA%E8%AF%A6%E8%A7%A3.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="西瓜书第10章讲解的是降维和度量学习的相关内容">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gatul0awv6j30fg06i0tf.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gatjxkwmqjj31sy0h0wlb.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gatu1hhmavj30qc0rqabn.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gatupd3rv6j30gn0gkmxh.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gatv9c4ls9j30gm0gjwf6.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gatvd83i2jj30i605a0t4.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gatvlzagnrj30qk07gjsq.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gau6xyr03uj30uw054wfc.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gatxj7otbnj30ga08a0t9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gatxqz9znjj30ig07eq35.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gatxxavbxqj31v40u04qp.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gau7sd1l32j30qs0miwg8.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gau7v1tpn1j314m0p244r.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gau7x78zjnj30oe0ekdhp.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gau7y9a3ivj31460ds41w.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gau7zd10njj30o40eiabe.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gau80ec60vj30te0ee0vh.jpg">
+<meta property="og:updated_time" content="2020-01-12T16:24:18.882Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1gatul0awv6j30fg06i0tf.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2020/01/13/PCA详解.html"/>
+
+
+
+
+
+  <title>PCA详解 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2020/01/13/PCA%E8%AF%A6%E8%A7%A3.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">PCA详解</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-01-13T00:03:34+08:00">
+                2020-1-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/%E8%A5%BF%E7%93%9C%E4%B9%A6/" itemprop="url" rel="index">
+                    <span itemprop="name">西瓜书</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/01/13/PCA%E8%AF%A6%E8%A7%A3.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/01/13/PCA详解.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  3.5k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  13
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>西瓜书第10章讲解的是降维和度量学习的相关内容</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gatul0awv6j30fg06i0tf.jpg" alt=""></p>
+<a id="more"></a>
+<h3 id="维度">维度</h3>
+<p>对于数组和Series而言，维度就是shape返回的数值shape中 返回了几个数字，就是几维。</p>
+<p>索引以外的数据，不分行列的称之为一维，有行列之分的称之为二维，也称之为表。一张表最多是二维的。</p>
+<p>数组中的每张表可以是一个特征矩阵或者一个DataFrame。<strong>行是样本，列是特征。</strong></p>
+<blockquote>
+<p>笔记：维度指的是样本的数量或者特征的数量；一般情况下，指的是特征数量。n个特征就是n维</p>
+</blockquote>
+<p>对于图像而言，维度就是图像中特征向量的数量。特征向量可以理解成坐标轴。</p>
+<h3 id="降维decompositon">降维decompositon</h3>
+<p>降维算法中降维指的是：降低特征矩阵中特征矩阵的数量。</p>
+<p><code>sklearn</code>中的降维算法在<code>decomposition</code>中。**模块的本质是矩阵分解模块。**代表是SVD，奇异值分解。</p>
+<p>主成分分析中的常见的模块：</p>
+<ul>
+<li>主成分分析PCA</li>
+<li>增量主成分分析IPCA，Incremental PCA</li>
+<li>核主成分分析KPCA，Kernel PCA</li>
+<li>小批量稀疏主成分分析，MiniBatchSparse PCA</li>
+<li>稀疏主成分分析，Sparse PCA</li>
+<li>截断的SVD，Truncated SVD</li>
+</ul>
+<p><strong>高级矩阵分解</strong></p>
+<ol>
+<li>具有在线变分贝叶斯算法的隐含狄利克雷分布，LatenDirichletAllocation</li>
+<li>非负矩阵分解，NMF</li>
+<li>稀疏编码，SparseCoder</li>
+</ol>
+<p>在降维的过程中，会减少特征的数量，则意味着需要删除数据：<strong>减少特征数量、保留大部分有效信息</strong></p>
+<h4 id="方差过滤">方差过滤</h4>
+<p>如果一个特征的方差</p>
+<ul>
+<li>过小：特征上很可能有很多相同的取值，区分度很低，有效信息少</li>
+<li>过大：特征上带有大量的有效信息</li>
+</ul>
+<blockquote>
+<p>笔记：PCA中就是使用样本方差作为信息衡量的指标。样本方差越大，可解释型越强，特征所带的信息越多</p>
+</blockquote>
+<p>$$<br>
+Var=\frac{1}{n-1}\sum_{i=1}^n(x_i-\hat x)^2<br>
+$$</p>
+<ul>
+<li>Var是特征的方差</li>
+<li>n是样本数量</li>
+<li>$x_i$代表的是一个特征中的每个样本取值</li>
+<li>$\hat x$代表的是这一列样本的均值</li>
+</ul>
+<h4 id="为什么是n-1">为什么是n-1</h4>
+<p><strong>为了得到样本方差的无偏估计。</strong><a href="https://www.zhihu.com/question/20099757" target="_blank" rel="noopener">为什么样本方差的分母是n-1</a></p>
+<h4 id="降维demo">降维demo</h4>
+<p>通过一个<strong>二维降低到一维</strong>的栗子来说明降维的实现过程</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gatjxkwmqjj31sy0h0wlb.jpg" alt=""></p>
+<table>
+<thead>
+<tr>
+<th>x_1</th>
+<th>x_2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>3</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p>上面原始数据中，两个特征的均值都是2，方差都是$\frac{(1-2)<sup>2+(2-2)</sup>2+(3-2)^2}{3-1}=1$；总方差都是2</p>
+<p>逆时针旋转45度之后变成了</p>
+<table>
+<thead>
+<tr>
+<th>$x_1$</th>
+<th>$x_2$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$\sqrt 2$</td>
+<td>0</td>
+</tr>
+<tr>
+<td>$2\sqrt 2$</td>
+<td>0</td>
+</tr>
+<tr>
+<td>$3\sqrt 2$</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>$x_2$的均值和方差都是0；$x_1$的均值是$2\sqrt 2$；方差是2。总方差也是2</p>
+<blockquote>
+<p>笔记：PCA中取得是信息量较大的特征，即方差较大，所以特征$x_2$可以删除，二维变成了一维，保留了原始数据的信息。</p>
+</blockquote>
+<h4 id="降维基本步骤">降维基本步骤</h4>
+<p>将二维矩阵和n维矩阵进行类比，掌握降维算法的基本过程：</p>
+<table>
+<thead>
+<tr>
+<th>过程</th>
+<th>二维特征矩阵</th>
+<th>n维特征矩阵</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>找出2个特征对应的直角坐标系</td>
+<td>找出原本的n个特征向量构成的n维空间V</td>
+</tr>
+<tr>
+<td>2</td>
+<td>决定降维之后的特征数量：1</td>
+<td>决定降维之后的特征数量：k</td>
+</tr>
+<tr>
+<td>3</td>
+<td>旋转，找出一个新的坐标系；<br />本质上是找出2个新的特征向量，构成新平面<br />新特征向量能够被压缩到较少的特征上，总信息量损失不多</td>
+<td>通过某种变化，找出n个新的特征变量，以及它们构成的新n维空间V</td>
+</tr>
+<tr>
+<td>4</td>
+<td>将原始数据在新坐标系上的坐标找出来</td>
+<td>找出原始数据在特征空间V上的对应的值，“将新的数据映射到新空间中”</td>
+</tr>
+<tr>
+<td>5</td>
+<td>选取方差最大的特征向量，删除没有被选中的特征，降低到1维</td>
+<td>选取前k个信息量最大的特征，从n维降低k维</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>笔记：步骤3中，找出n个新特征向量，将数据压缩到少数特征上，且总信息量不能损失过多的技术，主要是<strong>矩阵分解</strong></p>
+</blockquote>
+<h3 id="PCA">PCA</h3>
+<h4 id="思想">思想</h4>
+<blockquote>
+<p>PCA（Principal Component Analysis）是一种常用的数据分析方法，属于一种<strong>无监督学习</strong>的算法。PCA通过线性变换将原始数据变换为一组各维度线性无关的表示，可用于提取数据的主要特征分量，常用于高维数据的降维。</p>
+</blockquote>
+<p>参考文章<a href="https://zhuanlan.zhihu.com/p/21580949" target="_blank" rel="noopener">PCA数学原理</a></p>
+<h4 id="內积和投影">內积和投影</h4>
+<h5 id="內积定义">內积定义</h5>
+<p>两个<strong>维度相同</strong>向量（机器学习中一般是指列向量）的內积被定义成<br>
+$$<br>
+(a_1,a_2,…,a_n)^T\cdot (b_1,b_2,…,b_n)^T = a_1b_1+a_2b_2+…+a_nb_n<br>
+$$<br>
+<strong>內积将两个向量映射成为一个实数</strong></p>
+<h5 id="內积的几何意义">內积的几何意义</h5>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gatu1hhmavj30qc0rqabn.jpg" alt=""></p>
+</blockquote>
+<p>$A=(x_1,y_1),B=(x_2,y_2)$，$\alpha$为它们之前的夹角，<strong>投影的矢量长度</strong>是$|A|cos(\alpha),|A|=\sqrt{x_1<sup>2+y_1</sup>2}$表示模，也就是A线段的标量长度。內积的另一种表示形式为<br>
+$$<br>
+A\cdot B=|A||B|cos(\alpha)<br>
+$$<br>
+也就是A到B的投影长度乘以B的模。<strong>特殊情况下，如果B的模是1</strong>，那么內积结果就是<strong>A到B的投影长度</strong>。</p>
+<h4 id="基">基</h4>
+<h5 id="基的产生">基的产生</h5>
+<p>一个二维向量可以对应二维笛卡尔直角坐标系中从原点出发的一个有向线段。代数中常用线段的终点坐标表示向量，例如下面的(3,2)。</p>
+<p>实际上向量(3,2)表示的是在X轴上的投影是3，Y轴上的投影是2。</p>
+<blockquote>
+<p>笔记：投影是矢量，可以是负值，与方向有关。</p>
+</blockquote>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gatupd3rv6j30gn0gkmxh.jpg" alt=""></p>
+</blockquote>
+<p>在二维坐标系中，向量(x,y)实际上表示为线性组合：<br>
+$$<br>
+x(1,0)<sup>T+y(0,1)</sup>T<br>
+$$<br>
+那么，(1,0)和(0,1)可以看做是二维空间中的<strong>一组基</strong>。</p>
+<blockquote>
+<p>笔记：实际上任何两个线性无关的二维向量都可以成为一组基，所谓线性无关在二维平面内可以直观认为是两个不在一条直线上的向量。</p>
+</blockquote>
+<p>例如，(1,1)和(-1,1)也可以成为一组基。一般来说，我们希望基的模是1，因为从内积的意义可以看到，如果基的模是1，那么就可以方便的用向量点乘基而直接获得其在新基上的坐标了。上面的基变成了$(\frac{1}{\sqrt2},\frac{1}{\sqrt2})、(-\frac{1}{\sqrt2},\frac{1}{\sqrt2})$，即除以了各自的模$\sqrt2$。</p>
+<p>那么(3,2)在这组基下的新坐标为$(\frac{5}{\sqrt2},-\frac{1}{\sqrt2})$<br>
+$$<br>
+3*\frac{1}{\sqrt2}+2*\frac{1}{\sqrt 2}<br>
+$$</p>
+<p>$$<br>
+3*(-\frac{1}{\sqrt2})+2*\frac{1}{\sqrt 2}<br>
+$$</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gatv9c4ls9j30gm0gjwf6.jpg" alt=""></p>
+<blockquote>
+<p>笔记：一般情况基是正交的，就是说內积为0，直观来说是相互垂直的。</p>
+</blockquote>
+<h5 id="基变换的矩阵表示">基变换的矩阵表示</h5>
+<p>矩阵的两行表示两个基，乘以原来的向量，得到新基下的坐标。</p>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gatvd83i2jj30i605a0t4.jpg" alt=""></p>
+</blockquote>
+<p>一般的，如果我们有<code>M</code>个<code>N</code>维向量，想将其变换为由<code>R</code>个<code>N</code>维向量表示的新空间中</p>
+<ul>
+<li>首先将<code>R</code>个基按行组成矩阵<code>A</code>，就是整个<code>P</code>向量</li>
+<li>然后将向量按列组成矩阵<code>B</code>，就是整个<code>a</code>向量</li>
+<li>两矩阵的乘积<code>AB</code>就是变换结果，其中<code>AB</code>的第<code>m</code>列为<code>A</code>中第<code>m</code>列变换后的结果</li>
+</ul>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gatvlzagnrj30qk07gjsq.jpg" alt=""></p>
+</blockquote>
+<p>两个矩阵相乘的意义是：将<strong>右边矩阵中的每列列向量</strong>变换到<strong>左边矩阵中的每一行行向量作为基</strong>所表示的空间中去。</p>
+<blockquote>
+<p>笔记：不同的基能够对同一组数据进行不同的表示。基的数量小于向量本身的维数，能够达到降维的效果</p>
+</blockquote>
+<h4 id="方差与协方差矩阵">方差与协方差矩阵</h4>
+<h5 id="去中心化">去中心化</h5>
+<p><strong>将所有的字段减去字段均值</strong>，结果变成了每个字段都变成了均值为<code>0</code></p>
+<h5 id="方差">方差</h5>
+<p><strong>一个字段的方差</strong>可以看做是每个元素与字段均值$\mu$的差的平方和的均值<br>
+$$<br>
+Var(a)=\frac{1}{m}\sum<sup>m_{i=1}(a_i-\mu)</sup>2<br>
+$$<br>
+由于每个字段的<strong>均值变成了0</strong>，那么<strong>总的方差</strong>可以简写成<br>
+$$<br>
+Var(a)=\frac{1}{m}\sum_{i=1}<sup>ma_i</sup>2Var(a)=\frac{1}{m}\sum_{i=1}<sup>ma_i</sup>2<br>
+$$</p>
+<blockquote>
+<p>笔记：将每个方差加起来再除以总样本数m</p>
+</blockquote>
+<h5 id="协方差">协方差</h5>
+<p>数学上可以用两个字段的协方差表示其<strong>相关性</strong><br>
+$$<br>
+Cov(a,b)=\frac{1}{m-1}\sum_{i=1}^m(a_i-\mu_a)(b_i-\mu_b)<br>
+$$<br>
+当均值为0，上面的协方差公式可以表示为<br>
+$$<br>
+Cov(a,b)=\frac{1}{m}\sum_{i=1}^ma_ib_i<br>
+$$<br>
+<strong>当样本数较大时，不必在意其是 m 还是 m-1，为了方便计算，我们分母取 m。</strong></p>
+<blockquote>
+<p>笔记：如果只是单纯地选择方差最大的方向，后续的方向应该会和方差最大的方向接近重合，就导致了字段是线性相关的。<strong>我们不希望字段之间存在相关性</strong>。</p>
+</blockquote>
+<p>当协方差为0，表示两个字段完全独立；为了让协方差为0，第二个基应当在和第一个基正交的方向上（<strong>垂直方向</strong>）。</p>
+<h5 id="协方差矩阵">协方差矩阵</h5>
+<p>协方差矩阵是$\frac{1}{m-1}\sum<sup>m_{i=1}x_ix_i</sup>T$</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gau6xyr03uj30uw054wfc.jpg" alt=""></p>
+<ul>
+<li>对角线上是两个字段的方差</li>
+<li>其他元素是协方差</li>
+</ul>
+<h5 id="协方差矩阵对角化">协方差矩阵对角化</h5>
+<ul>
+<li>除去对角线上的元素，其他全部变成0</li>
+<li>对角线上的元素从大到小，从上往下排列</li>
+</ul>
+<p>原始的协方差矩阵是C，P是一组基按行组成的矩阵，设Y=PX，Y对应的协方差矩阵是D</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gatxj7otbnj30ga08a0t9.jpg" alt=""></p>
+<p>由于<strong>C是一个对称矩阵</strong>，满足：</p>
+<ol>
+<li>实对称矩阵不同特征值对应的特征向量必然正交</li>
+<li>设特征向量$\lambda$重数为<code>r</code>，则必然存在<code>r</code>个线性无关的特征向量对应于$\lambda$，因此可以将<code>r</code>个特征向量单位正交化</li>
+</ol>
+<p><code>e</code>代表的是单位向量，对于协方差矩阵<code>C</code>的结论如下：</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gatxqz9znjj30ig07eq35.jpg" alt=""></p>
+<p>那么P是协方差矩阵的特征向量单位化后按行排列出的矩阵，$P=E^T$</p>
+<h5 id="优化目标">优化目标</h5>
+<ul>
+<li><strong>选择K个基之后最大程度地保留原有的信息</strong></li>
+<li>K个基是单位正交基</li>
+<li>原始数据映射到这组基上，各个字段之间的协方差为0，字段的总方差尽可能大。</li>
+</ul>
+<p>解决方法：希望投影后的投影值尽量地分散。满足的条件是：</p>
+<ul>
+<li><strong>最近重构性</strong>：样本点到投影平面（空间）的距离足够近</li>
+<li><strong>最大可分性</strong>：样本点在投影平面上的投影尽可能的分开</li>
+</ul>
+<h4 id="PCA算法">PCA算法</h4>
+<ol>
+<li>输入：样本集D和低维空间维度k</li>
+<li>具体过程
+<ul>
+<li>所有样本进行去中心化$x_i := x_i-\hat x$</li>
+<li>计算所有样本的协方差矩阵$XX^T$</li>
+<li>对协方差矩阵做特征值分解</li>
+<li>取最大的k个特征值所对应的特征向量$w_1,w_2,…,w_k$</li>
+</ul>
+</li>
+<li>输出投影矩阵：$W^*=(w_1,w_2,…,w_k)$</li>
+</ol>
+<h4 id="PCA实例">PCA实例</h4>
+<blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gatxxavbxqj31v40u04qp.jpg" alt=""></p>
+</blockquote>
+<p>$\lambda_1$比较大，所以使用$c_1$作为基</p>
+<h3 id="sklearn中PCA的使用">sklearn中PCA的使用</h3>
+<p>重要的参数是<code>n_components</code>，降维之后需要保留的特征数量，取值在<code>[0, min(X.shape)]</code>。如果不填写，默认是<code>min(X.shape)</code></p>
+<h4 id="包导入">包导入</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_iris</span><br><span class="line"><span class="keyword">from</span> sklearn.decomposition <span class="keyword">import</span> PCA   <span class="comment"># 导入PCA模块</span></span><br></pre></td></tr></table></figure>
+<h4 id="数据导入">数据导入</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">iris = load_iris()</span><br><span class="line">X = iris.data</span><br><span class="line">y = iris.target</span><br><span class="line"></span><br><span class="line">X.shape  <span class="comment"># 2维数组</span></span><br><span class="line">pd.DataFrame(X)  <span class="comment"># 4维的特征矩阵</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gau7sd1l32j30qs0miwg8.jpg" alt=""></p>
+<h4 id="PCA降维">PCA降维</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 调用PCA实现降维</span></span><br><span class="line">pca = PCA(n_components=<span class="number">2</span>)   <span class="comment"># 实例化</span></span><br><span class="line">pca = pca.fit(X)  <span class="comment"># 传入特征矩阵，拟合模型</span></span><br><span class="line">X_dr = pca.transform(X)  <span class="comment"># 获取新矩阵</span></span><br><span class="line">X_dr.shape</span><br><span class="line"></span><br><span class="line"><span class="comment"># 一步到位的写法：X_dr = PCA(2).fit_transform(X)</span></span><br></pre></td></tr></table></figure>
+<h4 id="可视化">可视化</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X_dr[y == <span class="number">0</span>, <span class="number">0</span>]   <span class="comment"># 鸢尾花为第0种的第1列特征的数据；X_dr[y == 0, 1]  第2列特征的数据</span></span><br></pre></td></tr></table></figure>
+<p>如何取出每种鸢尾花的两个特征中的数据</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gau7v1tpn1j314m0p244r.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">plt.figure()</span><br><span class="line">plt.scatter(X_dr[y == <span class="number">0</span>, <span class="number">0</span>],X_dr[y == <span class="number">0</span>, <span class="number">1</span>],c=<span class="string">'red'</span>,label=iris.target_names[<span class="number">0</span>])</span><br><span class="line">plt.scatter(X_dr[y == <span class="number">1</span>, <span class="number">0</span>],X_dr[y == <span class="number">1</span>, <span class="number">1</span>],c=<span class="string">'green'</span>,label=iris.target_names[<span class="number">1</span>])</span><br><span class="line">plt.scatter(X_dr[y == <span class="number">2</span>, <span class="number">0</span>],X_dr[y == <span class="number">2</span>, <span class="number">1</span>],c=<span class="string">'orange'</span>,label=iris.target_names[<span class="number">2</span>])</span><br><span class="line">plt.legend()</span><br><span class="line">plt.title(<span class="string">"PCA of IRIS dataset"</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># for循环实现</span></span><br><span class="line">colors = [<span class="string">"red"</span>, <span class="string">"green"</span>, <span class="string">"orange"</span>]</span><br><span class="line">plt.figure()</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">3</span>):</span><br><span class="line">    plt.scatter(X_dr[y == i, <span class="number">0</span>]</span><br><span class="line">               ,X_dr[y == i, <span class="number">1</span>]</span><br><span class="line">               ,alpha = <span class="number">0.7</span></span><br><span class="line">               ,c = colors[i]</span><br><span class="line">               ,label = iris.target_names[i])</span><br><span class="line"></span><br><span class="line">plt.legend()</span><br><span class="line">plt.title(<span class="string">"PCA of IRIS dataset"</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gau7x78zjnj30oe0ekdhp.jpg" alt=""></p>
+<h4 id="降维之后数据的信息探索">降维之后数据的信息探索</h4>
+<p>主要是两个属性</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gau7y9a3ivj31460ds41w.jpg" alt=""></p>
+<h4 id="累计可解释方差">累计可解释方差</h4>
+<p>当<code>n_components</code>中不填写任何值，默认是min.(X.shape)个特征。通过累计可解释性方差贡献率曲线来选择最好的<code>n_components</code>。曲线横纵坐标分别是：</p>
+<ul>
+<li>降维后保留的特征个数</li>
+<li>累积可解释性方差贡献率</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># numpy中额cumsum来累积计算</span></span><br><span class="line">pca_line = PCA().fit(X)   <span class="comment"># PCA后面没有填写n_components值</span></span><br><span class="line">plt.plot([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>], np.cumsum(pca_line.explained_variance_ratio_))</span><br><span class="line">plt.xticks([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>])  <span class="comment"># 保证横坐标是整数，不会出现1.5</span></span><br><span class="line">plt.xlabel(<span class="string">"Number of components after dimension reduction"</span>)</span><br><span class="line">plt.ylabel(<span class="string">"Cumulative explained variance"</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gau7zd10njj30o40eiabe.jpg" alt=""></p>
+<blockquote>
+<p>结果表明选择2个或者3个特征是比较好的</p>
+</blockquote>
+<h4 id="基于极大似然估计MLE的PCA">基于极大似然估计MLE的PCA</h4>
+<p><code>n_components</code>中不仅可以填写数字，还可以通过极大似然估计<code>MLE</code>来自选超参数</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1gau80ec60vj30te0ee0vh.jpg" alt=""></p>
+<h4 id="按照指定的信息占比选择参数">按照指定的信息占比选择参数</h4>
+<p>输入<code>0-1</code>之间的浮点数，并且配合参数<code>svd_solver=&quot;full&quot;</code>，表示希望降维后的可解释方差占原始数据的信息比例。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">pca_f = PCA(n_components=<span class="number">0.97</span>, svd_solver=<span class="string">"full"</span>)</span><br><span class="line">pca_f = pca_f.fit(X)</span><br><span class="line">X_f = pca_f.transform(X)  <span class="comment"># 返回降维后的特征矩阵</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 不同的占比</span></span><br><span class="line">pca_f = PCA(n_components=<span class="number">0.99</span>, svd_solver=<span class="string">"full"</span>)</span><br><span class="line">pca_f = pca_f.fit(X)</span><br><span class="line">X_f = pca_f.transform(X)</span><br><span class="line">pca_f.explained_variance_ratio_.sum()</span><br></pre></td></tr></table></figure>
+<h3 id="PCA和SVD比较">PCA和SVD比较</h3>
+<ul>
+<li>PCA：信息量的衡量指标为方差，通过<strong>特征值分解找出空间V</strong>；需要求解协方差矩阵$\frac{1}{n}XX^T$，将特征矩阵X分解成下面的3个矩阵，$\sum$是对角矩阵（<strong>对角线上有值，它们就是方差</strong>；其余为0）</li>
+</ul>
+<p>$$<br>
+X \rightarrow Q\sum Q^{-1}<br>
+$$</p>
+<ul>
+<li>SVD使用奇异值分解来找出空间V</li>
+</ul>
+<p>$$<br>
+X \rightarrow U \sum V^T<br>
+$$</p>
+<p>$U 、 V^T$表示的是<strong>左右奇异矩阵</strong></p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2020/01/13/PCA%E8%AF%A6%E8%A7%A3.html">PCA详解</a></p>
+  <p><span>发布时间:</span>2020年01月13日 - 00:01</p>
+  <p><span>原始链接:</span><a href="/2020/01/13/PCA%E8%AF%A6%E8%A7%A3.html" title="PCA详解">http://www.renpeter.cn/2020/01/13/PCA%E8%AF%A6%E8%A7%A3.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2020/01/13/PCA%E8%AF%A6%E8%A7%A3.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E9%99%8D%E7%BB%B4/" rel="tag"># 降维</a>
+          
+            <a href="/tags/PCA/" rel="tag"># PCA</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/12/%E8%87%B4%E6%95%AC%E9%82%A3%E4%BA%9B%E5%B9%B4%E9%99%AA%E6%88%91%E8%B5%B0%E8%BF%87%E9%9D%92%E6%98%A5%E7%9A%84%E4%BA%BA.html" rel="next" title="致敬那些年陪我走过青春的人">
+                <i class="fa fa-chevron-left"></i> 致敬那些年陪我走过青春的人
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/01/13/sqlzoo%E7%BB%83%E4%B9%A01.html" rel="prev" title="sqlzoo练习1">
+                sqlzoo练习1 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#维度"><span class="nav-number">1.</span> <span class="nav-text">维度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#降维decompositon"><span class="nav-number">2.</span> <span class="nav-text">降维decompositon</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#方差过滤"><span class="nav-number">2.1.</span> <span class="nav-text">方差过滤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么是n-1"><span class="nav-number">2.2.</span> <span class="nav-text">为什么是n-1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#降维demo"><span class="nav-number">2.3.</span> <span class="nav-text">降维demo</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#降维基本步骤"><span class="nav-number">2.4.</span> <span class="nav-text">降维基本步骤</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PCA"><span class="nav-number">3.</span> <span class="nav-text">PCA</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#思想"><span class="nav-number">3.1.</span> <span class="nav-text">思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#內积和投影"><span class="nav-number">3.2.</span> <span class="nav-text">內积和投影</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#內积定义"><span class="nav-number">3.2.1.</span> <span class="nav-text">內积定义</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#內积的几何意义"><span class="nav-number">3.2.2.</span> <span class="nav-text">內积的几何意义</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#基"><span class="nav-number">3.3.</span> <span class="nav-text">基</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#基的产生"><span class="nav-number">3.3.1.</span> <span class="nav-text">基的产生</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#基变换的矩阵表示"><span class="nav-number">3.3.2.</span> <span class="nav-text">基变换的矩阵表示</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方差与协方差矩阵"><span class="nav-number">3.4.</span> <span class="nav-text">方差与协方差矩阵</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#去中心化"><span class="nav-number">3.4.1.</span> <span class="nav-text">去中心化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#方差"><span class="nav-number">3.4.2.</span> <span class="nav-text">方差</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#协方差"><span class="nav-number">3.4.3.</span> <span class="nav-text">协方差</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#协方差矩阵"><span class="nav-number">3.4.4.</span> <span class="nav-text">协方差矩阵</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#协方差矩阵对角化"><span class="nav-number">3.4.5.</span> <span class="nav-text">协方差矩阵对角化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#优化目标"><span class="nav-number">3.4.6.</span> <span class="nav-text">优化目标</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PCA算法"><span class="nav-number">3.5.</span> <span class="nav-text">PCA算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PCA实例"><span class="nav-number">3.6.</span> <span class="nav-text">PCA实例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sklearn中PCA的使用"><span class="nav-number">4.</span> <span class="nav-text">sklearn中PCA的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#包导入"><span class="nav-number">4.1.</span> <span class="nav-text">包导入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据导入"><span class="nav-number">4.2.</span> <span class="nav-text">数据导入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PCA降维"><span class="nav-number">4.3.</span> <span class="nav-text">PCA降维</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可视化"><span class="nav-number">4.4.</span> <span class="nav-text">可视化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#降维之后数据的信息探索"><span class="nav-number">4.5.</span> <span class="nav-text">降维之后数据的信息探索</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#累计可解释方差"><span class="nav-number">4.6.</span> <span class="nav-text">累计可解释方差</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#基于极大似然估计MLE的PCA"><span class="nav-number">4.7.</span> <span class="nav-text">基于极大似然估计MLE的PCA</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#按照指定的信息占比选择参数"><span class="nav-number">4.8.</span> <span class="nav-text">按照指定的信息占比选择参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PCA和SVD比较"><span class="nav-number">5.</span> <span class="nav-text">PCA和SVD比较</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2020/01/13/PCA%E8%AF%A6%E8%A7%A3.html';
+          this.page.identifier = '2020/01/13/PCA详解.html';
+          this.page.title = 'PCA详解';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

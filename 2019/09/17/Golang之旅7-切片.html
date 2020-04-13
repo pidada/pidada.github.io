@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="go,slice," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="切片slice  切片是引用类型切片初始化之后才能进行使用 切片不能直接比较 append函数可以向切片中追加元素，同时还能利用append函数删除切片中的某个元素 切片是数组的底层封装 make([]T, len,map)函数能够直接创建切片make([]int, 5, 10)   切片（Slice）是一个拥有相同类型元素的可变长度的序列。切片是引用类型，必须初始化才能进行使用。它是基于数组类型">
+<meta name="keywords" content="go,slice">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang之旅7-切片slice">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2019&#x2F;09&#x2F;17&#x2F;Golang%E4%B9%8B%E6%97%857-%E5%88%87%E7%89%87.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="切片slice  切片是引用类型切片初始化之后才能进行使用 切片不能直接比较 append函数可以向切片中追加元素，同时还能利用append函数删除切片中的某个元素 切片是数组的底层封装 make([]T, len,map)函数能够直接创建切片make([]int, 5, 10)   切片（Slice）是一个拥有相同类型元素的可变长度的序列。切片是引用类型，必须初始化才能进行使用。它是基于数组类型">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;www.liwenzhou.com&#x2F;images&#x2F;Go&#x2F;slice&#x2F;slice_01.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;www.liwenzhou.com&#x2F;images&#x2F;Go&#x2F;slice&#x2F;slice_02.png">
+<meta property="og:updated_time" content="2019-10-28T16:34:33.632Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;www.liwenzhou.com&#x2F;images&#x2F;Go&#x2F;slice&#x2F;slice_01.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2019/09/17/Golang之旅7-切片.html"/>
+
+
+
+
+
+  <title>Golang之旅7-切片slice | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2019/09/17/Golang%E4%B9%8B%E6%97%857-%E5%88%87%E7%89%87.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Golang之旅7-切片slice</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-17T14:31:52+08:00">
+                2019-9-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/go/" itemprop="url" rel="index">
+                    <span itemprop="name">go</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/09/17/Golang%E4%B9%8B%E6%97%857-%E5%88%87%E7%89%87.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/09/17/Golang之旅7-切片.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  9
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="切片slice">切片slice</h3>
+<ul>
+<li>切片是引用类型切片初始化之后才能进行使用</li>
+<li>切片不能直接比较</li>
+<li><code>append</code>函数可以向切片中追加元素，同时还能利用<code>append</code>函数删除切片中的某个元素</li>
+<li>切片是数组的底层封装</li>
+<li><code>make([]T, len,map)</code>函数能够直接创建切片<code>make([]int, 5, 10)</code></li>
+</ul>
+<blockquote>
+<p>切片（<code>Slice</code>）是一个拥有<code>相同类型元素</code>的<code>可变长度</code>的序列。<code>切片是引用类型，必须初始化才能进行使用</code>。它是基于数组类型做的一层封装。它非常灵活，支持自动扩容。</p>
+<p>切片是一个引用类型，一般用于快速地操作一块数据集合。切片的底层就是数组，三要素：</p>
+<ul>
+<li>地址：指针的第一个位置</li>
+<li>长度：<code>len()</code>函数获得</li>
+<li>容量：<code>cap()</code>函数获得</li>
+</ul>
+<p>切片的基本语法：</p>
+</blockquote>
+<figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="keyword">name</span> []T</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>name</code>表示变量名</li>
+<li><code>T</code>：表示切片中的元素类型，比如<code>string、int、bool</code>等</li>
+<li>切片创建的时候不指定长度；<code>[]</code>里面不带数字</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 声明切片类型</span></span><br><span class="line">	<span class="keyword">var</span> a []<span class="keyword">string</span>              <span class="comment">//声明一个空字符串切片</span></span><br><span class="line">	<span class="keyword">var</span> b = []<span class="keyword">int</span>&#123;&#125;             <span class="comment">//声明一个整型切片并初始化</span></span><br><span class="line">	<span class="keyword">var</span> c = []<span class="keyword">bool</span>&#123;<span class="literal">false</span>, <span class="literal">true</span>&#125; <span class="comment">//声明一个布尔切片并初始化</span></span><br><span class="line">	<span class="keyword">var</span> d = []<span class="keyword">bool</span>&#123;<span class="literal">false</span>, <span class="literal">true</span>&#125; <span class="comment">//声明一个布尔切片并初始化</span></span><br><span class="line">	fmt.Println(a)              <span class="comment">//[]</span></span><br><span class="line">	fmt.Println(b)              <span class="comment">//[]</span></span><br><span class="line">	fmt.Println(c)              <span class="comment">//[false true]</span></span><br><span class="line">	fmt.Println(a == <span class="literal">nil</span>)       <span class="comment">//true</span></span><br><span class="line">	fmt.Println(b == <span class="literal">nil</span>)       <span class="comment">//false</span></span><br><span class="line">	fmt.Println(c == <span class="literal">nil</span>)       <span class="comment">//false</span></span><br><span class="line">	<span class="comment">// fmt.Println(c == d)   //切片是引用类型，不支持直接比较，只能和nil比较</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a href="https://www.liwenzhou.com/posts/Go/06_slice/" target="_blank" rel="noopener">GO切片</a></p>
+<a id="more"></a>
+<h3 id="make函数">make函数</h3>
+<p>通过<code>make()</code>函数构造动态的切片，基本语法为</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">make</span>([]T, size, <span class="built_in">cap</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>T:切片的元素类型</li>
+<li>size:切片中元素的数量</li>
+<li>cap:切片的容量</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//make函数构造切片</span></span><br><span class="line">h := <span class="built_in">make</span>([]<span class="keyword">int</span>,<span class="number">5</span>,<span class="number">10</span>)  <span class="comment">//5代表长度，10代表容量（可省略）</span></span><br><span class="line">fmt.Println(h)</span><br><span class="line">fmt.Printf(<span class="string">"%T\n"</span>, h)</span><br></pre></td></tr></table></figure>
+<h3 id="切片的本质">切片的本质</h3>
+<p>切片的本质就是对底层数组的封装，它包含了三个信息：底层数组的指针、切片的长度<code>（len）</code>和切片的容量<code>（cap）</code>。</p>
+<ul>
+<li>指针</li>
+<li>长度</li>
+<li>容量</li>
+</ul>
+<p>现在有个数组<code>a := [8]int{0, 1, 2, 3, 4, 5, 6, 7}</code>，切片<code>s1 := a[:5]</code>，相应示意图如下：</p>
+<ul>
+<li>指针：第一个元素所在的位置</li>
+<li>长度：元素总个数</li>
+<li>容量：原有数组的容量减去指针所在的位置</li>
+</ul>
+<p><img src="https://www.liwenzhou.com/images/Go/slice/slice_01.png" alt=""></p>
+<p>切片<code>s2 := a[3:6]</code></p>
+<p><img src="https://www.liwenzhou.com/images/Go/slice/slice_02.png" alt=""></p>
+<h3 id="切片不能直接比较">切片不能直接比较</h3>
+<ul>
+<li>
+<p>切片之间不能通过<code>==</code>来进行比较和判断</p>
+</li>
+<li>
+<p>唯一合法的操作是和<code>nil</code> 进行比较</p>
+<ul>
+<li>一个<code>nil</code>值的切片没有底层数组</li>
+<li><code>nil</code>值的切片的长度和容量都是0</li>
+<li>不能说长度和容量是0的切片是<code>nil</code></li>
+</ul>
+</li>
+<li>
+<p>判断切片是否为空，用<code>len(s) == 0</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> s1 []<span class="keyword">int</span>         <span class="comment">//len(s1)=0;cap(s1)=0;s1==nil</span></span><br><span class="line">s2 := []<span class="keyword">int</span>&#123;&#125;        <span class="comment">//len(s2)=0;cap(s2)=0;s2!=nil</span></span><br><span class="line">s3 := <span class="built_in">make</span>([]<span class="keyword">int</span>, <span class="number">0</span>) <span class="comment">//len(s3)=0;cap(s3)=0;s3!=nil</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="空切片nil">空切片<code>nil</code></h3>
+<p>一个切片在未初始化之前默认都是<code>nil</code>，长度是<code>0</code>：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">var</span> a []<span class="keyword">int</span>     <span class="comment">//定义切片未初始化</span></span><br><span class="line"> 	<span class="keyword">var</span> b = []<span class="keyword">int</span>&#123;&#125;  <span class="comment">// 定义并且初始化</span></span><br><span class="line"></span><br><span class="line"> 	printSlice(a)</span><br><span class="line">	<span class="comment">//判断a和nil的关系</span></span><br><span class="line">	<span class="keyword">if</span> (a== <span class="literal">nil</span>)&#123;</span><br><span class="line">		fmt.Println(<span class="string">"切片a是空的"</span>)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	printSlice(b)</span><br><span class="line">	<span class="comment">//判断b和nil的关系</span></span><br><span class="line">	<span class="keyword">if</span> (b == <span class="literal">nil</span>)&#123;</span><br><span class="line">		fmt.Println(<span class="string">"切片b是空的"</span>)    <span class="comment">//b已经初始化，索引不会打印本句</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//定义printSlice函数，输出长度、容量和切片</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">printSlice</span><span class="params">(x []<span class="keyword">int</span>)</span></span>&#123;</span><br><span class="line">	fmt.Printf(<span class="string">"len=%d cap=%d slice=%v\n"</span>, <span class="built_in">len</span>(x), <span class="built_in">cap</span>(x), x)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="切片赋值拷贝">切片赋值拷贝</h3>
+<p>当进行赋值拷贝之后，两个变量共享底层数组的数据，一个切片的变化会影响另一个切片。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	s1 := <span class="built_in">make</span>([]<span class="keyword">int</span>, <span class="number">3</span>) <span class="comment">//[0 0 0]</span></span><br><span class="line">	s2 := s1             <span class="comment">//将s1直接赋值给s2，s1和s2共用一个底层数组</span></span><br><span class="line">	s2[<span class="number">0</span>] = <span class="number">100</span></span><br><span class="line">	fmt.Println(s1) <span class="comment">//[100 0 0]</span></span><br><span class="line">	fmt.Println(s2) <span class="comment">//[100 0 0]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="遍历">遍历</h3>
+<p>切片的遍历分为两种：索引遍历和<code>for  range</code>遍历</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//切片遍历</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	numArray := []<span class="keyword">int</span>&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>&#125;</span><br><span class="line">	</span><br><span class="line">    <span class="comment">//索引遍历</span></span><br><span class="line">	<span class="keyword">for</span> i :=<span class="number">0</span>; i&lt;<span class="built_in">len</span>(numArray); i++&#123;</span><br><span class="line">		fmt.Println(i, numArray[i])</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	fmt.Println()</span><br><span class="line">	</span><br><span class="line">    <span class="comment">//for range 遍历</span></span><br><span class="line">	<span class="keyword">for</span> index, value := <span class="keyword">range</span> numArray&#123;</span><br><span class="line">		fmt.Println(index, value)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="append">append</h3>
+<p><code>append</code>函数可以为切片动态添加元素。每个切片指向一个底层数组，数组能够容纳一个数量的元素。当底层数组不能容纳新增的元素时，切片就会自动按照一定的策略进行“扩容”，此时该切片指向的底层数组就会更换。“扩容”操作往往发生在<code>append()</code>函数调用时。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">var</span> a []<span class="keyword">int</span>      <span class="comment">//此时a没有申请内存，不能直接添加元素</span></span><br><span class="line">	<span class="comment">//a[0] = 100</span></span><br><span class="line">	<span class="comment">//fmt.Println(a)</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i :=<span class="number">0</span>; i&lt;<span class="number">10</span>; i++&#123;</span><br><span class="line">		a = <span class="built_in">append</span>(a,i)  <span class="comment">// append函数将元素追加到切片的最后，同时需要原来的切片进行接收</span></span><br><span class="line">		fmt.Printf(<span class="string">"%v len:%d cap:%d ptr:%p\n"</span>, a, <span class="built_in">len</span>(a), <span class="built_in">cap</span>(a), a)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//append追加多个元素</span></span><br><span class="line">	<span class="keyword">var</span> citySlice []<span class="keyword">string</span></span><br><span class="line">	citySlice = <span class="built_in">append</span>(citySlice, <span class="string">"北京"</span>)   <span class="comment">// 追加一个元素</span></span><br><span class="line">	citySlice = <span class="built_in">append</span>(citySlice, <span class="string">"上海"</span>, <span class="string">"广州"</span>, <span class="string">"深圳"</span>)  	<span class="comment">// 追加多个元素</span></span><br><span class="line">	b := []<span class="keyword">string</span>&#123;<span class="string">"成都"</span>, <span class="string">"重庆"</span>&#125;</span><br><span class="line">	citySlice = <span class="built_in">append</span>(citySlice, b...)   	<span class="comment">// 追加切片</span></span><br><span class="line">	fmt.Println(citySlice) <span class="comment">//[北京 上海 广州 深圳 成都 重庆]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">0</span>] <span class="built_in">len</span>:<span class="number">1</span> <span class="built_in">cap</span>:<span class="number">1</span> ptr:<span class="number">0xc00000e100</span></span><br><span class="line">[<span class="number">0</span> <span class="number">1</span>] <span class="built_in">len</span>:<span class="number">2</span> <span class="built_in">cap</span>:<span class="number">2</span> ptr:<span class="number">0xc00000e150</span></span><br><span class="line">[<span class="number">0</span> <span class="number">1</span> <span class="number">2</span>] <span class="built_in">len</span>:<span class="number">3</span> <span class="built_in">cap</span>:<span class="number">4</span> ptr:<span class="number">0xc00000a3a0</span></span><br><span class="line">[<span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span>] <span class="built_in">len</span>:<span class="number">4</span> <span class="built_in">cap</span>:<span class="number">4</span> ptr:<span class="number">0xc00000a3a0</span></span><br><span class="line">[<span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span>] <span class="built_in">len</span>:<span class="number">5</span> <span class="built_in">cap</span>:<span class="number">8</span> ptr:<span class="number">0xc00000c280</span></span><br><span class="line">[<span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span>] <span class="built_in">len</span>:<span class="number">6</span> <span class="built_in">cap</span>:<span class="number">8</span> ptr:<span class="number">0xc00000c280</span></span><br><span class="line">[<span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span> <span class="number">6</span>] <span class="built_in">len</span>:<span class="number">7</span> <span class="built_in">cap</span>:<span class="number">8</span> ptr:<span class="number">0xc00000c280</span></span><br><span class="line">[<span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span> <span class="number">6</span> <span class="number">7</span>] <span class="built_in">len</span>:<span class="number">8</span> <span class="built_in">cap</span>:<span class="number">8</span> ptr:<span class="number">0xc00000c280</span></span><br><span class="line">[<span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span> <span class="number">6</span> <span class="number">7</span> <span class="number">8</span>] <span class="built_in">len</span>:<span class="number">9</span> <span class="built_in">cap</span>:<span class="number">16</span> ptr:<span class="number">0xc00008c000</span></span><br><span class="line">[<span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span> <span class="number">6</span> <span class="number">7</span> <span class="number">8</span> <span class="number">9</span>] <span class="built_in">len</span>:<span class="number">10</span> <span class="built_in">cap</span>:<span class="number">16</span> ptr:<span class="number">0xc00008c000</span></span><br></pre></td></tr></table></figure>
+<p><strong>小结</strong></p>
+<ul>
+<li>append函数将元素追加到切片的最后，同时需要原来的切片进行接收</li>
+<li>容量按照1,2,4,8.16进行扩容，每次扩容后都是扩容前的2倍。</li>
+<li>append函数能够同时追加多个元素</li>
+</ul>
+<h3 id="切片的扩容策略">切片的扩容策略</h3>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">newcap := old.<span class="built_in">cap</span></span><br><span class="line">doublecap := newcap + newcap</span><br><span class="line"><span class="keyword">if</span> <span class="built_in">cap</span> &gt; doublecap &#123;</span><br><span class="line">	newcap = <span class="built_in">cap</span>   <span class="comment">//新申请的容量cap &gt; 2倍旧容量，最终的容量newcap就是新申请的容量cap</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> old.<span class="built_in">len</span> &lt; <span class="number">1024</span> &#123;  </span><br><span class="line">		newcap = doublecap   <span class="comment">//如果旧切片的长度小于1024，最终容量就是旧容量的2倍</span></span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">// Check 0 &lt; newcap to detect overflow</span></span><br><span class="line">		<span class="comment">// and prevent an infinite loop.</span></span><br><span class="line">		<span class="keyword">for</span> <span class="number">0</span> &lt; newcap &amp;&amp; newcap &lt; <span class="built_in">cap</span> &#123;  <span class="comment">//如果旧切片的长度大于1024，则新容量每次增加旧容量的四分之一，直到最终容量大于等于新申请的容量</span></span><br><span class="line">			newcap += newcap / <span class="number">4</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// Set newcap to the requested cap when</span></span><br><span class="line">		<span class="comment">// the newcap calculation overflowed.</span></span><br><span class="line">		<span class="keyword">if</span> newcap &lt;= <span class="number">0</span> &#123;</span><br><span class="line">			newcap = <span class="built_in">cap</span>  <span class="comment">//如果最终容量溢出，则最终容量就是新申请的容量</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="copy函数">copy函数</h3>
+<p><code>copy</code>函数实现将一个切片的数据迅速地复制到另一个切片空间中，切片要初始化之后才能使用。基本语法为：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">copy</span><span class="params">(destSlice, srcSlice []T)</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>srcSlice</code>: 数据来源切片</li>
+<li><code>destSlice</code>: 目标切片</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	s1 := <span class="built_in">make</span>([]<span class="keyword">int</span>, <span class="number">3</span>) <span class="comment">//[0 0 0]</span></span><br><span class="line">	s2 := s1             <span class="comment">//将s1直接赋值给s2，s1和s2共用一个底层数组</span></span><br><span class="line">	s2[<span class="number">0</span>] = <span class="number">100</span></span><br><span class="line">	fmt.Println(s1) <span class="comment">//[100 0 0]</span></span><br><span class="line">	fmt.Println(s2) <span class="comment">//[100 0 0]</span></span><br><span class="line"></span><br><span class="line">	a := []<span class="keyword">int</span>&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>&#125;</span><br><span class="line">	b := <span class="built_in">make</span>([]<span class="keyword">int</span>, <span class="number">5</span>, <span class="number">5</span>)</span><br><span class="line">	c := b     <span class="comment">//b直接赋值给c，二者共享数组中的数据，变化同时发生。</span></span><br><span class="line">	<span class="built_in">copy</span>(b,a)  <span class="comment">//ab之间没有关系，独立</span></span><br><span class="line">	b[<span class="number">0</span>] = <span class="number">20</span></span><br><span class="line">	fmt.Println(a)</span><br><span class="line">	fmt.Println(b)</span><br><span class="line">	fmt.Println(c)</span><br><span class="line"></span><br><span class="line">	<span class="comment">//通过copy函数删除元素</span></span><br><span class="line">	d := []<span class="keyword">string</span>&#123;<span class="string">"北京"</span>,<span class="string">"深圳"</span>,<span class="string">"广州"</span>,<span class="string">"长沙"</span>&#125;</span><br><span class="line">	d = <span class="built_in">append</span>(d[<span class="number">0</span>:<span class="number">2</span>], d[<span class="number">3</span>:]...)</span><br><span class="line">	fmt.Println(d)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>总结：删除切片中索引为index的元素，需要注意的是append函数中可以同时追加多个元素</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">append</span>(a[<span class="number">0</span>:index], a[index+<span class="number">1</span>:]...)</span><br></pre></td></tr></table></figure>
+<h3 id="练习题">练习题</h3>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"sort"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> a = <span class="built_in">make</span>([]<span class="keyword">string</span>, <span class="number">5</span>, <span class="number">10</span>)   <span class="comment">//定义初始化[     ]  5个空格的空切片</span></span><br><span class="line">	fmt.Println(a)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</span><br><span class="line">		a = <span class="built_in">append</span>(a, fmt.Sprintf(<span class="string">"%v"</span>, i))</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(a)</span><br><span class="line">	fmt.Printf(<span class="string">"%T\n"</span>, a)  <span class="comment">//[]string类型的切片</span></span><br><span class="line">	fmt.Println(<span class="built_in">len</span>(a))  <span class="comment">//15</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="comment">//请使用内置的sort包对数组var b = [...]int&#123;3, 7, 8, 9, 1&#125;进行排序</span></span><br><span class="line">	<span class="keyword">var</span> b = [...]<span class="keyword">int</span>&#123;<span class="number">4</span>,<span class="number">8</span>,<span class="number">2</span>,<span class="number">9</span>,<span class="number">1</span>&#125;   <span class="comment">//定义数组</span></span><br><span class="line">	sort.Ints(b[:])   <span class="comment">//将数组变成了切片，直接排序</span></span><br><span class="line">	fmt.Println(<span class="string">"sort_b:"</span>,b)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/09/17/Golang%E4%B9%8B%E6%97%857-%E5%88%87%E7%89%87.html">Golang之旅7-切片slice</a></p>
+  <p><span>发布时间:</span>2019年09月17日 - 14:09</p>
+  <p><span>原始链接:</span><a href="/2019/09/17/Golang%E4%B9%8B%E6%97%857-%E5%88%87%E7%89%87.html" title="Golang之旅7-切片slice">http://www.renpeter.cn/2019/09/17/Golang%E4%B9%8B%E6%97%857-%E5%88%87%E7%89%87.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2019/09/17/Golang%E4%B9%8B%E6%97%857-%E5%88%87%E7%89%87.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/go/" rel="tag"># go</a>
+          
+            <a href="/tags/slice/" rel="tag"># slice</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/17/Golang%E4%B9%8B%E6%97%856-%E6%95%B0%E7%BB%84.html" rel="next" title="Golang之旅6-数组">
+                <i class="fa fa-chevron-left"></i> Golang之旅6-数组
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/17/Golang%E4%B9%8B%E6%97%858-map.html" rel="prev" title="Golang之旅8-map">
+                Golang之旅8-map <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#切片slice"><span class="nav-number">1.</span> <span class="nav-text">切片slice</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#make函数"><span class="nav-number">2.</span> <span class="nav-text">make函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#切片的本质"><span class="nav-number">3.</span> <span class="nav-text">切片的本质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#切片不能直接比较"><span class="nav-number">4.</span> <span class="nav-text">切片不能直接比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#空切片nil"><span class="nav-number">5.</span> <span class="nav-text">空切片nil</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#切片赋值拷贝"><span class="nav-number">6.</span> <span class="nav-text">切片赋值拷贝</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#遍历"><span class="nav-number">7.</span> <span class="nav-text">遍历</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#append"><span class="nav-number">8.</span> <span class="nav-text">append</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#切片的扩容策略"><span class="nav-number">9.</span> <span class="nav-text">切片的扩容策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#copy函数"><span class="nav-number">10.</span> <span class="nav-text">copy函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#练习题"><span class="nav-number">11.</span> <span class="nav-text">练习题</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2019/09/17/Golang%E4%B9%8B%E6%97%857-%E5%88%87%E7%89%87.html';
+          this.page.identifier = '2019/09/17/Golang之旅7-切片.html';
+          this.page.title = 'Golang之旅7-切片slice';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

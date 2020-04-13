@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="梯度,BP," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="TF7-反向传播法 主要的知识点包含：  导数和梯度基础知识点 神经网络中常用的几个激活函数的导数 损失函数的梯度计算 全连接的梯度计算 单个神经元 全连接层   反向传播法">
+<meta name="keywords" content="梯度,BP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TF-char7">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2019&#x2F;12&#x2F;05&#x2F;TF-char7.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="TF7-反向传播法 主要的知识点包含：  导数和梯度基础知识点 神经网络中常用的几个激活函数的导数 损失函数的梯度计算 全连接的梯度计算 单个神经元 全连接层   反向传播法">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9m2k87sgyj30gs09mwjr.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9m2x7jcgnj30gw0ay0tf.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9m355c49sj30fq0co3z2.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9m3a6f62fj30ce0begm6.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9m3ftm5nxj30de09i3yz.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9m3spg0cqj30iu07i0td.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9m4xdy5zlj30m209cq4j.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9m5gh8ezbj30hy08wwgk.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9m66zmp82j30m20oib1i.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9m69jkgvjj30q209qjub.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9m6yqmxw8j30ux0u01ky.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9m70bwjrwj30ls0w64qp.jpg">
+<meta property="og:updated_time" content="2019-12-05T15:24:49.366Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9m2k87sgyj30gs09mwjr.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2019/12/05/TF-char7.html"/>
+
+
+
+
+
+  <title>TF-char7 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2019/12/05/TF-char7.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TF-char7</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-12-05T22:22:10+08:00">
+                2019-12-5
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/TensorFlow/" itemprop="url" rel="index">
+                    <span itemprop="name">TensorFlow</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/12/05/TF-char7.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/12/05/TF-char7.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.9k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  9
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>TF7-反向传播法</p>
+<p>主要的知识点包含：</p>
+<ul>
+<li>导数和梯度基础知识点</li>
+<li>神经网络中常用的几个激活函数的导数</li>
+<li>损失函数的梯度计算</li>
+<li>全连接的梯度计算<ul>
+<li>单个神经元</li>
+<li>全连接层</li>
+</ul>
+</li>
+<li>反向传播法</li>
+</ul>
+<a id="more"></a>
+
+<h3 id="导数和梯度"><a href="#导数和梯度" class="headerlink" title="导数和梯度"></a>导数和梯度</h3><h4 id="导数"><a href="#导数" class="headerlink" title="导数"></a>导数</h4><p>函数的输出值的增量和自变量的增量的比值在$\triangle x$趋于0的时极限为$a$，定义为：<br>$$<br>a=\lim <em>{\Delta x \rightarrow 0} \frac{\Delta y}{\Delta x}=\lim _{\Delta x \rightarrow 0} \frac{f\left(x+x</em>{0}\right)-f(x)}{\Delta x}<br>$$<br>导数表征了函数在某个方向上的变化率。</p>
+<p>在网络中自变量是网络参数集$\theta={w_1,b_1,…,w_n,b_n}$，对于每个参数的偏导数为：<br>$$<br>\nabla \mathcal{L}=\left(\frac{\partial \mathcal{L}}{\partial \theta_{1}}, \frac{\partial \mathcal{L}}{\partial \theta_{2}}, \frac{\partial \mathcal{L}}{\partial \theta_{3}}, \ldots \frac{\partial \mathcal{L}}{\partial \theta_{n}}\right)<br>$$<br>梯度下降法沿着向量的形式更新梯度值<br>$$<br>\theta^{\prime}=\theta-\eta * \nabla \mathcal{L}<br>$$<br>如果希望求解函数的最大值，需要按着梯度方向更新：<br>$$<br>\theta^{\prime}=\theta+\eta * \nabla \mathcal{L}<br>$$<br>称之为<strong>梯度上升法</strong></p>
+<h4 id="导数-1"><a href="#导数-1" class="headerlink" title="导数"></a>导数</h4><h4 id="梯度"><a href="#梯度" class="headerlink" title="梯度"></a>梯度</h4><p>向量$\left(\frac{\partial \mathcal{L}}{\partial \theta_{1}}, \frac{\partial \mathcal{L}}{\partial \theta_{2}}, \frac{\partial \mathcal{L}}{\partial \theta_{3}}, \ldots \frac{\partial \mathcal{L}}{\partial \theta_{n}}\right)$叫做函数的梯度</p>
+<ul>
+<li>有所有的梯度组成</li>
+<li>表征方向</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9m2k87sgyj30gs09mwjr.jpg" alt=""></p>
+<h4 id="重要导数"><a href="#重要导数" class="headerlink" title="重要导数"></a>重要导数</h4><p>$$<br>(C)^`=0<br>$$</p>
+<p>$$<br>(x^a)^`=ax^{a-1}<br>$$</p>
+<p>$$<br>(a^x)^`=a^xln<br>$$</p>
+<p>$$<br>（e^x)^`=e^x<br>$$</p>
+<p>$$<br>(log_ax)^`=\frac{1}{xlna}<br>$$</p>
+<p>$$<br>(lnx)^`=\frac{1}{x}<br>$$</p>
+<p>$$<br>(sinx)^`=coxs  \<br>$$</p>
+<p>$$<br>(cosx)^`=-sinx<br>$$</p>
+<p>$$<br>(tanx)^`=\frac{1}{cos^2x}=sec^2x<br>$$</p>
+<p>$$<br>(cotx)^`=-\frac{1}{sin^2x} = -csc^2x<br>$$</p>
+<p>$$<br>(arcsinx)^<code>=\frac{1}{\sqrt{1-x^2}} \\(arccosx)^</code>=-\frac{1}{\sqrt{1-x^2}} \(secx)^<code>= secx * tanx \\(cscx)^</code>= -cscx * cotx<br>$$</p>
+<p>$$<br>(arctanx)^`=\frac{1}{1+x^2}<br>$$</p>
+<p>$$<br>(arccotx)^`=-\frac{1}{1+x^2}<br>$$</p>
+<p>$$<br>(shx)^`=chx<br>$$</p>
+<p>$$<br>(chx)^`=shx<br>$$</p>
+<h4 id="导数形式"><a href="#导数形式" class="headerlink" title="导数形式"></a>导数形式</h4><p>$$<br>(f+g)^{\prime}=f^{\prime}+g^{\prime}<br>$$</p>
+<p>$$<br>(fg)^<code>=f^</code><em>g+f</em>g^`<br>$$</p>
+<p>$$<br>(\frac{f}{g})^<code>=\frac{f^</code>g-fg^`}{g^2}  ,g \neq 0<br>$$</p>
+<p>$$<br>\frac{df(g(x))}{dx} = \frac{df(u)}{du}\frac{dg(x)}{dx}=f^<code>(u)*g^</code>(x)<br>$$</p>
+<h3 id="激活函数导数"><a href="#激活函数导数" class="headerlink" title="激活函数导数"></a>激活函数导数</h3><h4 id="Sigmoid函数"><a href="#Sigmoid函数" class="headerlink" title="Sigmoid函数"></a>Sigmoid函数</h4><p>Sigmoid函数容易出现梯度弥散现象，表达式为：<br>$$<br>\sigma(x)=\frac{1}{1+e^{-x}}<br>$$<br>求导过程：<br>$$<br>\begin{aligned} \frac{d}{d x} \sigma(x)&amp; =\frac{d}{d x}\left(\frac{1}{1+e^{-x}}\right) \&amp; =\frac{\mathrm{e}^{-x}}{\left(1+\mathrm{e}^{-x}\right)^{2}} \&amp; =\frac{\left(1+\mathrm{e}^{-x}\right)-1}{\left(1+\mathrm{e}^{-x}\right)^{2}} \&amp; =\frac{1+e^{-x}}{\left(1+e^{-x}\right)^{2}}-\left(\frac{1}{1+e^{-x}}\right)^{2} \&amp; =\sigma(x)-\sigma(x)^{2} \&amp; =\sigma(1-\sigma) \end{aligned}<br>$$<br><strong>这个非常重要</strong>：$\sigma^`(x)=\sigma(1-\sigma)$</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9m2x7jcgnj30gw0ay0tf.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoi</span><span class="params">(x)</span>:</span></span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span> / (<span class="number">1</span> + np.exp(-x))  <span class="comment"># 原函数形式</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">derivative</span><span class="params">(x)</span>:</span></span><br><span class="line">  <span class="keyword">return</span> sigmoid(x) * (<span class="number">1</span> - sigmoid(x)) <span class="comment"># 导数形式</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="ReLU函数"><a href="#ReLU函数" class="headerlink" title="ReLU函数"></a>ReLU函数</h4><p>解决了梯度弥散现象，表达式为<br>$$<br>ReLU(x) := max(0,x)<br>$$</p>
+<p>$$<br>\frac{d}{d x} \operatorname{Re} L U=\left{\begin{array}{ll}{1} &amp; {x \geq 0} \ {0} &amp; {x&lt;0}\end{array}\right.<br>$$</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9m355c49sj30fq0co3z2.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">derivative</span><span class="params">(x)</span>:</span></span><br><span class="line">  d = np.array(x, copy=<span class="literal">True</span>)</span><br><span class="line">  d[x &lt; <span class="number">0</span>] = <span class="number">0</span></span><br><span class="line">  d[x &gt;= <span class="number">0</span>] = <span class="number">1</span></span><br><span class="line">  <span class="keyword">return</span> d</span><br></pre></td></tr></table></figure>
+
+<h4 id="LeakyReLU-函数"><a href="#LeakyReLU-函数" class="headerlink" title="LeakyReLU 函数"></a><strong>LeakyReLU</strong> 函数</h4><p>表达式为<br>$$<br>\text {LeakyReLU}=\left{\begin{array}{cc}{x} &amp; {x \geq 0} \ {p * x} &amp; {x&lt;0}\end{array}\right.<br>$$<br>导数为<br>$$<br>\frac{d}{d x} \text {LeakyReLU}=\left{\begin{array}{ll}{1} &amp; {x \geq 0} \ {p} &amp; {x&lt;0}\end{array}\right.<br>$$<br>p一般是较小的值</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9m3a6f62fj30ce0begm6.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">derivative</span><span class="params">(x, p)</span>:</span></span><br><span class="line">  dx = np.ones_like(x)</span><br><span class="line">  dx[x &lt; <span class="number">0</span>] = p</span><br><span class="line">  <span class="keyword">return</span> dx</span><br></pre></td></tr></table></figure>
+
+<h4 id="Tanh-函数"><a href="#Tanh-函数" class="headerlink" title="Tanh 函数"></a><strong>Tanh</strong> 函数</h4><p>表达式<br>$$<br>\begin{align}tanh(x) &amp; = \frac{e^x-e^{-x}}{e^x+e^{-x}}\&amp; = 2 * sigmoid(2x) - 1 \\end{align}<br>$$<br>导数为<br>$$<br>tanh(x) = 1-tanh^2(x)<br>$$<br><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9m3ftm5nxj30de09i3yz.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid</span><span class="params">(x)</span>:</span></span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span> / (<span class="number">1</span>+np.exp(-x))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tanh</span><span class="params">(x)</span>:</span></span><br><span class="line">  <span class="keyword">return</span> <span class="number">2</span> * sigmoid(<span class="number">2</span>*x) - <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">derivative</span><span class="params">(x)</span>:</span></span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span>-tanh(x) ** <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="损失函数梯度"><a href="#损失函数梯度" class="headerlink" title="损失函数梯度"></a>损失函数梯度</h3><h4 id="均方误差函数梯度"><a href="#均方误差函数梯度" class="headerlink" title="均方误差函数梯度"></a>均方误差函数梯度</h4><p>MSE表达式为<br>$$<br>\mathcal{L}=\frac{1}{2} \sum_{k=1}^{K}\left(y_{k}-o_{k}\right)^{2}<br>$$<br>偏导数为<br>$$<br>\frac{\partial \mathcal{L}}{\partial o_{i}}=\frac{1}{2} \sum_{k=1}^{K} \frac{\partial}{\partial o_{i}}\left(y_{k}-o_{k}\right)^{2}<br>$$<br>利用链式法则分解成<br>$$<br>\frac{\partial \mathcal{L}}{\partial o_{i}}=\frac{1}{2} \sum_{k=1}^{K} 2 *\left(y_{k}-o_{k}\right) * \frac{\partial\left(y_{k}-o_{k}\right)}{\partial o_{i}}<br>$$<br>即<br>$$<br>\frac{\partial \mathcal{L}}{\partial o_{i}}=\sum_{k=1}^{K}\left(y_{k}-o_{k}\right) *-1 * \frac{\partial o_{k}}{\partial o_{i}}<br>$$<br>当且仅当$k=i$时才是1，其他为0，上式可以表达成<br>$$<br>\frac{\partial \mathcal{L}}{\partial o_{i}}=(o_i-y_i)<br>$$</p>
+<h4 id="交叉熵函数梯度"><a href="#交叉熵函数梯度" class="headerlink" title="交叉熵函数梯度"></a>交叉熵函数梯度</h4><blockquote>
+<p>在计算交叉熵损失函数时，一般将 Softmax 函数与交叉熵函数统一实现</p>
+</blockquote>
+<h5 id="Softmax函数梯度"><a href="#Softmax函数梯度" class="headerlink" title="Softmax函数梯度"></a>Softmax函数梯度</h5><p>表达式<br>$$<br>p_i=\frac{e^{z_i}}{\sum^K_{k=1}e^{z_k}}<br>$$<br><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9m3spg0cqj30iu07i0td.jpg" alt=""></p>
+<p>导数公式为<br>$$<br>\frac{\partial p_{i}}{\partial z_{j}}=\left{\begin{array}{ll}{p_{i}\left(1-p_{j}\right)} ;i=j \ {-p_{i} \cdot p_{j}} ;i \neq j \end{array}\right.<br>$$</p>
+<h5 id="交叉熵损失函数"><a href="#交叉熵损失函数" class="headerlink" title="交叉熵损失函数"></a>交叉熵损失函数</h5><p>表达式为<br>$$<br>\mathcal{L}=-\sum_{k} y_{k} \log \left(p_{k}\right)<br>$$<br>网络输出logits对变量$z_i$的导数为<br>$$<br>\frac{\partial \mathcal{L}}{\partial z_{i}}=-\sum_{k} y_{k} \frac{\partial \log \left(p_{k}\right)}{\partial z_{i}}<br>$$</p>
+<p>$$<br>=-\sum_{k} y_{k} \frac{\partial \log \left(p_{k}\right)}{\partial p_{k}} \times \frac{\partial p_{k}}{\partial z_{i}}<br>$$</p>
+<p>$$<br>=-\sum_{k} y_{k} \frac{1}{p_{k}} \times \frac{\partial p_{k}}{\partial z_{i}}<br>$$</p>
+<p>其中$\frac{\partial p_{k}}{\partial z_{i}}$为Sotfmax函数的偏导数结果。分$k=i,k\neq i$讨论上面的式子，得到<br>$$<br>\frac{\partial \mathcal{L}}{\partial z_{i}}=p_{i}\left(y_{i}+\sum_{k \neq i} y_{k}\right)-y_{i}<br>$$</p>
+<h3 id="全连接层梯度"><a href="#全连接层梯度" class="headerlink" title="全连接层梯度"></a>全连接层梯度</h3><h4 id="单个神经元梯度"><a href="#单个神经元梯度" class="headerlink" title="单个神经元梯度"></a>单个神经元梯度</h4><p>采用的Sigmoid为激活函数<br>$$<br>o^{1}=\sigma\left(w^{1} x+b^{1}\right)<br>$$<br><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9m4xdy5zlj30m209cq4j.jpg" alt=""></p>
+<p>上图解释</p>
+<ul>
+<li>x是网络的输入，总共有J个节点</li>
+<li>w是权值；</li>
+<li>其中输入第$j$个节点到输出$𝑜^1$的权值连接记为$𝑤_{j1}^1$。比如j1表示上一层的j号节点到当前层的1号节点</li>
+<li>通过权值和偏置变成了z</li>
+<li>z通过激活函数变成了$\sigma$</li>
+<li>由于是单节点，$o^1_1=o^1=\sigma(z_1)$</li>
+</ul>
+<p>损失函数为<br>$$<br>\mathcal{L}=\frac{1}{2}\left(o_{0}^{1}-t\right)^{2}<br>$$<br>求偏导数$\frac {\partial \mathcal{L}}{\partial w_{j1}}$<br>$$<br>\frac{\partial \mathcal{L}}{\partial w_{j 1}}=\left(o_{1}-t\right) \frac{\partial o_{1}}{\partial w_{j 1}}<br>$$<br>将$o_1=\sigma(z_1)$分解，并且有$\sigma^{\prime}=\sigma(1-\sigma)$<br>$$<br>\frac{\partial \mathcal{L}}{\partial w_{j 1}}=\left(o_{1}-t\right) \frac{\partial \sigma\left(z_{1}\right)}{\partial w_{j 1}}<br>$$</p>
+<p>$$<br>=\left(o_{1}-t\right) \sigma\left(z_{1}\right)\left(1-\sigma\left(z_{1}\right)\right) \frac{\partial z_{1}^{1}}{\partial w_{j 1}}<br>$$</p>
+<p>其中$\sigma(z_1)=o_1$<br>$$<br>\frac{\partial \mathcal{L}}{\partial w_{j 1}}=\left(o_{1}-t\right) o_{1}\left(1-o_{1}\right) \frac{\partial z_{1}^{1}}{\partial w_{j 1}}<br>$$<br>其中$\frac{\partial z_{1}^{1}}{\partial w_{j 1}}=x_{j}<br>$可得：<br>$$<br>\frac{\partial \mathcal{L}}{\partial w_{j 1}}=\left(o_{1}-t\right) o_{1}\left(1-o_{1}\right) x_j<br>$$<br><strong>总结：</strong></p>
+<blockquote>
+<p>误差对权值$w_{j1}$的偏导数只和输出值$o_1$真实$t$以及当前权值连接的输入$x_j$有关系</p>
+</blockquote>
+<hr>
+<h4 id="全连接层梯度-1"><a href="#全连接层梯度-1" class="headerlink" title="全连接层梯度"></a>全连接层梯度</h4><p>​    多输出的全连接层具有多个输出节点$o^1_1,…,o^1_K$，同时具有多个真实值标签$t_1,…,t_K$</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9m5gh8ezbj30hy08wwgk.jpg" alt=""></p>
+<p>MSE函数表示为<br>$$<br>\mathcal{L}=\frac{1}{2} \sum_{i=1}^{K}\left(o_{i}^{1}-t_{i}\right)^{2}<br>$$<br><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9m66zmp82j30m20oib1i.jpg" alt=""></p>
+<h3 id="反向传播法"><a href="#反向传播法" class="headerlink" title="反向传播法"></a>反向传播法</h3><p>下图的相关介绍</p>
+<ol>
+<li>输出层节点数为K，输出为$o^K=[o^K_1,…,o^K_K]$，</li>
+<li>倒数第二层的节点数为J，输出为$o^J=[o^J_1,…,o^J_J]$</li>
+<li>倒数第三层的节点数为I，输出为$o^I=[o^I_1,…,o^I_I]$</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9m69jkgvjj30q209qjub.jpg" alt=""></p>
+<p>推导过程：</p>
+<p>   <img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9m6yqmxw8j30ux0u01ky.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9m70bwjrwj30ls0w64qp.jpg" alt=""></p>
+<p>每层的偏导公式为</p>
+<ol>
+<li>倒数第一层</li>
+</ol>
+<p>$$<br>\begin{array}{c}{\frac{\partial \mathcal{L}}{\partial w_{j k}}=\delta_{k}^{K} o_{j}} \ {\delta_{k}^{K}=o_{k}\left(1-o_{k}\right)\left(o_{k}-t_{k}\right)}\end{array}<br>$$</p>
+<ol start="2">
+<li>倒数第二层</li>
+</ol>
+<p>$$<br>\begin{array}{c}{\frac{\partial \mathcal{L}}{\partial w_{i j}}=\delta_{j}^{J} o_{i}} \ {\delta_{j}^{J}=o_{j}\left(1-o_{j}\right) \sum_{k} \delta_{k}^{K} w_{j k}}\end{array}<br>$$</p>
+<ol start="3">
+<li>倒数第三层</li>
+</ol>
+<p>$$<br>\begin{array}{c}{\frac{\partial \mathcal{L}}{\partial w_{n i}}=\delta_{i}^{I} o_{n}} \ {\delta_{i}^{I}=o_{i}\left(1-o_{i}\right) \sum_{j} \delta_{j}^{J} w_{i j}}\end{array}<br>$$</p>
+<p>其中$o_n$为倒数第三层的输入，即倒数第四层的输出。规律：迭代每层的节点$\delta_{k}^{K},\quad \delta_{j}^{J}, \quad \delta_{i}^{I}, \quad \ldots$可以求出当前层的偏导数，从而得到权值矩阵W的梯度。</p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/12/05/TF-char7.html">TF-char7</a></p>
+  <p><span>发布时间:</span>2019年12月05日 - 22:12</p>
+  <p><span>原始链接:</span><a href="/2019/12/05/TF-char7.html" title="TF-char7">http://www.renpeter.cn/2019/12/05/TF-char7.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2019/12/05/TF-char7.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%A2%AF%E5%BA%A6/" rel="tag"># 梯度</a>
+          
+            <a href="/tags/BP/" rel="tag"># BP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/05/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B09-PCA.html" rel="next" title="吴恩达笔记9-PCA">
+                <i class="fa fa-chevron-left"></i> 吴恩达笔记9-PCA
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">219</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">278</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#导数和梯度"><span class="nav-number">1.</span> <span class="nav-text">导数和梯度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#导数"><span class="nav-number">1.1.</span> <span class="nav-text">导数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#导数-1"><span class="nav-number">1.2.</span> <span class="nav-text">导数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#梯度"><span class="nav-number">1.3.</span> <span class="nav-text">梯度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重要导数"><span class="nav-number">1.4.</span> <span class="nav-text">重要导数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#导数形式"><span class="nav-number">1.5.</span> <span class="nav-text">导数形式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#激活函数导数"><span class="nav-number">2.</span> <span class="nav-text">激活函数导数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Sigmoid函数"><span class="nav-number">2.1.</span> <span class="nav-text">Sigmoid函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ReLU函数"><span class="nav-number">2.2.</span> <span class="nav-text">ReLU函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LeakyReLU-函数"><span class="nav-number">2.3.</span> <span class="nav-text">LeakyReLU 函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tanh-函数"><span class="nav-number">2.4.</span> <span class="nav-text">Tanh 函数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#损失函数梯度"><span class="nav-number">3.</span> <span class="nav-text">损失函数梯度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#均方误差函数梯度"><span class="nav-number">3.1.</span> <span class="nav-text">均方误差函数梯度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#交叉熵函数梯度"><span class="nav-number">3.2.</span> <span class="nav-text">交叉熵函数梯度</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Softmax函数梯度"><span class="nav-number">3.2.1.</span> <span class="nav-text">Softmax函数梯度</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#交叉熵损失函数"><span class="nav-number">3.2.2.</span> <span class="nav-text">交叉熵损失函数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#全连接层梯度"><span class="nav-number">4.</span> <span class="nav-text">全连接层梯度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单个神经元梯度"><span class="nav-number">4.1.</span> <span class="nav-text">单个神经元梯度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#全连接层梯度-1"><span class="nav-number">4.2.</span> <span class="nav-text">全连接层梯度</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反向传播法"><span class="nav-number">5.</span> <span class="nav-text">反向传播法</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共249.4k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2019/12/05/TF-char7.html';
+          this.page.identifier = '2019/12/05/TF-char7.html';
+          this.page.title = 'TF-char7';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="可视化,pandas,数据分析," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="本篇博文主要是对之前的几篇关于pandas使用技巧的小结，内容包含：  创建S型或者DF型数据，以及如何查看数据 选择特定的数据 缺失值处理 apply使用 合并和连接 分组groupby机制 重塑reshaping 透视表使用">
+<meta name="keywords" content="可视化,pandas,数据分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pandas小结">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2019&#x2F;10&#x2F;13&#x2F;pandas%E5%B0%8F%E7%BB%93.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="本篇博文主要是对之前的几篇关于pandas使用技巧的小结，内容包含：  创建S型或者DF型数据，以及如何查看数据 选择特定的数据 缺失值处理 apply使用 合并和连接 分组groupby机制 重塑reshaping 透视表使用">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;10&#x2F;10&#x2F;uT4XOH.md.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;10&#x2F;11&#x2F;uHmwVS.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;10&#x2F;11&#x2F;uHmRbT.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;10&#x2F;13&#x2F;ujrD4P.png">
+<meta property="og:updated_time" content="2019-10-28T16:34:33.653Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;10&#x2F;10&#x2F;uT4XOH.md.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2019/10/13/pandas小结.html"/>
+
+
+
+
+
+  <title>pandas小结 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2019/10/13/pandas%E5%B0%8F%E7%BB%93.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">pandas小结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-10-13T15:25:13+08:00">
+                2019-10-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/" itemprop="url" rel="index">
+                    <span itemprop="name">pandas</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/%E6%96%87%E6%A1%A3/" itemprop="url" rel="index">
+                    <span itemprop="name">文档</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/10/13/pandas%E5%B0%8F%E7%BB%93.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/10/13/pandas小结.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本篇博文主要是对之前的几篇关于<code>pandas</code>使用技巧的小结，内容包含：</p>
+<ul>
+<li>创建<code>S</code>型或者<code>DF</code>型数据，以及如何查看数据</li>
+<li>选择特定的数据</li>
+<li>缺失值处理</li>
+<li><code>apply</code>使用</li>
+<li>合并和连接</li>
+<li>分组<code>groupby</code>机制</li>
+<li>重塑<code>reshaping</code></li>
+<li>透视表使用</li>
+</ul>
+<a id="more"></a>
+<hr>
+<h3 id="创建数据">创建数据</h3>
+<h4 id="S型数据">S型数据</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">pd.Series([<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, np.nan, <span class="number">6</span>, <span class="number">89</span>])  <span class="comment"># 普通形式</span></span><br><span class="line">pd.date_range(<span class="string">'20190924'</span>, periods=<span class="number">6</span>)  <span class="comment"># 时间间隔形式</span></span><br></pre></td></tr></table></figure>
+<h4 id="DF型数据">DF型数据</h4>
+<p>指定3个参数</p>
+<ul>
+<li>values</li>
+<li>index</li>
+<li>columns</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">pd.DataFrame(np.random.randn(<span class="number">6</span>,<span class="number">4</span>), index=dates, columns=list(<span class="string">"ABCD"</span>))</span><br><span class="line">df</span><br><span class="line"></span><br><span class="line">pd.DataFrame(&#123;<span class="string">'A'</span>: <span class="number">1.</span>,   <span class="comment">#  某列的值相同</span></span><br><span class="line">                    <span class="string">'B'</span>: pd.Timestamp(<span class="string">'20130102'</span>),  <span class="comment"># 时间戳的创建</span></span><br><span class="line">                    <span class="string">'C'</span>: pd.Series(<span class="number">1</span>, index=list(range(<span class="number">4</span>)), dtype=<span class="string">'float32'</span>),  <span class="comment"># 某列值可以是S型数据</span></span><br><span class="line">                    <span class="string">'D'</span>: np.array([<span class="number">3</span>] * <span class="number">4</span>, dtype=<span class="string">'int32'</span>),  <span class="comment"># 使用numpy数组</span></span><br><span class="line">                    <span class="string">'E'</span>: pd.Categorical([<span class="string">"test"</span>, <span class="string">"train"</span>, <span class="string">"test"</span>, <span class="string">"train"</span>]), <span class="comment"># 不同的类</span></span><br><span class="line">                    <span class="string">'F'</span>: <span class="string">'foo'</span>&#125;)  <span class="comment"># 使用布尔值</span></span><br></pre></td></tr></table></figure>
+<h4 id="选择数据">选择数据</h4>
+<ul>
+<li>head()，默认是头5行</li>
+<li>tail()</li>
+<li>df.index/df.columns</li>
+<li>df.describe()  查看各种统计信息</li>
+<li>df.T  转置</li>
+<li>df.sort_index(axis=0, ascending=False)，行索引降序排列</li>
+<li>df.sort_values(by=“age”)，某个属性的降序排列</li>
+</ul>
+<h3 id="查看数据">查看数据</h3>
+<ul>
+<li>
+<p>loc和iloc</p>
+<ul>
+<li><code>loc</code>：通过标签获取，等同于<code>.at</code></li>
+<li><code>iloc</code>：通过数字索引获取，等同于<code>.iat</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">df.loc[[......]]：可以使用数字索引，也可以使用标签索引，还可以用切片的形式</span><br><span class="line"></span><br><span class="line">df.iloc[[.....]]：只能使用数字索引，可以是非连续或者连续（等差形式也OK）</span><br><span class="line"></span><br><span class="line">布尔索引：df2[df2[<span class="string">'E'</span>].isin([<span class="string">'two'</span>, <span class="string">'four'</span>])]</span><br><span class="line"></span><br><span class="line">同时指定行和列：</span><br><span class="line"></span><br><span class="line">df.loc[:, [<span class="string">"A"</span>,<span class="string">"B"</span>]]</span><br><span class="line"></span><br><span class="line">df.iloc[[<span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>], [<span class="number">0</span>, <span class="number">2</span>]]</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="缺失值处理">缺失值处理</h3>
+<ul>
+<li>
+<p><code>df.dropna()</code>删除缺失值</p>
+<ul>
+<li>
+<p><code>axis</code>：维度，<code>0</code>表示<code>index</code>行，<code>1</code>表示<code>columns</code>列，默认为0</p>
+</li>
+<li>
+<p><code>how：</code></p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- `all：`全部为缺失值则删除该行或者列</span><br><span class="line">- `any：`至少有一个则删除</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><code>thresh</code>：指定至少出现了thresh个才删除</p>
+</li>
+<li>
+<p><code>subset</code>：指定在某些列的子集中选择出现了缺失值的列删除，不在子集中不会删除(axis决定行\列）</p>
+</li>
+<li>
+<p><code>inplace</code>：刷选过缺失值得到的新数据是存为副本还是直接在原数据上进行修改。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>df.fillna()</code>填充缺失值</p>
+<ul>
+<li>
+<p>value：使用什么填充缺失值，不同的列可以使用不同的值</p>
+</li>
+<li>
+<p>axis：指定填充维度</p>
+</li>
+<li>
+<p><code>method</code>：填充方法，<strong>不能和value同时出现，避免冲突</strong></p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- `ffill`：用缺失值的前一个值进行填充，axis=<span class="number">1</span>：横向填充（前后），axis=<span class="number">0</span>：纵向填充（上下）</span><br><span class="line">- `backfill、bfill`：缺失值后面的一个填充代替前一个</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><code>limit</code>：填充的次数限制</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>df.isnull()</code>和<code>df.isna()</code></p>
+</li>
+</ul>
+<p>二者都是判断是不是缺失值</p>
+<hr>
+<h3 id="apply用法">apply用法</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 求出每列的max 和 min</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">(x)</span>:</span>    </span><br><span class="line">    <span class="keyword">return</span> pd.Series([x.min(), x.max()], index=[<span class="string">"min"</span>, <span class="string">"max"</span>])</span><br><span class="line">df.apply(f)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f = <span class="keyword">lambda</span> x: x.max() - x.min()</span><br><span class="line">df.apply(f)<span class="comment"># df.apply(f, axis="columns") 表示在行上执行</span></span><br></pre></td></tr></table></figure>
+<h3 id="合并和连接">合并和连接</h3>
+<h4 id="合并concat">合并<code>concat</code></h4>
+<ul>
+<li>axis
+<ul>
+<li><code>axis=0</code>：默认是<code>Series</code></li>
+<li><code>axis=1</code>：得到<code>DF</code>数据，缺值用<code>NaN</code>补充</li>
+</ul>
+</li>
+<li>join
+<ul>
+<li><code>outer</code>：合并，缺值用<code>nan</code></li>
+<li><code>inner</code>：求交集，非交集部分直接删除</li>
+</ul>
+</li>
+<li><code>keys</code>：用于层次化索引</li>
+<li><code>ignore_index</code>：不保留连接轴上的索引，产生新的索引</li>
+</ul>
+<h4 id="连接merge">连接<code>merge</code></h4>
+<p>可根据⼀个或多个键将不同<code>DataFrame</code>中的⾏连接起来，它实现的就是数据库的<code>join</code>操作 ，就是数据库风格的合并</p>
+<p>常用参数表格</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>left</td>
+<td>参与合并的左侧<code>DF</code></td>
+</tr>
+<tr>
+<td>right</td>
+<td>参与合并的右侧<code>DF</code></td>
+</tr>
+<tr>
+<td>how</td>
+<td>默认是inner，<code>inner、outer、right、left</code></td>
+</tr>
+<tr>
+<td>on</td>
+<td>用于连接的列名，默认是相同的列名</td>
+</tr>
+<tr>
+<td>left_on \right_on</td>
+<td>左侧、右侧<code>DF</code>中用作连接键的列</td>
+</tr>
+<tr>
+<td>sort</td>
+<td>根据连接键对合并后的数据进行排序，默认是T</td>
+</tr>
+<tr>
+<td>suffixes</td>
+<td>重复列名，直接指定后缀，用元组的形式(’_left’, ‘_right’)</td>
+</tr>
+<tr>
+<td>left_index、right_index</td>
+<td>将左侧、右侧的行索引<code>index</code>作为连接键（用于index的合并）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="分组">分组</h3>
+<h4 id="groupby">groupby</h4>
+<ul>
+<li>拆分：<code>groupby</code>，按照某个属性<code>column</code>分组，得到的是一个分组之后的对象</li>
+<li>应用：对上面的对象使用某个函数，可以是自带的也可以是自己写的函数，通过<code>apply(function)</code></li>
+<li>合并：最终结果是个S型数据</li>
+</ul>
+<p><img src="https://s2.ax1x.com/2019/10/10/uT4XOH.md.png" alt=""></p>
+<p><strong>如何找出每一种职业的平均年龄?并按照平均年龄从大到小排序?</strong></p>
+<ul>
+<li>分组用<code>groupby</code></li>
+<li>求平均<code>mean()</code></li>
+<li>排序<code>sort_values</code>，默认是升序<code>asc</code></li>
+<li>操作某个列属性，通过属性的方式<code>df.column</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">df.groupby(<span class="string">"occupation"</span>).age.mean().sort_values(ascending=<span class="literal">False</span>)  <span class="comment"># 默认是升序</span></span><br><span class="line"><span class="comment"># df.groupby(df["occupation"]).age.mean().sort_values(ascending=False)</span></span><br><span class="line"><span class="comment"># df.groupby(by="occupation").age.mean().sort_values(ascending=False)  by可以省略</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 按照职业分组，再对年龄求均值</span></span><br><span class="line">df[<span class="string">'age'</span>].groupby(df[<span class="string">'occupation'</span>]).mean()</span><br></pre></td></tr></table></figure>
+<h4 id="避免层次化索引">避免层次化索引</h4>
+<ul>
+<li>
+<p>分组和聚合之后使用<code>reset_index()</code></p>
+</li>
+<li>
+<p>在分组时，使用<code>as_index=False</code></p>
+</li>
+</ul>
+<h3 id="重塑reshaping">重塑reshaping</h3>
+<ul>
+<li><code>stack：</code>将数据的列旋转成行，AB由列属性变成行索引</li>
+<li><code>unstack:</code>将数据的行旋转成列，AB由行索引变成列属性</li>
+</ul>
+<p><img src="https://s2.ax1x.com/2019/10/11/uHmwVS.png" alt=""></p>
+<p><img src="https://s2.ax1x.com/2019/10/11/uHmRbT.png" alt=""></p>
+<h3 id="透视表">透视表</h3>
+<ul>
+<li><code>data</code>: a DataFrame object，要应用透视表的数据框</li>
+<li><code>values</code>: a column or a list of columns to aggregate，要聚合的列，相当于“值”</li>
+<li><code>index</code>: a column, Grouper, array which has the same length as data, or list of them. Keys to group by on the pivot table index. If an array is passed, it is being used as the same manner as column values，聚合值的分组，相当于“行”</li>
+<li><code>columns</code>: a column, Grouper, array which has the same length as data, or list of them. Keys to group by on the pivot table column. If an array is passed, it is being used as the same manner as column values，聚合值的分组，相当于是”列”</li>
+<li><code>aggfunc</code>: function to use for aggregation, defaulting to <code>numpy.mean</code>，要应用的聚合函数，默认函数是均值</li>
+</ul>
+<p><img src="https://s2.ax1x.com/2019/10/13/ujrD4P.png" alt=""></p>
+<p><strong>关于<code>pivot_table</code>函数结果的说明</strong></p>
+<ul>
+<li><code>df</code>是需要进行透视表的数据框</li>
+<li><code>values</code>是生成的透视表中的数据</li>
+<li><code>index</code>是透视表的<strong>层次化索引</strong>，多个属性使用<strong>列表</strong>的形式</li>
+<li><code>columns</code>是生成透视表的列属性</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/10/13/pandas%E5%B0%8F%E7%BB%93.html">pandas小结</a></p>
+  <p><span>发布时间:</span>2019年10月13日 - 15:10</p>
+  <p><span>原始链接:</span><a href="/2019/10/13/pandas%E5%B0%8F%E7%BB%93.html" title="pandas小结">http://www.renpeter.cn/2019/10/13/pandas%E5%B0%8F%E7%BB%93.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2019/10/13/pandas%E5%B0%8F%E7%BB%93.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag"># 可视化</a>
+          
+            <a href="/tags/pandas/" rel="tag"># pandas</a>
+          
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag"># 数据分析</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/13/NBA%E4%B9%8B%E6%97%85-%E9%80%8F%E8%A7%86%E8%A1%A8%E5%8F%82%E6%95%B0%E8%AF%A6%E8%A7%A3.html" rel="next" title="NBA之旅1-透视表参数详解">
+                <i class="fa fa-chevron-left"></i> NBA之旅1-透视表参数详解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/10/13/%E4%BB%B7%E5%80%BC%E4%BA%92%E8%81%94%E7%BD%91%E7%9A%84%E5%9F%BA%E7%9F%B3-eight.html" rel="prev" title="价值互联网的基石-eight">
+                价值互联网的基石-eight <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建数据"><span class="nav-number">1.</span> <span class="nav-text">创建数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#S型数据"><span class="nav-number">1.1.</span> <span class="nav-text">S型数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DF型数据"><span class="nav-number">1.2.</span> <span class="nav-text">DF型数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#选择数据"><span class="nav-number">1.3.</span> <span class="nav-text">选择数据</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查看数据"><span class="nav-number">2.</span> <span class="nav-text">查看数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺失值处理"><span class="nav-number">3.</span> <span class="nav-text">缺失值处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#apply用法"><span class="nav-number">4.</span> <span class="nav-text">apply用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#合并和连接"><span class="nav-number">5.</span> <span class="nav-text">合并和连接</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#合并concat"><span class="nav-number">5.1.</span> <span class="nav-text">合并concat</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#连接merge"><span class="nav-number">5.2.</span> <span class="nav-text">连接merge</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分组"><span class="nav-number">6.</span> <span class="nav-text">分组</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#groupby"><span class="nav-number">6.1.</span> <span class="nav-text">groupby</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#避免层次化索引"><span class="nav-number">6.2.</span> <span class="nav-text">避免层次化索引</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重塑reshaping"><span class="nav-number">7.</span> <span class="nav-text">重塑reshaping</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#透视表"><span class="nav-number">8.</span> <span class="nav-text">透视表</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2019/10/13/pandas%E5%B0%8F%E7%BB%93.html';
+          this.page.identifier = '2019/10/13/pandas小结.html';
+          this.page.title = 'pandas小结';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

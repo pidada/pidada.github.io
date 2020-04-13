@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="可视化,pandas,sklearn,matplotlib," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="本文中讲解是的利用决策树的方法将sklearn中自带的红酒数据进行划分和可视化显示，学习决策树的几个重要参数。  决策树在sklearn的应用 决策树Decision Tree是一种非参数的有监督学习方法，它能够从一系列有特征和标签的数据中总结出决策规 则，并用树状图的结构来呈现这些规则，以解决分类和回归问题 。 解决两个重点问题  如何从数据中找出最佳节点和最佳分枝 如何让决策树停止生长，防止">
+<meta name="keywords" content="可视化,pandas,sklearn,matplotlib">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于决策树的红酒分类可视化">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2019&#x2F;09&#x2F;22&#x2F;%E5%9F%BA%E4%BA%8E%E5%86%B3%E7%AD%96%E6%A0%91%E7%9A%84%E7%BA%A2%E9%85%92%E5%88%86%E7%B1%BB%E5%8F%AF%E8%A7%86%E5%8C%96.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="本文中讲解是的利用决策树的方法将sklearn中自带的红酒数据进行划分和可视化显示，学习决策树的几个重要参数。  决策树在sklearn的应用 决策树Decision Tree是一种非参数的有监督学习方法，它能够从一系列有特征和标签的数据中总结出决策规 则，并用树状图的结构来呈现这些规则，以解决分类和回归问题 。 解决两个重点问题  如何从数据中找出最佳节点和最佳分枝 如何让决策树停止生长，防止">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;09&#x2F;22&#x2F;upNeCn.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;09&#x2F;22&#x2F;uCQuuQ.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;09&#x2F;22&#x2F;upIrdg.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;09&#x2F;23&#x2F;uCr33F.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;09&#x2F;23&#x2F;uCBTJS.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;09&#x2F;23&#x2F;uCDkLR.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;09&#x2F;23&#x2F;uCDnJO.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;09&#x2F;23&#x2F;uCDuWD.png">
+<meta property="og:updated_time" content="2019-10-28T16:34:33.707Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;09&#x2F;22&#x2F;upNeCn.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2019/09/22/基于决策树的红酒分类可视化.html"/>
+
+
+
+
+
+  <title>基于决策树的红酒分类可视化 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2019/09/22/%E5%9F%BA%E4%BA%8E%E5%86%B3%E7%AD%96%E6%A0%91%E7%9A%84%E7%BA%A2%E9%85%92%E5%88%86%E7%B1%BB%E5%8F%AF%E8%A7%86%E5%8C%96.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">基于决策树的红酒分类可视化</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-22T23:29:41+08:00">
+                2019-9-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/09/22/%E5%9F%BA%E4%BA%8E%E5%86%B3%E7%AD%96%E6%A0%91%E7%9A%84%E7%BA%A2%E9%85%92%E5%88%86%E7%B1%BB%E5%8F%AF%E8%A7%86%E5%8C%96.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/09/22/基于决策树的红酒分类可视化.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.9k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  9
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>本文中讲解是的利用决策树的方法将<code>sklearn</code>中自带的红酒数据进行划分和可视化显示，学习决策树的几个重要参数。</p>
+</blockquote>
+<h3 id="决策树在sklearn的应用">决策树在sklearn的应用</h3>
+<p>决策树<code>Decision Tree</code>是一种非参数的有监督学习方法，它能够从一系列有特征和标签的数据中总结出决策规<br>
+则，并用树状图的结构来呈现这些规则，以解决分类和回归问题 。</p>
+<h4 id="解决两个重点问题">解决两个重点问题</h4>
+<ul>
+<li>如何从数据中找出最佳节点和最佳分枝</li>
+<li>如何让决策树停止生长，防止过拟合</li>
+</ul>
+<h4 id="sklearn中的决策树">sklearn中的决策树</h4>
+<p>决策树相关的类都在<code>tree</code>模块下面，总共5个<br>
+<img src="https://s2.ax1x.com/2019/09/22/upNeCn.png" alt=""></p>
+<a id="more"></a>
+<h3 id="建模的基本流程">建模的基本流程</h3>
+<ul>
+<li>实例化</li>
+<li>拟合<code>fit</code></li>
+<li>计算准确度<code>score</code></li>
+</ul>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from sklearn import tree              <span class="comment"># 导入需要的模块</span></span><br><span class="line"> </span><br><span class="line">clf = tree.DecisionTreeClassifier()   <span class="comment"># 实例化  </span></span><br><span class="line">clf = clf.fit(X_trian, y_train)       <span class="comment"># 用训练数据训练模型</span></span><br><span class="line">result = clf.score(X_test, t_test)    <span class="comment"># 导入测试数据集，从接口中调用需要的信息</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://s2.ax1x.com/2019/09/22/uCQuuQ.png" alt=""></p>
+<h3 id="重要参数">重要参数</h3>
+<p>决策树算法中所有的参数为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">sklearn</span>.<span class="title">tree</span>.<span class="title">DecisionTreeClassifier</span> <span class="params">(criterion=’gini’, splitter=’best’, max_depth=None,</span></span></span><br><span class="line"><span class="class"><span class="params">                                           min_samples_split=<span class="number">2</span>, min_samples_leaf=<span class="number">1</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">                                           min_weight_fraction_leaf=<span class="number">0.0</span>, max_features=None,</span></span></span><br><span class="line"><span class="class"><span class="params">                                           random_state=None, max_leaf_nodes=None,</span></span></span><br><span class="line"><span class="class"><span class="params">                                           min_impurity_decrease=<span class="number">0.0</span>, min_impurity_split=None,</span></span></span><br><span class="line"><span class="class"><span class="params">                                           class_weight=None, presort=False)</span></span></span><br></pre></td></tr></table></figure>
+<p>1.<code>criterion</code><br>
+用来确定不纯度的计算方法有两种，不纯度越低越好</p>
+<ul>
+<li>
+<p>信息熵<code>entropy</code>，实际上是信息增益</p>
+</li>
+<li>
+<p>基尼系数<code>gini </code>（默认）<br>
+<img src="https://s2.ax1x.com/2019/09/22/upIrdg.png" alt=""></p>
+<p><strong>二者比较</strong></p>
+</li>
+<li>
+<p>信息熵对不纯度更加敏感</p>
+</li>
+<li>
+<p>信息熵更慢些，存在对数运算</p>
+</li>
+<li>
+<p>数据维度大，噪音很大使用基尼系数</p>
+</li>
+<li>
+<p>当拟合程度不够的时候，使用基尼系数</p>
+</li>
+</ul>
+<h3 id="导入模块和库">导入模块和库</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> tree    <span class="comment"># tree模块</span></span><br><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_wine  <span class="comment"># 导入红酒数据</span></span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split  <span class="comment"># TTS模块</span></span><br></pre></td></tr></table></figure>
+<h3 id="数据生成和信息查看">数据生成和信息查看</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wine = load_wine()   <span class="comment"># 实例化红酒数据</span></span><br><span class="line">wine.data</span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">array</span>([[<span class="number">1.423e+01</span>, <span class="number">1.710e+00</span>, <span class="number">2.430e+00</span>, ..., <span class="number">1.040e+00</span>, <span class="number">3.920e+00</span>,</span><br><span class="line">        <span class="number">1.065e+03</span>],</span><br><span class="line">       [<span class="number">1.320e+01</span>, <span class="number">1.780e+00</span>, <span class="number">2.140e+00</span>, ..., <span class="number">1.050e+00</span>, <span class="number">3.400e+00</span>,</span><br><span class="line">        <span class="number">1.050e+03</span>],</span><br><span class="line">       [<span class="number">1.316e+01</span>, <span class="number">2.360e+00</span>, <span class="number">2.670e+00</span>, ..., <span class="number">1.030e+00</span>, <span class="number">3.170e+00</span>,</span><br><span class="line">        <span class="number">1.185e+03</span>],</span><br><span class="line">       ...,</span><br><span class="line">       [<span class="number">1.413e+01</span>, <span class="number">4.100e+00</span>, <span class="number">2.740e+00</span>, ..., <span class="number">6.100e-01</span>, <span class="number">1.600e+00</span>,</span><br><span class="line">        <span class="number">5.600e+02</span>]])</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wine.data.shape</span><br><span class="line"><span class="comment"># 结果：178个样本，13个属性</span></span><br><span class="line">(<span class="number">178</span>, <span class="number">13</span>)</span><br><span class="line"><span class="comment"># 3种分类</span></span><br><span class="line">wine.target</span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">array</span>([<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>,</span><br><span class="line">       <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>,</span><br><span class="line">       <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>,</span><br><span class="line">       <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>,</span><br><span class="line">       <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>,</span><br><span class="line">       <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>,</span><br><span class="line">       <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>,</span><br><span class="line">       <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>,</span><br><span class="line">       <span class="number">2</span>, <span class="number">2</span>])</span><br></pre></td></tr></table></figure>
+<h3 id="重点：如何将样本数据集和输出标签生成表格形式">重点：如何将样本数据集和输出标签生成表格形式</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.concat([pd.DataFrame(wine.data), pd.DataFrame(wine.target)], axis=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://s2.ax1x.com/2019/09/23/uCr33F.png" alt=""></p>
+<hr>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wine.feature_names   # 13个属性名称</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 结果</span></span><br><span class="line">[<span class="string">'alcohol'</span>,</span><br><span class="line"> <span class="string">'malic_acid'</span>,</span><br><span class="line"> <span class="string">'ash'</span>,</span><br><span class="line"> <span class="string">'alcalinity_of_ash'</span>,</span><br><span class="line"> <span class="string">'magnesium'</span>,</span><br><span class="line"> <span class="string">'total_phenols'</span>,</span><br><span class="line"> <span class="string">'flavanoids'</span>,</span><br><span class="line"> <span class="string">'nonflavanoid_phenols'</span>,</span><br><span class="line"> <span class="string">'proanthocyanins'</span>,</span><br><span class="line"> <span class="string">'color_intensity'</span>,</span><br><span class="line"> <span class="string">'hue'</span>,</span><br><span class="line"> <span class="string">'od280/od315_of_diluted_wines'</span>,</span><br><span class="line"> <span class="string">'proline'</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wine.target_names  <span class="comment"># 标签的3个分类</span></span><br><span class="line">array([<span class="string">'class_0'</span>, <span class="string">'class_1'</span>, <span class="string">'class_2'</span>], dtype=<span class="string">'&lt;U7'</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Xtrain, Xtest, ytrain, ytest = train_test_split(wine.data, wine.target, test_size=<span class="number">0.3</span>)   <span class="comment"># 随机划分数据</span></span><br><span class="line">Xtrain.shape</span><br><span class="line">(<span class="number">124</span>, <span class="number">13</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ytrain</span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">array</span>([<span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>,</span><br><span class="line">       <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>,</span><br><span class="line">       <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>,</span><br><span class="line">       <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>,</span><br><span class="line">       <span class="number">2</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>,</span><br><span class="line">       <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+<h3 id="建模过程">建模过程</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">clf = tree.DecisionTreeClassifier(criterion=<span class="string">"entropy"</span>)  </span><br><span class="line">clf = clf.fit(Xtrain, ytrain)</span><br><span class="line">score = clf.score(Xtest, ytest)    <span class="comment"># 返回预测的准确度 </span></span><br><span class="line">score</span><br><span class="line"><span class="number">0.9259259259259259</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os   <span class="comment"># 画图的时候一定要加上路径</span></span><br><span class="line">os.environ[<span class="string">"PATH"</span>] += os.pathsep + <span class="string">'D:/Tools/graphviz-2.38/release/bin'</span></span><br></pre></td></tr></table></figure>
+<h3 id="画图">画图</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">feature_name = [<span class="string">'酒精'</span>,<span class="string">'苹果酸'</span>,<span class="string">'灰'</span>,<span class="string">'灰的碱性'</span>,<span class="string">'镁'</span>,<span class="string">'总酚'</span>,<span class="string">'类黄酮'</span>,<span class="string">'非黄烷类酚类'</span>,</span><br><span class="line">                <span class="string">'花青素'</span>,<span class="string">'颜色强度'</span>,<span class="string">'色调'</span>,<span class="string">'od280/od315稀释葡萄酒'</span>,<span class="string">'脯氨酸'</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> graphviz</span><br><span class="line">dot_data = tree.export_graphviz(clf</span><br><span class="line">                               ,feature_names = feature_name</span><br><span class="line">                               ,class_names = [<span class="string">"琴酒"</span>,<span class="string">"雪莉"</span>,<span class="string">"贝尔摩德"</span>]</span><br><span class="line">                               ,filled = <span class="literal">True</span>    <span class="comment"># 是否填充颜色</span></span><br><span class="line">                               ,rounded = <span class="literal">True</span>)  <span class="comment"># 框的形状</span></span><br><span class="line"></span><br><span class="line">graph = graphviz.Source(dot_data)</span><br><span class="line">graph</span><br></pre></td></tr></table></figure>
+<p><img src="https://s2.ax1x.com/2019/09/23/uCBTJS.png" alt=""></p>
+<h3 id="结果信息">结果信息</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clf.feature_importances_   <span class="comment"># 使用特征的数量的重要性</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">array</span>([<span class="number">0.02366882</span>, <span class="number">0.04362795</span>, <span class="number">0.</span>        , <span class="number">0.</span>        , <span class="number">0.</span>        ,</span><br><span class="line">       <span class="number">0.</span>        , <span class="number">0.</span>        , <span class="number">0.</span>        , <span class="number">0.</span>        , <span class="number">0.16528255</span>,</span><br><span class="line">       <span class="number">0.</span>        , <span class="number">0.43075257</span>, <span class="number">0.33666811</span>])</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[*zip(feature_name,clf.feature_importances_)]  <span class="comment"># 将使用的特征和名称进行一一对应</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[(<span class="symbol">'酒精</span>', <span class="number">0.023668823820059623</span>),</span><br><span class="line"> (<span class="symbol">'苹果酸</span>', <span class="number">0.04362794529024377</span>),</span><br><span class="line"> (<span class="symbol">'灰</span>', <span class="number">0.0</span>),</span><br><span class="line"> (<span class="symbol">'灰的碱性</span>', <span class="number">0.0</span>),</span><br><span class="line"> (<span class="symbol">'镁</span>', <span class="number">0.0</span>),</span><br><span class="line"> (<span class="symbol">'总酚</span>', <span class="number">0.0</span>),</span><br><span class="line"> (<span class="symbol">'类黄酮</span>', <span class="number">0.0</span>),</span><br><span class="line"> (<span class="symbol">'非黄烷类酚类</span>', <span class="number">0.0</span>),</span><br><span class="line"> (<span class="symbol">'花青素</span>', <span class="number">0.0</span>),</span><br><span class="line"> (<span class="symbol">'颜色强度</span>', <span class="number">0.16528255077367338</span>),</span><br><span class="line"> (<span class="symbol">'色调</span>', <span class="number">0.0</span>),</span><br><span class="line"> (<span class="symbol">'od280/od315稀释葡萄酒</span>', <span class="number">0.4307525705140722</span>),</span><br><span class="line"> (<span class="symbol">'脯氨酸</span>', <span class="number">0.3366681096019511</span>)]</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>random_state</code>：设置随机模式的参数，默认是<code>None</code>，高维数据表现更明显</li>
+<li><code>splitter</code>：有两个参数供选择
+<ul>
+<li><code>best</code>：默认，每次选择更重要的属性进行分类</li>
+<li><code>random</code>：保证选择特征的随机性，树会更深更大，降低对训练数据的拟合</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">clf = tree.DecisionTreeClassifier(criterion=<span class="string">"entropy"</span></span><br><span class="line">                                  ,random_state=<span class="number">50</span>   <span class="comment"># 设置随机模式，保证结果不变</span></span><br><span class="line">                                  ,splitter=<span class="string">"random"</span>  </span><br><span class="line">                                  )   </span><br><span class="line">clf = clf.fit(Xtrain, ytrain)</span><br><span class="line">score = clf.score(Xtest, ytest)    <span class="comment"># 返回预测的准确度</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">feature_name = [<span class="string">'酒精'</span>,<span class="string">'苹果酸'</span>,<span class="string">'灰'</span>,<span class="string">'灰的碱性'</span>,<span class="string">'镁'</span>,<span class="string">'总酚'</span>,<span class="string">'类黄酮'</span>,<span class="string">'非黄烷类酚类'</span>,</span><br><span class="line">                <span class="string">'花青素'</span>,<span class="string">'颜色强度'</span>,<span class="string">'色调'</span>,<span class="string">'od280/od315稀释葡萄酒'</span>,<span class="string">'脯氨酸'</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> graphviz</span><br><span class="line">dot_data = tree.export_graphviz(clf</span><br><span class="line">                               ,feature_names = feature_name</span><br><span class="line">                               ,class_names = [<span class="string">"琴酒"</span>,<span class="string">"雪莉"</span>,<span class="string">"贝尔摩德"</span>]</span><br><span class="line">                               ,filled = <span class="literal">True</span>    <span class="comment"># 是否填充颜色</span></span><br><span class="line">                               ,rounded = <span class="literal">True</span>)  <span class="comment"># 框的形状</span></span><br><span class="line"></span><br><span class="line">graph = graphviz.Source(dot_data)</span><br><span class="line">graph</span><br></pre></td></tr></table></figure>
+<p><img src="https://s2.ax1x.com/2019/09/23/uCDkLR.png" alt=""></p>
+<h3 id="剪枝参数">剪枝参数</h3>
+<p>过拟合：在训练数据集上表现的很好，在测试数据集上却很差</p>
+<ul>
+<li><code>max_depth</code><br>
+限制树的最大深度，超过设定深度的树枝全部剪掉</li>
+<li><code>min_samples_leaf &amp; min_samples_split</code><br>
+<code>min_samples_leaf</code>限定，一个节点在分枝后的每个子节点都必须包含至少<code>min_samples_leaf</code>个训练样本<br>
+<code>min_samples_split</code>限定，一个节点必须要包含至少<code>min_samples_split</code>个训练样本，这个节点才允许被分枝，否则分枝就不会发生。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">clf = tree.DecisionTreeClassifier(criterion=<span class="string">"entropy"</span></span><br><span class="line">                                  ,random_state=<span class="number">50</span>   <span class="comment"># 设置随机模式，保证结果不变</span></span><br><span class="line">                                  ,splitter=<span class="string">"random"</span>  </span><br><span class="line">                                  <span class="comment"># 可以调节3个参数，比较每次的得分大小</span></span><br><span class="line">                                  ,max_depth=<span class="number">3</span>   </span><br><span class="line">                                  ,min_samples_leaf=<span class="number">10</span></span><br><span class="line">                                  ,min_samples_split=<span class="number">10</span></span><br><span class="line">                                  )   </span><br><span class="line">clf = clf.fit(Xtrain, ytrain)</span><br><span class="line"></span><br><span class="line">dot_data = tree.export_graphviz(clf</span><br><span class="line">                               ,feature_names = feature_name</span><br><span class="line">                               ,class_names = [<span class="string">"琴酒"</span>,<span class="string">"雪莉"</span>,<span class="string">"贝尔摩德"</span>]</span><br><span class="line">                               ,filled = <span class="literal">True</span>    <span class="comment"># 是否填充颜色</span></span><br><span class="line">                               ,rounded = <span class="literal">True</span>)  <span class="comment"># 框的形状</span></span><br><span class="line"></span><br><span class="line">graph = graphviz.Source(dot_data)</span><br><span class="line">graph</span><br></pre></td></tr></table></figure>
+<p><img src="https://s2.ax1x.com/2019/09/23/uCDnJO.png" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">score = clf.score(Xtest, ytest)    <span class="comment"># 返回预测的准确度 </span></span><br><span class="line">score</span><br><span class="line"><span class="number">0.7777777777777778</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>max_features</code>
+<ul>
+<li>限制分枝是考虑的特征个数，超过限制的个数直接舍弃掉</li>
+<li>限制高维数据的过拟合剪枝参数，方法暴力</li>
+</ul>
+</li>
+<li><code>min_impurity_decrease</code>
+<ul>
+<li>限制信息增益的大小</li>
+<li>小于设置值不会发生分枝</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 学习曲线</span></span><br><span class="line"></span><br><span class="line">test = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):</span><br><span class="line">    clf = tree.DecisionTreeClassifier(criterion=<span class="string">"entropy"</span></span><br><span class="line">                                  ,random_state=<span class="number">50</span>   <span class="comment"># 设置随机模式，保证结果不变</span></span><br><span class="line">                                  ,splitter=<span class="string">"random"</span>  </span><br><span class="line">                                  ,max_depth=i+<span class="number">1</span></span><br><span class="line"><span class="comment">#                                   ,min_samples_leaf=10</span></span><br><span class="line"><span class="comment">#                                   ,min_samples_split=10</span></span><br><span class="line">                                  )   </span><br><span class="line">    clf = clf.fit(Xtrain, ytrain)</span><br><span class="line">    score = clf.score(Xtest, ytest)    <span class="comment"># 返回预测的准确度 </span></span><br><span class="line">    test.append(score)</span><br><span class="line">plt.plot(range(<span class="number">1</span>,<span class="number">11</span>), test, color=<span class="string">"red"</span>, label=<span class="string">"max_depth"</span>)</span><br><span class="line">plt.legend()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://s2.ax1x.com/2019/09/23/uCDuWD.png" alt=""></p>
+<h3 id="重要属性和接口">重要属性和接口</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 测试样本所在的叶子节点的索引</span></span><br><span class="line">clf.apply(Xtest)</span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">array</span>([ <span class="number">6</span>,  <span class="number">7</span>,  <span class="number">6</span>, <span class="number">18</span>, <span class="number">18</span>,  <span class="number">6</span>, <span class="number">12</span>, <span class="number">16</span>, <span class="number">16</span>,  <span class="number">9</span>,  <span class="number">7</span>, <span class="number">16</span>, <span class="number">18</span>,  <span class="number">7</span>,  <span class="number">5</span>, <span class="number">12</span>, <span class="number">14</span>,</span><br><span class="line">       <span class="number">18</span>,  <span class="number">7</span>,  <span class="number">6</span>,  <span class="number">7</span>,  <span class="number">6</span>, <span class="number">12</span>,  <span class="number">7</span>, <span class="number">18</span>,  <span class="number">9</span>,  <span class="number">5</span>,  <span class="number">7</span>,  <span class="number">5</span>, <span class="number">16</span>, <span class="number">12</span>,  <span class="number">6</span>,  <span class="number">7</span>,  <span class="number">5</span>,</span><br><span class="line">       <span class="number">14</span>, <span class="number">18</span>,  <span class="number">9</span>, <span class="number">12</span>,  <span class="number">6</span>,  <span class="number">9</span>,  <span class="number">7</span>,  <span class="number">9</span>, <span class="number">16</span>, <span class="number">12</span>, <span class="number">14</span>, <span class="number">12</span>,  <span class="number">7</span>,  <span class="number">6</span>, <span class="number">18</span>,  <span class="number">5</span>, <span class="number">14</span>,</span><br><span class="line">       <span class="number">18</span>,  <span class="number">7</span>, <span class="number">12</span>], dtype=<span class="built_in">int</span>64)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#返回分类测试样本的分类或者回归结果</span></span><br><span class="line">clf.predict(Xtest)</span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">array</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>,</span><br><span class="line">       <span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>,</span><br><span class="line">       <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<p>一个属性：<code>feature_importances</code></p>
+<p>四个接口：<code>fit，score，apply，predict</code></p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/09/22/%E5%9F%BA%E4%BA%8E%E5%86%B3%E7%AD%96%E6%A0%91%E7%9A%84%E7%BA%A2%E9%85%92%E5%88%86%E7%B1%BB%E5%8F%AF%E8%A7%86%E5%8C%96.html">基于决策树的红酒分类可视化</a></p>
+  <p><span>发布时间:</span>2019年09月22日 - 23:09</p>
+  <p><span>原始链接:</span><a href="/2019/09/22/%E5%9F%BA%E4%BA%8E%E5%86%B3%E7%AD%96%E6%A0%91%E7%9A%84%E7%BA%A2%E9%85%92%E5%88%86%E7%B1%BB%E5%8F%AF%E8%A7%86%E5%8C%96.html" title="基于决策树的红酒分类可视化">http://www.renpeter.cn/2019/09/22/%E5%9F%BA%E4%BA%8E%E5%86%B3%E7%AD%96%E6%A0%91%E7%9A%84%E7%BA%A2%E9%85%92%E5%88%86%E7%B1%BB%E5%8F%AF%E8%A7%86%E5%8C%96.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2019/09/22/%E5%9F%BA%E4%BA%8E%E5%86%B3%E7%AD%96%E6%A0%91%E7%9A%84%E7%BA%A2%E9%85%92%E5%88%86%E7%B1%BB%E5%8F%AF%E8%A7%86%E5%8C%96.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag"># 可视化</a>
+          
+            <a href="/tags/pandas/" rel="tag"># pandas</a>
+          
+            <a href="/tags/sklearn/" rel="tag"># sklearn</a>
+          
+            <a href="/tags/matplotlib/" rel="tag"># matplotlib</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/21/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E2%80%94%E2%80%94%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%B3%95.html" rel="next" title="朴素贝叶斯法">
+                <i class="fa fa-chevron-left"></i> 朴素贝叶斯法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/23/Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%955%E2%80%94%E2%80%94%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F.html" rel="prev" title="选择排序">
+                选择排序 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#决策树在sklearn的应用"><span class="nav-number">1.</span> <span class="nav-text">决策树在sklearn的应用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决两个重点问题"><span class="nav-number">1.1.</span> <span class="nav-text">解决两个重点问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sklearn中的决策树"><span class="nav-number">1.2.</span> <span class="nav-text">sklearn中的决策树</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#建模的基本流程"><span class="nav-number">2.</span> <span class="nav-text">建模的基本流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重要参数"><span class="nav-number">3.</span> <span class="nav-text">重要参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导入模块和库"><span class="nav-number">4.</span> <span class="nav-text">导入模块和库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据生成和信息查看"><span class="nav-number">5.</span> <span class="nav-text">数据生成和信息查看</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重点：如何将样本数据集和输出标签生成表格形式"><span class="nav-number">6.</span> <span class="nav-text">重点：如何将样本数据集和输出标签生成表格形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#建模过程"><span class="nav-number">7.</span> <span class="nav-text">建模过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#画图"><span class="nav-number">8.</span> <span class="nav-text">画图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结果信息"><span class="nav-number">9.</span> <span class="nav-text">结果信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#剪枝参数"><span class="nav-number">10.</span> <span class="nav-text">剪枝参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重要属性和接口"><span class="nav-number">11.</span> <span class="nav-text">重要属性和接口</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2019/09/22/%E5%9F%BA%E4%BA%8E%E5%86%B3%E7%AD%96%E6%A0%91%E7%9A%84%E7%BA%A2%E9%85%92%E5%88%86%E7%B1%BB%E5%8F%AF%E8%A7%86%E5%8C%96.html';
+          this.page.identifier = '2019/09/22/基于决策树的红酒分类可视化.html';
+          this.page.title = '基于决策树的红酒分类可视化';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

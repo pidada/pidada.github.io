@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="大数据,hadoop,hive," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Hive的DDL操作  Hive是一种数据库技术，可以定义数据库和表来分析结构化数据。主题结构化数据分析是以表方式存储数据，并通过查询来分析。  LanguageManual DDL">
+<meta name="keywords" content="大数据,hadoop,hive">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hive之路7-hive之DDL操作">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2019&#x2F;11&#x2F;22&#x2F;hive%E4%B9%8B%E8%B7%AF7-hive%E4%B9%8BDDL%E6%93%8D%E4%BD%9C.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="Hive的DDL操作  Hive是一种数据库技术，可以定义数据库和表来分析结构化数据。主题结构化数据分析是以表方式存储数据，并通过查询来分析。  LanguageManual DDL">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;22&#x2F;Moflw9.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;22&#x2F;Mo4tqe.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;22&#x2F;Mo5sYR.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;22&#x2F;MoIljK.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;22&#x2F;MooLdg.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;22&#x2F;MoT00S.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;22&#x2F;MToMtJ.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;22&#x2F;MTTvdS.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;22&#x2F;MTLf4U.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;22&#x2F;M7mV00.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;22&#x2F;M73CyF.png">
+<meta property="og:updated_time" content="2019-11-23T06:49:05.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;11&#x2F;22&#x2F;Moflw9.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2019/11/22/hive之路7-hive之DDL操作.html"/>
+
+
+
+
+
+  <title>hive之路7-hive之DDL操作 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2019/11/22/hive%E4%B9%8B%E8%B7%AF7-hive%E4%B9%8BDDL%E6%93%8D%E4%BD%9C.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">hive之路7-hive之DDL操作</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-11-22T18:17:29+08:00">
+                2019-11-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/hive/" itemprop="url" rel="index">
+                    <span itemprop="name">hive</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/11/22/hive%E4%B9%8B%E8%B7%AF7-hive%E4%B9%8BDDL%E6%93%8D%E4%BD%9C.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/11/22/hive之路7-hive之DDL操作.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  2.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  12
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="Hive的DDL操作">Hive的DDL操作</h3>
+<blockquote>
+<p>Hive是一种数据库技术，可以定义数据库和表来分析结构化数据。主题结构化数据分析是以表方式存储数据，并通过查询来分析。</p>
+</blockquote>
+<p><a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL" target="_blank" rel="noopener">LanguageManual DDL</a></p>
+<a id="more"></a>
+<p>数据库定义语言<code>DDL</code>主要是对库和表进行各种操作，具体包含：</p>
+<p><strong>库</strong></p>
+<ol>
+<li>创建库</li>
+<li>查看库</li>
+<li>删除库</li>
+<li>切换库</li>
+</ol>
+<p><strong>表</strong></p>
+<ol>
+<li>创建表</li>
+<li>查看表</li>
+<li>修改表</li>
+<li>删除表</li>
+<li>清空表</li>
+</ol>
+<hr>
+<h3 id="库操作">库操作</h3>
+<h4 id="一、创建库create-database">一、创建库create database</h4>
+<p>在Hive中，数据库是一个命名空间或表的集合。创建了数据库之后，在HDFS上的存储路径默认为<code>/usr/hive/warehouse/*.db</code>具体语法为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; create database|schema [if not exists] database_name  # 1创建数据库</span><br><span class="line">		[comment database_comment]  # 2 描述</span><br><span class="line">		[location hdfs_path]  # 存放路径</span><br><span class="line">		[with dbproperties(property_name=property_value,...)];  # 3. 指定数据库的属性</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>if not exists</code>是可选的，如果数据库存在则会报错；</li>
+<li>可以对数据库进行描述和添加属性</li>
+<li>指定数据库的存放路径。默认地址是<code>/user/hive/warehouse/db_name.db/table_name/partition_name/…</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">0: jdbc:hive2://localhost:10000/default&gt; create database if not exists worker comment &apos;learning hive&apos;;  # 创建worker数据库，并且戴上了注释</span><br><span class="line">No rows affected (0.111 seconds)</span><br><span class="line">0: jdbc:hive2://localhost:10000/default&gt; show databases;  # 结果显示正常创建</span><br><span class="line">+----------------+</span><br><span class="line">| database_name  |</span><br><span class="line">+----------------+</span><br><span class="line">| default        |</span><br><span class="line">| student        |</span><br><span class="line">| worker         |</span><br><span class="line">+----------------+</span><br><span class="line">3 rows selected (0.118 seconds)</span><br></pre></td></tr></table></figure>
+<h4 id="二、查询库信息">二、查询库信息</h4>
+<blockquote>
+<p>desc database databasename</p>
+</blockquote>
+<p><img src="https://s2.ax1x.com/2019/11/22/Moflw9.png" alt="Moflw9.png"></p>
+<h4 id="三、创建带属性的库">三、创建带属性的库</h4>
+<p>创建一个带上注释和属性的test表</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">0: jdbc:hive2://localhost:10000/default&gt; create database if not exists test comment &apos;test database&apos; with dbproperties(&apos;creator&apos;=&apos;peter&apos;,&apos;date&apos;=&apos;2019-11-21&apos;);</span><br><span class="line">No rows affected (0.343 seconds)</span><br><span class="line">0: jdbc:hive2://localhost:10000/default&gt; show databases;</span><br><span class="line">+----------------+</span><br><span class="line">| database_name  |</span><br><span class="line">+----------------+</span><br><span class="line">| default        |</span><br><span class="line">| student        |</span><br><span class="line">| test           |</span><br><span class="line">| worker         |</span><br></pre></td></tr></table></figure>
+<h4 id="四、查看库">四、查看库</h4>
+<ol>
+<li>查看有哪些库</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">0: jdbc:hive2://localhost:10000/default&gt; show databases;</span><br><span class="line">+----------------+</span><br><span class="line">| database_name  |</span><br><span class="line">+----------------+</span><br><span class="line">| default        |</span><br><span class="line">| student        |</span><br><span class="line">| test           |</span><br><span class="line">| worker         |</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>
+<p>查看某个库的具体属性信息</p>
+<blockquote>
+<p>desc database databasename;</p>
+</blockquote>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">0: jdbc:hive2://localhost:10000/default&gt; desc database test;</span><br><span class="line">+----------+----------------+----------------------------------------------------+------------------+-------------+-------------+</span><br><span class="line">| db_name  |    comment     |                      location                      |    owner_name    | owner_type  | parameters  |</span><br><span class="line">+----------+----------------+----------------------------------------------------+------------------+-------------+-------------+</span><br><span class="line">| test     | test database  | hdfs://localhost:9000/user/hive/warehouse/test.db  | show databases;  | USER        |             |</span><br><span class="line">+----------+----------------+----------------------------------------------------+------------------+-------------+-------------+</span><br><span class="line">1 row selected (0.126 seconds)</span><br></pre></td></tr></table></figure>
+<p><img src="https://s2.ax1x.com/2019/11/22/Mo4tqe.png" alt="Mo4tqe.png"></p>
+<ol start="3">
+<li>查看正在使用的库</li>
+</ol>
+<blockquote>
+<p>select current_database();</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">0: jdbc:hive2://localhost:10000/default&gt; select current_database();</span><br><span class="line">+----------+</span><br><span class="line">|   _c0    |</span><br><span class="line">+----------+</span><br><span class="line">| default  |</span><br><span class="line">+----------+</span><br><span class="line">1 row selected (1.255 seconds)</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>查看创建库的具体hive SQL语句</li>
+</ol>
+<blockquote>
+<p>show create database databasename;</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">0: jdbc:hive2://localhost:10000/default&gt; show create database test;</span><br><span class="line">+----------------------------------------------------+</span><br><span class="line">|                   createdb_stmt                    |</span><br><span class="line">+----------------------------------------------------+</span><br><span class="line">| CREATE DATABASE `test`                             |</span><br><span class="line">| COMMENT                                            |</span><br><span class="line">|   &apos;test database&apos;                                  |</span><br><span class="line">| LOCATION                                           |</span><br><span class="line">|   &apos;hdfs://localhost:9000/user/hive/warehouse/test.db&apos; |</span><br><span class="line">| WITH DBPROPERTIES (                                |</span><br><span class="line">|   &apos;creator&apos;=&apos;peter&apos;,                               |</span><br><span class="line">|   &apos;date&apos;=&apos;2019-11-21&apos;)                             |</span><br><span class="line">+----------------------------------------------------+</span><br><span class="line">8 rows selected (0.276 seconds)</span><br></pre></td></tr></table></figure>
+<p><img src="https://s2.ax1x.com/2019/11/22/Mo5sYR.png" alt="Mo5sYR.png"></p>
+<h4 id="五、删除库">五、删除库</h4>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">drop</span> <span class="keyword">database</span> dbname;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">database</span> <span class="keyword">if</span> <span class="keyword">exists</span> dbname;</span><br></pre></td></tr></table></figure>
+<p>默认情况下，<strong>hive 不允许删除包含表的数据库</strong>，有两种解决办法：</p>
+<p>1、 手动删除库下所有表，然后删除库</p>
+<p>2、 使用<code>cascade</code>关键字</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">delete database if exists dbname cascade;</span><br></pre></td></tr></table></figure>
+<p>相当于是采用的严格<code>restrict</code>模式</p>
+<p>1、删除不带有表的数据库test</p>
+<p>直接通过drop关键字进行删除</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">0: jdbc:hive2://localhost:10000/default&gt; drop database test;</span><br><span class="line">No rows affected (0.327 seconds)</span><br><span class="line">0: jdbc:hive2://localhost:10000/default&gt; show databases;</span><br><span class="line">+----------------+</span><br><span class="line">| database_name  |</span><br><span class="line">+----------------+</span><br><span class="line">| default        |</span><br><span class="line">| student        |</span><br><span class="line">| worker         |</span><br><span class="line">+----------------+</span><br><span class="line">3 rows selected (0.099 seconds)</span><br></pre></td></tr></table></figure>
+<p><img src="https://s2.ax1x.com/2019/11/22/MoIljK.png" alt="MoIljK.png"></p>
+<ol start="2">
+<li>删除带有表的库</li>
+</ol>
+<p>选择先前<code>worker</code>数据库，进入库中创建一个<code>usrinfo</code>表</p>
+<ul>
+<li>使用worker库</li>
+<li>创建userinfo表</li>
+<li>显示表的信息</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">0: jdbc:hive2://localhost:10000/default&gt; use worker;</span><br><span class="line">No rows affected (0.264 seconds)</span><br><span class="line"></span><br><span class="line">0: jdbc:hive2://localhost:10000/default&gt; create table userinfo (id int, name string);  # 创建表</span><br><span class="line">No rows affected (0.719 seconds)</span><br><span class="line">0: jdbc:hive2://localhost:10000/default&gt; show tables;</span><br><span class="line">+-----------+</span><br><span class="line">| tab_name  |</span><br><span class="line">+-----------+</span><br><span class="line">| userinfo  |</span><br><span class="line">+-----------+</span><br><span class="line"></span><br><span class="line">0: jdbc:hive2://localhost:10000/default&gt; desc userinfo;  # 显示表的信息</span><br><span class="line">+-----------+------------+----------+</span><br><span class="line">| col_name  | data_type  | comment  |</span><br><span class="line">+-----------+------------+----------+</span><br><span class="line">| id        | int        |          |</span><br><span class="line">| name      | string     |          |</span><br><span class="line">+-----------+------------+----------+</span><br><span class="line">2 rows selected (0.145 seconds)</span><br></pre></td></tr></table></figure>
+<p>如果此时删除<code>worker</code>库，则会报错：</p>
+<p><img src="https://s2.ax1x.com/2019/11/22/MooLdg.png" alt="MooLdg.png"></p>
+<p>使用<code>cascade</code>关键字解决</p>
+<p><img src="https://s2.ax1x.com/2019/11/22/MoT00S.png" alt="MoT00S.png"></p>
+<h4 id="六、-使用表">六、 使用表</h4>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">`USE database_name;``USE DEFAULT;`</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>USE sets the current database for all subsequent HiveQL statements. To revert to the default database, use the keyword “<code>default</code>” instead of a database name.</p>
+</blockquote>
+<h4 id="七、选择数据库">七、选择数据库</h4>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ALTER (DATABASE|SCHEMA) database_name SET DBPROPERTIES (property_name=property_value, ...);</span><br><span class="line"></span><br><span class="line">ALTER (DATABASE|SCHEMA) database_name SET OWNER [USER | ROLE] user_or_role;</span><br><span class="line"></span><br><span class="line">ALTER (DATABASE|SCHEMA) database_name SET LOCATION hdfs_path;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>选择数据库，改变数据库的属性</li>
+<li>选择数据库，改变数据库的用户</li>
+<li>选择数据库，改变数据库的存放目录</li>
+</ul>
+<hr>
+<h3 id="表操作">表操作</h3>
+<h4 id="一、创建表">一、创建表</h4>
+<ul>
+<li><strong>方式1</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">CREATE [TEMPORARY] [EXTERNAL] TABLE [IF NOT EXISTS]   [db_name.]table_name   # 建表</span><br><span class="line">[(col_name data_type [column_constraint_specification,...)] # 指定字段</span><br><span class="line">[COMMENT col_comment], ... [constraint_specification])]  # 指定字段的注释</span><br><span class="line">[COMMENT table_comment]   # 指定表的注释</span><br><span class="line">[PARTITIONED BY (col_name data_type [COMMENT col_comment], ...)]</span><br><span class="line">[CLUSTERED BY (col_name, col_name, ...) \ # 聚集的族</span><br><span class="line"> [SORTED BY (col_name [ASC|DESC], ...)]  \ # 升降序排列</span><br><span class="line"> INTO num_buckets BUCKETS]  # 将数据分装成多少个桶</span><br><span class="line">[SKEWED BY (col_name, col_name, ...)]  # 数据的倾斜：指定字段和位置</span><br><span class="line">ON ((col_value, col_value, ...), (col_value, col_value, ...), ...)</span><br><span class="line">[STORED AS DIRECTORIES]  # 数据存储目录</span><br><span class="line">[</span><br><span class="line"> [ROW FORMAT row_format]  # 行列的属性特征</span><br><span class="line"> [STORED AS file_format]| STORED BY # 数据存储格式format  &apos;storage.handler.class.name&apos; [WITH SERDEPROPERTIES (...)]</span><br><span class="line">  ]</span><br><span class="line">[LOCATION hdfs_path]  # 在HDFS中的存储目录</span><br><span class="line">[TBLPROPERTIES (property_name=property_value, ...)]  # 表的属性</span><br><span class="line">[AS select_statement];  # AS 后面接的是某个查询语句的结果</span><br></pre></td></tr></table></figure>
+<ul>
+<li>
+<p>create table：创建一个表，指定名字；表若存在，则通过if not exists进行忽略；</p>
+</li>
+<li>
+<p>Temporary：临时表</p>
+</li>
+<li>
+<p>external：让用户创建一个外表</p>
+</li>
+<li>
+<p>comment：用于表或者字段的注释</p>
+</li>
+<li>
+<p>Partitioned by ：指定分区字段</p>
+</li>
+<li>
+<p>Clustered by：<strong>distributed by + sorted by的功能叠加</strong></p>
+</li>
+<li>
+<p>sorted by：保证同一个reduce中的数据是按照指定字段进行排序，同时指定执行的reduce 的个数（<strong>有序</strong>）</p>
+</li>
+<li>
+<p>distributed by：按照那个指定的字段将数据划分到不同的输出reduce中，保证数据不重叠，但是数据是无序的（<strong>不重叠，无序</strong>）</p>
+</li>
+<li>
+<p>row_format：指定字段之间的分隔符</p>
+</li>
+<li>
+<p>file_format：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">file_format:</span><br><span class="line"> |SEQUENCEFILE   # 序列化文件</span><br><span class="line"> | TEXTFILE   # 文本文件</span><br><span class="line"> | RCFILE    # 行列存储结合的文件格式</span><br><span class="line"> | ORC     # 按照块的列存储</span><br><span class="line"> | PARQUET    # 行存储格式文件</span><br><span class="line"> | AVRO    # 序列化存储方式</span><br><span class="line"> | JSONFILE  # json格式</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<ul>
+<li><strong>方式2</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CREATE [TEMPORARY] [EXTERNAL] TABLE [IF NOT EXISTS] [db_name.]table_name</span><br><span class="line">LIKE existing_table_or_view_name   # 通过某个现有的表或者视图来进行创建</span><br><span class="line">[LOCATION hdfs_path]; # 指定存放位置</span><br></pre></td></tr></table></figure>
+<h4 id="创建表demo">创建表demo</h4>
+<ul>
+<li>在hive中创建好表user</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; create table user</span><br><span class="line">    &gt; (id int, name string,   # 注意字符串不是char/varchar而是string</span><br><span class="line">    &gt; age int, tel string)</span><br><span class="line">    &gt; ROW FORMAT DELIMITED  # 指定行和列按照什么进行分割，行默认是一行行的数据</span><br><span class="line">    &gt; FIELDS TERMINATED BY &apos;\t&apos;</span><br><span class="line">    &gt; STORED AS TEXTFILE</span><br><span class="line">    &gt; LOCATION &apos;/user/hive/warehouse/user.db/users/&apos;;</span><br><span class="line">OK</span><br><span class="line">Time taken: 2.832 seconds</span><br></pre></td></tr></table></figure>
+<ul>
+<li>假设本地有个文件<code>/user/local/user.txt</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1       wyp     25      13188888888888</span><br><span class="line">2       test    30      13888888888888</span><br><span class="line">3       zs      34      899314121</span><br></pre></td></tr></table></figure>
+<p>通过如下方式进行导入并查看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; load data local inpath &apos;user.txt&apos; into table user;   # 查看</span><br><span class="line">hive&gt; dfs -ls /user/hive/warehouse/user;   # /usre/hive/warehouse 是默认路径</span><br></pre></td></tr></table></figure>
+<h3 id="各种表">各种表</h3>
+<h4 id="一、内部表和外部表">一、内部表和外部表</h4>
+<ol>
+<li>内部表managed table</li>
+</ol>
+<ul>
+<li>内部表也称之为<code>管理表</code>，其数据文件、元数据及统计信息全部由hive进程自身管理</li>
+<li>存储位置：<code>/usr/hive/warehouse/dbname.db/tablename</code></li>
+<li>删除内部表，则其全部数据会一同删除</li>
+<li>创建临时表时，推荐内部表</li>
+</ul>
+<ol start="2">
+<li>外部表external table</li>
+</ol>
+<ul>
+<li>通过元信息或者schema描述外部文件的结构</li>
+<li>外部文件能够被hive之外的进程访问和管理，例如HDFS等</li>
+<li>如果一份数据已经存储在HDFS上，并且被多个客户端进行使用，最好创建外部表</li>
+</ul>
+<p>3、内部表和外部表demo</p>
+<ul>
+<li>创建默认的内部表</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> 0: jdbc:hive2://localhost:10000/default&gt; create table workerinfo (id int, name string, sex string,  age int) row format delimited fields terminated by &quot;,&quot;;</span><br><span class="line">No rows affected (0.163 seconds)</span><br><span class="line">0: jdbc:hive2://localhost:10000/default&gt; show tables;</span><br><span class="line">+-------------+</span><br><span class="line">|  tab_name   |</span><br><span class="line">+-------------+</span><br><span class="line">| workerinfo  |</span><br><span class="line">+-------------+</span><br><span class="line">1 row selected (0.123 seconds)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>创建外部表</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">0: jdbc:hive2://localhost:10000/default&gt; create external table student_ext(id int, name string, sex string, age int, department string)</span><br><span class="line">row format delimited fields</span><br><span class="line">terminated by &quot;,&quot;</span><br><span class="line">location &quot;/hive/student&quot;;</span><br></pre></td></tr></table></figure>
+<p><img src="https://s2.ax1x.com/2019/11/22/MToMtJ.png" alt="MToMtJ.png"></p>
+<ul>
+<li>查看某个表的详细信息</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">desc formatted student_ext;</span><br></pre></td></tr></table></figure>
+<p><img src="https://s2.ax1x.com/2019/11/22/MTTvdS.png" alt="MTTvdS.png"></p>
+<h4 id="二、分区表和分桶表">二、分区表和分桶表</h4>
+<p><strong>1、 分区表</strong></p>
+<blockquote>
+<p>Hive select 查询时候，一般会扫描整个表，开销大，消耗时间。分区表指的是在创建表的时候，指定partition的分区空间，语法为：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">partitioned by (par_col, par_type)   -- 指定字段和类型</span><br></pre></td></tr></table></figure>
+<ul>
+<li>静态分区：分区的值是确定的</li>
+<li>动态分区：分区的值是不确定的，默认开始</li>
+</ul>
+<p><code>hive</code>中默认的是<strong>动态分区开启状态</strong></p>
+<p><img src="https://s2.ax1x.com/2019/11/22/MTLf4U.png" alt="MTLf4U.png"></p>
+<p><strong>2、两种模式</strong></p>
+<p>严格模式：<code>strict</code>，<strong>必须有一个字段是静态分区字段</strong>。</p>
+<p>非严格模式：<code>non strict</code>；允许所有的字段是动态分区字段。</p>
+<blockquote>
+<p>设置方法：hive.exec.dynamic.partition.mode=strict/nonstrict</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">0: jdbc:hive2://localhost:10000/default&gt; set hive.exec.dynamic.partition.mode;   # 默认是strict模式</span><br><span class="line">+------------------------------------------+</span><br><span class="line">|                   set                    |</span><br><span class="line">+------------------------------------------+</span><br><span class="line">| hive.exec.dynamic.partition.mode=strict  |</span><br><span class="line">+------------------------------------------+</span><br><span class="line">1 row selected (0.01 seconds)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>
+<p>每个分区值都会形成一个具体的分区目录，数据文件一定要存储在某个分区中，而不能直接存储在表中。</p>
+</li>
+<li>
+<p>分区字段是伪字段，不能与表定义字段重名</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 假设某个表中存在3个字段</span><br><span class="line">Id int,</span><br><span class="line">Date date,</span><br><span class="line">Name varchar</span><br><span class="line"></span><br><span class="line"># 创建分区表</span><br><span class="line">create table partable(</span><br><span class="line">  Id int,</span><br><span class="line">  dtDontQuery string,  # 不能重名，用dtDontQuery代替</span><br><span class="line">  Name string</span><br><span class="line">)</span><br><span class="line">partitioned by (date string)  # 指定分区字段</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><strong>分桶表bucketed sorted tables</strong></li>
+</ol>
+<p>将已经执行了聚类和排序之后的表放入桶中，一个demo：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0: jdbc:hive2://localhost:10000/default&gt; create external table student_bck(id int, name string, sex string, age int, department string)</span><br><span class="line">clustered by(id) sorted by(id asc, name desc) into 4 buckets</span><br><span class="line">row format delimited</span><br><span class="line">fields terminated by &quot;,&quot;</span><br><span class="line">location &quot;/hive/student_bck&quot;;</span><br></pre></td></tr></table></figure>
+<p><img src="https://s2.ax1x.com/2019/11/22/M7mV00.png" alt="M7mV00.png"></p>
+<h3 id="表的其他操作">表的其他操作</h3>
+<ol>
+<li>查看当前使用的数据库中的表</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show tables;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>查看数据库中以xxx开头的表</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show tables like &apos;student*&apos;   -- 以student开头的表</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>查看表的详细信息</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">desc student;</span><br><span class="line">desc extended student;</span><br><span class="line">desc formatted student;</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>查看建表的语句</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show create tabel student;</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>修改表名</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alter table student rename to new_student;</span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li>删除表</li>
+</ol>
+<p>删除内表：将元数据信息和数据一起删除，实际上将数据移动到.Transh/Current目录，而元数据则是完全删除的；加了purge之后，数据删除干净！</p>
+<p>删除外表：仅删除元数据，诗句仍在建表时指定的目录下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">drop table [if exists] student [pruge];</span><br></pre></td></tr></table></figure>
+<ol start="7">
+<li></li>
+<li>
+<p>查看分区信息</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show partitions student_ptn;</span><br></pre></td></tr></table></figure>
+<ol start="8">
+<li>删除分区</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alter table student_ptn drop partition (city=&quot;shenzhen&quot;);</span><br></pre></td></tr></table></figure>
+<ol start="9">
+<li>其他命令</li>
+</ol>
+<p><img src="https://s2.ax1x.com/2019/11/22/M73CyF.png" alt="M73CyF.png"></p>
+<h3 id="Hive表的多种导入数据方式">Hive表的多种导入数据方式</h3>
+<ol>
+<li>从本地系统上导入数据（假设有数据worker.txt）
+<ul>
+<li>先在hive中创建表</li>
+<li>将本地的数据导入</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">-- hive中创建表</span><br><span class="line">hive&gt; create table user    # 创建user表</span><br><span class="line">    &gt; (id int, name string,</span><br><span class="line">    &gt; age int, tel string)</span><br><span class="line">    &gt; ROW FORMAT DELIMITED</span><br><span class="line">    &gt; FIELDS TERMINATED BY &apos;\t&apos;</span><br><span class="line">    &gt; STORED AS TEXTFILE;</span><br><span class="line">OK</span><br><span class="line">Time taken: 2.832 seconds</span><br><span class="line"></span><br><span class="line"># 导入本地数据</span><br><span class="line">hive&gt; load data local inpath &apos;user.txt&apos; into table user;</span><br><span class="line"></span><br><span class="line"># 查询结果，显示咋HDFS中的</span><br><span class="line">hive&gt; dfs -ls /user/hive/warehouse/worker;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>从HDFS中导入数据</li>
+</ol>
+<p>假设HDFS上有一个文件/home/worker/test.txt</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hive&gt;load data inpath &apos;/home/worker/test.txt&apos; into table user;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>从其他的表中查询出相应的数据并且导入到hive表</li>
+</ol>
+<p>假设有一张test表，以age作为分区字段：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; create table test(</span><br><span class="line">    &gt; id int, name string</span><br><span class="line">    &gt; ,tel string)</span><br><span class="line">    &gt; partitioned by   -- 分区字段</span><br><span class="line">    &gt; (age int)</span><br><span class="line">    &gt; ROW FORMAT DELIMITED</span><br><span class="line">    &gt; FIELDS TERMINATED BY &apos;\t&apos;</span><br><span class="line">    &gt; STORED AS TEXTFILE;</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+<p>导入语句如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; insert into table test</span><br><span class="line">    &gt; partition (age=&apos;25&apos;)</span><br><span class="line">    &gt; select id, name, tel</span><br><span class="line">    &gt; from user;   # 从user表中导出3个字段，同时id=25</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>CTAS导入方式</li>
+</ol>
+<blockquote>
+<p>在实际情况中，表的输出结果可能太多，不适于显示在控制台上，此时将Hive的查询输出结果直接存在一个新的表中，非常方便</p>
+</blockquote>
+<p><code>CTAS</code>指的是<code>create table….. as select</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; create table test1</span><br><span class="line">    &gt; as</span><br><span class="line">    &gt; select id, name</span><br><span class="line">    &gt; from user;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/11/22/hive%E4%B9%8B%E8%B7%AF7-hive%E4%B9%8BDDL%E6%93%8D%E4%BD%9C.html">hive之路7-hive之DDL操作</a></p>
+  <p><span>发布时间:</span>2019年11月22日 - 18:11</p>
+  <p><span>原始链接:</span><a href="/2019/11/22/hive%E4%B9%8B%E8%B7%AF7-hive%E4%B9%8BDDL%E6%93%8D%E4%BD%9C.html" title="hive之路7-hive之DDL操作">http://www.renpeter.cn/2019/11/22/hive%E4%B9%8B%E8%B7%AF7-hive%E4%B9%8BDDL%E6%93%8D%E4%BD%9C.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2019/11/22/hive%E4%B9%8B%E8%B7%AF7-hive%E4%B9%8BDDL%E6%93%8D%E4%BD%9C.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
+          
+            <a href="/tags/hadoop/" rel="tag"># hadoop</a>
+          
+            <a href="/tags/hive/" rel="tag"># hive</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/22/hive%E4%B9%8B%E8%B7%AF6-%E5%AD%98%E5%82%A8%E6%A0%BC%E5%BC%8F%E5%92%8C%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F.html" rel="next" title="hive之路6-存储格式和数据格式">
+                <i class="fa fa-chevron-left"></i> hive之路6-存储格式和数据格式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/22/%E5%81%B6%E9%81%87%E8%8E%B2%E8%8A%B1%E5%B1%B1%E5%85%AC%E5%9B%AD.html" rel="prev" title="偶遇莲花山公园">
+                偶遇莲花山公园 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hive的DDL操作"><span class="nav-number">1.</span> <span class="nav-text">Hive的DDL操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#库操作"><span class="nav-number">2.</span> <span class="nav-text">库操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、创建库create-database"><span class="nav-number">2.1.</span> <span class="nav-text">一、创建库create database</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、查询库信息"><span class="nav-number">2.2.</span> <span class="nav-text">二、查询库信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三、创建带属性的库"><span class="nav-number">2.3.</span> <span class="nav-text">三、创建带属性的库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#四、查看库"><span class="nav-number">2.4.</span> <span class="nav-text">四、查看库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#五、删除库"><span class="nav-number">2.5.</span> <span class="nav-text">五、删除库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#六、-使用表"><span class="nav-number">2.6.</span> <span class="nav-text">六、 使用表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#七、选择数据库"><span class="nav-number">2.7.</span> <span class="nav-text">七、选择数据库</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表操作"><span class="nav-number">3.</span> <span class="nav-text">表操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、创建表"><span class="nav-number">3.1.</span> <span class="nav-text">一、创建表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建表demo"><span class="nav-number">3.2.</span> <span class="nav-text">创建表demo</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#各种表"><span class="nav-number">4.</span> <span class="nav-text">各种表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、内部表和外部表"><span class="nav-number">4.1.</span> <span class="nav-text">一、内部表和外部表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、分区表和分桶表"><span class="nav-number">4.2.</span> <span class="nav-text">二、分区表和分桶表</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表的其他操作"><span class="nav-number">5.</span> <span class="nav-text">表的其他操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hive表的多种导入数据方式"><span class="nav-number">6.</span> <span class="nav-text">Hive表的多种导入数据方式</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2019/11/22/hive%E4%B9%8B%E8%B7%AF7-hive%E4%B9%8BDDL%E6%93%8D%E4%BD%9C.html';
+          this.page.identifier = '2019/11/22/hive之路7-hive之DDL操作.html';
+          this.page.title = 'hive之路7-hive之DDL操作';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>

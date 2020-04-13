@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="CNN,TensorFlow,神经网络,RNN," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Char6-神经网络neural networks 本章中主要讲解的内容包含：  神经模型的简介 感知机模型 全连接网络 神经网络介绍 常见的激活函数 输出层设计方案 误差类型 神经网络类型    机器学习的目的是找到一组良好的参数$\theta$，使得其表示的数学模型能够很好地从训练数据集中学到映射关系$f_{\theta}$">
+<meta name="keywords" content="CNN,TensorFlow,神经网络,RNN">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TF-char6">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2019&#x2F;12&#x2F;02&#x2F;TF-char6.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="Char6-神经网络neural networks 本章中主要讲解的内容包含：  神经模型的简介 感知机模型 全连接网络 神经网络介绍 常见的激活函数 输出层设计方案 误差类型 神经网络类型    机器学习的目的是找到一组良好的参数$\theta$，使得其表示的数学模型能够很好地从训练数据集中学到映射关系$f_{\theta}$">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9iknav3jpj318z0u07wi.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9iky8mc50j31bc0u0hdu.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9ila5o7rkj30ik09ywfd.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9ilo8366wj30to0comxv.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9im3gf4uxj30ee0e476j.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9in1w3vegj30d00aq3zg.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9in76jt80j30hk036jro.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9indzqxhgj30is03u0t4.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9io2jugayj30sg0e2n2k.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9iouvblyej30i40cq0te.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9iox4qd53j30g20dq74v.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9ioyo1l29j30jq0de405.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9ip0gjr8rj30as02ot8r.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9ip2kshv6j30fi0dsaar.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9irytf0jhj30ku0hat9m.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9is5o78o9j30q40k2q60.jpg">
+<meta property="og:updated_time" content="2019-12-03T01:36:58.651Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9iknav3jpj318z0u07wi.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2019/12/02/TF-char6.html"/>
+
+
+
+
+
+  <title>TF-char6 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2019/12/02/TF-char6.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TF-char6</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-12-02T23:56:34+08:00">
+                2019-12-2
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/TensorFlow/" itemprop="url" rel="index">
+                    <span itemprop="name">TensorFlow</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/12/02/TF-char6.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/12/02/TF-char6.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  12
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Char6-神经网络neural networks</p>
+<p>本章中主要讲解的内容包含：</p>
+<ul>
+<li>神经模型的简介</li>
+<li>感知机模型</li>
+<li>全连接网络</li>
+<li>神经网络介绍</li>
+<li>常见的激活函数</li>
+<li>输出层设计方案</li>
+<li>误差类型</li>
+<li>神经网络类型</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9iknav3jpj318z0u07wi.jpg" alt=""></p>
+<blockquote>
+<p>机器学习的目的是找到一组良好的参数$\theta$，使得其表示的数学模型能够很好地从训练数据集中学到映射关系$f_{\theta}$</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="神经元模型">神经元模型</h3>
+<h4 id="MP-神经模型">MP-神经模型</h4>
+<p>神经网络是由具有自适应性的简单单元组成的并行互连的网络。下图是经典的MP-神经元模型。</p>
+<ul>
+<li>当前神经元接收来自$n$个其他的神经元传递过来的输入信号$x_i$</li>
+<li>这些信号带着自己的连接权重$w_i$一起过来</li>
+<li>当前神经元的总输入：$\sum^n_{i=1}x_iw_i$</li>
+<li>将神经元的总输入和阈值$\theta$进行比较，再通过激活函数进行处理并输出</li>
+</ul>
+<p>$$<br>
+y = f(\sum^n_{i=1}w_ix_i-\theta)<br>
+$$</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9iky8mc50j31bc0u0hdu.jpg" alt=""></p>
+<p>神经网络就是包含了多个参数的数学模型，这个模型就是若干个参数。<br>
+$$<br>
+y_i = f(\sum_{i=1}w_ix_i-\theta _i)<br>
+$$</p>
+<h3 id="感知机">感知机</h3>
+<h4 id="感知机简介">感知机简介</h4>
+<p>简单的两层神经网络，感知机是线性分类判别模型。</p>
+<ul>
+<li>输入层接收来自外界的出入信号$x=[x_1,…,x_n]$，传递给输出层</li>
+<li>输入信号有自己的权值$[w_1,…,w_n]$</li>
+<li>输出层是MP-神经元模型（也叫阈值逻辑单元）</li>
+<li>感知机还有自己的偏置$b$</li>
+</ul>
+<p>$$<br>
+z=w_1x_1+w_2x_2+…+w_nx_n+b<br>
+$$</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9ila5o7rkj30ik09ywfd.jpg" alt=""></p>
+<p>上式的向量形式为<br>
+$$<br>
+z=w^T \cdot x+b<br>
+$$<br>
+上面的$z$表示感知机的净活性值，加上<strong>激活函数</strong>之后变成活性值：<br>
+$$<br>
+a=\sigma(z)=\sigma(w^T \cdot x+b)<br>
+$$<br>
+激活函数可以是<strong>阶跃函数</strong>，也可以是<strong>符号函数</strong>；一般选用的符号函数$sign(x)$</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9ilo8366wj30to0comxv.jpg" alt=""></p>
+<h4 id="感知机模型">感知机模型</h4>
+<p>感知机模型就是上文中的<br>
+$$<br>
+sign(w^Tx+b)=0<br>
+$$<br>
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9im3gf4uxj30ee0e476j.jpg" alt=""></p>
+<p>为了方便，直接将模型改成：<br>
+$$<br>
+sign(w\cdot x+b)=0<br>
+$$<br>
+$wx+b$是一个n维空间中的超平面S，其中w是超平面的法向量，b是超平面的截距，这个超平面将特征空间划分成两部分，位于两部分的点分别被分为正负两类，所以超平面S称为分离超平面。</p>
+<p><strong>对于二分类的正确分类有：</strong></p>
+<ul>
+<li>正例输出$y_i = +1， w\cdot x_i+b&gt;0$</li>
+<li>负例输出$y_i = -1， w\cdot x_i+b&lt;0$</li>
+</ul>
+<p>那么，输入空间的某个点$x_0$到$S$的距离为<br>
+$$<br>
+\frac{1}{||w||}|w\cdot x_0+b|<br>
+$$<br>
+$|wx+b|$叫函数间隔，除模长之后叫<strong>几何间隔</strong>，几何间隔可以认为是物理意义上的实际长度。</p>
+<p><strong>对于误分类点有：</strong></p>
+<ul>
+<li>输出$y_i = -1， w\cdot x_i+b&gt;0$</li>
+<li>输出$y_i = +1， w\cdot x_i+b&lt;0$</li>
+</ul>
+<p>那么总有：<br>
+$$<br>
+-y_i(w\cdot x_i+b) &gt; 0<br>
+$$</p>
+<p>因此误分类点$x_i$到超平面的距离总是：<br>
+$$<br>
+-\frac{1}{||w||}y_i(w\cdot x_i+b) &gt; 0<br>
+$$<br>
+全部的误分类点到超平面的距离是<br>
+$$<br>
+-\frac{1}{||w||}\sum_{x_i\in M}y_i(w\cdot x_i+b) &gt; 0<br>
+$$<br>
+不考虑前面的系数，得到感知机$sign(w\cdot x)$的损失函数<br>
+$$<br>
+L(w,b)=-\sum_{x_i \in M}y_i(w \cdot x_i+b)<br>
+$$</p>
+<h4 id="感知机算法">感知机算法</h4>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">1. </span>初始化参数w<span class="emphasis">_0,b_</span>0</span><br><span class="line"><span class="bullet">2. </span>循环过程：</span><br><span class="line"><span class="bullet">    3. </span>在训练集中选取数据（x<span class="emphasis">_i,y_</span>i）</span><br><span class="line"><span class="bullet">    4. </span>计算感知机的输出a=sign(w^Tx_i+b)</span><br><span class="line"><span class="bullet">    5. </span>如果输出a和真实值y_i不等:</span><br><span class="line"><span class="bullet">    		6. </span>更新w</span><br><span class="line"><span class="bullet">    		7. </span>更新b</span><br><span class="line">   8.转至步骤2，直至训练集中没有误分类点</span><br><span class="line"><span class="bullet">9. </span>输出w,b</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>过程解释：如果一个<strong>误分类点</strong>在超平面的一侧，调整两个参数，使得超平面向着该误分类点移动，以此来减少误分类点的和分离超平面的距离，直至超平面将该点正确分类。</p>
+</blockquote>
+<h3 id="全连接层">全连接层</h3>
+<p>感知机模型的不可导限制了它的潜力，全连接层将不连续的阶跃函数换成了平滑连续的激活函数，通过堆叠多层网络实现。</p>
+<blockquote>
+<p>每个输出节点和全部的输出相连接的网络层称之为<strong>全连接层</strong></p>
+</blockquote>
+<p>下图中3个输出，2个神经元，2个输出节点。<br>
+$$<br>
+o_1=\sigma(w_{11}*x_1+…+w_{31}*x_3+b_1 \o_2=\sigma(w_{12}*x_1+…+w_{32}*x_3+b_2)<br>
+$$<br>
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9in1w3vegj30d00aq3zg.jpg" alt=""></p>
+<p>通过矩阵表示上述网络层的运算：<br>
+$$<br>
+O=X@W+b<br>
+$$<br>
+<img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9in76jt80j30hk036jro.jpg" alt=""></p>
+<ul>
+<li>输入$x$的$shape$为$[b,d_{in}]$，b是样本数量，$d_{in}$是输入节点数</li>
+<li>权值矩阵W，其$shape$为$[d_{in}, d_{out}]$，其中$d_{out}$是输出节点数</li>
+<li>偏置b的$shape$是$d_{out}$</li>
+</ul>
+<p>如果是2个样本参与运算，$𝒙^1 = [𝑥^1_1, 𝑥^1_2, 𝑥<sup>1_3]，𝒙</sup>2 = [𝑥_1^2, 𝑥^2_2, 𝑥^2_3]$</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9indzqxhgj30is03u0t4.jpg" alt=""></p>
+<p>输出矩阵O的$shape$为$[b,d_{out}]$</p>
+<h4 id="张量实现">张量实现</h4>
+<p>定义好权值张量和偏置张量，利用批量矩阵相乘函数`tf.matmul()``</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">输入X矩阵为𝑏=2个样本（2行，2个样本）</span></span><br><span class="line"><span class="string">每个样本的输入特征长度为𝑑𝑖𝑛 = 784（784个属性特征）</span></span><br><span class="line"><span class="string">输出节点数为𝑑𝑜𝑢𝑡 = 256</span></span><br><span class="line"><span class="string">定义权值矩阵W的shape为[784,256]，并采用正态分布初始化W;</span></span><br><span class="line"><span class="string">偏置向量b的shape定义为[256]</span></span><br><span class="line"><span class="string">在计算完X@W后相加即可，最终全连接层的输出O的shape为[2,256]，即2个样本的特征，每个特征长度为 256。</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line">x = tf.random.normal([<span class="number">2</span>,<span class="number">784</span>])</span><br><span class="line">w1 = tf.Variable(tf.random.truncated_normal([<span class="number">784</span>, <span class="number">256</span>], stddev=<span class="number">0.1</span>))</span><br><span class="line">b1 = tf.Variable(tf.zeros([<span class="number">256</span>]))</span><br><span class="line">o1 = tf.matmul(x, w1) + b1</span><br><span class="line">o1 = tf.nn.relu(o1)</span><br></pre></td></tr></table></figure>
+<h4 id="层方式">层方式</h4>
+<p>通过<code>layers.Dense(units, activation)</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">x = tf.random.normal([<span class="number">4</span>, <span class="number">28</span>*<span class="number">28</span>])</span><br><span class="line"><span class="keyword">from</span> tf.keras <span class="keyword">import</span> layers</span><br><span class="line"><span class="comment"># 创建全连接层，指定输出节点数和激活函数</span></span><br><span class="line">fc = layers.Denss(<span class="number">512</span>, activation=tf.nn.relu)  <span class="comment"># 激活函数也可以不指定</span></span><br><span class="line">h1 = fc(x)  <span class="comment"># 通过fc完成一次全连接的计算</span></span><br><span class="line">fc.kernal   <span class="comment"># 获取权值矩阵</span></span><br><span class="line">fc.bias   <span class="comment"># 获取Dense类的偏置</span></span><br><span class="line">fc.trainable_variables   <span class="comment"># 返回的是待优化参数的列表</span></span><br><span class="line">fc.variables  <span class="comment"># 返回所有的参数列表</span></span><br></pre></td></tr></table></figure>
+<h3 id="神经网络">神经网络</h3>
+<blockquote>
+<p>保证前一层的输出节点数与当前层的输入节点数匹配，即可堆叠出任意层数的网络。</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9io2jugayj30sg0e2n2k.jpg" alt=""></p>
+<h4 id="张量实现-v2">张量实现</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义隐藏层1的张量</span></span><br><span class="line">w1 = tf.Variable(tf.random.truncated_normal([<span class="number">784</span>, <span class="number">256</span>], stddev=<span class="number">0.1</span>))</span><br><span class="line">b1 = tf.Variable(tf.zeros([<span class="number">256</span>]))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义隐藏层2的张量</span></span><br><span class="line">w2 = tf.Variable(tf.random.truncated_normal([<span class="number">256</span>, <span class="number">128</span>], stddev=<span class="number">0.1</span>))</span><br><span class="line">b2 = tf.Variable(tf.zeros([<span class="number">128</span>]))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义隐藏层3的张量</span></span><br><span class="line">w3 = tf.Variable(tf.random.truncated_normal([<span class="number">128</span>，<span class="number">64</span>], stddev=<span class="number">0.1</span>))</span><br><span class="line">b3 = tf.Variable(tf.zeros([<span class="number">64</span>]))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出层张量</span></span><br><span class="line">w4 = tf.Variable(tf.random.truncated_normal([<span class="number">64</span>,<span class="number">10</span>], stddev=<span class="number">0.1</span>))</span><br><span class="line">b4 = tf.Variable(tf.zeros([<span class="number">10</span>]))</span><br><span class="line"></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">计算时，只需要按照网络层的顺序，将上一层的输出送入当前层的输入即可，重复直至 最后一层，将输出层的输出作为网络的输出:</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.GradienTape() <span class="keyword">as</span> tape:   <span class="comment"># 必须将前向计算过程放入tf.GradienTape()环境中，利用 GradientTape 对象的 gradient()方法自动求解参数的梯 度，并利用 optimizers 对象更新参数</span></span><br><span class="line">  <span class="comment"># x: [b, 28*28]</span></span><br><span class="line">  <span class="comment"># 隐藏层 1 前向计算，[b, 28*28] =&gt; [b, 256]</span></span><br><span class="line">  h1 = x@w1 + tf.broadcast_to(b1, [x.shape[<span class="number">0</span>],<span class="number">256</span>])</span><br><span class="line">  h1 = tf.nn.relu(h1)</span><br><span class="line"></span><br><span class="line">  h2 = h1@w2 + b2</span><br><span class="line">  h2 = tf.nn.relu(h2)</span><br><span class="line"></span><br><span class="line">  h3 = h2@w3 + b3</span><br><span class="line">  h3 = tf.nn.relu(h3)</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 输出层前向计算，[b, 64] =&gt; [b, 10]</span></span><br><span class="line">  h4 = h3@w4 + b4</span><br></pre></td></tr></table></figure>
+<h4 id="层方式-v2">层方式</h4>
+<p>通过<code>layer.Dense</code>类来实现</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 方式1：将每个网络分别建立出来，并且指定激活函数</span></span><br><span class="line">x = tf.random.normal([<span class="number">4</span>,<span class="number">28</span>*<span class="number">28</span>])</span><br><span class="line">fc1 = layers.Dense(<span class="number">256</span>, activation=tf.nn.relu)</span><br><span class="line">fc2 = layers.Dense(<span class="number">128</span>, activation=tf.nn.relu)</span><br><span class="line">fc3 = layers.Dense(<span class="number">64</span>, activation=tf.nn.relu)</span><br><span class="line">fc4 = layers.Dense(<span class="number">10</span>, activation=<span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 依次通过各个层</span></span><br><span class="line">x = tf.random.normal([<span class="number">4</span>,<span class="number">28</span>*<span class="number">28</span>])</span><br><span class="line">h1 = fc1(x)</span><br><span class="line">h2 = fc2(h1)</span><br><span class="line">h3 = fc3(h2)</span><br><span class="line">h4 = fc4(h3)  <span class="comment"># 通过输出层得到网络输出</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 通过Sequential容器来进行封装</span></span><br><span class="line">x = tf.random.normal([<span class="number">4</span>,<span class="number">28</span>*<span class="number">28</span>])</span><br><span class="line">model = layers.Sequential(&#123;</span><br><span class="line">  layers.Dense(<span class="number">256</span>, activation=tf.nn.relu),   <span class="comment"># 创建隐藏层 1</span></span><br><span class="line">  layers.Dense(<span class="number">128</span>, activation=tf.nn.relu) , <span class="comment"># 创建隐藏层 2</span></span><br><span class="line">  layers.Dense(<span class="number">64</span>, activation=tf.nn.relu) , <span class="comment"># 创建隐藏层 3</span></span><br><span class="line">  layers.Dense(<span class="number">10</span>, activation=<span class="literal">None</span>) , <span class="comment"># 创建输出层</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">out = model(x)</span><br></pre></td></tr></table></figure>
+<h3 id="激活函数">激活函数</h3>
+<h4 id="Sigmoid">Sigmoid</h4>
+<p><code>Sigmoid</code> 函数也叫<code> Logistic</code> 函数，<code>tf.nn.sigmoid(x)</code>实现<br>
+$$<br>
+Sigmoid := \frac{1}{1+e^{-x}}<br>
+$$<br>
+在输入值较大或者较小的时候都是很容易出现梯度弥散现象。</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9iouvblyej30i40cq0te.jpg" alt=""></p>
+<h4 id="ReLU">ReLU</h4>
+<ul>
+<li>单边抑制</li>
+<li>相对宽松的边界</li>
+<li>通过<code>tf.nn.relu</code>实现</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9iox4qd53j30g20dq74v.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9ioyo1l29j30jq0de405.jpg" alt=""></p>
+<h4 id="LeakyReLU">LeakyReLU</h4>
+<p><code>ReLU</code> 函数在𝑥 &lt; 0时梯度值恒为 0，也可能会造成梯度弥散现象，为了克服这个问 题，<code>LeakyReLU</code>函数被提出。通过<code>tf.nn.leaky_relu</code>来实现</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9ip0gjr8rj30as02ot8r.jpg" alt=""></p>
+<ul>
+<li>$p=0$，上述函数退化为$ReLUctant$</li>
+<li>$p \neq 0$ ，当$x&lt;0$能够获得较小的梯度值$p$</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9ip2kshv6j30fi0dsaar.jpg" alt=""></p>
+<h4 id="Tanh">Tanh</h4>
+<p><code>Tanh</code>函数能够将$x\in R$的输入压缩到[-1,1]之间，定义为<br>
+$$<br>
+\begin{align}tanh(x)&amp; = \frac{e<sup>x-e</sup>{-x}}{e<sup>x+e</sup>{-x}} \&amp; = 2*sigmoid(2x) - 1\end{align}<br>
+$$<br>
+<code>tanh</code> 激活函数可通过 <code>Sigmoid</code> 函数缩放平移后实现。通过<code>tf.nn.tanh()</code>实现</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9irytf0jhj30ku0hat9m.jpg" alt=""></p>
+<h3 id="输出层设计">输出层设计</h3>
+<h4 id="四种设计">四种设计</h4>
+<p>根据输出值的区间来进行分类：</p>
+<ul>
+<li>$o \in R^d$输出属于整个实数区间，如正弦函数曲线预测、年龄的预测、股票的走势预测等</li>
+<li>$o \in [0,1]$输出值落在[0,1]之间，如图片的像素归一化到[0,1]之间</li>
+<li>$o \in [0,1], \sum_io_i=1$，输出值落在[0,1]之前，且所有的的输出值之和为1。通过添加Softmax函数来实现功能</li>
+<li>$o \in [-1,1]$输出值在[-1,1]，使用<code>tf.tanh(x)</code>来实现</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9is5o78o9j30q40k2q60.jpg" alt=""></p>
+<h4 id="softmax函数">softmax函数</h4>
+<p>与<code>Dense</code>层类似，<code>Softmax</code>函数还可以作为网络层来使用。通过类<code>layers.Softmax(axis=-1)</code>。</p>
+<p>输入值较大，会出现溢出现象。同时实现Softmax函数和交叉熵损失函数，接口为<code>tf.keras.losses.categorical_crossentropy(y_true, y_pred, from_logits=False)</code></p>
+<ul>
+<li><code>y_true</code> 代表了<code> one-hot</code> 编码后的真实标签</li>
+<li><code>y_pred</code> 表示网络的预测值
+<ul>
+<li>当 <code>from_logits = True</code> 时，<code> y_pred</code> 表示须为未经过 <code>Softmax</code>函数的变量 <code>z</code></li>
+<li>当<code>from_logits = False</code> 时，<code>y_pred</code> 表示为经过<code>Softmax</code> 函数的输出。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">z = tf.random.normao([<span class="number">2</span>,<span class="number">10</span>])</span><br><span class="line">y_onehot = tf.constant([<span class="number">1</span>,<span class="number">3</span>])</span><br><span class="line">y_onehot = tf.one_hot(y_onehot, depth=<span class="number">10</span>)</span><br><span class="line"><span class="comment"># 输出层未使用Softmax函数，设置成True</span></span><br><span class="line">loss = keras.losses.categorical_crossentropy(y_onehot,z,from_logits=<span class="literal">True</span>)</span><br><span class="line">loss = tf.reduce_mean(loss)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以利用 losses.CategoricalCrossentropy(from_logits)类方式同时实现 Softmax与交叉熵损失函数的计算</span></span><br><span class="line">ctiteon = keras.losses.CategoricalCrossentropy(from_logits=<span class="literal">True</span>)</span><br><span class="line">loss = criteon(y_onehot, z)</span><br></pre></td></tr></table></figure>
+<h3 id="误差类型">误差类型</h3>
+<h4 id="均方差">均方差</h4>
+<p>均方差MSE，mean squared error：将输出向量和真实向量映射到笛卡尔坐标系上的两个点，计算两点之间的欧式距离（平方）<br>
+$$<br>
+MSE=\frac{1}{d_{out}}\sum<sup>{d_{out}}_{i=1}(y_i-o_i)</sup>2<br>
+$$</p>
+<ul>
+<li>MSE的值总是大于等于0；当其为0表示输出值等于真实标签</li>
+<li>主要用于回归问题</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">o = tf.random.normal([<span class="number">2</span>,<span class="number">10</span>]) <span class="comment"># 构造网络</span></span><br><span class="line">y_onehot = tf.constant([<span class="number">1</span>,<span class="number">3</span>]) <span class="comment"># 真实输出</span></span><br><span class="line">y_onehot = tf.one_hot(y_onehot, depth=<span class="number">10</span>)</span><br><span class="line">loss = keras.losses.MSE(y_onehot, o)  <span class="comment"># 计算均方差，返回的是每个样本的均方差</span></span><br><span class="line">loss = tf.reduce_mean(loss)  <span class="comment"># 计算batch均方差</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 通过类的方式实现</span></span><br><span class="line">criteon = keras.losses.MeanSquaredError()</span><br><span class="line">loss = criteon(y_onehot, o)</span><br></pre></td></tr></table></figure>
+<h4 id="交叉熵">交叉熵</h4>
+<p>熵是用来衡量信息的不确定性。熵越大，代表不确定越大，信息量越大。</p>
+<p>假设数据集$D$中第$k$类样本占的比例是$p_k(k=1,2,…,K)$，则$D$的<strong>信息熵</strong>定义为：<br>
+$$<br>
+Ent(D)=-\sum^K_{k=1} p_klog_2{p_k}<br>
+$$<br>
+比如：某个事件发生的结果有3中情形，出现的概率分别是：</p>
+<table>
+<thead>
+<tr>
+<th>结果1</th>
+<th>结果2</th>
+<th>结果3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$\frac{1}{3}$</td>
+<td>$\frac{1}{2}$</td>
+<td>$\frac{1}{6}$</td>
+</tr>
+</tbody>
+</table>
+<p>信息熵的计算如下：</p>
+<p>$$<br>
+Ent=-(\frac{1}{3}log_2\frac{1}{3}+\frac{1}{2}log_2\frac{1}{2}+\frac{1}{6}log_2\frac{1}{6})<br>
+$$<br>
+<strong>交叉熵 Cross Entropy 的定义为</strong><br>
+$$<br>
+H(p,q)= -\sum_{i=0}p(i)log_2q(i)<br>
+$$<br>
+通过变换，交叉熵可以分解为 <em>p</em> 的熵𝐻(𝑝)与 <em>p,q</em> 的 KL 散度(Kullback-Leibler Divergence)的和</p>
+<p>$$<br>
+H(p,q)=H§+D_{KL}(p|q)<br>
+$$</p>
+<p>其中 KL 定义为</p>
+<p>$$<br>
+𝐷_{𝐾𝐿}(𝑝|𝑞) = ∑_{x\in X} 𝑝(𝑥)𝑙𝑜𝑔 \frac{𝑝(𝑥)}{q(x)}<br>
+$$</p>
+<p>KL散度是衡量连个分布之间距离的指标。交叉熵和KL散度都是不对称的。</p>
+<p>$$<br>
+H(p,q) \neq H(q,p) \D_{KL} (p|q) \neq D_{KL}(q|p)<br>
+$$</p>
+<h3 id="神经网络类型">神经网络类型</h3>
+<ul>
+<li>卷积神经网络CNN</li>
+<li>循环神经网络RNN</li>
+<li>注意力网络Transformer</li>
+<li>图神经网络GCN</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/12/02/TF-char6.html">TF-char6</a></p>
+  <p><span>发布时间:</span>2019年12月02日 - 23:12</p>
+  <p><span>原始链接:</span><a href="/2019/12/02/TF-char6.html" title="TF-char6">http://www.renpeter.cn/2019/12/02/TF-char6.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2019/12/02/TF-char6.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CNN/" rel="tag"># CNN</a>
+          
+            <a href="/tags/TensorFlow/" rel="tag"># TensorFlow</a>
+          
+            <a href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag"># 神经网络</a>
+          
+            <a href="/tags/RNN/" rel="tag"># RNN</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/01/TF-char5.html" rel="next" title="TF-char5">
+                <i class="fa fa-chevron-left"></i> TF-char5
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/03/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B07.html" rel="prev" title="吴恩达笔记7">
+                吴恩达笔记7 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">344</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">423</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#神经元模型"><span class="nav-number">1.</span> <span class="nav-text">神经元模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MP-神经模型"><span class="nav-number">1.1.</span> <span class="nav-text">MP-神经模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#感知机"><span class="nav-number">2.</span> <span class="nav-text">感知机</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#感知机简介"><span class="nav-number">2.1.</span> <span class="nav-text">感知机简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#感知机模型"><span class="nav-number">2.2.</span> <span class="nav-text">感知机模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#感知机算法"><span class="nav-number">2.3.</span> <span class="nav-text">感知机算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#全连接层"><span class="nav-number">3.</span> <span class="nav-text">全连接层</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#张量实现"><span class="nav-number">3.1.</span> <span class="nav-text">张量实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#层方式"><span class="nav-number">3.2.</span> <span class="nav-text">层方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#神经网络"><span class="nav-number">4.</span> <span class="nav-text">神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#张量实现-v2"><span class="nav-number">4.1.</span> <span class="nav-text">张量实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#层方式-v2"><span class="nav-number">4.2.</span> <span class="nav-text">层方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#激活函数"><span class="nav-number">5.</span> <span class="nav-text">激活函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Sigmoid"><span class="nav-number">5.1.</span> <span class="nav-text">Sigmoid</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ReLU"><span class="nav-number">5.2.</span> <span class="nav-text">ReLU</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LeakyReLU"><span class="nav-number">5.3.</span> <span class="nav-text">LeakyReLU</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tanh"><span class="nav-number">5.4.</span> <span class="nav-text">Tanh</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#输出层设计"><span class="nav-number">6.</span> <span class="nav-text">输出层设计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#四种设计"><span class="nav-number">6.1.</span> <span class="nav-text">四种设计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#softmax函数"><span class="nav-number">6.2.</span> <span class="nav-text">softmax函数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#误差类型"><span class="nav-number">7.</span> <span class="nav-text">误差类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#均方差"><span class="nav-number">7.1.</span> <span class="nav-text">均方差</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#交叉熵"><span class="nav-number">7.2.</span> <span class="nav-text">交叉熵</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#神经网络类型"><span class="nav-number">8.</span> <span class="nav-text">神经网络类型</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共403.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2019/12/02/TF-char6.html';
+          this.page.identifier = '2019/12/02/TF-char6.html';
+          this.page.title = 'TF-char6';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
