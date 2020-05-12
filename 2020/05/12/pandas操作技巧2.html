@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="python,pandas," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="本文中记录Pandas操作技巧，包含：  导入数据 导出数据 查看、检查数据 数据选取 数据清洗 数据处理：Filter、Sort和GroupBy 数据合并">
+<meta name="keywords" content="python,pandas">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pandas操作技巧2">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2020&#x2F;05&#x2F;12&#x2F;pandas%E6%93%8D%E4%BD%9C%E6%8A%80%E5%B7%A72.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="本文中记录Pandas操作技巧，包含：  导入数据 导出数据 查看、检查数据 数据选取 数据清洗 数据处理：Filter、Sort和GroupBy 数据合并">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-05-12T11:11:11.646Z">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2020/05/12/pandas操作技巧2.html"/>
+
+
+
+
+
+  <title>pandas操作技巧2 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2020/05/12/pandas%E6%93%8D%E4%BD%9C%E6%8A%80%E5%B7%A72.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">pandas操作技巧2</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-05-12T19:10:27+08:00">
+                2020-5-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/" itemprop="url" rel="index">
+                    <span itemprop="name">pandas</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/%E6%96%87%E6%A1%A3/" itemprop="url" rel="index">
+                    <span itemprop="name">文档</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/05/12/pandas%E6%93%8D%E4%BD%9C%E6%8A%80%E5%B7%A72.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/05/12/pandas操作技巧2.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文中记录<code>Pandas</code>操作技巧，包含：</p>
+<ul>
+<li>导入数据</li>
+<li>导出数据</li>
+<li>查看、检查数据</li>
+<li>数据选取</li>
+<li>数据清洗</li>
+<li>数据处理：Filter、Sort和GroupBy</li>
+<li>数据合并</li>
+</ul>
+<a id="more"></a>
+<h3 id="常识">常识</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入pandas</span></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"><span class="comment"># axis参数：0代表行，1代表列</span></span><br></pre></td></tr></table></figure>
+<h3 id="导入数据">导入数据</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">pd.read_csv(filename) <span class="comment"># 从CSV文件导入数据</span></span><br><span class="line"></span><br><span class="line">pd.read_table(filename) <span class="comment"># 从限定分隔符的文本文件导入数据</span></span><br><span class="line"></span><br><span class="line">pd.read_excel(filename) <span class="comment"># 从Excel文件导入数据</span></span><br><span class="line"></span><br><span class="line">pd.read_sql(query, connection_object) <span class="comment"># 从SQL表/库导入数据</span></span><br><span class="line"></span><br><span class="line">pd.read_json(json_string) <span class="comment"># 从JSON格式的字符串导入数据</span></span><br><span class="line"></span><br><span class="line">pd.read_html(url)  <span class="comment"># 解析URL、字符串或者HTML文件，抽取其中的tables表格</span></span><br><span class="line"></span><br><span class="line">pd.read_clipboard() <span class="comment"># 从你的粘贴板获取内容，并传给read_table()</span></span><br><span class="line"></span><br><span class="line">pd.DataFrame(dict) <span class="comment"># 从字典对象导入数据，Key是列名，Value是数据</span></span><br></pre></td></tr></table></figure>
+<h3 id="导出数据">导出数据</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">df.to_csv(filename) <span class="comment"># 导出数据到CSV文件</span></span><br><span class="line">df.to_excel(filename) <span class="comment"># 导出数据到Excel文件</span></span><br><span class="line">df.to_sql(table_name, connection_object) <span class="comment"># 导出数据到SQL表</span></span><br><span class="line">df.to_json(filename) <span class="comment"># 以Json格式导出数据到文本文件</span></span><br><span class="line">writer=pd.ExcelWriter(<span class="string">'test.xlsx'</span>,index=<span class="literal">False</span>)   <span class="comment"># 然后调用df1.to_excel(writer,sheet_name='单位') 和 writer.save()，将多个数据帧写入同一个工作簿的多个sheet(工作表)</span></span><br></pre></td></tr></table></figure>
+<h3 id="查看、检查数据">查看、检查数据</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">df.head(n) <span class="comment"># 查看DataFrame对象的前n行</span></span><br><span class="line">df.tail(n) <span class="comment"># 查看DataFrame对象的最后n行</span></span><br><span class="line">df.shape() <span class="comment"># 查看行数和列数</span></span><br><span class="line">df.info() <span class="comment"># 查看索引、数据类型和内存信息</span></span><br><span class="line">df.columns() <span class="comment"># 查看字段（首行）名称</span></span><br><span class="line">df.describe() <span class="comment"># 查看数值型列的汇总统计</span></span><br><span class="line">s.value_counts(dropna=<span class="literal">False</span>) <span class="comment"># 查看Series对象的唯一值和计数</span></span><br><span class="line">df.apply(pd.Series.value_counts) <span class="comment"># 查看DataFrame对象中每一列的唯一值和计数</span></span><br><span class="line">df.isnull().any() <span class="comment"># 查看是否有缺失值</span></span><br><span class="line">df[df[column_name].duplicated()] <span class="comment"># 查看column_name字段数据重复的数据信息</span></span><br><span class="line">df[df[column_name].duplicated()].count() <span class="comment"># 查看column_name字段数据重复的个数</span></span><br></pre></td></tr></table></figure>
+<h3 id="数据选取">数据选取</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">df[col] <span class="comment"># 根据列名，并以Series的形式返回列</span></span><br><span class="line">df[[col1, col2]] <span class="comment"># 以DataFrame形式返回多列</span></span><br><span class="line">s.iloc[<span class="number">0</span>] <span class="comment"># 按位置选取数据</span></span><br><span class="line">s.loc[<span class="string">'index_one'</span>] <span class="comment"># 按索引选取数据</span></span><br><span class="line">df.iloc[<span class="number">0</span>,:] <span class="comment"># 返回第一行</span></span><br><span class="line">df.iloc[<span class="number">0</span>,<span class="number">0</span>] <span class="comment"># 返回第一列的第一个元素</span></span><br><span class="line">df.loc[<span class="number">0</span>,:] <span class="comment"># 返回第一行（索引为默认的数字时，用法同df.iloc），但需要注意的是loc是按索引,iloc参数只接受数字参数</span></span><br><span class="line">df.ix[[:<span class="number">5</span>],[<span class="string">"col1"</span>,<span class="string">"col2"</span>]] <span class="comment">#  返回字段为col1和col2的前5条数据，可以理解为loc和iloc的结合体。</span></span><br><span class="line">df.at[<span class="number">5</span>,<span class="string">"col1"</span>] <span class="comment"># 选择索引名称为5，字段名称为col1的数据</span></span><br><span class="line">df.iat[<span class="number">5</span>,<span class="number">0</span>] <span class="comment"># 选择索引排序为5，字段排序为0的数据</span></span><br><span class="line">data.str.contains(<span class="string">"s"</span>) <span class="comment"># 数据中含有"s"字符串的数据</span></span><br><span class="line">data.astype(int).isin(list1) <span class="comment"># 数据的某条数据的某个字段在列表list1中的数据</span></span><br><span class="line">df[-df[column_name].duplicated()] <span class="comment"># 选取column_name字段不重复的数据，支持df[-df.duplicated()]</span></span><br><span class="line">df.loc[df[<span class="string">'col_name'</span>]==value] <span class="comment"># 选取col_name字段为value的数据</span></span><br><span class="line">df.loc[df[<span class="string">'col_name'</span>].isin(value_list)] <span class="comment"># 选取col_name字段为value_list中的值的数据</span></span><br><span class="line"> df.loc[~df[<span class="string">'col_name'</span>].isin(value_list)] <span class="comment"># 选取col_name字段不在value_list中的值的数据</span></span><br><span class="line">df.loc[(df[‘col_name1’] == value1) &amp; df[‘col_name2’].isin(value_list)] <span class="comment"># 选取col_name1等于value1，并且col_name2在value_list中的数据</span></span><br><span class="line">df.loc[df[‘col_name’] != value2] <span class="comment"># 选取col_name字段不等于value2的数据</span></span><br></pre></td></tr></table></figure>
+<h3 id="数据清理">数据清理</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">df.columns = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>] <span class="comment"># 重命名列名（需要将所有列名列出，否则会报错）</span></span><br><span class="line">pd.isnull() <span class="comment"># 检查DataFrame对象中的空值，并返回一个Boolean数组</span></span><br><span class="line">pd.notnull() <span class="comment"># 检查DataFrame对象中的非空值，并返回一个Boolean数组</span></span><br><span class="line">df.dropna() <span class="comment"># 删除所有包含空值的行</span></span><br><span class="line">df.dropna(axis=<span class="number">1</span>) <span class="comment"># 删除所有包含空值的列</span></span><br><span class="line">df.dropna(axis=<span class="number">1</span>,thresh=n) <span class="comment"># 删除所有小于n个非空值的行</span></span><br><span class="line">df.fillna(value=x) <span class="comment"># 用x替换DataFrame对象中所有的空值，支持df[column_name].fillna(x)</span></span><br><span class="line">s.astype(float) <span class="comment"># 将Series中的数据类型更改为float类型</span></span><br><span class="line">s.replace(<span class="number">1</span>,<span class="string">'one'</span>) <span class="comment"># 用‘one’代替所有等于1的值</span></span><br><span class="line">s.replace([<span class="number">1</span>,<span class="number">3</span>],[<span class="string">'one'</span>,<span class="string">'three'</span>]) <span class="comment"># 用'one'代替1，用'three'代替3</span></span><br><span class="line">df.rename(columns=<span class="keyword">lambda</span> x: x + <span class="number">1</span>) <span class="comment"># 批量更改列名</span></span><br><span class="line">df.rename(columns=&#123;<span class="string">'old_name'</span>: <span class="string">'new_ name'</span>&#125;) <span class="comment"># 选择性更改列名</span></span><br><span class="line">df.set_index(<span class="string">'column_one'</span>) <span class="comment"># 将某个字段设为索引，可接受列表参数，即设置多个索引</span></span><br><span class="line">df.reset_index(<span class="string">"col1"</span>)<span class="comment">#  将索引设置为col1字段，并将索引新设置为0,1,2...</span></span><br><span class="line">df.rename(index=<span class="keyword">lambda</span> x: x + <span class="number">1</span>) <span class="comment"># 批量重命名索引</span></span><br></pre></td></tr></table></figure>
+<h3 id="数据处理：Filter、Sort和GroupBy">数据处理：Filter、Sort和GroupBy</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">df[df[col] &gt; <span class="number">0.5</span>] <span class="comment"># 选择col列的值大于0.5的行</span></span><br><span class="line">df.sort_index().loc[:<span class="number">5</span>]  <span class="comment">#对前5条数据进行索引排序</span></span><br><span class="line">df.sort_values(col1) <span class="comment"># 按照列col1排序数据，默认升序排列</span></span><br><span class="line">df.sort_values(col2, ascending=<span class="literal">False</span>) <span class="comment">#按照列col1降序排列数据</span></span><br><span class="line">df.sort_values([col1,col2], ascending=[<span class="literal">True</span>,<span class="literal">False</span>]) <span class="comment">#先按列col1升序排列，后按col2降序排列数据</span></span><br><span class="line">df.groupby(col) <span class="comment"># 返回一个按列col进行分组的Groupby对象</span></span><br><span class="line">df.groupby([col1,col2]) <span class="comment"># 返回一个按多列进行分组的Groupby对象</span></span><br><span class="line">df.groupby(col1)[col2].agg(mean) <span class="comment"># 返回按列col1进行分组后，列col2的均值,agg可以接受列表参数，agg([len,np.mean])</span></span><br><span class="line">df.pivot_table(index=col1, values=[col2,col3], aggfunc=&#123;col2:max,col3:[ma,min]&#125;) <span class="comment"># 创建一个按列col1进行分组，计算col2的最大值和col3的最大值、最小值的数据透视表</span></span><br><span class="line">df.groupby(col1).agg(np.mean) <span class="comment"># 返回按列col1分组的所有列的均值,支持df.groupby(col1).col2.agg(['min','max'])</span></span><br><span class="line">data.apply(np.mean) <span class="comment"># 对DataFrame中的每一列应用函数np.mean</span></span><br><span class="line">data.apply(np.max,axis=<span class="number">1</span>) <span class="comment"># 对DataFrame中的每一行应用函数np.max</span></span><br><span class="line">df.groupby(col1).col2.transform(<span class="string">"sum"</span>) <span class="comment"># 通常与groupby连用，避免索引更改</span></span><br></pre></td></tr></table></figure>
+<h3 id="数据合并">数据合并</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">df1.append(df2) <span class="comment"># 将df2中的行添加到df1的尾部</span></span><br><span class="line">df.concat([df1, df2],axis=<span class="number">1</span>,join=<span class="string">'inner'</span>) <span class="comment"># 将df2中的列添加到df1的尾部,值为空的对应行与对应列都不要</span></span><br><span class="line">df1.join(df2.set_index(col1),on=col1,how=<span class="string">'inner'</span>) <span class="comment"># 对df1的列和df2的列执行SQL形式的join，默认按照索引来进行合并，如果df1和df2有共同字段时，会报错，可通过设置lsuffix,rsuffix来进行解决，如果需要按照共同列进行合并，就要用到set_index(col1)</span></span><br><span class="line">pd.merge(df1,df2,on=<span class="string">'col1'</span>,how=<span class="string">'outer'</span>)  <span class="comment"># 对df1和df2合并，按照col1，方式为outer</span></span><br><span class="line">pd.merge(df1, df2, left_index=<span class="literal">True</span>, right_index=<span class="literal">True</span>, how=<span class="string">'outer'</span>)  <span class="comment">#与df1.join(df2, how='outer') 效果相同</span></span><br></pre></td></tr></table></figure>
+<h3 id="数据统计">数据统计</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">df.describe() <span class="comment">#查看数据值列的汇总统计</span></span><br><span class="line">df.mean() <span class="comment"># 返回所有列的均值</span></span><br><span class="line">df.corr() <span class="comment"># 返回列与列之间的相关系数</span></span><br><span class="line">df.count() <span class="comment"># 返回每一列中的非空值的个数</span></span><br><span class="line">df.max() <span class="comment"># 返回每一列的最大值</span></span><br><span class="line">df.min() <span class="comment"># 返回每一列的最小值</span></span><br><span class="line">df.median() <span class="comment"># 返回每一列的中位数</span></span><br><span class="line">pd.date_range(<span class="string">'1/1/2000'</span>, periods=<span class="number">7</span>)</span><br><span class="line">df.std() <span class="comment"># 返回每一列的标准差</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2020/05/12/pandas%E6%93%8D%E4%BD%9C%E6%8A%80%E5%B7%A72.html">pandas操作技巧2</a></p>
+  <p><span>发布时间:</span>2020年05月12日 - 19:05</p>
+  <p><span>原始链接:</span><a href="/2020/05/12/pandas%E6%93%8D%E4%BD%9C%E6%8A%80%E5%B7%A72.html" title="pandas操作技巧2">http://www.renpeter.cn/2020/05/12/pandas%E6%93%8D%E4%BD%9C%E6%8A%80%E5%B7%A72.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2020/05/12/pandas%E6%93%8D%E4%BD%9C%E6%8A%80%E5%B7%A72.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/pandas/" rel="tag"># pandas</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/12/D3-js%E5%BA%93-3-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3update%E3%80%81enter%E3%80%81exit.html" rel="next" title="D3.js库-3-深入理解update、enter、exit">
+                <i class="fa fa-chevron-left"></i> D3.js库-3-深入理解update、enter、exit
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">375</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">56</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">459</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#常识"><span class="nav-number">1.</span> <span class="nav-text">常识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导入数据"><span class="nav-number">2.</span> <span class="nav-text">导入数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导出数据"><span class="nav-number">3.</span> <span class="nav-text">导出数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查看、检查数据"><span class="nav-number">4.</span> <span class="nav-text">查看、检查数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据选取"><span class="nav-number">5.</span> <span class="nav-text">数据选取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据清理"><span class="nav-number">6.</span> <span class="nav-text">数据清理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据处理：Filter、Sort和GroupBy"><span class="nav-number">7.</span> <span class="nav-text">数据处理：Filter、Sort和GroupBy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据合并"><span class="nav-number">8.</span> <span class="nav-text">数据合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据统计"><span class="nav-number">9.</span> <span class="nav-text">数据统计</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共454.2k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2020/05/12/pandas%E6%93%8D%E4%BD%9C%E6%8A%80%E5%B7%A72.html';
+          this.page.identifier = '2020/05/12/pandas操作技巧2.html';
+          this.page.title = 'pandas操作技巧2';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
