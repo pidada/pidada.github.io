@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="机器学习," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="KNN导读  KNN算法是机器学习中最简单的算法，一句经典的总结：物以类聚   k-近邻算法k-nearest neighbor, kNN是一种基本分类和回归的算法。k近邻算法中的输入为实例的特征向量，输出为实例的类别，类别可以有多类。算法主要思想：    给定一个训练集的数据，实例的类别已定   对于新的实例，根据k个最近邻的训练实例的类别，经投票表决等方式进行预测   算法不具有显式的学习过程">
+<meta name="keywords" content="机器学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="统计学习方法-KNN算法">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2019&#x2F;09&#x2F;12&#x2F;%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95-KNN.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="KNN导读  KNN算法是机器学习中最简单的算法，一句经典的总结：物以类聚   k-近邻算法k-nearest neighbor, kNN是一种基本分类和回归的算法。k近邻算法中的输入为实例的特征向量，输出为实例的类别，类别可以有多类。算法主要思想：    给定一个训练集的数据，实例的类别已定   对于新的实例，根据k个最近邻的训练实例的类别，经投票表决等方式进行预测   算法不具有显式的学习过程">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-06-22T01:14:45.076Z">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2019/09/12/统计学习方法-KNN.html"/>
+
+
+
+
+
+  <title>统计学习方法-KNN算法 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2019/09/12/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95-KNN.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">统计学习方法-KNN算法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-12T17:51:12+08:00">
+                2019-9-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/" itemprop="url" rel="index">
+                    <span itemprop="name">统计学习方法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/09/12/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95-KNN.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/09/12/统计学习方法-KNN.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.9k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  8
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="KNN导读">KNN导读</h3>
+<blockquote>
+<p><code>KNN</code>算法是机器学习中最简单的算法，一句经典的总结：<code>物以类聚</code></p>
+</blockquote>
+<blockquote>
+<p>k-近邻算法<code>k-nearest neighbor, kNN</code>是一种基本分类和回归的算法。<code>k</code>近邻算法中的输入为实例的特征向量，输出为实例的类别，类别可以有多类。算法主要思想：</p>
+</blockquote>
+<ul>
+<li>
+<p>给定一个训练集的数据，实例的类别已定</p>
+</li>
+<li>
+<p>对于新的实例，根据<code>k</code>个最近邻的训练实例的类别，经投票表决等方式进行预测</p>
+</li>
+<li>
+<p>算法不具有显式的学习过程，实际上利用训练集对特征向量空间进行划分。</p>
+</li>
+</ul>
+<h3 id="KNN三要素">KNN三要素</h3>
+<ul>
+<li><code>k</code>的选择：<code>k</code>值如何选择？越大越好吗？奇偶性如何？经验值是多少？</li>
+<li>距离度量：选择什么距离来进行度量新实例和训练集上点的距离？</li>
+<li>分类决策规则：选择怎样的规则来对距离进行分类，从而判断新实例属于哪个类？</li>
+</ul>
+<h3 id="k近邻算法">k近邻算法</h3>
+<blockquote>
+<p>直观解释：给定一个训练数据集，对于新输入的实例，在训练集数据中找出和该实例最邻近的k个实例。这k个实例中的多数属于某个类，就将新实例划分为这个类别。</p>
+<p><strong>输入训练数据集</strong><br>
+$$<br>
+T={(x_1,y_1),(x_2,y_2),…(x_i,y_i)…(x_N,y_N)}<br>
+$$<br>
+其中，x<sub>i</sub>为实例特征向量，y<sub>i</sub>为实例的类别；i=1,2,3,…N。</p>
+<p><strong>输出</strong>：实例x所属的类别y</p>
+</blockquote>
+<ul>
+<li>
+<p>根据给定的距离度量，在训练集<code>T</code>中找出与<code>x</code>最近邻的<code>k</code>个点，涵盖这个<code>k</code>个点的<code>x</code>的邻域记作：N<sub>k</sub>(x)</p>
+</li>
+<li>
+<p>在邻域N<sub>k</sub>(x)中根据分类规则决定x的类别y<br>
+$$<br>
+y = \mathop {arg max}\limits_{c_j}\sum_{x_i\in{N_k(x)}}I(y_i=c_j), i=1,2…,N;j=1,2,…K<br>
+$$</p>
+</li>
+</ul>
+<p>上式中，I为指示函数，即当：y<sub>i</sub>=c<sub>j</sub>是为1，不等则为0</p>
+<ul>
+<li><code>k=1</code>称之为最近邻算法。对于输入的新实例，将训练集中离x<strong>最近点</strong>的所属类作为<code>x</code>的类别</li>
+</ul>
+<h3 id="k近邻模型">k近邻模型</h3>
+<p>k近邻算法的模型主要有三个要素:</p>
+<ul>
+<li>距离度量</li>
+<li><code>k</code>值的选择</li>
+<li>分类决策规则的规定</li>
+</ul>
+<h3 id="距离度量">距离度量</h3>
+<blockquote>
+<p>特征空间中两个实例点的距离是两个实例点相似度的反映。<code>k</code>近邻模型的特征空间一般是<code>n</code>维实数向量空间$R^n$。一般使用的欧式距离，也可以是其他距离，如：$L_p$距离或者<code>Minkowski</code>距离。</p>
+</blockquote>
+<p>假设特征空间$X$是n维实数向量空间$R^n$，${x_i,x_j}\in X$，其中$x_i=(x_i<sup>{(1)},x_i</sup>{(2)},…,x_i^{(n)})$，<br>
+$x_j=(x_j<sup>{(1)},x_j</sup>{(2)},…,x_j^{(n)})$</p>
+<p>$x_i,x_j$的$L_p$的距离定义为<br>
+$$<br>
+L_p(x_i,x_j)=(\sum_{l=1}<sup>{n}|x_i</sup>{(l)}-x_j<sup>{(l)}|</sup>p)^\frac{1}{p}<br>
+$$<br>
+此距离实际上就是<code>明科夫斯基距离</code></p>
+<p>规定：$p\geq1$</p>
+<ul>
+<li>
+<p>当<code>p=2</code>时，即为欧式距离，即：<br>
+$$<br>
+L_2(x_i,x_j)=(\sum_{l=1}<sup>{n}|x_i</sup>{(l)}-x_j<sup>{(l)}|</sup>2)^\frac{1}{2}<br>
+$$</p>
+</li>
+<li>
+<p>当<code>p=1</code>时，即为曼哈顿距离，即：<br>
+$$<br>
+L_1(x_i,x_j)=\sum_{l=1}<sup>{n}|x_i</sup>{(l)}-x_j^{(l)}|<br>
+$$</p>
+</li>
+<li>
+<p>当$p$趋于无穷，它是各个坐标距离的最大值：<br>
+$$<br>
+L_{\infty}(x_i,x_j)=\mathop {max}\limits_{l}|x_i<sup>{(l)}-x_j</sup>{(l)}|<br>
+$$</p>
+</li>
+</ul>
+<h3 id="k值选择">k值选择</h3>
+<h4 id="k值较小"><strong>k值较小</strong></h4>
+<ul>
+<li>用较小的邻域中的实例进行预测</li>
+<li>近似误差减小，估计误差增大</li>
+<li>预测结果对近邻的实例点非常敏感；如果近邻点恰好是噪声，预测出错</li>
+</ul>
+<h4 id="k值较大"><strong>k值较大</strong></h4>
+<ul>
+<li>用较大的邻域中的实例点进行预测</li>
+<li>减少学习的估计误差，但是近似误差增大</li>
+<li>与输入实例较远的点的训练实例也会起预测作用</li>
+<li>k值增大意味着整个模型变得简单</li>
+</ul>
+<p><strong>k值一般选取较小的值，一般是奇数值；通过交叉验证来选取最优的k值</strong></p>
+<h3 id="分类决策的规则">分类决策的规则</h3>
+<p><code>k</code>近邻法中分类决策通常采取的是<strong>多数表决</strong>，即输入实例的k个近邻的训练实例中的多数列决定输入实例的类。如果分类的损失函数是0-1分类，分类函数是<br>
+$$<br>
+f:R^n—&gt;{c_1,…,c_n}<br>
+$$<br>
+误分类的概率是<br>
+$$<br>
+P(Y\neq {f(X)})=1-P(Y=f(X))<br>
+$$<br>
+多数表决规则等价于经验风险最小化。</p>
+<h3 id="数据归一化处理">数据归一化处理</h3>
+<p>将所有的数据映射到同一个尺度上</p>
+<ul>
+<li>
+<p>最值归一化：数据映射到0-1上面<br>
+$$<br>
+X_{scale}= \frac{x-x_{min}}{x_{max}-x_{min}}<br>
+$$</p>
+<ul>
+<li>适合分布明显边界的情况：比如考试分数，像素边界</li>
+<li>缺点：受<code>outlier</code>影响，比如收入没有边界</li>
+</ul>
+</li>
+<li>
+<p>均值方差归一化<code>standardization</code>：均值为<code>0</code>，方差为<code>1</code>的分布中<br>
+$$<br>
+x_{scale}=\frac{x-{x_{mean}}}{s}<br>
+$$</p>
+<ul>
+<li>数据分布没有明显边界</li>
+<li>可能存在极端数据</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 调用用于均值归一化的类</span></span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line">standScaler = StandardScaler()</span><br><span class="line">standScaler.fit(X_train)</span><br><span class="line">standScaler.mean_</span><br><span class="line"><span class="comment"># scale表示的是方差</span></span><br><span class="line">standScaler.scale_</span><br><span class="line">standScaler.transform(X_train)</span><br></pre></td></tr></table></figure>
+<h3 id="TTS">TTS</h3>
+<blockquote>
+<p>将导入的样本数据分成训练集<code>train</code>和测试集<code>test</code>两类，一般是2：8</p>
+</blockquote>
+<ul>
+<li>分成训练集和测试集</li>
+<li>需要设置随机种子<code>seed</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="number">0.2</span>, random_state=<span class="number">666</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="网格搜索">网格搜索</h3>
+<ul>
+<li>超参数之间可能存在相互的制约关系</li>
+<li>比如，<code>p</code>只有在<code>method</code>为<code>distance</code>的条件下才有意义</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> matplotlib </span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> datasets</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入数据集</span></span><br><span class="line">digits = datasets.load_digits()</span><br><span class="line">X = digits.data</span><br><span class="line">y = digits.target</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="comment"># 拆分为训练数据和测试集</span></span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="number">0.2</span>, random_state=<span class="number">666</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入的类就是KNN算法</span></span><br><span class="line"><span class="keyword">from</span> sklearn.neighbors <span class="keyword">import</span> KNeighborsClassifier</span><br><span class="line"><span class="comment"># 传入的参数相当于是k值</span></span><br><span class="line">knn_clf = KNeighborsClassifier(n_neighbors=<span class="number">3</span>, weights=<span class="string">'uniform'</span>)</span><br><span class="line"><span class="comment"># 数据的拟合</span></span><br><span class="line">knn_clf.fit(X_train, y_train)</span><br><span class="line">knn_clf.score(X_test, y_test)</span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0.9888888888888889</span></span><br></pre></td></tr></table></figure>
+<h4 id="网格搜索参数设置">网格搜索参数设置</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 具体参数的设置</span></span><br><span class="line">param_grid = [</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">'weights'</span>: [<span class="string">'uniform'</span>],</span><br><span class="line">        <span class="string">'n_neighbors'</span>: [i <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">11</span>)]</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">'weights'</span>: [<span class="string">'distance'</span>],</span><br><span class="line">        <span class="string">'n_neighbors'</span>: [i <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">11</span>)],</span><br><span class="line">        <span class="string">'p'</span>: [i <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">6</span>)]</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 实例化类</span></span><br><span class="line">knn_clf = KNeighborsClassifier()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> GridSearchCV</span><br><span class="line">grid_search = GridSearchCV(knn_clf, param_grid)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">%%time</span><br><span class="line">grid_search.fit(X_train, y_train)</span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">GridSearchCV(cv=<span class="string">'warn'</span>, error_score=<span class="string">'raise-deprecating'</span>,</span><br><span class="line">             estimator=KNeighborsClassifier(algorithm=<span class="string">'auto'</span>, leaf_size=<span class="number">30</span>,</span><br><span class="line">                                            metric=<span class="string">'minkowski'</span>,</span><br><span class="line">                                            metric_params=None, n_jobs=None,</span><br><span class="line">                                            n_neighbors=<span class="number">5</span>, p=<span class="number">2</span>,</span><br><span class="line">                                            weights=<span class="string">'uniform'</span>),</span><br><span class="line">             iid=<span class="string">'warn'</span>, n_jobs=None,</span><br><span class="line">             param_grid=[&#123;<span class="string">'n_neighbors'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>],</span><br><span class="line">                          <span class="string">'weights'</span>: [<span class="string">'uniform'</span>]&#125;,</span><br><span class="line">                         &#123;<span class="string">'n_neighbors'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>],</span><br><span class="line">                          <span class="string">'p'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>], <span class="string">'weights'</span>: [<span class="string">'distance'</span>]&#125;],</span><br><span class="line">             pre_dispatch=<span class="string">'2*n_jobs'</span>, <span class="built_in">ref</span>it=True, return_train_score=False,</span><br><span class="line">             scoring=None, verbose=<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grid_search.best_estimator_</span><br></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">KNeighborsClassifier(<span class="attribute">algorithm</span>=<span class="string">'auto'</span>, <span class="attribute">leaf_size</span>=30, <span class="attribute">metric</span>=<span class="string">'minkowski'</span>,</span><br><span class="line">                     <span class="attribute">metric_params</span>=None, <span class="attribute">n_jobs</span>=None, <span class="attribute">n_neighbors</span>=3, <span class="attribute">p</span>=3,</span><br><span class="line">                     <span class="attribute">weights</span>=<span class="string">'distance'</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看准确率</span></span><br><span class="line">grid_search.best_score_0</span><br><span class="line"><span class="number">.9853862212943633</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看最终形成的最好参数</span></span><br><span class="line">grid_search.best_params_&#123;</span><br><span class="line"><span class="string">'n_neighbors'</span>: <span class="number">3</span>, <span class="string">'p'</span>: <span class="number">3</span>, <span class="string">'weights'</span>: <span class="string">'distance'</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看测试数据的准确度</span></span><br><span class="line">knn_clf = grid_search.best_estimator_</span><br><span class="line">knn_clf.score(X_test,y_test)<span class="number">0</span></span><br><span class="line"><span class="comment"># 结果</span></span><br><span class="line"><span class="number">.9833333333333333</span></span><br></pre></td></tr></table></figure>
+<h4 id="核数和输出信息显示">核数和输出信息显示</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># n_jobs几个核，加快速度；verbose：进行算法信息的输出</span></span><br><span class="line">grid_search = GridSearchCV(knn_clf, param_grid, n_jobs=<span class="number">1</span>, verbose=<span class="number">2</span>)</span><br><span class="line">grid_search.fit(X_train, y_train)</span><br></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">c:\users\admin\venv\lib\site-packages\sklearn\model_selection\_split.py:1978: FutureWarning: The<span class="built_in"> default </span>value of cv will change <span class="keyword">from</span> 3 <span class="keyword">to</span> 5 <span class="keyword">in</span> version 0.22. Specify it explicitly <span class="keyword">to</span> silence this warning.</span><br><span class="line">  warnings.warn(CV_WARNING, FutureWarning)</span><br><span class="line">[Parallel(<span class="attribute">n_jobs</span>=1)]: Using backend SequentialBackend with 1 concurrent workers.</span><br></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Fitting 3 folds <span class="keyword">for</span> each of 60 candidates, totalling 180 fits</span><br><span class="line">[CV] <span class="attribute">n_neighbors</span>=1, <span class="attribute">weights</span>=uniform <span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span></span><br><span class="line">[CV] <span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span>. <span class="attribute">n_neighbors</span>=1, <span class="attribute">weights</span>=uniform, total=   0.6s</span><br><span class="line">[CV] <span class="attribute">n_neighbors</span>=1, <span class="attribute">weights</span>=uniform <span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Parallel(n_jobs=<span class="number">1</span>)]: Done   <span class="number">1</span> <span class="keyword">out</span> of   <span class="number">1</span> | elapsed:    <span class="number">0.5</span>s remaining:    <span class="number">0.0</span>s</span><br></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[CV] <span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span>. <span class="attribute">n_neighbors</span>=1, <span class="attribute">weights</span>=uniform, total=   0.6s</span><br><span class="line">[CV] <span class="attribute">n_neighbors</span>=1, <span class="attribute">weights</span>=uniform <span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span></span><br><span class="line">[CV] <span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span>. <span class="attribute">n_neighbors</span>=1, <span class="attribute">weights</span>=uniform, total=   0.5s</span><br><span class="line"><span class="built_in">..</span><span class="built_in">..</span></span><br><span class="line">[CV] <span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span> <span class="attribute">n_neighbors</span>=10, <span class="attribute">p</span>=5, <span class="attribute">weights</span>=distance, total=   0.6s</span><br></pre></td></tr></table></figure>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">GridSearchCV(cv=<span class="string">'warn'</span>, error_score=<span class="string">'raise-deprecating'</span>,</span><br><span class="line">             estimator=KNeighborsClassifier(algorithm=<span class="string">'auto'</span>, leaf_size=<span class="number">30</span>,</span><br><span class="line">                                            metric=<span class="string">'minkowski'</span>,</span><br><span class="line">                                            metric_params=None, n_jobs=None,</span><br><span class="line">                                            n_neighbors=<span class="number">3</span>, p=<span class="number">3</span>,</span><br><span class="line">                                            weights=<span class="string">'distance'</span>),</span><br><span class="line">             iid=<span class="string">'warn'</span>, n_jobs=<span class="number">1</span>,</span><br><span class="line">             param_grid=[&#123;<span class="string">'n_neighbors'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>],</span><br><span class="line">                          <span class="string">'weights'</span>: [<span class="string">'uniform'</span>]&#125;,</span><br><span class="line">                         &#123;<span class="string">'n_neighbors'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>],</span><br><span class="line">                          <span class="string">'p'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>], <span class="string">'weights'</span>: [<span class="string">'distance'</span>]&#125;],</span><br><span class="line">             pre_dispatch=<span class="string">'2*n_jobs'</span>, <span class="built_in">ref</span>it=True, return_train_score=False,</span><br><span class="line">             scoring=None, verbose=<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/09/12/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95-KNN.html">统计学习方法-KNN算法</a></p>
+  <p><span>发布时间:</span>2019年09月12日 - 17:09</p>
+  <p><span>原始链接:</span><a href="/2019/09/12/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95-KNN.html" title="统计学习方法-KNN算法">http://www.renpeter.cn/2019/09/12/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95-KNN.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2019/09/12/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95-KNN.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/11/pandasNote4.html" rel="next" title="pandasNote4">
+                <i class="fa fa-chevron-left"></i> pandasNote4
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/12/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%AF%BC%E8%AE%BA-1.html" rel="prev" title="统计学习方法法导论_1">
+                统计学习方法法导论_1 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">398</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">57</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#KNN导读"><span class="nav-number">1.</span> <span class="nav-text">KNN导读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KNN三要素"><span class="nav-number">2.</span> <span class="nav-text">KNN三要素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#k近邻算法"><span class="nav-number">3.</span> <span class="nav-text">k近邻算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#k近邻模型"><span class="nav-number">4.</span> <span class="nav-text">k近邻模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#距离度量"><span class="nav-number">5.</span> <span class="nav-text">距离度量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#k值选择"><span class="nav-number">6.</span> <span class="nav-text">k值选择</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#k值较小"><span class="nav-number">6.1.</span> <span class="nav-text">k值较小</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#k值较大"><span class="nav-number">6.2.</span> <span class="nav-text">k值较大</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分类决策的规则"><span class="nav-number">7.</span> <span class="nav-text">分类决策的规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据归一化处理"><span class="nav-number">8.</span> <span class="nav-text">数据归一化处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TTS"><span class="nav-number">9.</span> <span class="nav-text">TTS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网格搜索"><span class="nav-number">10.</span> <span class="nav-text">网格搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#网格搜索参数设置"><span class="nav-number">10.1.</span> <span class="nav-text">网格搜索参数设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#核数和输出信息显示"><span class="nav-number">10.2.</span> <span class="nav-text">核数和输出信息显示</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">36</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">31</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">26</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">40</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">55</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">20</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">41</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B7%91%E6%AD%A5/" rel="tag">跑步</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">24</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共492.3k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2019/09/12/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95-KNN.html';
+          this.page.identifier = '2019/09/12/统计学习方法-KNN.html';
+          this.page.title = '统计学习方法-KNN算法';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
