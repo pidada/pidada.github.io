@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="可视化,px," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Plotly-express-12-实现多子图subplots 在很多的实际业务需求中，需要将多个图形集中放置一个figure中，而不是单独显示，在这种情况下我们需要使用子图的概念。本文中讲解如何在plotly中使用plotly.graph_objects绘制各种形式的子图  Figures with subplots are created using the make_subplots fun">
+<meta name="keywords" content="可视化,px">
+<meta property="og:type" content="article">
+<meta property="og:title" content="plotly-express-12-plotly实现多子图">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2020&#x2F;07&#x2F;04&#x2F;plotly-express-12-plotly%E5%AE%9E%E7%8E%B0%E5%A4%9A%E5%AD%90%E5%9B%BE.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="Plotly-express-12-实现多子图subplots 在很多的实际业务需求中，需要将多个图形集中放置一个figure中，而不是单独显示，在这种情况下我们需要使用子图的概念。本文中讲解如何在plotly中使用plotly.graph_objects绘制各种形式的子图  Figures with subplots are created using the make_subplots fun">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1ggftcn8pfzj30ja0hawgn.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1ggfte6ge6aj31js0u0grt.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1ggftgzujvoj30wx0u0gnm.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1ggftjkm93dj31090u0ad2.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1ggftp1jymqj30w70u0q5p.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1ggftt3f2p6j31bm0l6abl.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1ggftu9pzj7j31cw0mowfx.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1ggftvkn6scj30xs0u0jtm.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1ggftzxupxbj318i0u0jvv.jpg">
+<meta property="og:updated_time" content="2020-07-05T01:39:42.614Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1ggftcn8pfzj30ja0hawgn.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2020/07/04/plotly-express-12-plotly实现多子图.html"/>
+
+
+
+
+
+  <title>plotly-express-12-plotly实现多子图 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2020/07/04/plotly-express-12-plotly%E5%AE%9E%E7%8E%B0%E5%A4%9A%E5%AD%90%E5%9B%BE.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">plotly-express-12-plotly实现多子图</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-07-04T09:01:09+08:00">
+                2020-7-4
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/datavisual/" itemprop="url" rel="index">
+                    <span itemprop="name">datavisual</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/datavisual/px/" itemprop="url" rel="index">
+                    <span itemprop="name">px</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/07/04/plotly-express-12-plotly%E5%AE%9E%E7%8E%B0%E5%A4%9A%E5%AD%90%E5%9B%BE.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/07/04/plotly-express-12-plotly实现多子图.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  2.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  15
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="Plotly-express-12-实现多子图subplots">Plotly-express-12-实现多子图subplots</h3>
+<p>在很多的实际业务需求中，需要将多个图形集中放置一个<code>figure</code>中，而不是单独显示，在这种情况下我们需要使用子图的概念。本文中讲解如何在plotly中使用<code>plotly.graph_objects</code>绘制各种形式的子图</p>
+<blockquote>
+<p>Figures with subplots are created using the <code>make_subplots</code> function from the <code>plotly.subplots</code> module.</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggftcn8pfzj30ja0hawgn.jpg" alt=""></p>
+<a id="more"></a>
+<h3 id="参数详解">参数详解</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">make_subplots(rows=<span class="number">1</span>, cols=<span class="number">1</span>, shared_xaxes=<span class="literal">False</span>, shared_yaxes=<span class="literal">False</span>, start_cell=<span class="string">'top-left'</span>, print_grid=<span class="literal">False</span>, horizontal_spacing=<span class="literal">None</span>, vertical_spacing=<span class="literal">None</span>, subplot_titles=<span class="literal">None</span>, column_widths=<span class="literal">None</span>, row_heights=<span class="literal">None</span>, specs=<span class="literal">None</span>, insets=<span class="literal">None</span>, column_titles=<span class="literal">None</span>, row_titles=<span class="literal">None</span>, x_title=<span class="literal">None</span>, y_title=<span class="literal">None</span>, **kwargs)</span><br><span class="line"></span><br><span class="line">Return an instance of plotly.graph_objs.Figure <span class="keyword">with</span> predefined subplots configured <span class="keyword">in</span> <span class="string">'layout'</span>.</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br></pre></td><td class="code"><pre><span class="line">Parameters</span><br><span class="line">    ----------</span><br><span class="line">    rows: int (default <span class="number">1</span>)</span><br><span class="line">        Number of rows <span class="keyword">in</span> the subplot grid. Must be greater than zero.</span><br><span class="line"></span><br><span class="line">    cols: int (default <span class="number">1</span>)</span><br><span class="line">        Number of columns <span class="keyword">in</span> the subplot grid. Must be greater than zero.</span><br><span class="line"></span><br><span class="line">    shared_xaxes: boolean <span class="keyword">or</span> str (default <span class="literal">False</span>)</span><br><span class="line">        Assign shared (linked) x-axes <span class="keyword">for</span> <span class="number">2</span>D cartesian subplots</span><br><span class="line"></span><br><span class="line">          - <span class="literal">True</span> <span class="keyword">or</span> <span class="string">'columns'</span>: Share axes among subplots <span class="keyword">in</span> the same column</span><br><span class="line">          - <span class="string">'rows'</span>: Share axes among subplots <span class="keyword">in</span> the same row</span><br><span class="line">          - <span class="string">'all'</span>: Share axes across all subplots <span class="keyword">in</span> the grid.</span><br><span class="line"></span><br><span class="line">    shared_yaxes: boolean <span class="keyword">or</span> str (default <span class="literal">False</span>)</span><br><span class="line">        Assign shared (linked) y-axes <span class="keyword">for</span> <span class="number">2</span>D cartesian subplots</span><br><span class="line"></span><br><span class="line">          - <span class="string">'columns'</span>: Share axes among subplots <span class="keyword">in</span> the same column</span><br><span class="line">          - <span class="literal">True</span> <span class="keyword">or</span> <span class="string">'rows'</span>: Share axes among subplots <span class="keyword">in</span> the same row</span><br><span class="line">          - <span class="string">'all'</span>: Share axes across all subplots <span class="keyword">in</span> the grid.</span><br><span class="line"></span><br><span class="line">    start_cell: <span class="string">'bottom-left'</span> <span class="keyword">or</span> <span class="string">'top-left'</span> (default <span class="string">'top-left'</span>)</span><br><span class="line">        Choose the starting cell <span class="keyword">in</span> the subplot grid used to set the</span><br><span class="line">        domains_grid of the subplots.</span><br><span class="line"></span><br><span class="line">          - <span class="string">'top-left'</span>: Subplots are numbered <span class="keyword">with</span> (<span class="number">1</span>, <span class="number">1</span>) <span class="keyword">in</span> the top</span><br><span class="line">                        left corner</span><br><span class="line">          - <span class="string">'bottom-left'</span>: Subplots are numbererd <span class="keyword">with</span> (<span class="number">1</span>, <span class="number">1</span>) <span class="keyword">in</span> the bottom</span><br><span class="line">                           left corner</span><br><span class="line"></span><br><span class="line">    print_grid: boolean (default <span class="literal">True</span>):</span><br><span class="line">        If <span class="literal">True</span>, prints a string representation of the plot grid.  Grid may</span><br><span class="line">        also be printed using the `Figure.print_grid()` method on the</span><br><span class="line">        resulting figure.</span><br><span class="line"></span><br><span class="line">    horizontal_spacing: float (default <span class="number">0.2</span> / cols)</span><br><span class="line">        Space between subplot columns <span class="keyword">in</span> normalized plot coordinates. Must be</span><br><span class="line">        a float between <span class="number">0</span> <span class="keyword">and</span> <span class="number">1.</span></span><br><span class="line"></span><br><span class="line">        Applies to all columns (use <span class="string">'specs'</span> subplot-dependents spacing)</span><br><span class="line"></span><br><span class="line">    vertical_spacing: float (default <span class="number">0.3</span> / rows)</span><br><span class="line">        Space between subplot rows <span class="keyword">in</span> normalized plot coordinates. Must be</span><br><span class="line">        a float between <span class="number">0</span> <span class="keyword">and</span> <span class="number">1.</span></span><br><span class="line"></span><br><span class="line">        Applies to all rows (use <span class="string">'specs'</span> subplot-dependents spacing)</span><br><span class="line"></span><br><span class="line">    subplot_titles: list of str <span class="keyword">or</span> <span class="literal">None</span> (default <span class="literal">None</span>)</span><br><span class="line">        Title of each subplot <span class="keyword">as</span> a list <span class="keyword">in</span> row-major ordering.</span><br><span class="line"></span><br><span class="line">        Empty strings (<span class="string">""</span>) can be included <span class="keyword">in</span> the list <span class="keyword">if</span> no subplot title</span><br><span class="line">        <span class="keyword">is</span> desired <span class="keyword">in</span> that space so that the titles are properly indexed.</span><br><span class="line"></span><br><span class="line">    specs: list of lists of dict <span class="keyword">or</span> <span class="literal">None</span> (default <span class="literal">None</span>)</span><br><span class="line">        Per subplot specifications of subplot type, row/column spanning, <span class="keyword">and</span></span><br><span class="line">        spacing.</span><br><span class="line"></span><br><span class="line">        ex1: specs=[[&#123;&#125;, &#123;&#125;], [&#123;<span class="string">'colspan'</span>: <span class="number">2</span>&#125;, <span class="literal">None</span>]]</span><br><span class="line"></span><br><span class="line">        ex2: specs=[[&#123;<span class="string">'rowspan'</span>: <span class="number">2</span>&#125;, &#123;&#125;], [<span class="literal">None</span>, &#123;&#125;]]</span><br><span class="line"></span><br><span class="line">        - Indices of the outer list correspond to subplot grid rows</span><br><span class="line">          starting <span class="keyword">from</span> the top, <span class="keyword">if</span> start_cell=<span class="string">'top-left'</span>,</span><br><span class="line">          <span class="keyword">or</span> bottom, <span class="keyword">if</span> start_cell=<span class="string">'bottom-left'</span>.</span><br><span class="line">          The number of rows <span class="keyword">in</span> <span class="string">'specs'</span> must be equal to <span class="string">'rows'</span>.</span><br><span class="line"></span><br><span class="line">        - Indices of the inner lists correspond to subplot grid columns</span><br><span class="line">          starting <span class="keyword">from</span> the left. The number of columns <span class="keyword">in</span> <span class="string">'specs'</span></span><br><span class="line">          must be equal to <span class="string">'cols'</span>.</span><br><span class="line"></span><br><span class="line">        - Each item <span class="keyword">in</span> the <span class="string">'specs'</span> list corresponds to one subplot</span><br><span class="line">          <span class="keyword">in</span> a subplot grid. (N.B. The subplot grid has exactly <span class="string">'rows'</span></span><br><span class="line">          times <span class="string">'cols'</span> cells.)</span><br><span class="line"></span><br><span class="line">        - Use <span class="literal">None</span> <span class="keyword">for</span> a blank a subplot cell (<span class="keyword">or</span> to move past a col/row span).</span><br><span class="line"></span><br><span class="line">        - Note that specs[<span class="number">0</span>][<span class="number">0</span>] has the specs of the <span class="string">'start_cell'</span> subplot.</span><br><span class="line"></span><br><span class="line">        - Each item <span class="keyword">in</span> <span class="string">'specs'</span> <span class="keyword">is</span> a dictionary.</span><br><span class="line">            The available keys are:</span><br><span class="line">            * type (string, default <span class="string">'xy'</span>): Subplot type. One of</span><br><span class="line">                - <span class="string">'xy'</span>: <span class="number">2</span>D Cartesian subplot type <span class="keyword">for</span> scatter, bar, etc.</span><br><span class="line">                - <span class="string">'scene'</span>: <span class="number">3</span>D Cartesian subplot <span class="keyword">for</span> scatter3d, cone, etc.</span><br><span class="line">                - <span class="string">'polar'</span>: Polar subplot <span class="keyword">for</span> scatterpolar, barpolar, etc.</span><br><span class="line">                - <span class="string">'ternary'</span>: Ternary subplot <span class="keyword">for</span> scatterternary</span><br><span class="line">                - <span class="string">'mapbox'</span>: Mapbox subplot <span class="keyword">for</span> scattermapbox</span><br><span class="line">                - <span class="string">'domain'</span>: Subplot type <span class="keyword">for</span> traces that are individually</span><br><span class="line">                            positioned. pie, parcoords, parcats, etc.</span><br><span class="line">                - trace type: A trace type which will be used to determine</span><br><span class="line">                              the appropriate subplot type <span class="keyword">for</span> that trace</span><br><span class="line"></span><br><span class="line">            * secondary_y (bool, default <span class="literal">False</span>): If <span class="literal">True</span>, create a secondary</span><br><span class="line">                y-axis positioned on the right side of the subplot. Only valid</span><br><span class="line">                <span class="keyword">if</span> type=<span class="string">'xy'</span>.</span><br><span class="line">            * colspan (int, default <span class="number">1</span>): number of subplot columns</span><br><span class="line">                <span class="keyword">for</span> this subplot to span.</span><br><span class="line">            * rowspan (int, default <span class="number">1</span>): number of subplot rows</span><br><span class="line">                <span class="keyword">for</span> this subplot to span.</span><br><span class="line">            * l (float, default <span class="number">0.0</span>): padding left of cell</span><br><span class="line">            * r (float, default <span class="number">0.0</span>): padding right of cell</span><br><span class="line">            * t (float, default <span class="number">0.0</span>): padding right of cell</span><br><span class="line">            * b (float, default <span class="number">0.0</span>): padding bottom of cell</span><br><span class="line"></span><br><span class="line">        - Note: Use <span class="string">'horizontal_spacing'</span> <span class="keyword">and</span> <span class="string">'vertical_spacing'</span> to adjust</span><br><span class="line">          the spacing <span class="keyword">in</span> between the subplots.</span><br><span class="line"></span><br><span class="line">    insets: list of dict <span class="keyword">or</span> <span class="literal">None</span> (default <span class="literal">None</span>):</span><br><span class="line">        Inset specifications.  Insets are subplots that overlay grid subplots</span><br><span class="line"></span><br><span class="line">        - Each item <span class="keyword">in</span> <span class="string">'insets'</span> <span class="keyword">is</span> a dictionary.</span><br><span class="line">            The available keys are:</span><br><span class="line"></span><br><span class="line">            * cell (tuple, default=(<span class="number">1</span>,<span class="number">1</span>)): (row, col) index of the</span><br><span class="line">                subplot cell to overlay inset axes onto.</span><br><span class="line">            * type (string, default <span class="string">'xy'</span>): Subplot type</span><br><span class="line">            * l (float, default=<span class="number">0.0</span>): padding left of inset</span><br><span class="line">                  <span class="keyword">in</span> fraction of cell width</span><br><span class="line">            * w (float <span class="keyword">or</span> <span class="string">'to_end'</span>, default=<span class="string">'to_end'</span>) inset width</span><br><span class="line">                  <span class="keyword">in</span> fraction of cell width (<span class="string">'to_end'</span>: to cell right edge)</span><br><span class="line">            * b (float, default=<span class="number">0.0</span>): padding bottom of inset</span><br><span class="line">                  <span class="keyword">in</span> fraction of cell height</span><br><span class="line">            * h (float <span class="keyword">or</span> <span class="string">'to_end'</span>, default=<span class="string">'to_end'</span>) inset height</span><br><span class="line">                  <span class="keyword">in</span> fraction of cell height (<span class="string">'to_end'</span>: to cell top edge)</span><br><span class="line"></span><br><span class="line">    column_widths: list of numbers <span class="keyword">or</span> <span class="literal">None</span> (default <span class="literal">None</span>)</span><br><span class="line">        list of length `cols` of the relative widths of each column of suplots.</span><br><span class="line">        Values are normalized internally <span class="keyword">and</span> used to distribute overall width</span><br><span class="line">        of the figure (excluding padding) among the columns.</span><br><span class="line"></span><br><span class="line">        For backward compatibility, may also be specified using the</span><br><span class="line">        `column_width` keyword argument.</span><br><span class="line"></span><br><span class="line">    row_heights: list of numbers <span class="keyword">or</span> <span class="literal">None</span> (default <span class="literal">None</span>)</span><br><span class="line">        list of length `rows` of the relative heights of each row of subplots.</span><br><span class="line">        If start_cell=<span class="string">'top-left'</span> then row heights are applied top to bottom.</span><br><span class="line">        Otherwise, <span class="keyword">if</span> start_cell=<span class="string">'bottom-left'</span> then row heights are applied</span><br><span class="line">        bottom to top.</span><br><span class="line"></span><br><span class="line">        For backward compatibility, may also be specified using the</span><br><span class="line">        `row_width` kwarg. If specified <span class="keyword">as</span> `row_width`, then the width values</span><br><span class="line">        are applied <span class="keyword">from</span> bottom to top regardless of the value of start_cell.</span><br><span class="line">        This matches the legacy behavior of the `row_width` argument.</span><br><span class="line"></span><br><span class="line">    column_titles: list of str <span class="keyword">or</span> <span class="literal">None</span> (default <span class="literal">None</span>)</span><br><span class="line">        list of length `cols` of titles to place above the top subplot <span class="keyword">in</span></span><br><span class="line">        each column.</span><br><span class="line"></span><br><span class="line">    row_titles: list of str <span class="keyword">or</span> <span class="literal">None</span> (default <span class="literal">None</span>)</span><br><span class="line">        list of length `rows` of titles to place on the right side of each</span><br><span class="line">        row of subplots. If start_cell=<span class="string">'top-left'</span> then row titles are</span><br><span class="line">        applied top to bottom. Otherwise, <span class="keyword">if</span> start_cell=<span class="string">'bottom-left'</span> then</span><br><span class="line">        row titles are applied bottom to top.</span><br><span class="line"></span><br><span class="line">    x_title: str <span class="keyword">or</span> <span class="literal">None</span> (default <span class="literal">None</span>)</span><br><span class="line">        Title to place below the bottom row of subplots,</span><br><span class="line">        centered horizontally</span><br><span class="line"></span><br><span class="line">    y_title: str <span class="keyword">or</span> <span class="literal">None</span> (default <span class="literal">None</span>)</span><br><span class="line">        Title to place to the left of the left column of subplots,</span><br><span class="line">       centered vertically</span><br></pre></td></tr></table></figure>
+<h3 id="使用模块">使用模块</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> plotly.subplots <span class="keyword">import</span> make_subplots</span><br><span class="line"><span class="keyword">import</span> plotly.graph_objects <span class="keyword">as</span> go</span><br></pre></td></tr></table></figure>
+<h3 id="一行多列">一行多列</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">fig = make_subplots(rows=<span class="number">1</span>, cols=<span class="number">2</span>,</span><br><span class="line">                   subplot_titles=(<span class="string">"Plot 1"</span>, <span class="string">"Plot 2"</span>))</span><br><span class="line"></span><br><span class="line">fig.add_trace(go.Scatter(x=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], y=[<span class="number">4</span>, <span class="number">5</span>, <span class="number">2</span>],</span><br><span class="line">                         name=<span class="string">"figure-one"</span>),</span><br><span class="line">              row=<span class="number">1</span>, col=<span class="number">1</span>)</span><br><span class="line">fig.add_trace(go.Scatter(x=[<span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>], y=[<span class="number">20</span>, <span class="number">40</span>, <span class="number">30</span>],</span><br><span class="line">                         name=<span class="string">"figure-two"</span>),</span><br><span class="line">              row=<span class="number">1</span>, col=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">fig.update_layout(height=<span class="number">400</span>, width=<span class="number">900</span>, title_text=<span class="string">"Side By Side Subplots"</span>)</span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggfte6ge6aj31js0u0grt.jpg" alt="image-20200705085820419"></p>
+<h3 id="一列多行">一列多行</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">fig = make_subplots(rows=<span class="number">3</span>, cols=<span class="number">1</span>)   <span class="comment"># 其实就是3*1的方式</span></span><br><span class="line"></span><br><span class="line">fig.append_trace(go.Scatter(</span><br><span class="line">    x=[<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>],</span><br><span class="line">    y=[<span class="number">1000</span>, <span class="number">1100</span>, <span class="number">1200</span>],</span><br><span class="line">), row=<span class="number">1</span>, col=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">fig.append_trace(go.Bar(</span><br><span class="line">    x=[<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>],</span><br><span class="line">    y=[<span class="number">100</span>, <span class="number">110</span>, <span class="number">120</span>],</span><br><span class="line">), row=<span class="number">2</span>, col=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">fig.append_trace(go.Scatter(</span><br><span class="line">    x=[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">    y=[<span class="number">10</span>, <span class="number">11</span>, <span class="number">12</span>]</span><br><span class="line">), row=<span class="number">3</span>, col=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">fig.update_layout(height=<span class="number">600</span>, width=<span class="number">600</span>, title_text=<span class="string">"Stacked Subplots"</span>)</span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggftgzujvoj30wx0u0gnm.jpg" alt=""></p>
+<h3 id="多行多列">多行多列</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">fig = make_subplots(rows=<span class="number">2</span>, cols=<span class="number">2</span>,   <span class="comment"># 2*2</span></span><br><span class="line">                    start_cell=<span class="string">"top-left"</span>,  <span class="comment"># 子图开始的位置，只有2个选项：bottom-left或者top-left</span></span><br><span class="line">                   subplot_titles=(<span class="string">"折线图1"</span>,<span class="string">"柱状图1"</span>,<span class="string">"折线图2"</span>,<span class="string">"柱状图2"</span>),   <span class="comment"># 每个子图的标题</span></span><br><span class="line">                   column_widths=[<span class="number">0.4</span>, <span class="number">0.6</span>])   <span class="comment"># 每个子图占比</span></span><br><span class="line"></span><br><span class="line">fig.add_trace(go.Scatter(x=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">                         y=[<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">                         mode=<span class="string">"markers+text"</span>,</span><br><span class="line">                         text=[<span class="string">"Text A"</span>, <span class="string">"Text B"</span>, <span class="string">"Text C"</span>],   <span class="comment"># 散点图中的文本设置和显示</span></span><br><span class="line">                         textposition=<span class="string">"top center"</span>,</span><br><span class="line">                         name=<span class="string">"line1"</span>),</span><br><span class="line">              row=<span class="number">1</span>, col=<span class="number">1</span>)  <span class="comment"># 指定位置</span></span><br><span class="line"></span><br><span class="line">fig.add_trace(go.Bar(x=[<span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>],</span><br><span class="line">                     y=[<span class="number">50</span>, <span class="number">60</span>, <span class="number">70</span>],</span><br><span class="line">                     text=[<span class="string">"Text A"</span>, <span class="string">"Text B"</span>, <span class="string">"Text C"</span>],  <span class="comment">#  柱状图中文本的设置和显示</span></span><br><span class="line">                     textposition=<span class="string">"inside"</span>,</span><br><span class="line">                     name=<span class="string">"bar1"</span>),</span><br><span class="line">              row=<span class="number">1</span>, col=<span class="number">2</span>)   <span class="comment"># 红色柱状图</span></span><br><span class="line"></span><br><span class="line">fig.add_trace(go.Bar(x=[<span class="number">300</span>, <span class="number">400</span>, <span class="number">500</span>],</span><br><span class="line">                     y=[<span class="number">600</span>, <span class="number">700</span>, <span class="number">800</span>],</span><br><span class="line">                     name=<span class="string">"bar2"</span>),</span><br><span class="line">              row=<span class="number">2</span>, col=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">fig.add_trace(go.Scatter(x=[<span class="number">4000</span>, <span class="number">5000</span>, <span class="number">6000</span>],</span><br><span class="line">                         y=[<span class="number">7000</span>, <span class="number">8000</span>, <span class="number">9000</span>],</span><br><span class="line">                         name=<span class="string">"line2"</span>),</span><br><span class="line">              row=<span class="number">2</span>, col=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">fig.update_layout(width=<span class="number">900</span>,height=<span class="number">900</span>,  <span class="comment"># 改变整个figure的大小</span></span><br><span class="line">                 title_text=<span class="string">"Mutiple subplots"</span>)</span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggftjkm93dj31090u0ad2.jpg" alt=""></p>
+<h3 id="子图属性设置">子图属性设置</h3>
+<ul>
+<li>第一个子图的起始位置</li>
+<li>每个子图的标题</li>
+<li>子图之间的间隔设置</li>
+<li>如何共享x轴</li>
+<li>每个子图中的文本信息设置及位置显示</li>
+<li>子图右边的图例名称</li>
+<li>子图的位置通过row/col实现</li>
+<li>单独设置xy轴的名称</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">fig = make_subplots(rows=<span class="number">2</span>, cols=<span class="number">2</span>,   <span class="comment"># 2*2</span></span><br><span class="line">                    start_cell=<span class="string">"top-left"</span>,  <span class="comment"># 子图开始的位置，只有2个选项：bottom-left或者top-left</span></span><br><span class="line">                   subplot_titles=(<span class="string">"折线图1"</span>,<span class="string">"柱状图1"</span>,<span class="string">"折线图2"</span>,<span class="string">"柱状图2"</span>),   <span class="comment"># 每个子图的标题</span></span><br><span class="line">                   column_widths=[<span class="number">0.4</span>, <span class="number">0.6</span>],  <span class="comment"># 每个子图占比</span></span><br><span class="line"><span class="comment">#                    shared_xaxes=True,   # 共享x轴</span></span><br><span class="line"><span class="comment">#                    shared_yaxes=True,   # 共享y轴</span></span><br><span class="line"><span class="comment">#                    vertical_spacing=0.02)  # 每个子图的间隔</span></span><br><span class="line">                   )</span><br><span class="line"></span><br><span class="line">fig.add_trace(go.Scatter(x=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">                         y=[<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">                         mode=<span class="string">"markers+text"</span>,</span><br><span class="line">                         text=[<span class="string">"Text A"</span>, <span class="string">"Text B"</span>, <span class="string">"Text C"</span>],   <span class="comment"># 散点图中的文本设置和显示</span></span><br><span class="line">                         textposition=<span class="string">"top center"</span>,</span><br><span class="line">                         name=<span class="string">"line1"</span>),</span><br><span class="line">              row=<span class="number">1</span>, col=<span class="number">1</span>)  <span class="comment"># 指定位置</span></span><br><span class="line"></span><br><span class="line">fig.add_trace(go.Bar(x=[<span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>],</span><br><span class="line">                     y=[<span class="number">50</span>, <span class="number">60</span>, <span class="number">70</span>],</span><br><span class="line">                     text=[<span class="string">"Text A"</span>, <span class="string">"Text B"</span>, <span class="string">"Text C"</span>],  <span class="comment">#  柱状图中文本的设置和显示</span></span><br><span class="line">                     textposition=<span class="string">"inside"</span>,</span><br><span class="line">                     name=<span class="string">"bar1"</span>),</span><br><span class="line">              row=<span class="number">1</span>, col=<span class="number">2</span>)   <span class="comment"># 红色柱状图</span></span><br><span class="line"></span><br><span class="line">fig.add_trace(go.Bar(x=[<span class="number">300</span>, <span class="number">400</span>, <span class="number">500</span>],</span><br><span class="line">                     y=[<span class="number">600</span>, <span class="number">700</span>, <span class="number">800</span>],</span><br><span class="line">                     name=<span class="string">"bar2"</span>),</span><br><span class="line">              row=<span class="number">2</span>, col=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">fig.add_trace(go.Scatter(x=[<span class="number">4000</span>, <span class="number">5000</span>, <span class="number">6000</span>],</span><br><span class="line">                         y=[<span class="number">7000</span>, <span class="number">8000</span>, <span class="number">9000</span>],</span><br><span class="line">                         name=<span class="string">"line2"</span>),</span><br><span class="line">              row=<span class="number">2</span>, col=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Update xaxis properties</span></span><br><span class="line"><span class="comment"># 设置每个子图自己的x轴</span></span><br><span class="line">fig.update_xaxes(title_text=<span class="string">"x_1"</span>, row=<span class="number">1</span>, col=<span class="number">1</span>)</span><br><span class="line">fig.update_xaxes(title_text=<span class="string">"x_2"</span>, row=<span class="number">1</span>, col=<span class="number">2</span>)</span><br><span class="line">fig.update_xaxes(title_text=<span class="string">"x_3"</span>, showgrid=<span class="literal">False</span>, row=<span class="number">2</span>, col=<span class="number">1</span>)</span><br><span class="line">fig.update_xaxes(title_text=<span class="string">"x_4"</span>, row=<span class="number">2</span>, col=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置每个子图自己的y轴</span></span><br><span class="line"><span class="comment"># Update yaxis properties</span></span><br><span class="line">fig.update_yaxes(title_text=<span class="string">"yaxis_1"</span>, row=<span class="number">1</span>, col=<span class="number">1</span>)</span><br><span class="line">fig.update_yaxes(title_text=<span class="string">"yaxis_2"</span>, row=<span class="number">1</span>, col=<span class="number">2</span>)</span><br><span class="line">fig.update_yaxes(title_text=<span class="string">"yaxis_3"</span>, showgrid=<span class="literal">False</span>, row=<span class="number">2</span>, col=<span class="number">1</span>)</span><br><span class="line">fig.update_yaxes(title_text=<span class="string">"yaxis_4"</span>, row=<span class="number">2</span>, col=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置整个图的大小和标题</span></span><br><span class="line">fig.update_layout(width=<span class="number">1000</span>,height=<span class="number">1200</span>,  <span class="comment"># 改变整个figure的大小</span></span><br><span class="line">                 title_text=<span class="string">"Mutiple subplots"</span>)</span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggftp1jymqj30w70u0q5p.jpg" alt=""></p>
+<h3 id="5-共享颜色轴">5 共享颜色轴</h3>
+<p>选择颜色</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[<span class="string">'aggrnyl'</span>, <span class="string">'agsunset'</span>, <span class="string">'algae'</span>, <span class="string">'amp'</span>, <span class="string">'armyrose'</span>, <span class="string">'balance'</span>,</span><br><span class="line">             <span class="string">'blackbody'</span>, <span class="string">'bluered'</span>, <span class="string">'blues'</span>, <span class="string">'blugrn'</span>, <span class="string">'bluyl'</span>, <span class="string">'brbg'</span>,</span><br><span class="line">             <span class="string">'brwnyl'</span>, <span class="string">'bugn'</span>, <span class="string">'bupu'</span>, <span class="string">'burg'</span>, <span class="string">'burgyl'</span>, <span class="string">'cividis'</span>, <span class="string">'curl'</span>,</span><br><span class="line">             <span class="string">'darkmint'</span>, <span class="string">'deep'</span>, <span class="string">'delta'</span>, <span class="string">'dense'</span>, <span class="string">'earth'</span>, <span class="string">'edge'</span>, <span class="string">'electric'</span>,</span><br><span class="line">             <span class="string">'emrld'</span>, <span class="string">'fall'</span>, <span class="string">'geyser'</span>, <span class="string">'gnbu'</span>, <span class="string">'gray'</span>, <span class="string">'greens'</span>, <span class="string">'greys'</span>,</span><br><span class="line">             <span class="string">'haline'</span>, <span class="string">'hot'</span>, <span class="string">'hsv'</span>, <span class="string">'ice'</span>, <span class="string">'icefire'</span>, <span class="string">'inferno'</span>, <span class="string">'jet'</span>,</span><br><span class="line">             <span class="string">'magenta'</span>, <span class="string">'magma'</span>, <span class="string">'matter'</span>, <span class="string">'mint'</span>, <span class="string">'mrybm'</span>, <span class="string">'mygbm'</span>, <span class="string">'oranges'</span>,</span><br><span class="line">             <span class="string">'orrd'</span>, <span class="string">'oryel'</span>, <span class="string">'peach'</span>, <span class="string">'phase'</span>, <span class="string">'picnic'</span>, <span class="string">'pinkyl'</span>, <span class="string">'piyg'</span>,</span><br><span class="line">             <span class="string">'plasma'</span>, <span class="string">'plotly3'</span>, <span class="string">'portland'</span>, <span class="string">'prgn'</span>, <span class="string">'pubu'</span>, <span class="string">'pubugn'</span>, <span class="string">'puor'</span>,</span><br><span class="line">             <span class="string">'purd'</span>, <span class="string">'purp'</span>, <span class="string">'purples'</span>, <span class="string">'purpor'</span>, <span class="string">'rainbow'</span>, <span class="string">'rdbu'</span>, <span class="string">'rdgy'</span>,</span><br><span class="line">             <span class="string">'rdpu'</span>, <span class="string">'rdylbu'</span>, <span class="string">'rdylgn'</span>, <span class="string">'redor'</span>, <span class="string">'reds'</span>, <span class="string">'solar'</span>, <span class="string">'spectral'</span>,</span><br><span class="line">             <span class="string">'speed'</span>, <span class="string">'sunset'</span>, <span class="string">'sunsetdark'</span>, <span class="string">'teal'</span>, <span class="string">'tealgrn'</span>, <span class="string">'tealrose'</span>,</span><br><span class="line">             <span class="string">'tempo'</span>, <span class="string">'temps'</span>, <span class="string">'thermal'</span>, <span class="string">'tropic'</span>, <span class="string">'turbid'</span>, <span class="string">'twilight'</span>,</span><br><span class="line">             <span class="string">'viridis'</span>, <span class="string">'ylgn'</span>, <span class="string">'ylgnbu'</span>, <span class="string">'ylorbr'</span>, <span class="string">'ylorrd'</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">fig = make_subplots(rows=<span class="number">1</span>, cols=<span class="number">2</span>, shared_yaxes=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">fig.add_trace(go.Bar(x=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], y=[<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">                    marker=dict(color=[<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">                                coloraxis=<span class="string">"coloraxis"</span>)),</span><br><span class="line">              <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">fig.add_trace(go.Scatter(x=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], y=[<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>],</span><br><span class="line">                    marker=dict(color=[<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>],</span><br><span class="line">                                coloraxis=<span class="string">"coloraxis"</span>)),</span><br><span class="line">              <span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">fig.update_layout(coloraxis=dict(colorscale=<span class="string">'magma'</span>), showlegend=<span class="literal">False</span>)</span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggftt3f2p6j31bm0l6abl.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">fig = make_subplots(rows=<span class="number">1</span>, cols=<span class="number">2</span>, shared_yaxes=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">fig.add_trace(go.Bar(x=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], y=[<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">                    marker=dict(color=[<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>], coloraxis=<span class="string">"coloraxis"</span>)),</span><br><span class="line">              <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">fig.add_trace(go.Bar(x=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], y=[<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>],</span><br><span class="line">                    marker=dict(color=[<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>], coloraxis=<span class="string">"coloraxis"</span>)),</span><br><span class="line">              <span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">fig.update_layout(coloraxis=dict(colorscale=<span class="string">'tealgrn'</span>),   <span class="comment"># 变化点</span></span><br><span class="line">                  showlegend=<span class="literal">False</span>)</span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggftu9pzj7j31cw0mowfx.jpg" alt=""></p>
+<h3 id="6-自定义子图位置（占几行几列）">6 自定义子图位置（占几行几列）</h3>
+<p>写法说明：</p>
+<ul>
+<li>{}：表示该位置出现一个子图</li>
+<li>{“rowspan”:2} 表示该位置的子图占据2行</li>
+<li>None：表示该位置上没有子图</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">fig = make_subplots(</span><br><span class="line">    rows=<span class="number">5</span>, cols=<span class="number">2</span>,</span><br><span class="line">    specs=[[&#123;&#125;, &#123;<span class="string">"rowspan"</span>: <span class="number">2</span>&#125;],</span><br><span class="line">           [&#123;&#125;, <span class="literal">None</span>],</span><br><span class="line">           [&#123;<span class="string">"rowspan"</span>: <span class="number">2</span>, <span class="string">"colspan"</span>: <span class="number">2</span>&#125;, <span class="literal">None</span>],</span><br><span class="line">           [<span class="literal">None</span>, <span class="literal">None</span>],</span><br><span class="line">           [&#123;&#125;, &#123;&#125;]],</span><br><span class="line"><span class="comment">#     print_grid=True</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">fig.add_trace(go.Scatter(x=[<span class="number">1</span>, <span class="number">2</span>], y=[<span class="number">1</span>, <span class="number">2</span>], name=<span class="string">"(1,1)"</span>), row=<span class="number">1</span>, col=<span class="number">1</span>)  <span class="comment"># 数据，名字，位置</span></span><br><span class="line">fig.add_trace(go.Scatter(x=[<span class="number">1</span>, <span class="number">2</span>], y=[<span class="number">1</span>, <span class="number">2</span>], name=<span class="string">"(1,2)"</span>), row=<span class="number">1</span>, col=<span class="number">2</span>)</span><br><span class="line">fig.add_trace(go.Bar(x=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], y=[<span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>], name=<span class="string">"(2,1)"</span>), row=<span class="number">2</span>, col=<span class="number">1</span>)</span><br><span class="line">fig.add_trace(go.Scatter(x=[<span class="number">1</span>, <span class="number">2</span>], y=[<span class="number">1</span>, <span class="number">2</span>], name=<span class="string">"(3,1)"</span>), row=<span class="number">3</span>, col=<span class="number">1</span>)</span><br><span class="line">fig.add_trace(go.Scatter(x=[<span class="number">1</span>, <span class="number">2</span>], y=[<span class="number">1</span>, <span class="number">2</span>], name=<span class="string">"(5,1)"</span>), row=<span class="number">5</span>, col=<span class="number">1</span>)</span><br><span class="line">fig.add_trace(go.Bar(x=[<span class="number">1</span>, <span class="number">2</span>], y=[<span class="number">1</span>, <span class="number">2</span>], name=<span class="string">"(5,2)"</span>), row=<span class="number">5</span>, col=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">fig.update_layout(height=<span class="number">600</span>, width=<span class="number">600</span>, title_text=<span class="string">"specs examples"</span>)</span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggftvkn6scj30xs0u0jtm.jpg" alt=""></p>
+<h3 id="7-子图类型">7 子图类型</h3>
+<p>当不同的子图放在一起的时候，需要指定子图的类型，常见的类型有：</p>
+<blockquote>
+<p>By default, the make_subplots function assumes that the traces that will be added to all subplots are 2-dimensional cartesian traces (e.g. scatter, bar, histogram, violin, etc.). Traces with other subplot types (e.g. scatterpolar, scattergeo, parcoords, etc.) are supporteed by specifying the type subplot option in the specs argument to make_subplots.</p>
+</blockquote>
+<p>Here are the possible values for the type option:</p>
+<ul>
+<li>“xy”: 2D Cartesian subplot type for scatter, bar, etc. This is the default if no type is specified.</li>
+<li>“scene”: 3D Cartesian subplot for scatter3d, cone, etc.</li>
+<li>“polar”: Polar subplot for scatterpolar, barpolar, etc.</li>
+<li>“ternary”: Ternary subplot for scatterternary.</li>
+<li>“mapbox”: Mapbox subplot for scattermapbox.</li>
+<li>“domain”: Subplot type for traces that are individually positioned. pie, parcoords, parcats, etc.</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">fig = make_subplots(</span><br><span class="line">    rows=<span class="number">2</span>, cols=<span class="number">2</span>,</span><br><span class="line">    specs=[[&#123;<span class="string">"type"</span>: <span class="string">"xy"</span>&#125;, &#123;<span class="string">"type"</span>: <span class="string">"polar"</span>&#125;],   <span class="comment"># 每行每列在规定位置指明类型</span></span><br><span class="line">           [&#123;<span class="string">"type"</span>: <span class="string">"domain"</span>&#125;, &#123;<span class="string">"type"</span>: <span class="string">"scene"</span>&#125;]],</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">fig.add_trace(go.Bar(y=[<span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>]),</span><br><span class="line">              row=<span class="number">1</span>, col=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">fig.add_trace(go.Barpolar(theta=[<span class="number">0</span>, <span class="number">45</span>, <span class="number">90</span>], r=[<span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>]),</span><br><span class="line">              row=<span class="number">1</span>, col=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">fig.add_trace(go.Pie(values=[<span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>]),</span><br><span class="line">              row=<span class="number">2</span>, col=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">fig.add_trace(go.Scatter3d(x=[<span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>], y=[<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">                           z=[<span class="number">0.5</span>, <span class="number">1</span>, <span class="number">2</span>], mode=<span class="string">"lines"</span>),</span><br><span class="line">              row=<span class="number">2</span>, col=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">fig.update_layout(height=<span class="number">700</span>, showlegend=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggftzxupxbj318i0u0jvv.jpg" alt=""></p>
+<p>又是收获满满的一篇💪</p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2020/07/04/plotly-express-12-plotly%E5%AE%9E%E7%8E%B0%E5%A4%9A%E5%AD%90%E5%9B%BE.html">plotly-express-12-plotly实现多子图</a></p>
+  <p><span>发布时间:</span>2020年07月04日 - 09:07</p>
+  <p><span>原始链接:</span><a href="/2020/07/04/plotly-express-12-plotly%E5%AE%9E%E7%8E%B0%E5%A4%9A%E5%AD%90%E5%9B%BE.html" title="plotly-express-12-plotly实现多子图">http://www.renpeter.cn/2020/07/04/plotly-express-12-plotly%E5%AE%9E%E7%8E%B0%E5%A4%9A%E5%AD%90%E5%9B%BE.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2020/07/04/plotly-express-12-plotly%E5%AE%9E%E7%8E%B0%E5%A4%9A%E5%AD%90%E5%9B%BE.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag"># 可视化</a>
+          
+            <a href="/tags/px/" rel="tag"># px</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/03/%E6%B7%B1%E5%9C%B3%E7%A7%9F%E6%88%BF%E4%B9%8B%E6%97%85.html" rel="next" title="深圳租房之旅">
+                <i class="fa fa-chevron-left"></i> 深圳租房之旅
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">404</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">57</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Plotly-express-12-实现多子图subplots"><span class="nav-number">1.</span> <span class="nav-text">Plotly-express-12-实现多子图subplots</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数详解"><span class="nav-number">2.</span> <span class="nav-text">参数详解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用模块"><span class="nav-number">3.</span> <span class="nav-text">使用模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一行多列"><span class="nav-number">4.</span> <span class="nav-text">一行多列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一列多行"><span class="nav-number">5.</span> <span class="nav-text">一列多行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多行多列"><span class="nav-number">6.</span> <span class="nav-text">多行多列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#子图属性设置"><span class="nav-number">7.</span> <span class="nav-text">子图属性设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-共享颜色轴"><span class="nav-number">8.</span> <span class="nav-text">5 共享颜色轴</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-自定义子图位置（占几行几列）"><span class="nav-number">9.</span> <span class="nav-text">6 自定义子图位置（占几行几列）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-子图类型"><span class="nav-number">10.</span> <span class="nav-text">7 子图类型</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">40</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">31</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">33</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">40</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">53</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">20</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">24</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共501.2k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2020/07/04/plotly-express-12-plotly%E5%AE%9E%E7%8E%B0%E5%A4%9A%E5%AD%90%E5%9B%BE.html';
+          this.page.identifier = '2020/07/04/plotly-express-12-plotly实现多子图.html';
+          this.page.title = 'plotly-express-12-plotly实现多子图';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
