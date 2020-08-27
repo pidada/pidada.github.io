@@ -105,7 +105,11 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gi4o7dq31ij30bx0fyjtn.jpg">
 <meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gi4olwlx7sj30ec0htwh6.jpg">
 <meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gi4opihupkj30dh08q75u.jpg">
-<meta property="og:updated_time" content="2020-08-27T05:02:38.403Z">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gi5sotax8oj30dy08cabh.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gi5spm094pj30al0bkabh.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gi5sq81zhjj30ry0dutbe.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gi5t4zi7fvj30zk0een2f.jpg">
+<meta property="og:updated_time" content="2020-08-27T16:16:14.679Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gi4nadc6dlj30bw0h4tcv.jpg">
 
@@ -400,7 +404,7 @@
                   <span class="post-meta-item-text">Words count in article&#58;</span>
                 
                 <span title="Words count in article">
-                  1.3k
+                  1.9k
                 </span>
               
 
@@ -416,7 +420,7 @@
                   <span class="post-meta-item-text">Reading time &asymp;</span>
                 
                 <span title="Reading time">
-                  5
+                  8
                 </span>
               
             </div>
@@ -517,6 +521,42 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">update salaries</span><br><span class="line">		set salary = case when salary &gt;= 300000 then salay * 0.9</span><br><span class="line">						when salary &gt;= 250000 and salary &lt; 280000 then salary * 1.2</span><br><span class="line">					else salary end;   -- 不在上面的两个范围内保持不变，这个一定要写不然会变成NULL</span><br></pre></td></tr></table></figure>
 <h3 id="使用case调换主键值">使用case调换主键值</h3>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">update someTable</span><br><span class="line">		set p_key = case when p_key = &apos;a&apos; then &apos;b&apos;</span><br><span class="line">						when p_key = &apos;b&apos; then &apos;a&apos;</span><br><span class="line">					else p_key end</span><br><span class="line">		where p_key in (&apos;a&apos;, &apos;b&apos;)</span><br></pre></td></tr></table></figure>
+<h3 id="案例5-case嵌套子查询">案例5-case嵌套子查询</h3>
+<h4 id="需求-v5">需求</h4>
+<p>通过两张表生成第三张交叉表：</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gi5sotax8oj30dy08cabh.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gi5spm094pj30al0bkabh.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gi5sq81zhjj30ry0dutbe.jpg" alt=""></p>
+<h4 id="SQL实现-v5">SQL实现</h4>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">-- in 实现</span><br><span class="line">select course_name,</span><br><span class="line">	case when course_id in (</span><br><span class="line">    		select course_id from opencourses</span><br><span class="line">    		where month=200706) then &apos;o&apos;  -- 6月份画o</span><br><span class="line">   		else &apos;*&apos; end as &apos;6月&apos;,</span><br><span class="line">  case when course_id in (</span><br><span class="line">    		select course_id from opencourses</span><br><span class="line">    		where month=200707) then &apos;o&apos;</span><br><span class="line">   		else &apos;*&apos; end as &apos;7月&apos;,</span><br><span class="line">  case when course_id in (</span><br><span class="line">    		select course_id from opencourses</span><br><span class="line">    		where month=200808) then &apos;o&apos;</span><br><span class="line">    	else &apos;*&apos; as &apos;8月&apos;</span><br><span class="line">from coursemaster</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">-- exists实现</span><br><span class="line"></span><br><span class="line">select CM.course_name,</span><br><span class="line">		case when exists (</span><br><span class="line">      select course_id from OpenCourse OC </span><br><span class="line">      where month = 200706</span><br><span class="line">      and OC.course_id = CM.course_id)</span><br><span class="line">    then &apos;o&apos;</span><br><span class="line">    else &apos;*&apos; end as &quot;6月&quot;,</span><br><span class="line">    </span><br><span class="line">    case when exists (</span><br><span class="line">      select course_id from OpenCourse OC </span><br><span class="line">      where month = 200707</span><br><span class="line">      and OC.course_id = CM.course_id)</span><br><span class="line">    then &apos;o&apos;</span><br><span class="line">    else &apos;*&apos; end as &quot;7月&quot;,</span><br><span class="line">    </span><br><span class="line">    case when exists (</span><br><span class="line">      select course_id from OpenCourse OC </span><br><span class="line">      where month = 200708</span><br><span class="line">      and OC.course_id = CM.course_id)</span><br><span class="line">    then &apos;o&apos;</span><br><span class="line">    else &apos;*&apos; end as &quot;8月&quot;,</span><br><span class="line">from CourseMaster CM;</span><br></pre></td></tr></table></figure>
+<p>特点</p>
+<ul>
+<li>这样的查询方式没有进行聚合，不需要排序</li>
+<li>从性能上说，exists更好</li>
+</ul>
+<h3 id="案例6-case中使用聚合函数">案例6-case中使用聚合函数</h3>
+<h4 id="需求-v6">需求</h4>
+<p>关于学生社团的表格：</p>
+<ul>
+<li>只参加一个社团的学生的<strong>社团ID</strong></li>
+<li>参加了多个社团的学生的<strong>主社团ID</strong>，Y表示是主社团**</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gi5t4zi7fvj30zk0een2f.jpg" alt=""></p>
+<h4 id="SQL实现-v6">SQL实现</h4>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">-- 加入了一个社团</span><br><span class="line">select std_id, max(club_id) as main_club</span><br><span class="line">from StudentClub</span><br><span class="line">group by std_id</span><br><span class="line">having count(*) = 1;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">-- 加入了多个社团的主ID</span><br><span class="line">select std_id, club_id as main_club</span><br><span class="line">from StudentClub</span><br><span class="line">where main_club_flag=&apos;Y&apos;;  -- 加入了多个社团的主ID</span><br></pre></td></tr></table></figure>
+<h4 id="Case-语句实现">Case 语句实现</h4>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">select std_id,</span><br><span class="line">			case when count(*) = 1    -- 只加入了一个社团</span><br><span class="line">			then max(club_id)   -- 直接取出最大的ID号</span><br><span class="line">			else max(case when main_club_flag = &apos;Y&apos;   -- 指定加入了多个社团</span><br><span class="line">              then club_id  -- 取出此时主社团对应的ID号</span><br><span class="line">              else NULL end)   -- 一定要有else语句</span><br><span class="line">      end as main_club</span><br><span class="line">from StudentClub </span><br><span class="line">group by std_id;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>新手使用having进行分支，熟练之后可以使用select语句进行分支</p>
+</blockquote>
+<h3 id="总结">总结</h3>
+<ul>
+<li><code>case</code>表达式可以写在<code>select</code>子句里时，可以写在聚合函数内部，也可以是外部</li>
+<li>能够写列名和常量的位置，都可以使用<code>case</code>语句</li>
+<li><code>case</code>表达式可以写在<code>select、group by、having、where、order by</code>子句中</li>
+<li><code>case</code>表达式是一种表达式，而不是语句，具有更好的可移植性</li>
+</ul>
 
       
     </div>
@@ -785,7 +825,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL进阶-1-case语句"><span class="nav-number">1.</span> <span class="nav-text">SQL进阶-1-case语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2种方式"><span class="nav-number">2.</span> <span class="nav-text">2种方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意事项"><span class="nav-number">3.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例1-统计分组求和"><span class="nav-number">4.</span> <span class="nav-text">案例1-统计分组求和</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#需求"><span class="nav-number">4.1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL实现"><span class="nav-number">4.2.</span> <span class="nav-text">SQL实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例2-数字大小分类"><span class="nav-number">5.</span> <span class="nav-text">案例2-数字大小分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#需求-v2"><span class="nav-number">5.1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL实现-v2"><span class="nav-number">5.2.</span> <span class="nav-text">SQL实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例3-不同条件统计（男女）"><span class="nav-number">6.</span> <span class="nav-text">案例3-不同条件统计（男女）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#需求-v3"><span class="nav-number">6.1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL实现-v3"><span class="nav-number">6.2.</span> <span class="nav-text">SQL实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#约束constraint"><span class="nav-number">7.</span> <span class="nav-text">约束constraint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#逻辑与蕴含式"><span class="nav-number">8.</span> <span class="nav-text">逻辑与蕴含式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例4-update中使用case进行条件分支"><span class="nav-number">9.</span> <span class="nav-text">案例4-update中使用case进行条件分支</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#需求-v4"><span class="nav-number">9.1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL实现-v4"><span class="nav-number">9.2.</span> <span class="nav-text">SQL实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用case调换主键值"><span class="nav-number">10.</span> <span class="nav-text">使用case调换主键值</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL进阶-1-case语句"><span class="nav-number">1.</span> <span class="nav-text">SQL进阶-1-case语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2种方式"><span class="nav-number">2.</span> <span class="nav-text">2种方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意事项"><span class="nav-number">3.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例1-统计分组求和"><span class="nav-number">4.</span> <span class="nav-text">案例1-统计分组求和</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#需求"><span class="nav-number">4.1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL实现"><span class="nav-number">4.2.</span> <span class="nav-text">SQL实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例2-数字大小分类"><span class="nav-number">5.</span> <span class="nav-text">案例2-数字大小分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#需求-v2"><span class="nav-number">5.1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL实现-v2"><span class="nav-number">5.2.</span> <span class="nav-text">SQL实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例3-不同条件统计（男女）"><span class="nav-number">6.</span> <span class="nav-text">案例3-不同条件统计（男女）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#需求-v3"><span class="nav-number">6.1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL实现-v3"><span class="nav-number">6.2.</span> <span class="nav-text">SQL实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#约束constraint"><span class="nav-number">7.</span> <span class="nav-text">约束constraint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#逻辑与蕴含式"><span class="nav-number">8.</span> <span class="nav-text">逻辑与蕴含式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例4-update中使用case进行条件分支"><span class="nav-number">9.</span> <span class="nav-text">案例4-update中使用case进行条件分支</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#需求-v4"><span class="nav-number">9.1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL实现-v4"><span class="nav-number">9.2.</span> <span class="nav-text">SQL实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用case调换主键值"><span class="nav-number">10.</span> <span class="nav-text">使用case调换主键值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例5-case嵌套子查询"><span class="nav-number">11.</span> <span class="nav-text">案例5-case嵌套子查询</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#需求-v5"><span class="nav-number">11.1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL实现-v5"><span class="nav-number">11.2.</span> <span class="nav-text">SQL实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例6-case中使用聚合函数"><span class="nav-number">12.</span> <span class="nav-text">案例6-case中使用聚合函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#需求-v6"><span class="nav-number">12.1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL实现-v6"><span class="nav-number">12.2.</span> <span class="nav-text">SQL实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Case-语句实现"><span class="nav-number">12.3.</span> <span class="nav-text">Case 语句实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">13.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
 
           </div>
@@ -844,7 +884,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共551.6k字</span>
+  <span class="post-count">博客全站共552.2k字</span>
 </div>
 
         
