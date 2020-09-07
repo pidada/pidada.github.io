@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="数据库,MySQL," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="SQL进阶-5-感受having的力量 HAVING是SQL中一个非常重要的功能，本文中将会介绍SQL中HAVING子句的用法。">
+<meta name="keywords" content="数据库,MySQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL进阶-5-感受having的力量">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2020&#x2F;09&#x2F;08&#x2F;SQL%E8%BF%9B%E9%98%B6-5-%E6%84%9F%E5%8F%97having%E7%9A%84%E5%8A%9B%E9%87%8F.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="SQL进阶-5-感受having的力量 HAVING是SQL中一个非常重要的功能，本文中将会介绍SQL中HAVING子句的用法。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gi4nadc6dlj30bw0h4tcv.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1giag7axg2rj30gk0bv0ug.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1giagd96lkgj30rr0ayq6j.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gih5c2x72uj30em0im0w2.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gih5vqrf2xj323k0u042t.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gih5ybweeej30yk0co79j.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gih6bp9tqmj313c0u079u.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gih6lw74uhj30tp0dkgq7.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1giij1tm7nlj307706zq3o.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1giij218nulj30eu0ijq5w.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1giijqmpymlj30qw0iiq7v.jpg">
+<meta property="og:updated_time" content="2020-09-07T16:27:29.459Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gi4nadc6dlj30bw0h4tcv.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2020/09/08/SQL进阶-5-感受having的力量.html"/>
+
+
+
+
+
+  <title>SQL进阶-5-感受having的力量 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2020/09/08/SQL%E8%BF%9B%E9%98%B6-5-%E6%84%9F%E5%8F%97having%E7%9A%84%E5%8A%9B%E9%87%8F.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SQL进阶-5-感受having的力量</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-09-08T00:26:45+08:00">
+                2020-9-8
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MySQL/" itemprop="url" rel="index">
+                    <span itemprop="name">MySQL</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MySQL/%E8%BF%9B%E9%98%B6/" itemprop="url" rel="index">
+                    <span itemprop="name">进阶</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/09/08/SQL%E8%BF%9B%E9%98%B6-5-%E6%84%9F%E5%8F%97having%E7%9A%84%E5%8A%9B%E9%87%8F.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/09/08/SQL进阶-5-感受having的力量.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="SQL进阶-5-感受having的力量">SQL进阶-5-感受having的力量</h3>
+<p><code>HAVING</code>是<code>SQL</code>中一个非常重要的功能，本文中将会介绍<code>SQL</code>中<code>HAVING</code>子句的用法。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gi4nadc6dlj30bw0h4tcv.jpg" alt=""></p>
+<a id="more"></a>
+<h3 id="SQL语句顺序">SQL语句顺序</h3>
+<h3 id="SQL语句执行顺序">SQL语句执行顺序</h3>
+<ol>
+<li>select</li>
+<li>from</li>
+<li>where</li>
+<li>group by</li>
+<li>having</li>
+<li>order by（desc是降序）</li>
+</ol>
+<p>从上面的顺序中可以看出来，<strong>HAVING子句是在group by 分组之后再执行的</strong></p>
+<h3 id="案例1-寻找缺失的编号">案例1-寻找缺失的编号</h3>
+<h4 id="需求">需求</h4>
+<p>下面的数据中缺少4和7</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1giag7axg2rj30gk0bv0ug.jpg" alt=""></p>
+<h4 id="判断是否缺失">判断是否缺失</h4>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">select &apos;存在缺失的编号&apos; as gap</span><br><span class="line">from tableName</span><br><span class="line">having count(*) &lt;&gt; max(seq);</span><br><span class="line"></span><br><span class="line">-- 结果</span><br><span class="line"></span><br><span class="line">gap</span><br><span class="line">-----</span><br><span class="line">&apos;存在缺失的编号&apos;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查询结果中出现了一行，说明存在缺失值；若一行都没有，则统计的总行数刚好是最大的seq值</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1giagd96lkgj30rr0ayq6j.jpg" alt=""></p>
+<p><strong>从上面的语句中可以看出来，having子句是可以单出使用的</strong>，注意两点：</p>
+<ul>
+<li><code>select</code>子句中不能使用原有表的列了</li>
+<li>使用常量（示例）或者使用聚合函数</li>
+</ul>
+<h4 id="解决-缺失的最小编号">解决-缺失的最小编号</h4>
+<p>先通过上面的语句确定真的是存在缺失值，再通过👇的语句来锁定缺失值的最小编号</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">select min(seq+1) as gap</span><br><span class="line">from tableName</span><br><span class="line">where (seq+1) not in (select seq from tableName);   -- 检查比某个编号大1的编号是否在表中</span><br><span class="line"></span><br><span class="line">-- 结果</span><br><span class="line"></span><br><span class="line">gap</span><br><span class="line">---</span><br><span class="line">4</span><br></pre></td></tr></table></figure>
+<p>如何理解上面👆的SQL语句？</p>
+<p><strong>seq值+1不在表中</strong></p>
+<table>
+<thead>
+<tr>
+<th>编号seq</th>
+<th>编号seq+1</th>
+<th>是否在数据中</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>是</td>
+</tr>
+<tr>
+<td>2</td>
+<td>3</td>
+<td>是</td>
+</tr>
+<tr>
+<td>3</td>
+<td>4</td>
+<td>否</td>
+</tr>
+<tr>
+<td>4</td>
+<td>5</td>
+<td>是</td>
+</tr>
+<tr>
+<td>5</td>
+<td>6</td>
+<td>是</td>
+</tr>
+<tr>
+<td>6</td>
+<td>7</td>
+<td>否</td>
+</tr>
+<tr>
+<td>7</td>
+<td>8</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<p><strong>所以缺失值的最小编号是4（3+1）</strong></p>
+<h3 id="案例2-求众数">案例2-求众数</h3>
+<p>简单地求平均值的缺点就是，数据很容易受到离群值（outlier）的影响，此时使用<strong>反映群体趋势的指标-众数mode</strong>更加合理。</p>
+<blockquote>
+<p>众数指的是在数据中出现次数最多的数</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gih5c2x72uj30em0im0w2.jpg" alt=""></p>
+<h4 id="解法1-使用all">解法1-使用all</h4>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-- 求众数的SQL语句：使用谓词</span><br><span class="line">select income, count(*) as number</span><br><span class="line">from Graduates</span><br><span class="line">group by income</span><br><span class="line">having count(*) &gt;= all(select count(*) -- 大于根据income分组的每个值</span><br><span class="line">                       from Graduates</span><br><span class="line">                       group by income)</span><br></pre></td></tr></table></figure>
+<h4 id="解法2-max函数">解法2-max函数</h4>
+<p>使用ALL谓词在数据中存在空集或者NULL的时候会出现问题，使用极值函数代替</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">select income,count(*) as number</span><br><span class="line">from Graduates</span><br><span class="line">group by income</span><br><span class="line">having count(*) &gt;= (select max(cnt)</span><br><span class="line">                    from(select count(*) as cnt   -- 分组后的最大值，整个表当做临时表</span><br><span class="line">                         from Graduates group by income)temp</span><br><span class="line">                   )</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gih5vqrf2xj323k0u042t.jpg" alt=""></p>
+<h3 id="案例3-求中位数（having自连接）">案例3-求中位数（having自连接）</h3>
+<p><strong>中位数：指的是将集合中的元素按照升序排列后恰好位于正中间的数据</strong></p>
+<h4 id="做法">做法</h4>
+<p>将集合按照大小排列后，让两个子集同时拥有正中间的元素，<strong>共同部分的元素的平均值就是中位数</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gih5ybweeej30yk0co79j.jpg" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-- 求解中位数:having 子句中使用非等值连接</span><br><span class="line">-- 加上等号是为了解决个数是偶数的情况</span><br><span class="line"></span><br><span class="line">select avg(distinct income)</span><br><span class="line">from (select t1.income from Graducts t1, Graducts t2 group by income</span><br><span class="line">      having sum(case when t2.income &gt;= t1.income then 1 else 0 end) &gt;= count(*) / 2   -- 让两个子集拥有公共的部分，否则个数为偶数的时候没有相同的部分</span><br><span class="line">      and sum(case when t2.income &lt;= t1.income then 1 else 0 end) &gt;= count(*) / 2</span><br><span class="line">     )temp   -- 创建临时表</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-- 求解中位数</span><br><span class="line">select avg(distinct price)</span><br><span class="line">from (select t1.price from products t1, products t2 group by price</span><br><span class="line">      -- S1的条件</span><br><span class="line">      having sum(case when t2.price &gt;= t1.price then 1 else 0 end) &gt;= count(*) / 2</span><br><span class="line">      -- S2的条件</span><br><span class="line">      and sum(case when t2.price &lt;= t1.price then 1 else 0 end) &gt;= count(*) / 2</span><br><span class="line">     )temp;   -- 创建临时表</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gih6bp9tqmj313c0u079u.jpg" alt=""></p>
+<h3 id="关于count">关于count</h3>
+<p><code>count(*)</code>：可以查询<code>NULL</code>的情况，查询的是所有行的数目</p>
+<p><code>count(列名)</code>：和其他的聚合函数相同，需要先排除<code>NULL</code>的情况</p>
+<h4 id="需求-v2">需求</h4>
+<p>找出哪些学院的学生全部提交了？？？</p>
+<blockquote>
+<p>答案：理学院和经济学院，文学院和工学院有NULL的情况</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gih6lw74uhj30tp0dkgq7.jpg" alt=""></p>
+<h4 id="解决">解决</h4>
+<ol>
+<li>如果两个<code>count</code>方式的值相等，说明该列没有缺失值</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">select dpt</span><br><span class="line">from Studuents</span><br><span class="line">group by dpt</span><br><span class="line">having count(*) = count(sbmt_date);  -- 如果两个count方式的值相等，说明该列没有缺失值</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li><strong>使用case解决</strong>：case表达式相当于是进行判断的函数，用来判断各个元素是否满足了某个条件的集合</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">select dpt</span><br><span class="line">from Students</span><br><span class="line">group by dpt</span><br><span class="line">having count(*) = sum(case when sbmt_date is not null then 1 else 0 end);  -- 当不是NULL的个数等于count(*)的个数，说明没有缺失值</span><br></pre></td></tr></table></figure>
+<h3 id="购物篮分析">购物篮分析</h3>
+<h4 id="需求1-带余除法">需求1-带余除法</h4>
+<p>在下面的两个表中，插叙包含所有items中所有商品的店铺：<strong>item中的商品在店铺中全部存在</strong>，结果是$\color{red}{仙台和东京}$</p>
+<p><strong>表Items和表shopitems</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1giij1tm7nlj307706zq3o.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1giij218nulj30eu0ijq5w.jpg" alt=""></p>
+<h4 id="解决-使用having语句">解决-使用having语句</h4>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">select SI.shop</span><br><span class="line">from ShopItems SI, Items I</span><br><span class="line">where SI.item = I.item  -- 指定两个表的连接点</span><br><span class="line">group by SI.shop  -- 分组</span><br><span class="line">having count(SI.item) = (select count(item)</span><br><span class="line">                         from Items);  -- 结果是常量3，表示两个表连接后结果是3行的店铺将被选中</span><br></pre></td></tr></table></figure>
+<ul>
+<li>先连接：两个表中的item必须相同，也是就说ShopItems中某个店铺的item必须包含Items表中的3个名字</li>
+<li>对应数据：仙台4个名字，其中3个已经包含了items表中的数据；东京刚好3个都是Items中的数据</li>
+</ul>
+<h4 id="需求2-精确关系除法">需求2-精确关系除法</h4>
+<p>在上面的例子中，<strong>仙台有4个item也被选中了，如何将其排除，只选择东京</strong>，刚好3个item的店铺呢？？？这种问题称之为<strong>精确关系除法</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-- 精确关系除法：使用外连接和count函数</span><br><span class="line"></span><br><span class="line">select SI.shop</span><br><span class="line">from shopitems SI</span><br><span class="line">left outer join items I</span><br><span class="line">on SI.item = I.item   -- 两个表的连接操作</span><br><span class="line">group by SI.shop</span><br><span class="line">having count(SI.item) = (select count(item) from items)   -- 保证两个表的shop中item的个数刚好相等，都是3，排除仙台</span><br><span class="line">and count(I.item) = (select count(item) from items);   -- 排除大阪，只有2个，NULL不算</span><br></pre></td></tr></table></figure>
+<p>两个表外联结的结果为：</p>
+<blockquote>
+<p>因为是left连接，所以ShopItems中的数据全部保留，Item中的数据没有则为NULL</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1giijqmpymlj30qw0iiq7v.jpg" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2020/09/08/SQL%E8%BF%9B%E9%98%B6-5-%E6%84%9F%E5%8F%97having%E7%9A%84%E5%8A%9B%E9%87%8F.html">SQL进阶-5-感受having的力量</a></p>
+  <p><span>发布时间:</span>2020年09月08日 - 00:09</p>
+  <p><span>原始链接:</span><a href="/2020/09/08/SQL%E8%BF%9B%E9%98%B6-5-%E6%84%9F%E5%8F%97having%E7%9A%84%E5%8A%9B%E9%87%8F.html" title="SQL进阶-5-感受having的力量">http://www.renpeter.cn/2020/09/08/SQL%E8%BF%9B%E9%98%B6-5-%E6%84%9F%E5%8F%97having%E7%9A%84%E5%8A%9B%E9%87%8F.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2020/09/08/SQL%E8%BF%9B%E9%98%B6-5-%E6%84%9F%E5%8F%97having%E7%9A%84%E5%8A%9B%E9%87%8F.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+          
+            <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/05/pyecharts-4-%E7%BB%98%E5%88%B6%E6%A1%91%E8%91%9A%E5%9B%BE.html" rel="next" title="pyecharts-4-绘制桑葚图">
+                <i class="fa fa-chevron-left"></i> pyecharts-4-绘制桑葚图
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">442</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">60</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL进阶-5-感受having的力量"><span class="nav-number">1.</span> <span class="nav-text">SQL进阶-5-感受having的力量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL语句顺序"><span class="nav-number">2.</span> <span class="nav-text">SQL语句顺序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL语句执行顺序"><span class="nav-number">3.</span> <span class="nav-text">SQL语句执行顺序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例1-寻找缺失的编号"><span class="nav-number">4.</span> <span class="nav-text">案例1-寻找缺失的编号</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#需求"><span class="nav-number">4.1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#判断是否缺失"><span class="nav-number">4.2.</span> <span class="nav-text">判断是否缺失</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决-缺失的最小编号"><span class="nav-number">4.3.</span> <span class="nav-text">解决-缺失的最小编号</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例2-求众数"><span class="nav-number">5.</span> <span class="nav-text">案例2-求众数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解法1-使用all"><span class="nav-number">5.1.</span> <span class="nav-text">解法1-使用all</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解法2-max函数"><span class="nav-number">5.2.</span> <span class="nav-text">解法2-max函数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例3-求中位数（having自连接）"><span class="nav-number">6.</span> <span class="nav-text">案例3-求中位数（having自连接）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#做法"><span class="nav-number">6.1.</span> <span class="nav-text">做法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于count"><span class="nav-number">7.</span> <span class="nav-text">关于count</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#需求-v2"><span class="nav-number">7.1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决"><span class="nav-number">7.2.</span> <span class="nav-text">解决</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#购物篮分析"><span class="nav-number">8.</span> <span class="nav-text">购物篮分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#需求1-带余除法"><span class="nav-number">8.1.</span> <span class="nav-text">需求1-带余除法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决-使用having语句"><span class="nav-number">8.2.</span> <span class="nav-text">解决-使用having语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#需求2-精确关系除法"><span class="nav-number">8.3.</span> <span class="nav-text">需求2-精确关系除法</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">43</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">24</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">54</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">44</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">57</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">54</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">43</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">26</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共558.2k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2020/09/08/SQL%E8%BF%9B%E9%98%B6-5-%E6%84%9F%E5%8F%97having%E7%9A%84%E5%8A%9B%E9%87%8F.html';
+          this.page.identifier = '2020/09/08/SQL进阶-5-感受having的力量.html';
+          this.page.title = 'SQL进阶-5-感受having的力量';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
