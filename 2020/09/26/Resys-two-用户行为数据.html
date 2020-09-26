@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="机器学习,推荐系统," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="RS in Action-two-利用用户行为数据 感觉第二章应该是整本书的核心内容，讲解的是如何利用用户行为数据，通过“听其言，观其行”。着重讲解了两个算法：  基于用户的协同过滤算法UserIF 基于物品的协同过滤算法ItemIF  以前看过一些博客，很杂乱；这次看了项亮老师的书，至少知道了这两个算法的理论上区别，还是很受益的">
+<meta name="keywords" content="机器学习,推荐系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Resys-two-用户行为数据">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2020&#x2F;09&#x2F;26&#x2F;Resys-two-%E7%94%A8%E6%88%B7%E8%A1%8C%E4%B8%BA%E6%95%B0%E6%8D%AE.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="RS in Action-two-利用用户行为数据 感觉第二章应该是整本书的核心内容，讲解的是如何利用用户行为数据，通过“听其言，观其行”。着重讲解了两个算法：  基于用户的协同过滤算法UserIF 基于物品的协同过滤算法ItemIF  以前看过一些博客，很杂乱；这次看了项亮老师的书，至少知道了这两个算法的理论上区别，还是很受益的">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gip2jo2hv3j30u0140npd.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gj3cgfxrlyj31q00fsq6i.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gj3cjopj2vj31940ac0v9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gj3cm6ligxj31b00cudja.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gj3cqeizr3j315v0u047f.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gj4ekvpjl7j30na0e0ju7.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gj4edsybc4j30li0g0dlr.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gj4em6yde1j30l60ew42y.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gj4ebtdb2xj31860u043t.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gj4ebr22sbj317k0u043a.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gj4ebpklbyj31dh0u0gs4.jpg">
+<meta property="og:updated_time" content="2020-09-26T14:23:46.860Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gip2jo2hv3j30u0140npd.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2020/09/26/Resys-two-用户行为数据.html"/>
+
+
+
+
+
+  <title>Resys-two-用户行为数据 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2020/09/26/Resys-two-%E7%94%A8%E6%88%B7%E8%A1%8C%E4%B8%BA%E6%95%B0%E6%8D%AE.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Resys-two-用户行为数据</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-09-26T22:22:00+08:00">
+                2020-9-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Resys/" itemprop="url" rel="index">
+                    <span itemprop="name">Resys</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Resys/%E5%85%A5%E9%97%A8/" itemprop="url" rel="index">
+                    <span itemprop="name">入门</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/09/26/Resys-two-%E7%94%A8%E6%88%B7%E8%A1%8C%E4%B8%BA%E6%95%B0%E6%8D%AE.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/09/26/Resys-two-用户行为数据.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  2.2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  8
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="RS-in-Action-two-利用用户行为数据">RS in Action-two-利用用户行为数据</h3>
+<p>感觉第二章应该是整本书的核心内容，讲解的是如何利用用户行为数据，通过“听其言，观其行”。着重讲解了两个算法：</p>
+<ul>
+<li>基于用户的协同过滤算法<code>UserIF</code></li>
+<li>基于物品的协同过滤算法<code>ItemIF</code></li>
+</ul>
+<p>以前看过一些博客，很杂乱；这次看了项亮老师的书，至少知道了这两个算法的理论上区别，还是很受益的</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gip2jo2hv3j30u0140npd.jpg" alt=""></p>
+<a id="more"></a>
+<h3 id="用户行为数据">用户行为数据</h3>
+<h4 id="挖掘用户数据">挖掘用户数据</h4>
+<p>我们可以通过用户留下的文字和行为了解用户兴趣和需求。</p>
+<p>用户的行为不是随机的，而是蕴含着很多的模式，需要通过算法自动发掘用户行为数据，从用户的行为中推测出用户的兴趣，从而给用户推荐他们感兴趣的物品。</p>
+<h4 id="啤酒和尿布">啤酒和尿布</h4>
+<blockquote>
+<p>超市人员发现很多人会同时购买啤酒🍺和尿布；他们认为，妇女要在家照顾孩子，便让丈夫去买尿布，同时丈夫也不忘给自己买点啤酒。</p>
+<p>于是超市人员便将啤酒和尿布摆在一起了。结果，这两个毫无关系东西的销量都提升了。</p>
+</blockquote>
+<p>啤酒和尿布的故事在互联网上被放大：比如分析用户的购物车，找出诸如“购买A商品的用户同时都购买了B商品”。</p>
+<h4 id="用户行为数据-v2">用户行为数据</h4>
+<p><strong>数据在网站上存在形式就是日志log</strong>。会话日志通常是存储在分布式数据仓库中，如离线的Hadoop Hive和支持在线分析的Google Dremel。两种用户行为：</p>
+<ul>
+<li>显性反馈行为 explicit  feedback ：能够反映用户对物品明确的喜好行为</li>
+<li>隐形反馈行为 implicit feedback：不能明确反映用户喜好的行为，比如最具代表性的<strong>页面浏览行为</strong></li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gj3cgfxrlyj31q00fsq6i.jpg" alt=""></p>
+<p>按照反馈的明确性来分，用户的行为数据分为显性反馈和隐性反馈，按照反馈的方向又分为正反馈和负反馈。</p>
+<p>正反馈：用户喜欢某个物品；负反馈：倾向于用户不喜欢该物品</p>
+<blockquote>
+<p>显性反馈能够很明显地区分正反反馈，而隐性反馈中则很难区分</p>
+</blockquote>
+<p>具体的例子：</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gj3cjopj2vj31940ac0v9.jpg" alt=""></p>
+<h4 id="用户行为的6个指标">用户行为的6个指标</h4>
+<ul>
+<li>产生行为的用户</li>
+<li>行为的对象</li>
+<li>行为的种类</li>
+<li>产生行为的上下文</li>
+<li>行为的内容</li>
+<li>权重</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gj3cm6ligxj31b00cudja.jpg" alt=""></p>
+<h4 id="代表性数据集">代表性数据集</h4>
+<p>不同的数据集代表不同的用户行为</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>记录数据</th>
+<th>代表性数据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>无上下文+隐性</td>
+<td>用户ID、物品ID</td>
+<td></td>
+</tr>
+<tr>
+<td>无上下文+显性</td>
+<td>用户ID、物品ID、用户对物品的评分</td>
+<td></td>
+</tr>
+<tr>
+<td>有上下文+隐性</td>
+<td>用户ID、物品ID、用户对物品产生行为的时间戳</td>
+<td>Lastfm</td>
+</tr>
+<tr>
+<td>有上下文+显性</td>
+<td>用户ID、物品ID、用户对物品的评分、行为的时间戳</td>
+<td>Netflix  Prize</td>
+</tr>
+</tbody>
+</table>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gj3cqeizr3j315v0u047f.jpg" alt=""></p>
+<h3 id="用户行为分析">用户行为分析</h3>
+<h4 id="齐夫定律-Zipf定律">齐夫定律(Zipf定律)</h4>
+<p>齐夫是哈佛大学的一名语言学家，他在研究英文单词的过程中发现：</p>
+<blockquote>
+<p>如果将单词出现的频率按照由高到低的顺序排列，则每个单词出现的频率和它在人们排行榜中排名的常数次幂是成反比的</p>
+<p>英文中大部分词的词频很低，只有很少的词语会被经常使用</p>
+</blockquote>
+<h4 id="长尾分布">长尾分布</h4>
+<p><a href="https://www.cnblogs.com/huangshiyu13/p/6217180.html" target="_blank" rel="noopener">资料传送门</a></p>
+<p>互联网上的很多数据分布都满足一种叫<code>Power Law</code>的分布，也称之为<strong>长尾分布</strong>：</p>
+<p>$$f(x)=\alpha x^{k}$$</p>
+<p><strong>长尾分布指的是尾巴很长的分布，齐夫定律就是符合长尾分布</strong>。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gj4ekvpjl7j30na0e0ju7.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gj4edsybc4j30li0g0dlr.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gj4em6yde1j30l60ew42y.jpg" alt=""></p>
+<p>用户行为数据也是满足上面的齐夫定律：</p>
+<p>$$\begin{array}{l}<br>
+f_{i}(k)=\alpha_{i} k^{\beta_{i}} \<br>
+f_{u}(k)=\alpha_{u} k^{\beta_{u}}<br>
+\end{array}$$</p>
+<p>其中，$f_u(k)$表示对k个物品产生行为的用户数<code>Users</code>；$f_i(k)$表示被k个用户产生过行为的物品数<code>Items</code></p>
+<blockquote>
+<p>物品流行度：对该物品产生过行为的用户总数</p>
+<p>用户活跃度：用户产生过行为的物品总数</p>
+</blockquote>
+<p><strong>物品的流行度分布曲线</strong>：</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gj4ebtdb2xj31860u043t.jpg" alt=""></p>
+<p><strong>用户的活跃度分布曲线</strong>：</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gj4ebr22sbj317k0u043a.jpg" alt=""></p>
+<h3 id="协同过滤算法">协同过滤算法</h3>
+<p>用户活跃度和物品流行度的关系：</p>
+<blockquote>
+<p>新用户对网站不熟悉，倾向于浏览热门的物品；老用户则逐渐开始浏览冷门的物品</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gj4ebpklbyj31dh0u0gs4.jpg" alt=""></p>
+<p>基于用户行为分析的推荐算法是个性化推荐系统的重要算法，学术界称之为：<strong>协同过滤算法</strong>。</p>
+<blockquote>
+<p>协同过滤：用户齐心协力，通过不断地和网站互动，使自己推荐列表能够不断地过滤掉自己不敢感兴趣的物品，从而越来越满足自己的需求</p>
+</blockquote>
+<p>协同过滤算法的多种研究：</p>
+<ul>
+<li>基于邻域的方法NB，<code>neighborhood-based</code>（应用最为广泛）</li>
+<li>隐语义模型LFM，<code>latent factor model</code></li>
+<li>基于图的随机游走算法，<code>random walk on graph</code></li>
+</ul>
+<p><strong>基于邻域的方法</strong>中包含两种最为著名且应用广泛的算法：</p>
+<ul>
+<li><strong>基于用户</strong>的协同过滤算法UserIF：给用户推荐<strong>和他兴趣相似的用户喜欢的物品</strong></li>
+<li><strong>基于物品</strong>的协同过滤算法ItemIF：给用户推荐<strong>和他之前喜欢的物品相似的物品</strong></li>
+</ul>
+<h3 id="算法测评">算法测评</h3>
+<h4 id="3种方法">3种方法</h4>
+<p>评测推荐系统的3种方法</p>
+<ul>
+<li>离线实验</li>
+<li>用户调查</li>
+<li>在线实验</li>
+</ul>
+<h4 id="数据集">数据集</h4>
+<p>案例中采用的是<code>MovieLens</code>数据集，是一个评分数据集，用户可以给电影评5个不同登记的分数（1-5）。</p>
+<p>书中重点介绍的是隐反馈数据集中的TopN推荐问题：</p>
+<blockquote>
+<p>TopN推荐问题：预测用户会不会给电影评分，而不是预测用户在准备对某部电影评分的前提下会给电影多少分。</p>
+</blockquote>
+<h4 id="实验设计">实验设计</h4>
+<p>离线实验的设计步骤：</p>
+<ol>
+<li>将用户行为数据集按照均匀随机分布分成M份，挑选一份作为测试集，剩下的M-1份作为训练集</li>
+<li>在训练集上建立用户的兴趣模型</li>
+<li>测试集合上对用户模型进行预测，统计出相应的评测指标</li>
+</ol>
+<p>为了防止结果过拟合，需要进行M次试验，并且每次使用不同的测试集，M次试验的平均值作为最终的评测指标，利用Python将数据集划分成训练集和测试集：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">SplitData</span><span class="params">(data, M, k, seed)</span>:</span></span><br><span class="line">  test = []</span><br><span class="line">  train = []</span><br><span class="line">  random.seed(seed)  <span class="comment"># 相同的随机种子</span></span><br><span class="line">  <span class="keyword">for</span> user, item <span class="keyword">in</span> data:</span><br><span class="line">    <span class="keyword">if</span> random.randint(<span class="number">0</span>,M) == k:    <span class="comment"># 每次实验选取不同的k</span></span><br><span class="line">      test.append([user,item])</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">      train.append([user,item])</span><br><span class="line">  <span class="keyword">return</span> train, test</span><br></pre></td></tr></table></figure>
+<h4 id="评测指标">评测指标</h4>
+<p>对用户u推荐N个物品，记为R(u)，令用户u在测试集上喜欢的物品集合为T(u)，通过<code>召回率</code>和<code>准确率</code>来评测算法的精度：</p>
+<ul>
+<li>召回率的计算：</li>
+</ul>
+<p>$$\operatorname{Recall}=\frac{\sum_{u}|R(u) \cap T(u)|}{\sum_{u}|T(u)|}$$</p>
+<blockquote>
+<p>召回率描述的是有多少比例的用户-物品评分记录包含在最终的推荐列表中</p>
+</blockquote>
+<ul>
+<li>准确率的计算：</li>
+</ul>
+<p>$$\operatorname{Precision}=\frac{\sum_{u}|R(u) \cap T(u)|}{\sum_{u}|R(u)|}$$</p>
+<blockquote>
+<p>准确率描述的是<strong>推荐列表中有多少比例是发生过用户-物品评分记录</strong></p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 召回率和准确率的计算</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 召回率</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Recall</span><span class="params">(train, test, N)</span>:</span></span><br><span class="line">    hit = <span class="number">0</span></span><br><span class="line">    all = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> user <span class="keyword">in</span> train.keys():</span><br><span class="line">        tu = test[user]</span><br><span class="line">        rank = GetRecommendation(user, N)</span><br><span class="line">        <span class="keyword">for</span> item, pui <span class="keyword">in</span> rank:</span><br><span class="line">            <span class="keyword">if</span> item <span class="keyword">in</span> tu:</span><br><span class="line">                hit += <span class="number">1</span></span><br><span class="line">        all += len(tu)</span><br><span class="line">    <span class="keyword">return</span> hit / (all * <span class="number">1.0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 准确率</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Precision</span><span class="params">(train, test, N)</span>:</span></span><br><span class="line">    hit = <span class="number">0</span></span><br><span class="line">    all = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> user <span class="keyword">in</span> train.keys():</span><br><span class="line">      tu = test[user]</span><br><span class="line">      rank = GetRecommendation(user, N)</span><br><span class="line">      <span class="keyword">for</span> item, pui <span class="keyword">in</span> rank:</span><br><span class="line">        <span class="keyword">if</span> item <span class="keyword">in</span> tu:</span><br><span class="line">          hit += <span class="number">1</span></span><br><span class="line">      all += N</span><br><span class="line">    <span class="keyword">return</span> hit / (all * <span class="number">1.0</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="覆盖率">覆盖率</h4>
+<p>覆盖率反映的是推荐算法发掘长尾物品的能力，覆盖率越高，则说明推荐算法越能够将长尾中的物品推荐给用户，<strong>覆盖率的计算</strong></p>
+<p>$$\text { Coverage }=\frac{\left|\cup_{u \in U} R(u)\right|}{|I|}$$</p>
+<blockquote>
+<p>覆盖率表示的是最终的推荐列表中包含多大比例的物品。</p>
+<p>如果所有的物品都至少推荐给一个用户，则覆盖率是100%</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Coverage</span><span class="params">(train, test, N)</span>:</span></span><br><span class="line">    recommend_items = set()</span><br><span class="line">    all_items = set()</span><br><span class="line">    <span class="keyword">for</span> user <span class="keyword">in</span> train.keys():</span><br><span class="line">        <span class="keyword">for</span> item <span class="keyword">in</span> train[user].keys():</span><br><span class="line">            all_items.add(item)</span><br><span class="line">        rank = GetRecommendation(user, N)</span><br><span class="line">        <span class="keyword">for</span> item, pui <span class="keyword">in</span> rank:</span><br><span class="line">            recommend_items.add(item)</span><br><span class="line">    <span class="keyword">return</span> len(recommend_items) / (len(all_items) * <span class="number">1.0</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="新颖度">新颖度</h4>
+<p>用推荐列表总物品的平均流行度度量推荐结果的新颖度。如果物品都很热门，则说明推荐的新颖度较低，否则推荐效果很好</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Popularity</span><span class="params">(train, test, N)</span>:</span></span><br><span class="line">  item_popularity = dict()</span><br><span class="line">  <span class="keyword">for</span> user, items <span class="keyword">in</span> train.items():</span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> items.keys():</span><br><span class="line">      <span class="keyword">if</span> item <span class="keyword">not</span> <span class="keyword">in</span> item_popularity:</span><br><span class="line">        item_popularity[item] = <span class="number">0</span></span><br><span class="line">      item_popularity[item] += <span class="number">1</span></span><br><span class="line">  ret = <span class="number">0</span></span><br><span class="line">  n=<span class="number">0</span></span><br><span class="line">  <span class="keyword">for</span> user <span class="keyword">in</span> train.keys():</span><br><span class="line">    rank = GetRecommendation(user, N)</span><br><span class="line">    <span class="keyword">for</span> item, pui <span class="keyword">in</span> rank:</span><br><span class="line">          ret += math.log(<span class="number">1</span> + item_popularity[item])</span><br><span class="line">          n += <span class="number">1</span></span><br><span class="line">  ret /= n * <span class="number">1.0</span></span><br><span class="line">  <span class="keyword">return</span> ret</span><br></pre></td></tr></table></figure>
+<h3 id="参考资料">参考资料</h3>
+<ol>
+<li>项亮-《推荐系统实践》</li>
+<li><a href="https://blog.csdn.net/Magical_Bubble/article/details/88371289" target="_blank" rel="noopener">参考资料</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2020/09/26/Resys-two-%E7%94%A8%E6%88%B7%E8%A1%8C%E4%B8%BA%E6%95%B0%E6%8D%AE.html">Resys-two-用户行为数据</a></p>
+  <p><span>发布时间:</span>2020年09月26日 - 22:09</p>
+  <p><span>原始链接:</span><a href="/2020/09/26/Resys-two-%E7%94%A8%E6%88%B7%E8%A1%8C%E4%B8%BA%E6%95%B0%E6%8D%AE.html" title="Resys-two-用户行为数据">http://www.renpeter.cn/2020/09/26/Resys-two-%E7%94%A8%E6%88%B7%E8%A1%8C%E4%B8%BA%E6%95%B0%E6%8D%AE.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2020/09/26/Resys-two-%E7%94%A8%E6%88%B7%E8%A1%8C%E4%B8%BA%E6%95%B0%E6%8D%AE.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag"># 推荐系统</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/22/%E7%BE%8E%E9%A3%9F%E4%B9%8B%E6%97%85.html" rel="next" title="美食之旅">
+                <i class="fa fa-chevron-left"></i> 美食之旅
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">455</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">41</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#RS-in-Action-two-利用用户行为数据"><span class="nav-number">1.</span> <span class="nav-text">RS in Action-two-利用用户行为数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户行为数据"><span class="nav-number">2.</span> <span class="nav-text">用户行为数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#挖掘用户数据"><span class="nav-number">2.1.</span> <span class="nav-text">挖掘用户数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#啤酒和尿布"><span class="nav-number">2.2.</span> <span class="nav-text">啤酒和尿布</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#用户行为数据-v2"><span class="nav-number">2.3.</span> <span class="nav-text">用户行为数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#用户行为的6个指标"><span class="nav-number">2.4.</span> <span class="nav-text">用户行为的6个指标</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代表性数据集"><span class="nav-number">2.5.</span> <span class="nav-text">代表性数据集</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户行为分析"><span class="nav-number">3.</span> <span class="nav-text">用户行为分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#齐夫定律-Zipf定律"><span class="nav-number">3.1.</span> <span class="nav-text">齐夫定律(Zipf定律)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#长尾分布"><span class="nav-number">3.2.</span> <span class="nav-text">长尾分布</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#协同过滤算法"><span class="nav-number">4.</span> <span class="nav-text">协同过滤算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法测评"><span class="nav-number">5.</span> <span class="nav-text">算法测评</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3种方法"><span class="nav-number">5.1.</span> <span class="nav-text">3种方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据集"><span class="nav-number">5.2.</span> <span class="nav-text">数据集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实验设计"><span class="nav-number">5.3.</span> <span class="nav-text">实验设计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#评测指标"><span class="nav-number">5.4.</span> <span class="nav-text">评测指标</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#覆盖率"><span class="nav-number">5.5.</span> <span class="nav-text">覆盖率</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#新颖度"><span class="nav-number">5.6.</span> <span class="nav-text">新颖度</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">46</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">58</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">44</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">62</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">58</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">44</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">27</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共578.6k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2020/09/26/Resys-two-%E7%94%A8%E6%88%B7%E8%A1%8C%E4%B8%BA%E6%95%B0%E6%8D%AE.html';
+          this.page.identifier = '2020/09/26/Resys-two-用户行为数据.html';
+          this.page.title = 'Resys-two-用户行为数据';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
