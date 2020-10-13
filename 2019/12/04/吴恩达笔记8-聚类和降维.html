@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="机器学习,吴恩达," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="吴恩达机器学习-8-聚类和降维 本周的主要知识点是无监督学习中的两个重点：聚类和降维。本文中首先介绍的是聚类中的K均值算法，包含：  算法思想 图解K-Means sklearn实现 Python实现">
+<meta name="keywords" content="机器学习,吴恩达">
+<meta property="og:type" content="article">
+<meta property="og:title" content="吴恩达笔记8-KMeans">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2019&#x2F;12&#x2F;04&#x2F;%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B08-%E8%81%9A%E7%B1%BB%E5%92%8C%E9%99%8D%E7%BB%B4.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="吴恩达机器学习-8-聚类和降维 本周的主要知识点是无监督学习中的两个重点：聚类和降维。本文中首先介绍的是聚类中的K均值算法，包含：  算法思想 图解K-Means sklearn实现 Python实现">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9knvyfr5hj30y20n041m.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9ko1rdp97j312o0n4qra.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjngkcei66j30hi04c74f.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjngnimxx6j30gi04o0sv.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjngq7uheej30em03yaa5.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjngr38o44j30e0046dfx.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjngs2p6kuj30fs05274h.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjngt2ym4yj30sk05o0t8.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9kpi2bqwqj30us0megpa.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9kpjnmkioj30yi0megph.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9kpmanohbj30wm0mogps.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9kpptwrt0j30xi0m8tdk.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9kpyi7exsj30x80m6jvh.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9kr86tu8dj30w20lm0x8.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9kq4h21sij316e0u0qv6.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjngx9rctij30p404kjrm.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9kqpqtubjj30xs0a0wid.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjngxwi1knj311c0kamy8.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjngzntwmbj30w60c2q3m.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjnh02gnfcj30yk0cijs5.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9kwevgydyj30qk0c6dhw.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjnh0nv37rj30hc0bcglt.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjnhftx6e9j30u01ru4qp.jpg">
+<meta property="og:updated_time" content="2020-10-13T02:10:59.885Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9knvyfr5hj30y20n041m.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2019/12/04/吴恩达笔记8-聚类和降维.html"/>
+
+
+
+
+
+  <title>吴恩达笔记8-KMeans | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2019/12/04/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B08-%E8%81%9A%E7%B1%BB%E5%92%8C%E9%99%8D%E7%BB%B4.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">吴恩达笔记8-KMeans</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-12-04T22:10:56+08:00">
+                2019-12-4
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/%E5%90%B4%E6%81%A9%E8%BE%BE/" itemprop="url" rel="index">
+                    <span itemprop="name">吴恩达</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/12/04/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B08-%E8%81%9A%E7%B1%BB%E5%92%8C%E9%99%8D%E7%BB%B4.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/12/04/吴恩达笔记8-聚类和降维.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="吴恩达机器学习-8-聚类和降维">吴恩达机器学习-8-聚类和降维</h3>
+<p>本周的主要知识点是无监督学习中的两个重点：<strong>聚类和降维</strong>。本文中首先介绍的是聚类中的K均值算法，包含：</p>
+<ul>
+<li>算法思想</li>
+<li>图解<code>K-Means</code></li>
+<li><code>sklearn</code>实现</li>
+<li><code>Python</code>实现</li>
+</ul>
+<a id="more"></a>
+<h3 id="无监督学习unsupervised-learning">无监督学习unsupervised learning</h3>
+<h4 id="无监督学习简介">无监督学习简介</h4>
+<p>聚类和降维是无监督学习方法，在无监督学习中数据是没有标签的。</p>
+<p>比如下面的数据中，横纵轴都是$x$，没有标签（输出$y$）。在非监督学习中，我们需要将一系列无标签的训练数据，输入到一个算法中，快速这个数据的中找到其内在数据结构。</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1g9knvyfr5hj30y20n041m.jpg" alt=""></p>
+<h4 id="无监督学习应用">无监督学习应用</h4>
+<ul>
+<li>市场分割</li>
+<li>社交网络分析</li>
+<li>组织计算机集群</li>
+<li>了解星系的形成</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1g9ko1rdp97j312o0n4qra.jpg" alt=""></p>
+<h3 id="聚类">聚类</h3>
+<h4 id="聚类clustering">聚类clustering</h4>
+<p>聚类试图将数据集中的样本划分成若干个通常是不相交的子集，称之为“簇cluster”。聚类可以作为一个单独过程，用于寻找数据内部的分布结构，也能够作为其他学习任务的前驱过程。聚类算法涉及到的两个问题：<strong>性能度量和距离计算</strong></p>
+<h4 id="性能度量">性能度量</h4>
+<p>聚类性能度量也称之为“有效性指标”。希望“物以类聚”。聚类的结果是“簇内相似度高”和“簇间相似度低”。</p>
+<p>常用的<strong>外部指标</strong>是：</p>
+<ol>
+<li>Jaccard 系数</li>
+<li>FM 系数</li>
+<li>Rand 系数</li>
+</ol>
+<p>上述3个系数的值都在[0,1]之间，越小越好</p>
+<p>常用的<strong>内部指标</strong>是：</p>
+<ol>
+<li>DB指数</li>
+<li>Dunn指数</li>
+</ol>
+<p>DBI的值越小越好，Dunn的值越大越好。</p>
+<h4 id="距离计算">距离计算</h4>
+<p>$x_i,x_j$的$L_p$的距离定义为：</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjngkcei66j30hi04c74f.jpg" alt=""></p>
+<p>规定：$p\geq1$，常用的距离计算公式有</p>
+<ul>
+<li>当$p=2$时，即为<code>欧式距离</code>，比较常用，即：</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjngnimxx6j30gi04o0sv.jpg" alt=""></p>
+<ul>
+<li>当$p=1$时，即<code>曼哈顿距离</code>，即：</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjngq7uheej30em03yaa5.jpg" alt=""></p>
+<ul>
+<li>当$p$趋于无穷，为<code>切比雪夫距离</code>，它是各个坐标距离的最大值：</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjngr38o44j30e0046dfx.jpg" alt=""></p>
+<h4 id="余弦相似度">余弦相似度</h4>
+<p>余弦相似度的公式为：</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjngs2p6kuj30fs05274h.jpg" alt=""></p>
+<h4 id="Pearson皮尔逊相关系数">Pearson皮尔逊相关系数</h4>
+<p>皮尔逊相关系数的公式如下：</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjngt2ym4yj30sk05o0t8.jpg" alt=""></p>
+<h3 id="K-均值算法">K-均值算法</h3>
+<h4 id="算法思想">算法思想</h4>
+<p><code>K-均值</code>，也叫做<code>k-means</code>算法，最常见的聚类算法，算法接受一个未标记的数据集，然后将数据聚类成不同的组。 假设将数据分成n个组，方法为：</p>
+<ul>
+<li>随机选择K个点，称之为“聚类中心”</li>
+<li>对于数据集中的每个数据，按照距离K个中心点的距离，将其和距离最近的中心点关联起来，与同个中心点关联的所有点聚成一类。</li>
+<li>计算上面步骤中形成的类的平均值，将该组所关联的中心点移动到平均值的位置</li>
+<li>重复上面两个步骤，直到中心点不再变化。</li>
+</ul>
+<h4 id="图解K-means">图解K-means</h4>
+<ol>
+<li>给定需要划分的数据，随机确定两个聚类中心点</li>
+<li>计算其他数据和这两个中心点的距离，划入距离小的类中，假设两个类是$C_1,C_2$</li>
+<li>确定上述步骤中两个类是$C_1,C_2$的均值，这个均值就是新的聚类中心</li>
+<li>重复：计算数据和这两个中心点的距离，划入距离小的类中，形成新的类；再确定新的聚类中心</li>
+<li>直至中心点不再变化，结束</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1g9kpi2bqwqj30us0megpa.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1g9kpjnmkioj30yi0megph.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1g9kpmanohbj30wm0mogps.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9kpptwrt0j30xi0m8tdk.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9kpyi7exsj30x80m6jvh.jpg" alt=""></p>
+<p><strong>全过程</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9kr86tu8dj30w20lm0x8.jpg" alt=""></p>
+<h4 id="K-means算法过程">K-means算法过程</h4>
+<p>吴恩达视频的中的伪代码为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">repeat &#123;</span><br><span class="line">  <span class="keyword">for</span> i= to m</span><br><span class="line">  <span class="comment">#  计算每个样例属于的类</span></span><br><span class="line">  c(i) := index (<span class="keyword">from</span> <span class="number">1</span> to K)  of cluster centroid closest to x(i)</span><br><span class="line"></span><br><span class="line"> <span class="keyword">for</span> k = <span class="number">1</span> to K</span><br><span class="line">  <span class="comment"># 聚类中心的移动，重新计算该类的质心</span></span><br><span class="line"> u(k) := average (mean) of points assigned to cluster K</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>西瓜书中的伪代码</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9kq4h21sij316e0u0qv6.jpg" alt=""></p>
+<h4 id="优化目标Optimization-Objective">优化目标Optimization Objective</h4>
+<p>K-均值最小化问题，是要最小化所有的数据点与其所关联的聚类中心点之间的距离之和，因此 K-均值的代价函数（<strong>畸变函数Distortion function</strong>） ：</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjngx9rctij30p404kjrm.jpg" alt=""></p>
+<p>其中$u_{c<sup>{(i)}}$代表的是$x</sup>{(i)}$最近的聚类中心点。</p>
+<p>优化目标就是找出使得代价函数最小的$c<sup>{(1)},c</sup>{(2)},…,c<sup>{(m)}$和$\mu</sup>1,\mu<sup>2,…,\mu</sup>k$，即：</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1g9kqpqtubjj30xs0a0wid.jpg" alt=""></p>
+<h4 id="随机初始化">随机初始化</h4>
+<p>在运行<code>K-均值算法</code>的之前，首先要随机初始化所有的聚类中心点：</p>
+<ul>
+<li>选择$K &lt; m$，即聚类中心的个数小于训练样本的实例数量</li>
+<li>随机训练$K$个训练实例，然后令K个聚类中心分别和这K个训练实例相等</li>
+</ul>
+<p>关于K-means的局部最小值问题：</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjngxwi1knj311c0kamy8.jpg" alt=""></p>
+<h3 id="Scikit-learn-实现K-means">Scikit learn 实现K-means</h3>
+<h4 id="make-blobs数据集">make_blobs数据集</h4>
+<p><code>make_blobs</code>聚类数据生成器<code>make_blobs</code>方法常被用来生成聚类算法的测试数据。它会根据用户指定的<strong>特征数量、中心点数量、范围</strong>等来生成几类数据。</p>
+<h3 id="主要参数">主要参数</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sklearn.datasets.make_blobs(n_samples=<span class="number">100</span>, n_features=<span class="number">2</span>,centers=<span class="number">3</span>, cluster_std=<span class="number">1.0</span>, center_box=(<span class="number">-10.0</span>, <span class="number">10.0</span>), shuffle=<span class="literal">True</span>, random_state=<span class="literal">None</span>)[source]</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>n_samples</code>是待生成的样本的总数</li>
+<li><code>n_features</code>是每个样本的特征数</li>
+<li><code>centers</code>表示类别数</li>
+<li><code>cluster_std</code>表示每个类别的方差</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="comment"># 导入 KMeans 模块和数据集</span></span><br><span class="line"><span class="keyword">from</span> sklearn.cluster <span class="keyword">import</span> KMeans</span><br><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> make_blobs</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义画布</span></span><br><span class="line">plt.figure(figsize=(<span class="number">12</span>,<span class="number">12</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义样本量和随机种子</span></span><br><span class="line">n_samples = <span class="number">1500</span></span><br><span class="line">random_state = <span class="number">170</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># X是测试数据集，y是目标分类标签0，1，2</span></span><br><span class="line">X, y = make_blobs(n_samples=n_samples, random_state=random_state)</span><br><span class="line"></span><br><span class="line">X</span><br><span class="line">array([[<span class="number">-5.19811282e+00</span>,  <span class="number">6.41869316e-01</span>],</span><br><span class="line">       [<span class="number">-5.75229538e+00</span>,  <span class="number">4.18627111e-01</span>],</span><br><span class="line">       [<span class="number">-1.08448984e+01</span>, <span class="number">-7.55352273e+00</span>],</span><br><span class="line">       ...,</span><br><span class="line">       [ <span class="number">1.36105255e+00</span>, <span class="number">-9.07491863e-01</span>],</span><br><span class="line">       [<span class="number">-3.54141108e-01</span>,  <span class="number">7.12241630e-01</span>],</span><br><span class="line">       [ <span class="number">1.88577252e+00</span>,  <span class="number">1.41185693e-03</span>]])</span><br><span class="line"></span><br><span class="line">y</span><br><span class="line">array([<span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, ..., <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 预测值的簇类</span></span><br><span class="line">y_pred = KMeans(n_clusters=<span class="number">2</span>, random_state=random_state).fit_predict(X)</span><br><span class="line">y_pred</span><br><span class="line">array([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, ..., <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>], dtype=int32)</span><br><span class="line"></span><br><span class="line">X[:,<span class="number">0</span>]  <span class="comment"># 所有行的第1列数据</span></span><br><span class="line">array([ <span class="number">-5.19811282</span>,  <span class="number">-5.75229538</span>, <span class="number">-10.84489837</span>, ...,   <span class="number">1.36105255</span>,</span><br><span class="line">        <span class="number">-0.35414111</span>,   <span class="number">1.88577252</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 子图1的绘制</span></span><br><span class="line">plt.subplot(<span class="number">221</span>)</span><br><span class="line">plt.scatter(X[:, <span class="number">0</span>], X[:, <span class="number">1</span>], c=y_pred)</span><br><span class="line">plt.title(<span class="string">"incorrrect Number of Blods"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjngzntwmbj30w60c2q3m.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">transformation = [[<span class="number">0.60834549</span>, <span class="number">-0.63667341</span>],[<span class="number">-0.40887718</span>, <span class="number">0.85253229</span>]]</span><br><span class="line">X_aniso = np.dot(X, transformation)</span><br><span class="line">y_pred = KMeans(n_clusters=<span class="number">3</span>, random_state=random_state).fit_predict(X_aniso)</span><br><span class="line"><span class="comment"># 子图2的绘制</span></span><br><span class="line">plt.subplot(<span class="number">222</span>)</span><br><span class="line">plt.scatter(X_aniso[:, <span class="number">0</span>], X_aniso[:, <span class="number">1</span>], c=y_pred)</span><br><span class="line">plt.title(<span class="string">"Anisotropicly Distributed Blobs"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjnh02gnfcj30yk0cijs5.jpg" alt=""></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">X_varied, y_varied = make_blobs(<span class="attribute">n_samples</span>=n_samples,</span><br><span class="line">                               cluster_std=[1.0,2.5,0.5],<span class="attribute">random_state</span>=random_state)</span><br><span class="line">y_pred = KMeans(<span class="attribute">n_clusters</span>=3, <span class="attribute">random_state</span>=random_state).fit_predict(X_varied)</span><br><span class="line">plt.subplot(223)</span><br><span class="line">plt.scatter(X_varied[:, 0], X_varied[:, 1], <span class="attribute">c</span>=y_pred)</span><br><span class="line">plt.title(<span class="string">"Unequal Variance"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9kwevgydyj30qk0c6dhw.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">X_filtered = np.vstack((X[y == <span class="number">0</span>][:<span class="number">500</span>],</span><br><span class="line">                      X[y == <span class="number">1</span>][:<span class="number">100</span>],</span><br><span class="line">                      X[y == <span class="number">2</span>][:<span class="number">10</span>]))</span><br><span class="line">y_pred = KMeans(n_clusters=<span class="number">3</span>,random_state=random_state).fit_predict(X_filtered)</span><br><span class="line">plt.subplot(<span class="number">224</span>)</span><br><span class="line">plt.scatter(X_filtered[:, <span class="number">0</span>],</span><br><span class="line">           X_filtered[:, <span class="number">1</span>],</span><br><span class="line">           c=y_pred)</span><br><span class="line">plt.title(<span class="string">"Unevenly Sized Blobs"</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjnh0nv37rj30hc0bcglt.jpg" alt=""></p>
+<h4 id="python实现K-means算法">python实现K-means算法</h4>
+<p>这是在网上找到的一个基于<code>Python</code>找到的`K-means实验算法，学习使用</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjnhftx6e9j30u01ru4qp.jpg" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/12/04/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B08-%E8%81%9A%E7%B1%BB%E5%92%8C%E9%99%8D%E7%BB%B4.html">吴恩达笔记8-KMeans</a></p>
+  <p><span>发布时间:</span>2019年12月04日 - 22:12</p>
+  <p><span>原始链接:</span><a href="/2019/12/04/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B08-%E8%81%9A%E7%B1%BB%E5%92%8C%E9%99%8D%E7%BB%B4.html" title="吴恩达笔记8-KMeans">http://www.renpeter.cn/2019/12/04/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B08-%E8%81%9A%E7%B1%BB%E5%92%8C%E9%99%8D%E7%BB%B4.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2019/12/04/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B08-%E8%81%9A%E7%B1%BB%E5%92%8C%E9%99%8D%E7%BB%B4.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag"># 吴恩达</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/03/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B07-SVM.html" rel="next" title="吴恩达笔记7_支持向量机">
+                <i class="fa fa-chevron-left"></i> 吴恩达笔记7_支持向量机
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/05/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B09-PCA.html" rel="prev" title="吴恩达笔记9_PCA">
+                吴恩达笔记9_PCA <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">463</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">41</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#吴恩达机器学习-8-聚类和降维"><span class="nav-number">1.</span> <span class="nav-text">吴恩达机器学习-8-聚类和降维</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无监督学习unsupervised-learning"><span class="nav-number">2.</span> <span class="nav-text">无监督学习unsupervised learning</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#无监督学习简介"><span class="nav-number">2.1.</span> <span class="nav-text">无监督学习简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#无监督学习应用"><span class="nav-number">2.2.</span> <span class="nav-text">无监督学习应用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#聚类"><span class="nav-number">3.</span> <span class="nav-text">聚类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#聚类clustering"><span class="nav-number">3.1.</span> <span class="nav-text">聚类clustering</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#性能度量"><span class="nav-number">3.2.</span> <span class="nav-text">性能度量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#距离计算"><span class="nav-number">3.3.</span> <span class="nav-text">距离计算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#余弦相似度"><span class="nav-number">3.4.</span> <span class="nav-text">余弦相似度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Pearson皮尔逊相关系数"><span class="nav-number">3.5.</span> <span class="nav-text">Pearson皮尔逊相关系数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#K-均值算法"><span class="nav-number">4.</span> <span class="nav-text">K-均值算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#算法思想"><span class="nav-number">4.1.</span> <span class="nav-text">算法思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#图解K-means"><span class="nav-number">4.2.</span> <span class="nav-text">图解K-means</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#K-means算法过程"><span class="nav-number">4.3.</span> <span class="nav-text">K-means算法过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#优化目标Optimization-Objective"><span class="nav-number">4.4.</span> <span class="nav-text">优化目标Optimization Objective</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#随机初始化"><span class="nav-number">4.5.</span> <span class="nav-text">随机初始化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Scikit-learn-实现K-means"><span class="nav-number">5.</span> <span class="nav-text">Scikit learn 实现K-means</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#make-blobs数据集"><span class="nav-number">5.1.</span> <span class="nav-text">make_blobs数据集</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主要参数"><span class="nav-number">6.</span> <span class="nav-text">主要参数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#python实现K-means算法"><span class="nav-number">6.1.</span> <span class="nav-text">python实现K-means算法</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">29</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">49</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">36</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">61</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">44</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">63</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">59</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">46</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">27</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共590.4k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2019/12/04/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%AC%94%E8%AE%B08-%E8%81%9A%E7%B1%BB%E5%92%8C%E9%99%8D%E7%BB%B4.html';
+          this.page.identifier = '2019/12/04/吴恩达笔记8-聚类和降维.html';
+          this.page.title = '吴恩达笔记8-KMeans';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
