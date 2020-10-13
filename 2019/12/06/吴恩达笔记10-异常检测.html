@@ -97,6 +97,10 @@
 <meta property="og:description" content="吴恩达机器学习-10-异常检测  “黑中有白，白中有黑，没有绝对的白，也没有绝对的黑，黑可衬白，白可映黑。万物皆可转换”  在本周中主要讲解了机器学习中的异常检测问题，主要包含：  问题产生 高斯分布 算法使用场景 八种无监督异常检测技术 异常检测和监督学习对比 特征选择">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjnowp7sylj30zu0js40o.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjnytpjw9zj30fm054dg0.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjnyvvjfibj30g803yaa7.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjnyw12zojj30bo03k749.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjnyw85bj2j30dm04amx7.jpg">
 <meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjnp0e68q7j30ye0jat9v.jpg">
 <meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjnp9behioj30e606e74j.jpg">
 <meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjnp1jtn6lj30vu0gggnw.jpg">
@@ -104,7 +108,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjnp1tcquvj31140ea0tw.jpg">
 <meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjnp22fce7j30nk0g43zx.jpg">
 <meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjnp2ddapmj315e0n8tbo.jpg">
-<meta property="og:updated_time" content="2020-10-13T07:06:23.282Z">
+<meta property="og:updated_time" content="2020-10-13T12:17:14.393Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjnowp7sylj30zu0js40o.jpg">
 
@@ -399,7 +403,7 @@
                   <span class="post-meta-item-text">Words count in article&#58;</span>
                 
                 <span title="Words count in article">
-                  1.6k
+                  1.5k
                 </span>
               
 
@@ -458,12 +462,12 @@
 <p>在商业中也有许多应用，如<strong>网络入侵检测</strong>（识别可能发出黑客攻击的网络流量中的特殊模式）、<strong>系统健康性监测、信用卡交易欺诈检测、设备故障检测、风险识别</strong>等</p>
 <h4 id="问题动机">问题动机</h4>
 <p><strong>异常检测主要是运用于非监督学习的算法</strong>。问题的引出：<code>通过飞机的检测开始</code>。</p>
-<p>检测飞机的引擎制造商生产了一批飞机引擎，测试了其中的一些特征变量，比如引擎运转时产生的热量，或者引擎的振动等，</p>
-<p>假设有m个引擎，$x<sup>{(1)},x</sup>{(2)},…,x^{(m)}$，绘制出如下图表：</p>
+<p>检测飞机的引擎制造商生产了一批飞机引擎，测试了其中的一些特征变量，比如引擎运转时产生的热量，或者引擎的振动等。</p>
+<p>假设有m个引擎，$x<sup>{(1)},x</sup>{(2)},…,x^{(m)}$，我们绘制出如下图表：</p>
 <p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjnowp7sylj30zu0js40o.jpg" alt=""></p>
 <p>对于给定的数据集，需要检测$x_{test}$是不是异常的，即这个测试数据不属于这组数据的几率是多少。</p>
 <p>从上图看出，在蓝色圈内属于该组的概率高，越是偏远的概率，属于该组的可能性就越低。</p>
-<p>$$ if \quad p(x) \begin{cases} &lt; \varepsilon &amp; anomaly \=\varepsilon &amp; normal \end{cases} $$</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjnytpjw9zj30fm054dg0.jpg" alt=""></p>
 <p>另外两个异常检测的应用例子是</p>
 <ul>
 <li>识别欺骗行为，通过用户多久登陆一次、访问过的页面、发布帖子的数量等建立模型，通过模型来识别那些不符合该模型的用户。</li>
@@ -473,11 +477,11 @@
 <p>高斯分布也叫正态分布。分布满足：</p>
 <p>$$ x \sim N\left(\mu, \sigma^{2}\right) $$</p>
 <p>概率密度函数为：</p>
-<p>$$ p\left(x, \mu, \sigma^{2}\right)=\frac{1}{\sqrt{2 \pi} \sigma} \exp \left(-\frac{(x-\mu)^{2}}{2 \sigma^{2}}\right) $$</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjnyvvjfibj30g803yaa7.jpg" alt=""></p>
 <p>均值$\mu$为：</p>
-<p>$$ \mu=\frac{1}{m} \sum_{i=1}^{m} x^{(i)} $$</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjnyw12zojj30bo03k749.jpg" alt=""></p>
 <p>方差$\sigma^2$为 ：</p>
-<p>$$ \sigma^{2}=\frac{1}{m} \sum_{i=1}<sup>{m}\left(x</sup>{(i)}-\mu\right)^{2} $$</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjnyw85bj2j30dm04amx7.jpg" alt=""></p>
 <p><strong>高斯分布的样例为</strong></p>
 <p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjnp0e68q7j30ye0jat9v.jpg" alt=""></p>
 <p>当均值$\mu$相同的时候</p>
@@ -496,21 +500,21 @@
 <p>算法的具体过程是</p>
 <ol>
 <li>
-<p>对于给定的数据集：$x<sup>{(1)},x</sup>{(2)},…,x<sup>{(m)}$，计算每个特征的$\mu;\sigma</sup>2$ 的估计值</p>
+<p>对于给定的数据集：${x<sup>(1),x</sup>(2),…,x{(m)}$</p>
+</li>
+<li>
+<p>计算每个特征的$\mu;\sigma^2$ 的估计值</p>
 </li>
 <li>
 <p>两个参数的估计值为：</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjnp9behioj30e606e74j.jpg" alt=""></p>
-<p>$$\mu_j=\frac{1}{m}\sum\limits_{i=1}<sup>{m}x_j</sup>{(i)}$$</p>
-<p>$$\sigma_j<sup>2=\frac{1}{m}\sum\limits_{i=1}</sup>m(x_j<sup>{(i)}-\mu_j)</sup>2$$</p>
 </li>
 </ol>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjnp9behioj30e606e74j.jpg" alt=""></p>
 <p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjnp1jtn6lj30vu0gggnw.jpg" alt=""></p>
 <ol start="2">
 <li>利用高斯分布进行计算$p(x)$</li>
 </ol>
 <p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjnp3sywz4j30o204oaae.jpg" alt=""></p>
-<p>$$ p(x)=\Pi<sup>n_{j=1}p(x_j;\mu_j;\sigma</sup>2_j)=\Pi^n_{j=1}\frac{1}{\sqrt{2 \pi} \sigma_j} \exp \left(-\frac{(x_j-\mu_j)^{2}}{2 \sigma^{2}_j}\right) $$</p>
 <ol start="3">
 <li>两个特征的训练集及特征非部分情况</li>
 </ol>
@@ -914,7 +918,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共589.8k字</span>
+  <span class="post-count">博客全站共589.7k字</span>
 </div>
 
         
