@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="机器学习," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="利用SKL实现KNN算法 本文通过SKL的中KNN分类器，实现了对iris数据的的分类预测，主要涉及的内容包含：  KNN算法原理 KNN算法优缺点 K值选取 SKL实现KNN">
+<meta name="keywords" content="机器学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用skl实现KNN">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2020&#x2F;11&#x2F;02&#x2F;%E5%88%A9%E7%94%A8skl%E5%AE%9E%E7%8E%B0KNN.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="利用SKL实现KNN算法 本文通过SKL的中KNN分类器，实现了对iris数据的的分类预测，主要涉及的内容包含：  KNN算法原理 KNN算法优缺点 K值选取 SKL实现KNN">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gka505dm0nj30py0hiq58.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gka511hm1wj31e20f80x9.jpg">
+<meta property="og:updated_time" content="2020-11-01T16:33:18.858Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gka505dm0nj30py0hiq58.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2020/11/02/利用skl实现KNN.html"/>
+
+
+
+
+
+  <title>利用skl实现KNN | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2020/11/02/%E5%88%A9%E7%94%A8skl%E5%AE%9E%E7%8E%B0KNN.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">利用skl实现KNN</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-11-02T00:32:27+08:00">
+                2020-11-2
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/sklearn%E5%AE%9E%E4%BE%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">sklearn实例</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/11/02/%E5%88%A9%E7%94%A8skl%E5%AE%9E%E7%8E%B0KNN.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/11/02/利用skl实现KNN.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  2.1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  12
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="利用SKL实现KNN算法">利用SKL实现KNN算法</h3>
+<p>本文通过<code>SKL</code>的中<code>KNN</code>分类器，实现了对<code>iris</code>数据的的分类预测，主要涉及的内容包含：</p>
+<ul>
+<li>KNN算法原理</li>
+<li>KNN算法优缺点</li>
+<li>K值选取</li>
+<li>SKL实现KNN</li>
+</ul>
+<a id="more"></a>
+<h3 id="KNN-算法原理">KNN 算法原理</h3>
+<p>找个K个和新数据最近的样本，取样本中最多的一个类别作为新数据的类别</p>
+<h3 id="KNN优点">KNN优点</h3>
+<ul>
+<li>算法简单易实现</li>
+</ul>
+<p>把全部的数据当做模型本身</p>
+<ul>
+<li>对边界不规则的数据效果好</li>
+</ul>
+<h3 id="KNN缺点">KNN缺点</h3>
+<ul>
+<li>
+<p>只适合小数据集</p>
+</li>
+<li>
+<p>数据不平衡效果不好</p>
+</li>
+<li>
+<p>数据必须标准化</p>
+</li>
+<li>
+<p>不适合特征维度太多的数据</p>
+</li>
+</ul>
+<h3 id="K-值选取">K 值选取</h3>
+<ul>
+<li>
+<p>k越小越容易过拟合</p>
+</li>
+<li>
+<p>k越小大越容易欠拟合</p>
+</li>
+</ul>
+<p>k值一般选择是奇数，偶数可能难以抉择</p>
+<h3 id="SKL实现KNN">SKL实现KNN</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> datasets</span><br><span class="line"><span class="keyword">from</span> sklearn.neighbors <span class="keyword">import</span> KNeighborsClassifier</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.seed(<span class="number">0</span>)  <span class="comment"># 保证每次运行的结果相同；不设置的话，默认按照时间作为参数的</span></span><br></pre></td></tr></table></figure>
+<h4 id="导入数据">导入数据</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iris = datasets.load_iris()</span><br><span class="line">iris</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">X = iris.data</span><br><span class="line">X[:<span class="number">5</span>]</span><br></pre></td></tr></table></figure>
+<pre><code>array([[5.1, 3.5, 1.4, 0.2],
+       [4.9, 3. , 1.4, 0.2],
+       [4.7, 3.2, 1.3, 0.2],
+       [4.6, 3.1, 1.5, 0.2],
+       [5. , 3.6, 1.4, 0.2]])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">y = iris.target</span><br><span class="line">y</span><br></pre></td></tr></table></figure>
+<pre><code>array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+       0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+       2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+       2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2])
+</code></pre>
+<h4 id="分割数据">分割数据</h4>
+<p>将数据分成训练集和测试集，总共是150条，分成140的训练集和10条的测试集</p>
+<p>注意是随机分割，使用的是permutation参数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 产生该长度内的随机乱序的一维数据</span></span><br><span class="line"></span><br><span class="line">random_array = np.random.permutation(len(X))</span><br><span class="line">random_array</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gka505dm0nj30py0hiq58.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gka511hm1wj31e20f80x9.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 训练集</span></span><br><span class="line"></span><br><span class="line">X_train = X[random_array[:<span class="number">-10</span>]]  <span class="comment"># 取出前140个数据</span></span><br><span class="line">y_train = y[random_array[:<span class="number">-10</span>]]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X_train</span><br></pre></td></tr></table></figure>
+<pre><code>array([[5.8, 2.8, 5.1, 2.4],
+       [6. , 2.2, 4. , 1. ],
+       [5.5, 4.2, 1.4, 0.2],
+       [7.3, 2.9, 6.3, 1.8],
+       [5. , 3.4, 1.5, 0.2],
+       [6.3, 3.3, 6. , 2.5],
+       [5. , 3.5, 1.3, 0.3],
+       [6.7, 3.1, 4.7, 1.5],
+       [6.8, 2.8, 4.8, 1.4],
+       [6.1, 2.8, 4. , 1.3],
+       [6.1, 2.6, 5.6, 1.4],
+       [6.4, 3.2, 4.5, 1.5],
+       [6.1, 2.8, 4.7, 1.2],
+       [6.5, 2.8, 4.6, 1.5],
+       [6.1, 2.9, 4.7, 1.4],
+       [4.9, 3.6, 1.4, 0.1],
+       [6. , 2.9, 4.5, 1.5],
+       [5.5, 2.6, 4.4, 1.2],
+       [4.8, 3. , 1.4, 0.3],
+       [5.4, 3.9, 1.3, 0.4],
+       [5.6, 2.8, 4.9, 2. ],
+       [5.6, 3. , 4.5, 1.5],
+       [4.8, 3.4, 1.9, 0.2],
+       [4.4, 2.9, 1.4, 0.2],
+       [6.2, 2.8, 4.8, 1.8],
+       [4.6, 3.6, 1. , 0.2],
+       [5.1, 3.8, 1.9, 0.4],
+       [6.2, 2.9, 4.3, 1.3],
+       [5. , 2.3, 3.3, 1. ],
+       [5. , 3.4, 1.6, 0.4],
+       [6.4, 3.1, 5.5, 1.8],
+       [5.4, 3. , 4.5, 1.5],
+       [5.2, 3.5, 1.5, 0.2],
+       [6.1, 3. , 4.9, 1.8],
+       [6.4, 2.8, 5.6, 2.2],
+       [5.2, 2.7, 3.9, 1.4],
+       [5.7, 3.8, 1.7, 0.3],
+       [6. , 2.7, 5.1, 1.6],
+       [5.9, 3. , 4.2, 1.5],
+       [5.8, 2.6, 4. , 1.2],
+       [6.8, 3. , 5.5, 2.1],
+       [4.7, 3.2, 1.3, 0.2],
+       [6.9, 3.1, 5.1, 2.3],
+       [5. , 3.5, 1.6, 0.6],
+       [5.4, 3.7, 1.5, 0.2],
+       [5. , 2. , 3.5, 1. ],
+       [6.5, 3. , 5.5, 1.8],
+       [6.7, 3.3, 5.7, 2.5],
+       [6. , 2.2, 5. , 1.5],
+       [6.7, 2.5, 5.8, 1.8],
+       [5.6, 2.5, 3.9, 1.1],
+       [7.7, 3. , 6.1, 2.3],
+       [6.3, 3.3, 4.7, 1.6],
+       [5.5, 2.4, 3.8, 1.1],
+       [6.3, 2.7, 4.9, 1.8],
+       [6.3, 2.8, 5.1, 1.5],
+       [4.9, 2.5, 4.5, 1.7],
+       [6.3, 2.5, 5. , 1.9],
+       [7. , 3.2, 4.7, 1.4],
+       [6.5, 3. , 5.2, 2. ],
+       [6. , 3.4, 4.5, 1.6],
+       [4.8, 3.1, 1.6, 0.2],
+       [5.8, 2.7, 5.1, 1.9],
+       [5.6, 2.7, 4.2, 1.3],
+       [5.6, 2.9, 3.6, 1.3],
+       [5.5, 2.5, 4. , 1.3],
+       [6.1, 3. , 4.6, 1.4],
+       [7.2, 3.2, 6. , 1.8],
+       [5.3, 3.7, 1.5, 0.2],
+       [4.3, 3. , 1.1, 0.1],
+       [6.4, 2.7, 5.3, 1.9],
+       [5.7, 3. , 4.2, 1.2],
+       [5.4, 3.4, 1.7, 0.2],
+       [5.7, 4.4, 1.5, 0.4],
+       [6.9, 3.1, 4.9, 1.5],
+       [4.6, 3.1, 1.5, 0.2],
+       [5.9, 3. , 5.1, 1.8],
+       [5.1, 2.5, 3. , 1.1],
+       [4.6, 3.4, 1.4, 0.3],
+       [6.2, 2.2, 4.5, 1.5],
+       [7.2, 3.6, 6.1, 2.5],
+       [5.7, 2.9, 4.2, 1.3],
+       [4.8, 3. , 1.4, 0.1],
+       [7.1, 3. , 5.9, 2.1],
+       [6.9, 3.2, 5.7, 2.3],
+       [6.5, 3. , 5.8, 2.2],
+       [6.4, 2.8, 5.6, 2.1],
+       [5.1, 3.8, 1.6, 0.2],
+       [4.8, 3.4, 1.6, 0.2],
+       [6.5, 3.2, 5.1, 2. ],
+       [6.7, 3.3, 5.7, 2.1],
+       [4.5, 2.3, 1.3, 0.3],
+       [6.2, 3.4, 5.4, 2.3],
+       [4.9, 3. , 1.4, 0.2],
+       [5.7, 2.5, 5. , 2. ],
+       [6.9, 3.1, 5.4, 2.1],
+       [4.4, 3.2, 1.3, 0.2],
+       [5. , 3.6, 1.4, 0.2],
+       [7.2, 3. , 5.8, 1.6],
+       [5.1, 3.5, 1.4, 0.3],
+       [4.4, 3. , 1.3, 0.2],
+       [5.4, 3.9, 1.7, 0.4],
+       [5.5, 2.3, 4. , 1.3],
+       [6.8, 3.2, 5.9, 2.3],
+       [7.6, 3. , 6.6, 2.1],
+       [5.1, 3.5, 1.4, 0.2],
+       [4.9, 3.1, 1.5, 0.2],
+       [5.2, 3.4, 1.4, 0.2],
+       [5.7, 2.8, 4.5, 1.3],
+       [6.6, 3. , 4.4, 1.4],
+       [5. , 3.2, 1.2, 0.2],
+       [5.1, 3.3, 1.7, 0.5],
+       [6.4, 2.9, 4.3, 1.3],
+       [5.4, 3.4, 1.5, 0.4],
+       [7.7, 2.6, 6.9, 2.3],
+       [4.9, 2.4, 3.3, 1. ],
+       [7.9, 3.8, 6.4, 2. ],
+       [6.7, 3.1, 4.4, 1.4],
+       [5.2, 4.1, 1.5, 0.1],
+       [6. , 3. , 4.8, 1.8],
+       [5.8, 4. , 1.2, 0.2],
+       [7.7, 2.8, 6.7, 2. ],
+       [5.1, 3.8, 1.5, 0.3],
+       [4.7, 3.2, 1.6, 0.2],
+       [7.4, 2.8, 6.1, 1.9],
+       [5. , 3.3, 1.4, 0.2],
+       [6.3, 3.4, 5.6, 2.4],
+       [5.7, 2.8, 4.1, 1.3],
+       [5.8, 2.7, 3.9, 1.2],
+       [5.7, 2.6, 3.5, 1. ],
+       [6.4, 3.2, 5.3, 2.3],
+       [6.7, 3. , 5.2, 2.3],
+       [6.3, 2.5, 4.9, 1.5],
+       [6.7, 3. , 5. , 1.7],
+       [5. , 3. , 1.6, 0.2],
+       [5.5, 2.4, 3.7, 1. ],
+       [6.7, 3.1, 5.6, 2.4],
+       [5.8, 2.7, 5.1, 1.9],
+       [5.1, 3.4, 1.5, 0.2],
+       [6.6, 2.9, 4.6, 1.3]])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">y_train</span><br></pre></td></tr></table></figure>
+<pre><code>array([2, 1, 0, 2, 0, 2, 0, 1, 1, 1, 2, 1, 1, 1, 1, 0, 1, 1, 0, 0, 2, 1,
+       0, 0, 2, 0, 0, 1, 1, 0, 2, 1, 0, 2, 2, 1, 0, 1, 1, 1, 2, 0, 2, 0,
+       0, 1, 2, 2, 2, 2, 1, 2, 1, 1, 2, 2, 2, 2, 1, 2, 1, 0, 2, 1, 1, 1,
+       1, 2, 0, 0, 2, 1, 0, 0, 1, 0, 2, 1, 0, 1, 2, 1, 0, 2, 2, 2, 2, 0,
+       0, 2, 2, 0, 2, 0, 2, 2, 0, 0, 2, 0, 0, 0, 1, 2, 2, 0, 0, 0, 1, 1,
+       0, 0, 1, 0, 2, 1, 2, 1, 0, 2, 0, 2, 0, 0, 2, 0, 2, 1, 1, 1, 2, 2,
+       1, 1, 0, 1, 2, 2, 0, 1])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 测试集</span></span><br><span class="line"></span><br><span class="line">X_test = X[random_array[<span class="number">-10</span>:]]  <span class="comment"># 后面的10个数据作为测试集</span></span><br><span class="line">y_test = y[random_array[<span class="number">-10</span>:]]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X_test</span><br></pre></td></tr></table></figure>
+<pre><code>array([[5.6, 3. , 4.1, 1.3],
+       [5.9, 3.2, 4.8, 1.8],
+       [6.3, 2.3, 4.4, 1.3],
+       [5.5, 3.5, 1.3, 0.2],
+       [5.1, 3.7, 1.5, 0.4],
+       [4.9, 3.1, 1.5, 0.1],
+       [6.3, 2.9, 5.6, 1.8],
+       [5.8, 2.7, 4.1, 1. ],
+       [7.7, 3.8, 6.7, 2.2],
+       [4.6, 3.2, 1.4, 0.2]])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">y_test</span><br></pre></td></tr></table></figure>
+<pre><code>array([1, 1, 1, 0, 0, 0, 2, 1, 2, 0])
+</code></pre>
+<h4 id="KNN训练器">KNN训练器</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义一个knn分类器对象</span></span><br><span class="line">knn = KNeighborsClassifier()</span><br><span class="line"><span class="comment"># 调用对象的训练方法，传入两个参数：训练集数据极其标签</span></span><br><span class="line">knn.fit(X_train,y_train)</span><br></pre></td></tr></table></figure>
+<pre><code>KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+                     metric_params=None, n_jobs=None, n_neighbors=5, p=2,
+                     weights='uniform')
+</code></pre>
+<h4 id="预测">预测</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">y_predict = knn.predict(X_test)  <span class="comment"># 传入预测的数据</span></span><br><span class="line">y_predict</span><br></pre></td></tr></table></figure>
+<pre><code>array([1, 2, 1, 0, 0, 0, 2, 1, 2, 0])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 计算各个测试样本预测的概率值</span></span><br><span class="line"></span><br><span class="line">probility = knn.predict_proba(X_test)</span><br><span class="line">probility</span><br></pre></td></tr></table></figure>
+<pre><code>array([[0. , 1. , 0. ],
+       [0. , 0.4, 0.6],
+       [0. , 1. , 0. ],
+       [1. , 0. , 0. ],
+       [1. , 0. , 0. ],
+       [1. , 0. , 0. ],
+       [0. , 0. , 1. ],
+       [0. , 1. , 0. ],
+       [0. , 0. , 1. ],
+       [1. , 0. , 0. ]])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 计算和最后一个测试样本距离最近的5个点，返回的是这些样本的序号组成的数组</span></span><br><span class="line"></span><br><span class="line">neighborpoint = knn.kneighbors([X_test[<span class="number">-1</span>]],<span class="number">5</span>)</span><br><span class="line">neighborpoint</span><br></pre></td></tr></table></figure>
+<pre><code>(array([[0.14142136, 0.14142136, 0.2236068 , 0.2236068 , 0.2236068 ]]),
+ array([[ 75,  41,  96,  78, 123]]))
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 调用对象的打分方法，计算出准确率</span></span><br><span class="line"></span><br><span class="line">score = knn.score(X_test,y_test,sample_weight=<span class="literal">None</span>)</span><br><span class="line">score</span><br></pre></td></tr></table></figure>
+<pre><code>0.9
+</code></pre>
+<h4 id="输出测试结果">输出测试结果</h4>
+<p>对比knn的预测值和实际的值，准确率是90%</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># knn的预测值</span></span><br><span class="line">y_predict</span><br></pre></td></tr></table></figure>
+<pre><code>array([1, 2, 1, 0, 0, 0, 2, 1, 2, 0])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 原始值</span></span><br><span class="line"></span><br><span class="line">y_test</span><br></pre></td></tr></table></figure>
+<pre><code>array([1, 1, 1, 0, 0, 0, 2, 1, 2, 0])
+</code></pre>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2020/11/02/%E5%88%A9%E7%94%A8skl%E5%AE%9E%E7%8E%B0KNN.html">利用skl实现KNN</a></p>
+  <p><span>发布时间:</span>2020年11月02日 - 00:11</p>
+  <p><span>原始链接:</span><a href="/2020/11/02/%E5%88%A9%E7%94%A8skl%E5%AE%9E%E7%8E%B0KNN.html" title="利用skl实现KNN">http://www.renpeter.cn/2020/11/02/%E5%88%A9%E7%94%A8skl%E5%AE%9E%E7%8E%B0KNN.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2020/11/02/%E5%88%A9%E7%94%A8skl%E5%AE%9E%E7%8E%B0KNN.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/11/01/%E6%9C%AA%E6%9D%A5%E5%B7%B2%E6%9D%A5.html" rel="next" title="未来已来">
+                <i class="fa fa-chevron-left"></i> 未来已来
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">476</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">68</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#利用SKL实现KNN算法"><span class="nav-number">1.</span> <span class="nav-text">利用SKL实现KNN算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KNN-算法原理"><span class="nav-number">2.</span> <span class="nav-text">KNN 算法原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KNN优点"><span class="nav-number">3.</span> <span class="nav-text">KNN优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KNN缺点"><span class="nav-number">4.</span> <span class="nav-text">KNN缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#K-值选取"><span class="nav-number">5.</span> <span class="nav-text">K 值选取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SKL实现KNN"><span class="nav-number">6.</span> <span class="nav-text">SKL实现KNN</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#导入数据"><span class="nav-number">6.1.</span> <span class="nav-text">导入数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分割数据"><span class="nav-number">6.2.</span> <span class="nav-text">分割数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#KNN训练器"><span class="nav-number">6.3.</span> <span class="nav-text">KNN训练器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#预测"><span class="nav-number">6.4.</span> <span class="nav-text">预测</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#输出测试结果"><span class="nav-number">6.5.</span> <span class="nav-text">输出测试结果</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">33</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">51</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">38</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">20</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">62</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">44</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">67</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">61</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共606.1k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2020/11/02/%E5%88%A9%E7%94%A8skl%E5%AE%9E%E7%8E%B0KNN.html';
+          this.page.identifier = '2020/11/02/利用skl实现KNN.html';
+          this.page.title = '利用skl实现KNN';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
