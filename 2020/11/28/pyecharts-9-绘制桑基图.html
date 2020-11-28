@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="pandas,可视化,pyecharts," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="pyecharts-9-桑基图绘制 本文详解地介绍的是如何制作桑基图，使用的可视化库是强大的Pyecharts(版本1.7.1，版本一致很重要)。文章将从如下几个方面进行介绍：  什么是桑基图 2个官网``demo` 原始数据整理 绘图数据生成 桑基图绘制">
+<meta name="keywords" content="pandas,可视化,pyecharts">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pyecharts-9-绘制桑基图">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2020&#x2F;11&#x2F;28&#x2F;pyecharts-9-%E7%BB%98%E5%88%B6%E6%A1%91%E5%9F%BA%E5%9B%BE.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="pyecharts-9-桑基图绘制 本文详解地介绍的是如何制作桑基图，使用的可视化库是强大的Pyecharts(版本1.7.1，版本一致很重要)。文章将从如下几个方面进行介绍：  什么是桑基图 2个官网``demo` 原始数据整理 绘图数据生成 桑基图绘制">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl488coghkj30w60u07ln.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl47gzh5tcj30c00gmmy4.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl47jspv16j30u00vwng6.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl4mhr8inuj313g07i75m.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl323gqsamj30u607ytae.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl324qw015j31ac0t4mz6.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl4mxwvmiyj31dm0t2drh.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl339xoaz3j30nc11yn0z.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl33h6om3uj314a0soq8w.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl33hob1hej30bu0uawi4.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl33j7c8c0j30fk11kwk1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl45hqpksej30ae10i76y.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl45lwo0w3j31140qu0vv.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl45n5qhkjj30je0o8779.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl45owrkorj30ya0nutfg.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl46gjrb2bj30u00xhaw5.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl467smyjnj31980s4wiw.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl4mx9w0pzj319s0lywhm.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl477snz4yj314s0u0wti.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl478w9v42j31d20ougpr.jpg">
+<meta property="og:updated_time" content="2020-11-28T01:41:29.078Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl488coghkj30w60u07ln.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2020/11/28/pyecharts-9-绘制桑基图.html"/>
+
+
+
+
+
+  <title>pyecharts-9-绘制桑基图 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2020/11/28/pyecharts-9-%E7%BB%98%E5%88%B6%E6%A1%91%E5%9F%BA%E5%9B%BE.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">pyecharts-9-绘制桑基图</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-11-28T09:37:16+08:00">
+                2020-11-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/datavisual/" itemprop="url" rel="index">
+                    <span itemprop="name">datavisual</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/datavisual/pyecharts/" itemprop="url" rel="index">
+                    <span itemprop="name">pyecharts</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/11/28/pyecharts-9-%E7%BB%98%E5%88%B6%E6%A1%91%E5%9F%BA%E5%9B%BE.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/11/28/pyecharts-9-绘制桑基图.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  13
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="pyecharts-9-桑基图绘制">pyecharts-9-桑基图绘制</h3>
+<p>本文详解地介绍的是如何制作桑基图，使用的可视化库是强大的<code>Pyecharts(版本1.7.1，版本一致很重要)</code>。文章将从如下几个方面进行介绍：</p>
+<ul>
+<li>什么是桑基图</li>
+<li>2个官网``demo`</li>
+<li>原始数据整理</li>
+<li>绘图数据生成</li>
+<li>桑基图绘制</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl488coghkj30w60u07ln.jpg" alt=""></p>
+<a id="more"></a>
+<h3 id="什么是桑基图">什么是桑基图</h3>
+<p>桑基图（桑葚图），也叫桑基能量分流图或者桑基能量平衡图，里面的桑基其实是一个人名，全名是<em>马修·亨利·菲尼亚斯·里尔·桑基（Matthew Henry Phineas Riall Sankey）</em>，是一名爱尔兰裔工程师，也是英国皇家陆军工兵的上尉。</p>
+<p>参考文献：<a href="https://zhuanlan.zhihu.com/p/127360262" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/127360262</a></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl47gzh5tcj30c00gmmy4.jpg" alt=""></p>
+<p>早在<code>1898</code>年的时候，他就使用这种图形来表示蒸汽机的能源效率：</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl47jspv16j30u00vwng6.jpg" alt=""></p>
+<p>桑基之后，桑基图逐渐成为科学和工程领域，代表<strong>平衡、能量流、物质流</strong>的标准模型，在一些产品的生命周期评估中也常被使用，通常应用于<a href="https://baike.baidu.com/item/%E8%83%BD%E6%BA%90/23358" target="_blank" rel="noopener">能源</a>、材料成分、<a href="https://baike.baidu.com/item/%E9%87%91%E8%9E%8D/860" target="_blank" rel="noopener">金融</a>等数据的可视化分析。主要特点是：</p>
+<ul>
+<li>图形由边、流量和支点组成。边代表了流动的数据，流量代表了流动数据的具体数值，节点代表了不同分类</li>
+<li>始末端的分支宽度总和相等，即所有主支宽度的总和应与所有分出去的分支宽度的总和相等，保持能量的平衡。</li>
+</ul>
+<h3 id="官网demo">官网demo</h3>
+<p>本文中使用的<code>Pyecharts</code>版本是<code>1.7.1</code>，版本的一致非常重要。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pyecharts</span><br><span class="line">pyecharts.__version__</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl4mhr8inuj313g07i75m.jpg" alt=""></p>
+<h4 id="demo-1">demo_1</h4>
+<p>首先我们看看官网的第一个<code>demo</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyecharts <span class="keyword">import</span> options <span class="keyword">as</span> opts</span><br><span class="line"><span class="keyword">from</span> pyecharts.charts <span class="keyword">import</span> Sankey</span><br><span class="line"></span><br><span class="line">nodes = [   <span class="comment"># 所有节点名称</span></span><br><span class="line">    &#123;<span class="string">"name"</span>: <span class="string">"category1"</span>&#125;,</span><br><span class="line">    &#123;<span class="string">"name"</span>: <span class="string">"category2"</span>&#125;,</span><br><span class="line">    &#123;<span class="string">"name"</span>: <span class="string">"category3"</span>&#125;,</span><br><span class="line">    &#123;<span class="string">"name"</span>: <span class="string">"category4"</span>&#125;,</span><br><span class="line">    &#123;<span class="string">"name"</span>: <span class="string">"category5"</span>&#125;,</span><br><span class="line">    &#123;<span class="string">"name"</span>: <span class="string">"category6"</span>&#125;,</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">links = [  <span class="comment"># 每一条链路的数据，包含：父节点source + 子节点target + 数据值value</span></span><br><span class="line">    &#123;<span class="string">"source"</span>: <span class="string">"category1"</span>, <span class="string">"target"</span>: <span class="string">"category2"</span>, <span class="string">"value"</span>: <span class="number">10</span>&#125;,</span><br><span class="line">    &#123;<span class="string">"source"</span>: <span class="string">"category2"</span>, <span class="string">"target"</span>: <span class="string">"category3"</span>, <span class="string">"value"</span>: <span class="number">15</span>&#125;,</span><br><span class="line">    &#123;<span class="string">"source"</span>: <span class="string">"category3"</span>, <span class="string">"target"</span>: <span class="string">"category4"</span>, <span class="string">"value"</span>: <span class="number">20</span>&#125;,</span><br><span class="line">    &#123;<span class="string">"source"</span>: <span class="string">"category5"</span>, <span class="string">"target"</span>: <span class="string">"category6"</span>, <span class="string">"value"</span>: <span class="number">25</span>&#125;,</span><br><span class="line">]</span><br><span class="line">c = (</span><br><span class="line">    Sankey()</span><br><span class="line">    .add(</span><br><span class="line">        <span class="string">"sankey"</span>,</span><br><span class="line">        nodes,</span><br><span class="line">        links,</span><br><span class="line">        linestyle_opt=opts.LineStyleOpts(opacity=<span class="number">0.2</span>, curve=<span class="number">0.5</span>, color=<span class="string">"source"</span>),</span><br><span class="line">        label_opts=opts.LabelOpts(position=<span class="string">"right"</span>),</span><br><span class="line">    )</span><br><span class="line">    .set_global_opts(title_opts=opts.TitleOpts(title=<span class="string">"Sankey-基本示例"</span>))</span><br><span class="line">  <span class="comment">#  .render("sankey_base.html")    生成HTML文件</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">c.render_notebook()   <span class="comment"># jupyter notebook中在线显示</span></span><br></pre></td></tr></table></figure>
+<p>在上面的代码中，<code>nodes</code>部分表示的是所有的节点名称，<strong>不管是父节点还是最小的子节点都要列出来</strong>；<code>links</code>部分表示的是每条链路的数据，包含：<strong>父节点source + 子节点target + 数据值value</strong>。根据links的数据，我们可以发现：<code>category1——-category2———category3———category4</code>构成了一条完整的链路，<code>category5—category6</code>构成了另一条链路。</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl323gqsamj30u607ytae.jpg" alt=""></p>
+<p>下面是最终的图形：</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl324qw015j31ac0t4mz6.jpg" alt=""></p>
+<h4 id="demo-2">demo_2</h4>
+<p>接下来我们看看官网的第二个<code>demo</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pyecharts <span class="keyword">import</span> options <span class="keyword">as</span> opts</span><br><span class="line"><span class="keyword">from</span> pyecharts.charts <span class="keyword">import</span> Sankey</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> open(<span class="string">"product.json"</span>, <span class="string">"r"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> f:   <span class="comment"># 导入json数据</span></span><br><span class="line">    j = json.load(f)    <span class="comment"># json数据转成字典数据</span></span><br><span class="line">c = (</span><br><span class="line">    Sankey()</span><br><span class="line">    .add(</span><br><span class="line">        <span class="string">"sankey"</span>,</span><br><span class="line">        nodes=j[<span class="string">"nodes"</span>],   <span class="comment"># 取出json数据的节点和链路数据</span></span><br><span class="line">        links=j[<span class="string">"links"</span>],</span><br><span class="line">        pos_top=<span class="string">"10%"</span>,</span><br><span class="line">        focus_node_adjacency=<span class="literal">True</span>,</span><br><span class="line">        levels=[</span><br><span class="line">            opts.SankeyLevelsOpts(</span><br><span class="line">                depth=<span class="number">0</span>,</span><br><span class="line">                itemstyle_opts=opts.ItemStyleOpts(color=<span class="string">"#fbb4ae"</span>),</span><br><span class="line">                linestyle_opts=opts.LineStyleOpts(color=<span class="string">"source"</span>, opacity=<span class="number">0.6</span>),</span><br><span class="line">            ),</span><br><span class="line">            opts.SankeyLevelsOpts(</span><br><span class="line">                depth=<span class="number">1</span>,</span><br><span class="line">                itemstyle_opts=opts.ItemStyleOpts(color=<span class="string">"#b3cde3"</span>),</span><br><span class="line">                linestyle_opts=opts.LineStyleOpts(color=<span class="string">"source"</span>, opacity=<span class="number">0.6</span>),</span><br><span class="line">            ),</span><br><span class="line">            opts.SankeyLevelsOpts(</span><br><span class="line">                depth=<span class="number">2</span>,</span><br><span class="line">                itemstyle_opts=opts.ItemStyleOpts(color=<span class="string">"#ccebc5"</span>),</span><br><span class="line">                linestyle_opts=opts.LineStyleOpts(color=<span class="string">"source"</span>, opacity=<span class="number">0.6</span>),</span><br><span class="line">            ),</span><br><span class="line">            opts.SankeyLevelsOpts(</span><br><span class="line">                depth=<span class="number">3</span>,</span><br><span class="line">                itemstyle_opts=opts.ItemStyleOpts(color=<span class="string">"#decbe4"</span>),</span><br><span class="line">                linestyle_opts=opts.LineStyleOpts(color=<span class="string">"source"</span>, opacity=<span class="number">0.6</span>),</span><br><span class="line">            ),</span><br><span class="line">        ],</span><br><span class="line">        linestyle_opt=opts.LineStyleOpts(curve=<span class="number">0.5</span>),</span><br><span class="line">    )</span><br><span class="line">    .set_global_opts(</span><br><span class="line">        title_opts=opts.TitleOpts(title=<span class="string">"Sankey-Level Settings"</span>),</span><br><span class="line">        tooltip_opts=opts.TooltipOpts(trigger=<span class="string">"item"</span>, trigger_on=<span class="string">"mousemove"</span>),</span><br><span class="line">    )</span><br><span class="line"><span class="comment">#    .render("sankey_with_level_setting.html")</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">c.render_notebook()   <span class="comment"># 在线显示</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>读取本地的<code>json</code>数据，通过<code>josn.load()</code>读取转成<code>Python</code>字典</li>
+<li>取出<code>json</code>数据中的节点和链路数据进行绘图</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl4mxwvmiyj31dm0t2drh.jpg" alt=""></p>
+<h3 id="原始数据整理">原始数据整理</h3>
+<p>通过上面官网的例子我们明白了绘制桑基图需要的两个数据：<strong>节点数据+链路数据</strong>，下面👇通过一个实际的案例来讲解如何生成绘制桑基图需要的数据</p>
+<h4 id="认识原始数据">认识原始数据</h4>
+<p>Peter同学一个人在深圳搬砖，辛辛苦苦地搬了一个月，产生很多的开销😭，这些开支主要分成5大块：</p>
+<ul>
+<li>住宿</li>
+<li>餐饮</li>
+<li>交通</li>
+<li>服装</li>
+<li>红包</li>
+</ul>
+<p>每个部分又分别有不同的去向，所以这些数据就自然构成了一条条的链路，比如：<code>总费用—住宿—房租（2000）</code>，<code>总费用—交通—滴滴（220）</code>等，<strong>我们只考虑两个节点之间的关系</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl339xoaz3j30nc11yn0z.jpg" alt=""></p>
+<h4 id="分层级整理数据">分层级整理数据</h4>
+<p>1、接下来我们分不同的层级来整理原始数据，首先是第一层：<strong>总费用到5个子版块</strong>。算出每个子版块的总和</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl33h6om3uj314a0soq8w.jpg" alt=""></p>
+<p>2、整理5个子版块的数据</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl33hob1hej30bu0uawi4.jpg" alt=""></p>
+<p>3、我们将上面两个步骤得到的数据放入一个<code>sheet</code>中，命名为<code>开支</code>：</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl33j7c8c0j30fk11kwk1.jpg" alt=""></p>
+<h3 id="桑基图数据生成">桑基图数据生成</h3>
+<h4 id="读取数据">读取数据</h4>
+<p>首先我们将上面制作好的<strong>开支</strong>这份数据读到pandas中：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"><span class="comment"># 等价于：data = pd.read_excel("life.xlsx",sheet_name=1)  1表示sheet_name的索引位置，索引从0开始</span></span><br><span class="line">df = pd.read_excel(<span class="string">"life.xlsx"</span>,sheet_name=<span class="string">"开支"</span>)  <span class="comment"># 直接写名字</span></span><br><span class="line">df.head()</span><br></pre></td></tr></table></figure>
+<p>注意两点：</p>
+<ol>
+<li>当一个表格中存在多个<code>sheet</code>的时候，我们需要指定<code>sheet_name</code>的名字</li>
+<li>指定<code>sheet_name</code>的名字有两种方式：
+<ol>
+<li>直接指定名字</li>
+<li>指定该<code>sheet_name</code>的位置索引</li>
+</ol>
+</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl45hqpksej30ae10i76y.jpg" alt=""></p>
+<h4 id="确定全部节点nodes">确定全部节点nodes</h4>
+<p>1、先找出全部的节点</p>
+<p>所有的节点数据就是上面的<strong>父类和子类中去重后的元素</strong>，我们使用集合<code>set</code>进行去重，再转成列表</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 父类+子类中的数据，需要去重</span></span><br><span class="line"></span><br><span class="line">df[<span class="string">'父类'</span>].tolist()</span><br><span class="line">df[<span class="string">'子类'</span>].tolist()</span><br></pre></td></tr></table></figure>
+<p>将上面的数据相加并且去重：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 将两个列表相加，在转成集合set进行元素去重，再转成列表</span></span><br><span class="line"></span><br><span class="line">nodes = list(set(df[<span class="string">'父类'</span>].tolist() + df[<span class="string">'子类'</span>].tolist()))</span><br><span class="line">nodes</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl45lwo0w3j31140qu0vv.jpg" alt=""></p>
+<p>2、生成节点数据</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 节点列表数据: nodes_list</span></span><br><span class="line"></span><br><span class="line">nodes_list = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> nodes:</span><br><span class="line">    dic = &#123;&#125;</span><br><span class="line">    dic[<span class="string">"name"</span>] = i</span><br><span class="line">    nodes_list.append(dic)</span><br><span class="line">nodes_list</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl45n5qhkjj30je0o8779.jpg" alt=""></p>
+<h4 id="生成链路数据">生成链路数据</h4>
+<p>我们将导入的数据生成链路数据，每一行记录都是一个链路数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">links_list = []</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(df)):</span><br><span class="line">    dic = &#123;&#125;</span><br><span class="line">    dic[<span class="string">'source'</span>] = df.iloc[i,<span class="number">0</span>]  <span class="comment"># 父类</span></span><br><span class="line">    dic[<span class="string">'target'</span>] = df.iloc[i,<span class="number">1</span>]  <span class="comment"># 子类</span></span><br><span class="line">    dic[<span class="string">'value'</span>] = int(df.iloc[i,<span class="number">2</span>])   <span class="comment"># 数据值 : 使用int函数直接强制转换，防止json.dump()报错</span></span><br><span class="line">    links_list.append(dic)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl45owrkorj30ya0nutfg.jpg" alt=""></p>
+<p>Attention⚠️：导入的数据部分需要强制转换成<code>int</code>类型，防止后面的数据处理报错。</p>
+<p>到此为止，我们已经完成了桑葚图中<strong>节点数据和链路数据</strong>的生成，下面开始绘图。</p>
+<h3 id="绘制桑基图">绘制桑基图</h3>
+<p>我们通过官网的2种不同方式来绘制桑基图</p>
+<h4 id="方式1">方式1</h4>
+<p>这种方式比较简单：直接将上面得到的<code>nodes_list</code>和<code>links_list</code>整体放入绘图的代码中：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 需要事先导入，否则jupyter notebook中可能不会出图</span></span><br><span class="line"><span class="keyword">from</span> pyecharts.globals <span class="keyword">import</span> CurrentConfig, OnlineHostType</span><br><span class="line"><span class="keyword">from</span> pyecharts <span class="keyword">import</span> options <span class="keyword">as</span> opts  <span class="comment"># 图形设置</span></span><br><span class="line"><span class="keyword">from</span> pyecharts.charts <span class="keyword">import</span> Sankey    <span class="comment"># 导入桑基图型的类</span></span><br><span class="line"></span><br><span class="line">nodes_list = [</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'围巾'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'长辈'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'网络费'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'服装'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'公交'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'同学'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'袜子'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'总费用'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'衣服'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'红包'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'交通'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'聚餐'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'滴滴'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'餐饮'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'管理费'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'水电'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'共享单车'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'外卖'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'房租'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'住宿'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'饮料'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'鞋子'</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'name'</span>: <span class="string">'地铁'</span>&#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">links_list = [</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'总费用'</span>, <span class="string">'target'</span>: <span class="string">'住宿'</span>, <span class="string">'value'</span>: <span class="number">2580</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'总费用'</span>, <span class="string">'target'</span>: <span class="string">'餐饮'</span>, <span class="string">'value'</span>: <span class="number">1300</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'总费用'</span>, <span class="string">'target'</span>: <span class="string">'交通'</span>, <span class="string">'value'</span>: <span class="number">500</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'总费用'</span>, <span class="string">'target'</span>: <span class="string">'服装'</span>, <span class="string">'value'</span>: <span class="number">900</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'总费用'</span>, <span class="string">'target'</span>: <span class="string">'红包'</span>, <span class="string">'value'</span>: <span class="number">1300</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'住宿'</span>, <span class="string">'target'</span>: <span class="string">'房租'</span>, <span class="string">'value'</span>: <span class="number">2000</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'住宿'</span>, <span class="string">'target'</span>: <span class="string">'水电'</span>, <span class="string">'value'</span>: <span class="number">400</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'住宿'</span>, <span class="string">'target'</span>: <span class="string">'管理费'</span>, <span class="string">'value'</span>: <span class="number">100</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'住宿'</span>, <span class="string">'target'</span>: <span class="string">'网络费'</span>, <span class="string">'value'</span>: <span class="number">80</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'餐饮'</span>, <span class="string">'target'</span>: <span class="string">'外卖'</span>, <span class="string">'value'</span>: <span class="number">800</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'餐饮'</span>, <span class="string">'target'</span>: <span class="string">'聚餐'</span>, <span class="string">'value'</span>: <span class="number">300</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'餐饮'</span>, <span class="string">'target'</span>: <span class="string">'饮料'</span>, <span class="string">'value'</span>: <span class="number">200</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'交通'</span>, <span class="string">'target'</span>: <span class="string">'滴滴'</span>, <span class="string">'value'</span>: <span class="number">220</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'交通'</span>, <span class="string">'target'</span>: <span class="string">'地铁'</span>, <span class="string">'value'</span>: <span class="number">150</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'交通'</span>, <span class="string">'target'</span>: <span class="string">'公交'</span>, <span class="string">'value'</span>: <span class="number">80</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'交通'</span>, <span class="string">'target'</span>: <span class="string">'共享单车'</span>, <span class="string">'value'</span>: <span class="number">50</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'服装'</span>, <span class="string">'target'</span>: <span class="string">'衣服'</span>, <span class="string">'value'</span>: <span class="number">400</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'服装'</span>, <span class="string">'target'</span>: <span class="string">'鞋子'</span>, <span class="string">'value'</span>: <span class="number">300</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'服装'</span>, <span class="string">'target'</span>: <span class="string">'围巾'</span>, <span class="string">'value'</span>: <span class="number">150</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'服装'</span>, <span class="string">'target'</span>: <span class="string">'袜子'</span>, <span class="string">'value'</span>: <span class="number">50</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'红包'</span>, <span class="string">'target'</span>: <span class="string">'同学'</span>, <span class="string">'value'</span>: <span class="number">800</span>&#125;,</span><br><span class="line"> &#123;<span class="string">'source'</span>: <span class="string">'红包'</span>, <span class="string">'target'</span>: <span class="string">'长辈'</span>, <span class="string">'value'</span>: <span class="number">500</span>&#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">c = (</span><br><span class="line">    Sankey()</span><br><span class="line">    .add(</span><br><span class="line">        <span class="string">"月度开支"</span>,</span><br><span class="line">        nodes_list,</span><br><span class="line">        links_list,</span><br><span class="line">        linestyle_opt=opts.LineStyleOpts(opacity=<span class="number">0.5</span>, curve=<span class="number">0.5</span>, color=<span class="string">"source"</span>),</span><br><span class="line">        label_opts=opts.LabelOpts(position=<span class="string">"right"</span>),</span><br><span class="line">    )</span><br><span class="line">    .set_global_opts(title_opts=opts.TitleOpts(title=<span class="string">"月度开支桑葚图"</span>))</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">c.render_notebook()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl46gjrb2bj30u00xhaw5.jpg" alt=""></p>
+<p>得到的桑基图在<code>notebook</code>中是动态的图形：</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl467smyjnj31980s4wiw.jpg" alt=""></p>
+<h4 id="方式2">方式2</h4>
+<p>如果数据比较少，将<code>nodes_list</code>和<code>links_list</code>放入绘图的代码中不会占据过多的空间；但是如果数据量大，不同链路种类多，全部放在整个绘图代码中，就会显得整个代码很臃肿。</p>
+<p>于是产生了方式2：先将上面得到的<code>nodes_list</code>和<code>links_list</code>生成一个<code>json</code>文件，再将<code>json</code>文件通过<code>with</code>方法读进来进行绘图。下面讲解如何通过得到的<code>nodes_list</code>和<code>links_list</code>数据生成我们绘图需要的<code>json</code>数据。</p>
+<p><code>json</code>格式的数据，在<code>python</code>中以字符串的形式呈现，<strong>一定要用双引号括起来</strong>。<code>json</code>模块中提供的<code>4</code>个功能：</p>
+<ul>
+<li><code>dumps</code>：<code>python</code>字典数据类型转成json数据类型的字符串</li>
+<li><code>dump</code>：字典数据转成字符串并且存储在文件中</li>
+<li><code>loads</code>：把<code>json</code>字符串转成字典数据类型</li>
+<li><code>load</code>：把文件打开，并且从字符串转换成字典数据类型</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl4mx9w0pzj319s0lywhm.jpg" alt=""></p>
+<p>1、先生成字典数据</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">data_dic = &#123;&#125;</span><br><span class="line"></span><br><span class="line">data_dic[<span class="string">"nodes"</span>] = nodes_list</span><br><span class="line">data_dic[<span class="string">"links"</span>] = links_list</span><br></pre></td></tr></table></figure>
+<p>得到的字典<code>data_dic</code>数据分为节点数据和链路数据，具体如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">'nodes'</span>: [&#123;<span class="string">'name'</span>: <span class="string">'围巾'</span>&#125;,   <span class="comment"># 节点部分数据</span></span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'长辈'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'网络费'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'服装'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'公交'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'同学'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'袜子'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'总费用'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'衣服'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'红包'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'交通'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'聚餐'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'滴滴'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'餐饮'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'管理费'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'水电'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'共享单车'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'外卖'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'房租'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'住宿'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'饮料'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'鞋子'</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'name'</span>: <span class="string">'地铁'</span>&#125;],</span><br><span class="line"> <span class="string">'links'</span>: [&#123;<span class="string">'source'</span>: <span class="string">'总费用'</span>, <span class="string">'target'</span>: <span class="string">'住宿'</span>, <span class="string">'value'</span>: <span class="number">2580</span>&#125;,  <span class="comment"># 链路部分数据</span></span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'总费用'</span>, <span class="string">'target'</span>: <span class="string">'餐饮'</span>, <span class="string">'value'</span>: <span class="number">1300</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'总费用'</span>, <span class="string">'target'</span>: <span class="string">'交通'</span>, <span class="string">'value'</span>: <span class="number">500</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'总费用'</span>, <span class="string">'target'</span>: <span class="string">'服装'</span>, <span class="string">'value'</span>: <span class="number">900</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'总费用'</span>, <span class="string">'target'</span>: <span class="string">'红包'</span>, <span class="string">'value'</span>: <span class="number">1300</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'住宿'</span>, <span class="string">'target'</span>: <span class="string">'房租'</span>, <span class="string">'value'</span>: <span class="number">2000</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'住宿'</span>, <span class="string">'target'</span>: <span class="string">'水电'</span>, <span class="string">'value'</span>: <span class="number">400</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'住宿'</span>, <span class="string">'target'</span>: <span class="string">'管理费'</span>, <span class="string">'value'</span>: <span class="number">100</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'住宿'</span>, <span class="string">'target'</span>: <span class="string">'网络费'</span>, <span class="string">'value'</span>: <span class="number">80</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'餐饮'</span>, <span class="string">'target'</span>: <span class="string">'外卖'</span>, <span class="string">'value'</span>: <span class="number">800</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'餐饮'</span>, <span class="string">'target'</span>: <span class="string">'聚餐'</span>, <span class="string">'value'</span>: <span class="number">300</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'餐饮'</span>, <span class="string">'target'</span>: <span class="string">'饮料'</span>, <span class="string">'value'</span>: <span class="number">200</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'交通'</span>, <span class="string">'target'</span>: <span class="string">'滴滴'</span>, <span class="string">'value'</span>: <span class="number">220</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'交通'</span>, <span class="string">'target'</span>: <span class="string">'地铁'</span>, <span class="string">'value'</span>: <span class="number">150</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'交通'</span>, <span class="string">'target'</span>: <span class="string">'公交'</span>, <span class="string">'value'</span>: <span class="number">80</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'交通'</span>, <span class="string">'target'</span>: <span class="string">'共享单车'</span>, <span class="string">'value'</span>: <span class="number">50</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'服装'</span>, <span class="string">'target'</span>: <span class="string">'衣服'</span>, <span class="string">'value'</span>: <span class="number">400</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'服装'</span>, <span class="string">'target'</span>: <span class="string">'鞋子'</span>, <span class="string">'value'</span>: <span class="number">300</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'服装'</span>, <span class="string">'target'</span>: <span class="string">'围巾'</span>, <span class="string">'value'</span>: <span class="number">150</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'服装'</span>, <span class="string">'target'</span>: <span class="string">'袜子'</span>, <span class="string">'value'</span>: <span class="number">50</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'红包'</span>, <span class="string">'target'</span>: <span class="string">'同学'</span>, <span class="string">'value'</span>: <span class="number">800</span>&#125;,</span><br><span class="line">  &#123;<span class="string">'source'</span>: <span class="string">'红包'</span>, <span class="string">'target'</span>: <span class="string">'长辈'</span>, <span class="string">'value'</span>: <span class="number">500</span>&#125;]&#125;</span><br></pre></td></tr></table></figure>
+<p>2、将生成的字典数据转成<code>json</code>数据，并保存到本地</p>
+<p>通过<code>json.dump</code>方法将上面生成的字典类型数据转成<code>json</code>数据，并保存到本地：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> open(<span class="string">"sankey.json"</span>,<span class="string">"w"</span>,encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> f:   <span class="comment"># 数据保存到了本地</span></span><br><span class="line">    <span class="comment"># json.dump(data_dic, f)   写入一行数据</span></span><br><span class="line">    json.dump(data_dic, f, indent=<span class="number">2</span>, sort_keys=<span class="literal">True</span>, ensure_ascii=<span class="literal">False</span>)  <span class="comment"># 写入多行数据</span></span><br></pre></td></tr></table></figure>
+<p>3、读取<code>json</code>数据进行绘图</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pyecharts <span class="keyword">import</span> options <span class="keyword">as</span> opts</span><br><span class="line"><span class="keyword">from</span> pyecharts.charts <span class="keyword">import</span> Sankey</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> open(<span class="string">"sankey.json"</span>, <span class="string">"r"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> f:   <span class="comment"># 1、打开保存的文件</span></span><br><span class="line">    j = json.load(f)   <span class="comment"># 2、json字符串转成字典类型数据</span></span><br><span class="line">c = (</span><br><span class="line">    Sankey()</span><br><span class="line">    .add(</span><br><span class="line">        <span class="string">"月度开支"</span>,</span><br><span class="line">        nodes=j[<span class="string">"nodes"</span>],   <span class="comment"># 3、通过键值对的映射关系来读取数据</span></span><br><span class="line">        links=j[<span class="string">"links"</span>],</span><br><span class="line">        pos_top=<span class="string">"20%"</span>,</span><br><span class="line">        focus_node_adjacency=<span class="literal">True</span>,</span><br><span class="line">        levels=[</span><br><span class="line">            opts.SankeyLevelsOpts(</span><br><span class="line">                depth=<span class="number">0</span>,</span><br><span class="line"><span class="comment">#                 itemstyle_opts=opts.ItemStyleOpts(color="#fbb4ae"),  4、属性的设置部分</span></span><br><span class="line">                linestyle_opts=opts.LineStyleOpts(color=<span class="string">"source"</span>, opacity=<span class="number">0.6</span>),</span><br><span class="line">            ),</span><br><span class="line">            opts.SankeyLevelsOpts(</span><br><span class="line">                depth=<span class="number">1</span>,</span><br><span class="line"><span class="comment">#                 itemstyle_opts=opts.ItemStyleOpts(color="#b3cde3"),</span></span><br><span class="line">                linestyle_opts=opts.LineStyleOpts(color=<span class="string">"source"</span>, opacity=<span class="number">0.6</span>),</span><br><span class="line">            ),</span><br><span class="line">            opts.SankeyLevelsOpts(</span><br><span class="line">                depth=<span class="number">2</span>,</span><br><span class="line"><span class="comment">#                 itemstyle_opts=opts.ItemStyleOpts(color="#ccebc5"),</span></span><br><span class="line">                linestyle_opts=opts.LineStyleOpts(color=<span class="string">"source"</span>, opacity=<span class="number">0.6</span>),</span><br><span class="line">            ),</span><br><span class="line">        ],</span><br><span class="line">        linestyle_opt=opts.LineStyleOpts(curve=<span class="number">0.5</span>,color=<span class="string">"source"</span>,opacity=<span class="number">0.6</span>,type_=<span class="string">"dotted"</span>),</span><br><span class="line">        label_opts=opts.LabelOpts(position=<span class="string">"right"</span>)</span><br><span class="line">    )</span><br><span class="line">    .set_global_opts(</span><br><span class="line">        title_opts=opts.TitleOpts(title=<span class="string">"月度开支桑葚图"</span>),</span><br><span class="line">        tooltip_opts=opts.TooltipOpts(trigger=<span class="string">"item"</span>, trigger_on=<span class="string">"mousemove|click"</span>,is_show=<span class="literal">True</span>),</span><br><span class="line">    )</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">c.render_notebook()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl477snz4yj314s0u0wti.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl478w9v42j31d20ougpr.jpg" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2020/11/28/pyecharts-9-%E7%BB%98%E5%88%B6%E6%A1%91%E5%9F%BA%E5%9B%BE.html">pyecharts-9-绘制桑基图</a></p>
+  <p><span>发布时间:</span>2020年11月28日 - 09:11</p>
+  <p><span>原始链接:</span><a href="/2020/11/28/pyecharts-9-%E7%BB%98%E5%88%B6%E6%A1%91%E5%9F%BA%E5%9B%BE.html" title="pyecharts-9-绘制桑基图">http://www.renpeter.cn/2020/11/28/pyecharts-9-%E7%BB%98%E5%88%B6%E6%A1%91%E5%9F%BA%E5%9B%BE.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2020/11/28/pyecharts-9-%E7%BB%98%E5%88%B6%E6%A1%91%E5%9F%BA%E5%9B%BE.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pandas/" rel="tag"># pandas</a>
+          
+            <a href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag"># 可视化</a>
+          
+            <a href="/tags/pyecharts/" rel="tag"># pyecharts</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/11/22/MySQL50-13-%E4%B9%A0%E9%A2%98%E5%8F%8A%E7%AD%94%E6%A1%88%E6%B1%87%E6%80%BB.html" rel="next" title="MySQL50-13-习题及答案汇总">
+                <i class="fa fa-chevron-left"></i> MySQL50-13-习题及答案汇总
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">490</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#pyecharts-9-桑基图绘制"><span class="nav-number">1.</span> <span class="nav-text">pyecharts-9-桑基图绘制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是桑基图"><span class="nav-number">2.</span> <span class="nav-text">什么是桑基图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#官网demo"><span class="nav-number">3.</span> <span class="nav-text">官网demo</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#demo-1"><span class="nav-number">3.1.</span> <span class="nav-text">demo_1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#demo-2"><span class="nav-number">3.2.</span> <span class="nav-text">demo_2</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原始数据整理"><span class="nav-number">4.</span> <span class="nav-text">原始数据整理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#认识原始数据"><span class="nav-number">4.1.</span> <span class="nav-text">认识原始数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分层级整理数据"><span class="nav-number">4.2.</span> <span class="nav-text">分层级整理数据</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#桑基图数据生成"><span class="nav-number">5.</span> <span class="nav-text">桑基图数据生成</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#读取数据"><span class="nav-number">5.1.</span> <span class="nav-text">读取数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#确定全部节点nodes"><span class="nav-number">5.2.</span> <span class="nav-text">确定全部节点nodes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生成链路数据"><span class="nav-number">5.3.</span> <span class="nav-text">生成链路数据</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绘制桑基图"><span class="nav-number">6.</span> <span class="nav-text">绘制桑基图</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#方式1"><span class="nav-number">6.1.</span> <span class="nav-text">方式1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方式2"><span class="nav-number">6.2.</span> <span class="nav-text">方式2</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">43</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">52</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">39</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">63</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">45</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">77</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">61</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共639.6k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2020/11/28/pyecharts-9-%E7%BB%98%E5%88%B6%E6%A1%91%E5%9F%BA%E5%9B%BE.html';
+          this.page.identifier = '2020/11/28/pyecharts-9-绘制桑基图.html';
+          this.page.title = 'pyecharts-9-绘制桑基图';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
