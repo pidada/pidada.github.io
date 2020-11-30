@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="数据库,MySQL," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="SQL进阶-10-用SQL处理数列 在关系型数据库的数据结构中，默认是不考虑数据的顺序。处理有序集合在SQL中不能直接实现，但是可以通过集合和谓词来间接实现处理有序数据的需求。 重要的知识点：用存在量化的否定形式来解决全称量化问题">
+<meta name="keywords" content="数据库,MySQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL进阶-10-SQL处理序列">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2020&#x2F;11&#x2F;30&#x2F;SQL%E8%BF%9B%E9%98%B6-10-SQL%E5%A4%84%E7%90%86%E5%BA%8F%E5%88%97.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="SQL进阶-10-用SQL处理数列 在关系型数据库的数据结构中，默认是不考虑数据的顺序。处理有序集合在SQL中不能直接实现，但是可以通过集合和谓词来间接实现处理有序数据的需求。 重要的知识点：用存在量化的否定形式来解决全称量化问题">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gi4nadc6dlj30bw0h4tcv.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjidecqnysj30zk0gcgsj.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjidhwrvedj306u0hvdgl.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gjidnr6h9dj30ds0jmtas.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl76taslcsj30eb0qsn0p.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl76yzy6kyj30yp02fn14.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl77ki3brkj30qy0qpn2f.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl77tlms93j30e607yjvo.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gl78wfc6yuj30fv0ij76u.jpg">
+<meta property="og:updated_time" content="2020-11-30T10:25:10.194Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gi4nadc6dlj30bw0h4tcv.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2020/11/30/SQL进阶-10-SQL处理序列.html"/>
+
+
+
+
+
+  <title>SQL进阶-10-SQL处理序列 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2020/11/30/SQL%E8%BF%9B%E9%98%B6-10-SQL%E5%A4%84%E7%90%86%E5%BA%8F%E5%88%97.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SQL进阶-10-SQL处理序列</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-11-30T18:24:28+08:00">
+                2020-11-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MySQL/" itemprop="url" rel="index">
+                    <span itemprop="name">MySQL</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MySQL/%E8%BF%9B%E9%98%B6/" itemprop="url" rel="index">
+                    <span itemprop="name">进阶</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/11/30/SQL%E8%BF%9B%E9%98%B6-10-SQL%E5%A4%84%E7%90%86%E5%BA%8F%E5%88%97.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/11/30/SQL进阶-10-SQL处理序列.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="SQL进阶-10-用SQL处理数列">SQL进阶-10-用SQL处理数列</h3>
+<p>在关系型数据库的数据结构中，默认是不考虑数据的顺序。处理有序集合在SQL中不能直接实现，但是可以通过集合和谓词来间接实现处理有序数据的需求。</p>
+<p>重要的知识点：<strong>用存在量化的否定形式来解决全称量化问题</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gi4nadc6dlj30bw0h4tcv.jpg" alt=""></p>
+<a id="more"></a>
+<h3 id="需求1-生成连续编号">需求1-生成连续编号</h3>
+<h4 id="需求">需求</h4>
+<p><strong>不使用数据库中自带的函数</strong>，实现任意长的连续编号序列，比如生成0-99的100个连续编号</p>
+<h4 id="SQL实现">SQL实现</h4>
+<p>先解决一个问题：<code>00-99</code>这<code>100</code>个数字中，<code>0，1，2……9</code>这<code>10</code>个数字分别出现了多少次？</p>
+<blockquote>
+<p>从下面的表中可以明显看出来：每个数字出现了20次</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjidecqnysj30zk0gcgsj.jpg" alt=""></p>
+<ol>
+<li>生成一个<code>digits</code>表，用来存储各个数位上的数字，因为不管多大的数字都可以由<code>0-9</code>这<code>10</code>个数字组成</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjidhwrvedj306u0hvdgl.jpg" alt=""></p>
+<ol start="2">
+<li>通过对两个Digits集合求笛卡尔积得出0-99的数字</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">select D1.digit + (D2.digit * 10) as seq  -- 两位数</span><br><span class="line">from Digits D1 cross join Digits D2  -- 两个集合的笛卡尔积</span><br><span class="line">order by seq  -- 排序</span><br></pre></td></tr></table></figure>
+<h4 id="什么是笛卡尔积">什么是笛卡尔积</h4>
+<p>通过交叉联结求出集合的笛卡尔积：<strong>实现所有可能的组合</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gjidnr6h9dj30ds0jmtas.jpg" alt=""></p>
+<h3 id="需求2-生成1-542的编号">需求2-生成1-542的编号</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">select  D1.digit + (D2.digit * 10) + (D3.digit * 100) as seq</span><br><span class="line">from Digits D1 cross join Digits D2 cross join Digits D3</span><br><span class="line">where D1.digit + (D2.digit * 10) + (D3.digit * 100)</span><br><span class="line">between 1 and 542   -- 可以指定任意数字</span><br><span class="line">order by seq;</span><br></pre></td></tr></table></figure>
+<h3 id="生成视图调用">生成视图调用</h3>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">-- 事先将结果生成视图，方便后续调用</span><br><span class="line">create view Sequence (seq)</span><br><span class="line">as select D1.digits + (D2.digits * 10) + (D3.digits * 100)</span><br><span class="line">from Digits D1 cross join Digits D2 cross join Digits D3;</span><br><span class="line"></span><br><span class="line">-- 后续调用</span><br><span class="line">select seq</span><br><span class="line">from Sequence</span><br><span class="line">where seq between 1 and 100</span><br><span class="line">order by seq;</span><br></pre></td></tr></table></figure>
+<h3 id="需求3-求解全部的缺失值">需求3-求解全部的缺失值</h3>
+<p>如何从已知的序列中求出全部的缺失值？我们借助上面生成的视图：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">-- except版本</span><br><span class="line"></span><br><span class="line">select seq</span><br><span class="line">from Sequence  -- 上面生成的视图</span><br><span class="line">where seq between 1 and 12</span><br><span class="line">except select seq from Seqtab1;   -- 排除从已知表中查询的seq</span><br><span class="line"></span><br><span class="line">-- not in 版</span><br><span class="line">select seq</span><br><span class="line">from Sequence</span><br><span class="line">where seq between 1 and 12</span><br><span class="line">and seq not in (select seq from Seqtab1);   -- 不在查询的seq中</span><br><span class="line"></span><br><span class="line">-- 动态地指定连续编号范围的SQL语句</span><br><span class="line">select seq</span><br><span class="line">from Sequence</span><br><span class="line">where seq between (select min(seq) from Seqtab1) and (select max(seq) from Seqtab1)</span><br><span class="line">except select seq from Seqtab1</span><br></pre></td></tr></table></figure>
+<h3 id="火车问题-连续空位">火车问题-连续空位</h3>
+<p>我们假设3个人一起去旅行，准备预订这列火车的车票，要求是从1-15号的座位中选择出<strong>连续的3个空位置</strong>，我们把连续的整数构成的集合称之为序列，这样的序列中不能出现缺失的编号。</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl76taslcsj30eb0qsn0p.jpg" alt=""></p>
+<p>满足要求的序列：</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl76yzy6kyj30yp02fn14.jpg" alt=""></p>
+<p>根据上面的图形，我们发现满足要求的序列：以n为起点，n+(3-1)=n+2为终点的作为全部是未预定状态</p>
+<h4 id="SQL实现-不考虑换排">SQL实现-不考虑换排</h4>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 不考虑换排</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span></span><br><span class="line">	s1.seat <span class="keyword">as</span> start_seat</span><br><span class="line">	,<span class="string">"~"</span></span><br><span class="line">	,s2.seat <span class="keyword">as</span> end_seat</span><br><span class="line"><span class="keyword">from</span> Seats s1, Seats s2</span><br><span class="line"><span class="keyword">where</span> s2.seat = s1.seat + (:head_cnt - <span class="number">1</span>)   <span class="comment">-- 1、决定起点和终点</span></span><br><span class="line"><span class="keyword">and</span> <span class="keyword">not</span> <span class="keyword">exists</span> (<span class="keyword">select</span> * <span class="keyword">from</span> Seats s3   <span class="comment">-- 2、不存在“不是未预定的状态”：全部都是“未预定”的状态</span></span><br><span class="line">               <span class="keyword">where</span> s3.seat <span class="keyword">between</span> s1.seat <span class="keyword">and</span> s2.seat</span><br><span class="line">               <span class="keyword">and</span> s3.status &lt;&gt; <span class="string">"未预定"</span>);</span><br></pre></td></tr></table></figure>
+<p><code>:head_cnt</code>表示需要的空位个数的参数，通过给参数赋值能够应对任意多个人的预约。上面代码的主要工作：</p>
+<ol>
+<li>找到起点和终点</li>
+<li>起点和终点之间的座位都是未预定的状态</li>
+</ol>
+<p>全称量化问题：<strong>将所有满足条件P转成不存在不满条件P的行</strong></p>
+<h4 id="SQL实现-考虑换排">SQL实现-考虑换排</h4>
+<p>给表中的数据加上了行编号<code>row_id</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl77ki3brkj30qy0qpn2f.jpg" alt=""></p>
+<p>因为发生换排，<code>9,10,11</code>不再符合要求。因此，为了解决换排问题，需要保证：<strong>全部都在同一排</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl77tlms93j30e607yjvo.jpg" alt=""></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 考虑换排</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span></span><br><span class="line">	s1.seat <span class="keyword">as</span> start_seat</span><br><span class="line">	,<span class="string">"~"</span></span><br><span class="line">	,s2.seat <span class="keyword">as</span> end_seat</span><br><span class="line"><span class="keyword">from</span> Seats s1, Seats s2</span><br><span class="line"><span class="keyword">where</span> s2.seat = s1.seat + (:head_cnt - <span class="number">1</span>)   <span class="comment">-- 1、决定起点和终点</span></span><br><span class="line"><span class="keyword">and</span> <span class="keyword">not</span> <span class="keyword">exists</span> (<span class="keyword">select</span> * <span class="keyword">from</span> Seats s3   <span class="comment">-- 2、不存在“不是未预定的状态”：全部都是“未预定”的状态</span></span><br><span class="line">               <span class="keyword">where</span> s3.seat <span class="keyword">between</span> s1.seat <span class="keyword">and</span> s2.seat</span><br><span class="line">               <span class="keyword">and</span> (s3.status &lt;&gt; <span class="string">"未预定"</span>   <span class="comment">-- 3、全部都是未预定</span></span><br><span class="line">                    <span class="keyword">or</span> s3.row_id &lt;&gt; s1.row_id  <span class="comment">-- 4、在同一排：和起点的行号相同</span></span><br><span class="line">                ));</span><br></pre></td></tr></table></figure>
+<p><strong>肯定等于双重否定</strong></p>
+<h3 id="火车问题—最多坐几个人">火车问题—最多坐几个人</h3>
+<p>按照空位的问题，最多能够坐下几个人：<strong>求出最长的序列</strong>。下图中的2-5号就是满足要求的</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gl78wfc6yuj30fv0ij76u.jpg" alt=""></p>
+<p>要保证从座位A到座位B全部是未预定的状态，必须满足3个条件：</p>
+<ol>
+<li>起点和终点之间的所有座位都是未预定状态</li>
+<li>起点之前的座位不是未预定（不能往前延伸）</li>
+<li>终点之后的座位不是未预定（不能往后扩展）</li>
+</ol>
+<h4 id="SQL实现-v2">SQL实现</h4>
+<p>生成所有序列的视图：<strong>存在量化的否定形式来表达全称量化</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 1、创建视图</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">view</span> <span class="keyword">Sequence</span> (start_seat, end_start, seat_cnt) <span class="keyword">as</span>  <span class="comment">-- 1、创建视图</span></span><br><span class="line"><span class="keyword">select</span> s1.seat <span class="keyword">as</span> start_seat,</span><br><span class="line">			s2.seat <span class="keyword">as</span> end_seat,</span><br><span class="line">			s2.seat - s1.seat + <span class="number">1</span> <span class="keyword">as</span> seat_cnt   <span class="comment">-- 2、起点和终点间的个数</span></span><br><span class="line"><span class="keyword">from</span> Seats s1, Seats s2</span><br><span class="line"><span class="keyword">where</span> s1.seat &lt;= s2.seat   <span class="comment">-- 3、起点小于终点</span></span><br><span class="line"><span class="keyword">and</span> <span class="keyword">not</span> <span class="keyword">exists</span>(<span class="keyword">select</span> * <span class="keyword">from</span> Seats s3   <span class="comment">-- 全称量化：双重否定</span></span><br><span class="line">               <span class="keyword">where</span> (s3.seat <span class="keyword">between</span> s1.seat <span class="keyword">and</span> s2.seat    <span class="comment">-- 4、条件1的否定</span></span><br><span class="line">                     <span class="keyword">and</span> s3.status &lt;&gt; <span class="string">'未预定'</span>)</span><br><span class="line">               <span class="keyword">or</span> (s3.seat = s2.seat + <span class="number">1</span> <span class="keyword">and</span> s3.status = <span class="string">"未预定"</span>)  <span class="comment">-- 5、条件3的否定</span></span><br><span class="line">               <span class="keyword">or</span> (s3.seat = s1.seat - <span class="number">1</span> <span class="keyword">and</span> s3.status = <span class="string">'未预定'</span>)  <span class="comment">-- 6、条件2的否定</span></span><br><span class="line">              );</span><br></pre></td></tr></table></figure>
+<p>求出最长的序列：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> start_seat,<span class="string">'~'</span>,end_seat,seat_cnt</span><br><span class="line"><span class="keyword">from</span> Sequences  <span class="comment">-- 视图</span></span><br><span class="line"><span class="keyword">where</span> seat_snt = (<span class="keyword">select</span> <span class="keyword">max</span>(seat_cnt) <span class="keyword">from</span> Sequences);   <span class="comment">-- 最大值</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2020/11/30/SQL%E8%BF%9B%E9%98%B6-10-SQL%E5%A4%84%E7%90%86%E5%BA%8F%E5%88%97.html">SQL进阶-10-SQL处理序列</a></p>
+  <p><span>发布时间:</span>2020年11月30日 - 18:11</p>
+  <p><span>原始链接:</span><a href="/2020/11/30/SQL%E8%BF%9B%E9%98%B6-10-SQL%E5%A4%84%E7%90%86%E5%BA%8F%E5%88%97.html" title="SQL进阶-10-SQL处理序列">http://www.renpeter.cn/2020/11/30/SQL%E8%BF%9B%E9%98%B6-10-SQL%E5%A4%84%E7%90%86%E5%BA%8F%E5%88%97.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2020/11/30/SQL%E8%BF%9B%E9%98%B6-10-SQL%E5%A4%84%E7%90%86%E5%BA%8F%E5%88%97.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+          
+            <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/11/29/pyecharts-14-%E9%A1%B5%E9%9D%A2%E7%BB%84%E4%BB%B6Page.html" rel="next" title="pyecharts-14-页面组件Page">
+                <i class="fa fa-chevron-left"></i> pyecharts-14-页面组件Page
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">496</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL进阶-10-用SQL处理数列"><span class="nav-number">1.</span> <span class="nav-text">SQL进阶-10-用SQL处理数列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#需求1-生成连续编号"><span class="nav-number">2.</span> <span class="nav-text">需求1-生成连续编号</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#需求"><span class="nav-number">2.1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL实现"><span class="nav-number">2.2.</span> <span class="nav-text">SQL实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是笛卡尔积"><span class="nav-number">2.3.</span> <span class="nav-text">什么是笛卡尔积</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#需求2-生成1-542的编号"><span class="nav-number">3.</span> <span class="nav-text">需求2-生成1-542的编号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成视图调用"><span class="nav-number">4.</span> <span class="nav-text">生成视图调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#需求3-求解全部的缺失值"><span class="nav-number">5.</span> <span class="nav-text">需求3-求解全部的缺失值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#火车问题-连续空位"><span class="nav-number">6.</span> <span class="nav-text">火车问题-连续空位</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL实现-不考虑换排"><span class="nav-number">6.1.</span> <span class="nav-text">SQL实现-不考虑换排</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL实现-考虑换排"><span class="nav-number">6.2.</span> <span class="nav-text">SQL实现-考虑换排</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#火车问题—最多坐几个人"><span class="nav-number">7.</span> <span class="nav-text">火车问题—最多坐几个人</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL实现-v2"><span class="nav-number">7.1.</span> <span class="nav-text">SQL实现</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">44</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">57</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">39</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">68</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">45</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">78</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">61</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共646.1k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2020/11/30/SQL%E8%BF%9B%E9%98%B6-10-SQL%E5%A4%84%E7%90%86%E5%BA%8F%E5%88%97.html';
+          this.page.identifier = '2020/11/30/SQL进阶-10-SQL处理序列.html';
+          this.page.title = 'SQL进阶-10-SQL处理序列';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
