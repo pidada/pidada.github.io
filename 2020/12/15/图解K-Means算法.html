@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="互联网,机器学习," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="图解K-Means算法 本文中介绍的是一种常见的无监督学习算法，名字叫做K均值算法：K-Means算法。 K-Means算法在无监督学习，尤其是聚类算法中是最为基础和重要的一个算法。它实现起来非常简单。聚类效果也很不错的，因此应用非常广泛。 本文将会从以下8个方面进行详细的讲解：">
+<meta name="keywords" content="互联网,机器学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图解K-Means算法">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2020&#x2F;12&#x2F;15&#x2F;%E5%9B%BE%E8%A7%A3K-Means%E7%AE%97%E6%B3%95.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="图解K-Means算法 本文中介绍的是一种常见的无监督学习算法，名字叫做K均值算法：K-Means算法。 K-Means算法在无监督学习，尤其是聚类算法中是最为基础和重要的一个算法。它实现起来非常简单。聚类效果也很不错的，因此应用非常广泛。 本文将会从以下8个方面进行详细的讲解：">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1glll88pszjj31e20mgn0d.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9ko1rdp97j312o0n4qra.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gllkxfefaej30us0me0tm.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1gllkxdmhotj30yi0mewff.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwgy1g9kpmanohbj30wm0mogps.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9kpptwrt0j30xi0m8tdk.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9kpyi7exsj30x80m6jvh.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006tNbRwly1g9kr86tu8dj30w20lm0x8.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1glmofch9njj30p0056my7.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1glmog9aozgj30n8056q3u.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1glmohwy0obj30qe060my7.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1glmoj7bqtdj30m6062q3s.jpg">
+<meta property="og:updated_time" content="2020-12-15T11:18:24.333Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;0081Kckwgy1glll88pszjj31e20mgn0d.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2020/12/15/图解K-Means算法.html"/>
+
+
+
+
+
+  <title>图解K-Means算法 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2020/12/15/%E5%9B%BE%E8%A7%A3K-Means%E7%AE%97%E6%B3%95.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">图解K-Means算法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-12-15T19:16:20+08:00">
+                2020-12-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/12/15/%E5%9B%BE%E8%A7%A3K-Means%E7%AE%97%E6%B3%95.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/12/15/图解K-Means算法.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  2.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  10
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="图解K-Means算法">图解K-Means算法</h3>
+<p>本文中介绍的是一种常见的无监督学习算法，名字叫做K均值算法：<code>K-Means算法</code>。</p>
+<p><code>K-Means</code>算法在无监督学习，尤其是聚类算法中是最为基础和重要的一个算法。它实现起来非常简单。聚类效果也很不错的，因此应用非常广泛。</p>
+<p>本文将会从以下<code>8</code>个方面进行详细的讲解：</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glll88pszjj31e20mgn0d.jpg" alt=""></p>
+<a id="more"></a>
+<h3 id="算法思想">算法思想</h3>
+<h4 id="无监督学习">无监督学习</h4>
+<p>在正式介绍<code>K-Means</code>算法之前，我们先解释一下<strong>无监督学习</strong>。用一句很通俗的话来解释：</p>
+<blockquote>
+<p>是否有监督（supervised），我们只需要<strong>看输入的数据是否有标签</strong></p>
+</blockquote>
+<p>输入的数据如果带有标签，则是<strong>有监督学习</strong>，比如KNN算法（K近邻）就是监督学习的典型算法；如果没有标签，则认为是<strong>无监督学习</strong>，比如本文中即将介绍的K-Means算法</p>
+<p>我们看看无监督学习聚类算法的应用：</p>
+<ul>
+<li>市场分割</li>
+<li>社交网络分析</li>
+<li>组织计算机集群</li>
+<li>星系的形成</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1g9ko1rdp97j312o0n4qra.jpg" alt=""></p>
+<h4 id="算法思想-v2">算法思想</h4>
+<p><code>K-Means</code>聚类算法是一种迭代求解的聚类分析算法。算法思想是：我们需要随机选择K个对象作为初始的聚类中心，然后计算每个对象和各个聚类中心之间的距离，然后将每个对象分配给距离它最近的聚类中心。</p>
+<p>聚类中心及分配给它们的对象就代表着一个聚类。每分配一个样本，聚类的中心会根据聚类中现有的对象被重新计算。此过程将不断重复，直至满足设置的终止条件。</p>
+<h3 id="算法步骤">算法步骤</h3>
+<p><code>K-Means</code>算法的具体步骤如下：</p>
+<ol>
+<li>首先我们需要<strong>确定一个k值</strong>（随机），即我们希望数据经过聚类得到k个不同的集合</li>
+<li>从给定的数据集中<strong>随机选择K个数据点作为质心</strong></li>
+<li>对数据集中的每个点计算其与每一个质心的距离（比如欧式距离）；<strong>数据点离哪个质心近，就划分到那个质心所属的集合</strong></li>
+<li>第一轮将所有的数据归号集合后，一共有K个集合，然后<strong>重新计算每个集合的质心</strong></li>
+<li>如果新计算出来的质心和原来的质心之间的距离小于某一个设置的阈值，则表示重新计算的质心的位置变化不大，数据整体趋于稳定，或者说数据已经收敛。在这样的情况下，我们认为聚类效果已经达到了期望的结果，算法可终止。</li>
+<li>反之，<strong>如果新质心和原来质心的距离变化很大，需要重复迭代3-5步骤</strong>，直至位置变化不大，达到收敛状态。</li>
+</ol>
+<h3 id="图解K-Means">图解K-Means</h3>
+<h4 id="具体步骤">具体步骤</h4>
+<p>1、给定需要进行聚类划分的数据集</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gllkxfefaej30us0me0tm.jpg" alt=""></p>
+<p>2、随机选择2个聚类中心（K=2）</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gllkxdmhotj30yi0mewff.jpg" alt=""></p>
+<p>3、计算每个数据点到质心的距离，并将数据点划分到离它最近的质心的类中</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwgy1g9kpmanohbj30wm0mogps.jpg" alt=""></p>
+<p>4、计算2个数据集的各自的质心（红点、蓝点的均值），将聚类中心移动到均值处，变成新的聚类中心</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9kpptwrt0j30xi0m8tdk.jpg" alt="img"></p>
+<p>5、找到新的聚类中心。如果</p>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9kpyi7exsj30x80m6jvh.jpg" alt=""></p>
+<h4 id="完整过程">完整过程</h4>
+<p><img src="https://tva1.sinaimg.cn/large/006tNbRwly1g9kr86tu8dj30w20lm0x8.jpg" alt=""></p>
+<ol>
+<li>在上面的过程中我们假设k=2。在图b中我们随机选择了两个类所对应的质心，也就是图中蓝色和红色质心</li>
+<li>分别求出样本中每个点到这两个质心的距离，并且将每个样本所属的类别归到和该样本距离最小的质心的类别，得到图c，也就是第一轮迭代后的结果</li>
+<li>我们对c图中的当前标记为红色和蓝色的点分别求出其新的质心，得到了图d，此时质心的位置发生了改变</li>
+<li>图e和图f重复了图c和图d的过程，即将所有点的类别标记为距离最近的质心的类别并求新的质心。</li>
+<li>一般的，<code>K-Means</code>算法需要运行多次才能达到图f的效果。</li>
+</ol>
+<p><strong>注：以上图形来自吴恩达老师在机器学习视频的讲解截图</strong></p>
+<h3 id="k值选择">k值选择</h3>
+<p>k值决定了我们将数据划分成多少个簇类。k个初始化的质心的位置选择对最后的聚类结果和整个大代码的运行时间都有非常大的影响。因此需要选择合适的k个质心</p>
+<p>一般k值是通过先验知识来选取的。如果没有什么先验知识，我们可以通过交叉验证的方式来选择一个合适的k值。</p>
+<h3 id="距离问题">距离问题</h3>
+<p>在机器学习中，我们常用的距离有以下几种：</p>
+<p>1、两个集合之间的$x_i,x_j$的$L_p$距离定义为：</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glmofch9njj30p0056my7.jpg" alt=""></p>
+<p>2、当p=1则表示为曼哈顿距离：</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glmog9aozgj30n8056q3u.jpg" alt=""></p>
+<p>3、当p=2则表示为我们常用的<strong>欧式距离</strong>：</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glmohwy0obj30qe060my7.jpg" alt=""></p>
+<p>4、当p趋于无穷时，表示为切比雪夫距离，它是各个坐标距离的最大值：</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glmoj7bqtdj30m6062q3s.jpg" alt=""></p>
+<p>在<code>K-Means</code>算法中一般采用的是<strong>欧式距离</strong></p>
+<h3 id="算法优缺点">算法优缺点</h3>
+<h4 id="优点">优点</h4>
+<ol>
+<li>原理很简单，实现起来也是非常容易，算法收敛速度也很快</li>
+<li>聚类效果优，可解释性强。当数据最终收敛之后，我们最终能够很清晰的看到聚类的效果</li>
+<li>约束条件少。算法中需要控制的参数只有簇数k。通过对k的不断调节才能得到最好的聚类效果</li>
+</ol>
+<h4 id="缺点">缺点</h4>
+<ol>
+<li>k值的选取不好把握，很多情况下K值的估计是非常困难的，有时候通过交叉验证来获取。</li>
+<li>迭代的方法得到的结果只能是局部最优解，而不能得到全局最优解。</li>
+<li>对噪音和异常点很敏感。异常点对质心的确定影响很大的。可以用来检测异常值。</li>
+</ol>
+<h3 id="Python实现K-Means">Python实现K-Means</h3>
+<p>下面讲解一种利用Python实现k-means算法的代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> random  <span class="comment"># 随机模块</span></span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 导入数据</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loadDataSet</span><span class="params">()</span>:</span></span><br><span class="line">  dataset = np.loadtext(<span class="string">"user/skl/cluster/dataset.csv"</span>)  <span class="comment"># 个人文件路径</span></span><br><span class="line">  <span class="keyword">return</span> dataset   <span class="comment"># 返回数据集</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘图函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show_fig</span><span class="params">()</span>:</span></span><br><span class="line">  dataset = loadDataSet()   <span class="comment"># 导入数据</span></span><br><span class="line">  fig = plt.figure()  <span class="comment"># 确定画布</span></span><br><span class="line">  ax = fig.add_subplot(<span class="number">111</span>)   <span class="comment"># 一个子图</span></span><br><span class="line">  ax.scatter(dataset[:,<span class="number">0</span>], dataset[:,<span class="number">1</span>])  <span class="comment"># 传入绘图数据</span></span><br><span class="line">  plt.show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义欧式距离公式</span></span><br><span class="line"><span class="comment"># 两个向量间的欧式距离公式：[(x_1 - x_2)^2 + (y_1 - y_2)^2 + (x_n - y_n)^2]</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calcudistance</span><span class="params">(vec1,vec2)</span>:</span>  <span class="comment"># 传入两个向量</span></span><br><span class="line">  <span class="keyword">return</span> np.sqrt(np.sum(np.square(vec1 - vec2)))  <span class="comment"># 向量相减在平方，最后再求和</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化质心</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">initCentroids</span><span class="params">(dataset, k)</span>:</span></span><br><span class="line">  <span class="comment"># 初始化执行；dataset是传入的数据</span></span><br><span class="line">  <span class="comment"># k：选择分类簇的个数</span></span><br><span class="line">  dataset = list(dataset)  <span class="comment"># 数据列表化</span></span><br><span class="line">  <span class="keyword">return</span> random.sample(dataset,k)   <span class="comment"># 随机选取k的模块</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算每个数据点和质心的距离，并归属到距离最小的类别中</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minDisctance</span><span class="params">(dataset, centroidList)</span>:</span>  <span class="comment"># 传入数据集和选取的质心列表</span></span><br><span class="line">  clusterDict = dict()  <span class="comment"># 保存簇类结果</span></span><br><span class="line">  k = len(centroidList)  <span class="comment"># 质心列表的长度：总共多少个质心表示分成多少类</span></span><br><span class="line">  <span class="keyword">for</span> item <span class="keyword">in</span> dataset:  <span class="comment"># 原始数据中的每个元素</span></span><br><span class="line">    vec1 = item  <span class="comment"># 数据中的向量</span></span><br><span class="line">    flag = <span class="number">-1</span>  <span class="comment"># 标志位</span></span><br><span class="line">    minDis = float(<span class="string">"inf"</span>)   <span class="comment"># 初始化为无穷大值</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(k):</span><br><span class="line">      vec2 = centroidList[i]   <span class="comment"># 取出第i个质心</span></span><br><span class="line">      distcance = calcudistance(vec1, vec2)   <span class="comment"># 计算欧式距离</span></span><br><span class="line">      <span class="keyword">if</span> distance &lt; minDis:</span><br><span class="line">        minDis = distance  <span class="comment"># 如果算出来的实际距离小于最小值的初始值，则将真实值distance赋值给最小值（更新最小值）</span></span><br><span class="line">        flag = i  <span class="comment"># 循环结束时，flag保存与当前item最近的簇标记</span></span><br><span class="line">    <span class="keyword">if</span> flag <span class="keyword">not</span> <span class="keyword">in</span> clusterDict.keys():</span><br><span class="line">      clusterDict.setdefault(flag,[])</span><br><span class="line">    clusterDict[flag].append(item)  <span class="comment"># 加入到相应的簇类中</span></span><br><span class="line">  <span class="keyword">return</span> clusterDict  <span class="comment"># 不同的类别</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 重新计算质心</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getcentroids</span><span class="params">(clusterDict)</span>:</span></span><br><span class="line">  <span class="comment"># 重新计算k个质心</span></span><br><span class="line">  centroidList = []   <span class="comment"># 质心空列表</span></span><br><span class="line">  <span class="keyword">for</span> key <span class="keyword">in</span> clusterDict.keys():  <span class="comment">#</span></span><br><span class="line">    centroid = np.mean(clusterDict[key], axis=<span class="number">0</span>)  <span class="comment"># 现有数据点的平均值</span></span><br><span class="line">    centroidList.append(centroid)</span><br><span class="line">  <span class="keyword">return</span> centroidList  <span class="comment"># 得到新的质心</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算均方误差</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getVar</span><span class="params">(centroidList, clusterDict)</span>:</span></span><br><span class="line">  <span class="comment"># 将簇类中各个向量和质心的距离累加求和</span></span><br><span class="line">  sum = <span class="number">0.0</span>  <span class="comment"># 初始值</span></span><br><span class="line">  <span class="keyword">for</span> key <span class="keyword">in</span> clusterDict.keys():   <span class="comment"># 簇类中的键</span></span><br><span class="line">    vec1 = centroidList[key]   <span class="comment"># 取出某个质心</span></span><br><span class="line">    distance = <span class="number">0.0</span>  <span class="comment"># 距离初始化值</span></span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> clusterDict[key]:  <span class="comment"># 簇类的键</span></span><br><span class="line">      vec2 = item</span><br><span class="line">      distance += calcudistance(vec1, vec2)  <span class="comment"># 求距离</span></span><br><span class="line">    sum += distance  <span class="comment"># 累加</span></span><br><span class="line">  <span class="keyword">return</span> sum</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示簇类</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">showCluster</span><span class="params">(centroidList, clusterDict)</span>:</span></span><br><span class="line">  <span class="comment"># 显示簇类结果</span></span><br><span class="line">  color_mark = [<span class="string">"or"</span>,<span class="string">"ob"</span>,<span class="string">"og"</span>,<span class="string">"ok"</span>,<span class="string">"oy"</span>,<span class="string">"ow"</span>]</span><br><span class="line">  centroid_mark = [<span class="string">"dr"</span>,<span class="string">"db"</span>,<span class="string">"dg"</span>,<span class="string">"dk"</span>,<span class="string">"dy"</span>,<span class="string">"dw"</span>]</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> key <span class="keyword">in</span> clusterDict.keys():</span><br><span class="line">    plt.plot(centroidList[key][<span class="number">0</span>], centroidList[key][<span class="number">1</span>], centroidMark[key],markersize=<span class="number">12</span>)  <span class="comment"># 质心点</span></span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> clusterDict[key]:</span><br><span class="line">      plt.plot(item[<span class="number">0</span>],item[<span class="number">1</span>],colorMark[key])</span><br><span class="line">  plt.show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 主函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">  dataset = loadDataSet()  <span class="comment"># 导入数据</span></span><br><span class="line">  centroidList = initCentroids(dataset,<span class="number">4</span>)   <span class="comment"># 质心列表</span></span><br><span class="line">  clusterDict = minDistance(dataset, centroidList)   <span class="comment"># 簇类的字典数据</span></span><br><span class="line">  newVar = getVar(centroidList, clusterDict)   <span class="comment"># 质心和簇类中数据得到新的误差</span></span><br><span class="line">  oldVar = <span class="number">1</span>  <span class="comment"># 当两次聚类的误差小于某个值时，说明质心基本稳定</span></span><br><span class="line"></span><br><span class="line">  times = <span class="number">2</span></span><br><span class="line">  <span class="keyword">while</span> abs(newVar - oldVar) &gt;= <span class="number">0.00001</span>:   <span class="comment"># 当新旧误差的绝对值小于某个很小的值</span></span><br><span class="line">    centroidList = getCentroids(clusterDict)   <span class="comment"># 得到质心列表</span></span><br><span class="line">    oldVar = newVar  <span class="comment"># 将新的误差赋值给旧误差</span></span><br><span class="line">    newVar = getVar(centroidList, clusterDict)   <span class="comment"># 新误差</span></span><br><span class="line">    times += <span class="number">1</span></span><br><span class="line">    showCluster(centroidList, clusterDict)  <span class="comment"># 显示聚类结果</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">  show_fig()</span><br><span class="line">  main()</span><br></pre></td></tr></table></figure>
+<h3 id="延伸学习">延伸学习</h3>
+<p>传统的<code>K-Means</code>算法存在一些缺陷，比如<code>K</code>值的选取不是很好把握、对异常数据敏感等，于是提出了很多在其基础上改进的聚类算法：</p>
+<p>1、K-Means++（初始化优化）</p>
+<p>针对K-Means算法中随机初始化质心的方法进行了优化</p>
+<p>2、elkan K-Means（距离优化）</p>
+<p>在传统的<code>K-Means</code>算法中，在每轮迭代中我们都需要计算所有的样本点到质心的距离，这样是非常耗时的。</p>
+<p><code>elkan K-Means</code>算法利用：<strong>两边之和大于等于第三边，以及两边之差小于第三边</strong>的三角形性质，来减少距离的计算。</p>
+<p>3、Mini Batch K-Means算法（大样本优化）</p>
+<p>在传统的<code>K-Means</code>算法中，要计算所有的样本点到所有的质心的距离。现在大数据时代，如果样本量非常大，传统的算法将会非常耗时。</p>
+<p><code>Mini Batch K-Means</code>就是从原始的样本集中随机选择一部分样本做传统的<code>K-Means</code>。这样可以避免样本量太大的计算难题，同时也加速算法的收敛。当然，此时的代价就是我们最终聚类的精度会降低一些。</p>
+<p>为了增加算法的准确性，我们一般会多跑几次<code>Mini Batch K-Means</code>算法，用得到不同的随机样本集来得到聚类簇，选择其中最优的聚类簇。</p>
+<h3 id="参考资料">参考资料</h3>
+<p>1、李航老师—《统计学习方法》一书</p>
+<p>2、吴恩达老师—《机器学习》视频</p>
+<p>3、刘建平老师—博客：<a href="https://www.cnblogs.com/pinard/" target="_blank" rel="noopener">https://www.cnblogs.com/pinard/</a></p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2020/12/15/%E5%9B%BE%E8%A7%A3K-Means%E7%AE%97%E6%B3%95.html">图解K-Means算法</a></p>
+  <p><span>发布时间:</span>2020年12月15日 - 19:12</p>
+  <p><span>原始链接:</span><a href="/2020/12/15/%E5%9B%BE%E8%A7%A3K-Means%E7%AE%97%E6%B3%95.html" title="图解K-Means算法">http://www.renpeter.cn/2020/12/15/%E5%9B%BE%E8%A7%A3K-Means%E7%AE%97%E6%B3%95.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2020/12/15/%E5%9B%BE%E8%A7%A3K-Means%E7%AE%97%E6%B3%95.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag"># 互联网</a>
+          
+            <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/12/15/MySQL50%E9%A2%98-%E5%88%86%E7%B1%BB%E6%80%BB%E7%BB%93.html" rel="next" title="MySQL50题-分类总结">
+                <i class="fa fa-chevron-left"></i> MySQL50题-分类总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">502</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#图解K-Means算法"><span class="nav-number">1.</span> <span class="nav-text">图解K-Means算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法思想"><span class="nav-number">2.</span> <span class="nav-text">算法思想</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#无监督学习"><span class="nav-number">2.1.</span> <span class="nav-text">无监督学习</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法思想-v2"><span class="nav-number">2.2.</span> <span class="nav-text">算法思想</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法步骤"><span class="nav-number">3.</span> <span class="nav-text">算法步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图解K-Means"><span class="nav-number">4.</span> <span class="nav-text">图解K-Means</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#具体步骤"><span class="nav-number">4.1.</span> <span class="nav-text">具体步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#完整过程"><span class="nav-number">4.2.</span> <span class="nav-text">完整过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#k值选择"><span class="nav-number">5.</span> <span class="nav-text">k值选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#距离问题"><span class="nav-number">6.</span> <span class="nav-text">距离问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法优缺点"><span class="nav-number">7.</span> <span class="nav-text">算法优缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优点"><span class="nav-number">7.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#缺点"><span class="nav-number">7.2.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Python实现K-Means"><span class="nav-number">8.</span> <span class="nav-text">Python实现K-Means</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#延伸学习"><span class="nav-number">9.</span> <span class="nav-text">延伸学习</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">10.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">57</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">39</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">68</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">46</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">83</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">62</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共659.4k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2020/12/15/%E5%9B%BE%E8%A7%A3K-Means%E7%AE%97%E6%B3%95.html';
+          this.page.identifier = '2020/12/15/图解K-Means算法.html';
+          this.page.title = '图解K-Means算法';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
