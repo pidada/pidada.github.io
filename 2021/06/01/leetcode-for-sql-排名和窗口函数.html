@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="数据库,MySQL,LeetCode," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="LeetCode-178-分数排名 本文中带来的是LeetCode-SQL的第178题，讲解的是关于MySQL中的排名问题，非常重要和实用的一篇文章，真心建议搜藏保存：  题目介绍 分析思路 3种不同窗口函数 MySQL5 中实现开窗函数">
+<meta name="keywords" content="数据库,MySQL,LeetCode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="leetcode-for-sql-排名和窗口函数">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2021&#x2F;06&#x2F;01&#x2F;leetcode-for-sql-%E6%8E%92%E5%90%8D%E5%92%8C%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="LeetCode-178-分数排名 本文中带来的是LeetCode-SQL的第178题，讲解的是关于MySQL中的排名问题，非常重要和实用的一篇文章，真心建议搜藏保存：  题目介绍 分析思路 3种不同窗口函数 MySQL5 中实现开窗函数">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gqyl2fp84qj30yk0ekgms.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gr0jlg30npj30bw0h4ab0.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gr0j85e2e0j324q076q58.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gr0oy4tt2lj30ie0ce75a.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gr0p36v7ojj315m0eqmyy.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gr0pupoyo1j30qi0fy426.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gr0q0d99fyj30sk0veadd.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;007S8ZIlgy1gi8xioeyfuj31pt0u078f.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gr0q36bo89j312g0petbu.jpg">
+<meta property="og:updated_time" content="2021-06-01T08:43:26.691Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gqyl2fp84qj30yk0ekgms.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2021/06/01/leetcode-for-sql-排名和窗口函数.html"/>
+
+
+
+
+
+  <title>leetcode-for-sql-排名和窗口函数 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2021/06/01/leetcode-for-sql-%E6%8E%92%E5%90%8D%E5%92%8C%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">leetcode-for-sql-排名和窗口函数</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-06-01T16:42:01+08:00">
+                2021-6-1
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MySQL/" itemprop="url" rel="index">
+                    <span itemprop="name">MySQL</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MySQL/LeetCode/" itemprop="url" rel="index">
+                    <span itemprop="name">LeetCode</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/06/01/leetcode-for-sql-%E6%8E%92%E5%90%8D%E5%92%8C%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2021/06/01/leetcode-for-sql-排名和窗口函数.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="LeetCode-178-分数排名">LeetCode-178-分数排名</h2>
+<p>本文中带来的是LeetCode-SQL的第178题，讲解的是关于MySQL中的<strong>排名</strong>问题，非常重要和实用的一篇文章，真心建议搜藏保存：</p>
+<ul>
+<li>题目介绍</li>
+<li>分析思路</li>
+<li>3种不同窗口函数</li>
+<li>MySQL5 中实现开窗函数</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqyl2fp84qj30yk0ekgms.jpg" alt=""></p>
+<a id="more"></a>
+<p>最初接触到SQL中的排名是在一名日本作者MICK写的书中：《SQL进阶教程》，感兴趣的可以认真阅读下，对SQL提升很有帮助。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr0jlg30npj30bw0h4ab0.jpg" alt=""></p>
+<h2 id="题目">题目</h2>
+<p>首先介绍下具体的题目：编写一个 SQL 查询来实现分数排名。如果两个分数相同，则两个分数排名（Rank）相同。请注意，平分后的下一个名次应该是下一个连续的整数值。换句话说，名次之间不应该有“间隔”。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+-------+</span></span><br><span class="line">| Id | Score |</span><br><span class="line">+<span class="comment">----+-------+</span></span><br><span class="line">| 1  | 3.50  |</span><br><span class="line">| 2  | 3.65  |</span><br><span class="line">| 3  | 4.00  |</span><br><span class="line">| 4  | 3.85  |</span><br><span class="line">| 5  | 4.00  |</span><br><span class="line">| 6  | 3.65  |</span><br><span class="line">+<span class="comment">----+-------+</span></span><br></pre></td></tr></table></figure>
+<p>例如，根据上述给定的 Scores 表，你的查询应该返回（按分数从高到低排列）：相同分数采取的是相同排名，下个排名没有间隔。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">-------+------+</span></span><br><span class="line">| Score | Rank |</span><br><span class="line">+<span class="comment">-------+------+</span></span><br><span class="line">| 4.00  | 1    |</span><br><span class="line">| 4.00  | 1    |</span><br><span class="line">| 3.85  | 2    |</span><br><span class="line">| 3.65  | 3    |</span><br><span class="line">| 3.65  | 3    |</span><br><span class="line">| 3.50  | 4    |</span><br><span class="line">+<span class="comment">-------+------+</span></span><br></pre></td></tr></table></figure>
+<h2 id="思路">思路</h2>
+<h3 id="思路1">思路1</h3>
+<p>这种思路就是我从日本作者书中学习到的一种方法。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">    s1.Score  <span class="comment">-- 分数</span></span><br><span class="line">    ,(<span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">distinct</span> s2.Score)  <span class="comment">-- 大于等于此分数的分数值的不重复个数</span></span><br><span class="line">      <span class="keyword">from</span> Scores s2</span><br><span class="line">      <span class="keyword">where</span> s2.Score &gt; s1.Score) + <span class="number">1</span> <span class="keyword">as</span> <span class="string">`Rank`</span>  <span class="comment">-- 排名</span></span><br><span class="line"><span class="keyword">from</span> Scores s1</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> <span class="number">2</span>;  <span class="comment">-- 2表示第2个字段</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 变换方式</span></span><br><span class="line"><span class="keyword">select</span></span><br><span class="line">	s1.score,</span><br><span class="line">	(<span class="keyword">select</span> <span class="keyword">count</span>(*) + <span class="number">1</span>   <span class="comment">-- 排名不能从1开始</span></span><br><span class="line">   <span class="keyword">from</span> (<span class="keyword">select</span> <span class="keyword">distinct</span> score <span class="keyword">from</span> Scores) s2   <span class="comment">-- 1、找出表中有多少种不同的分数：有多少分数就有多少排名</span></span><br><span class="line">   <span class="keyword">where</span> s2.score &gt; s1.score) <span class="keyword">as</span> <span class="keyword">Rank</span>   <span class="comment">-- 2、筛选大于某个分数</span></span><br><span class="line"><span class="keyword">from</span> Scores s1</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr0j85e2e0j324q076q58.jpg" alt=""></p>
+<h3 id="思路2">思路2</h3>
+<p>思路2和思路1的思想是相同的，采用的where语句</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">    s1.Score</span><br><span class="line">    ,<span class="keyword">count</span>(<span class="keyword">distinct</span>(s2.Score)) <span class="string">`Rank`</span></span><br><span class="line"><span class="keyword">from</span> Scores s1, Scores s2</span><br><span class="line"><span class="keyword">where</span> s1.Score &lt;= s2.Score</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> s1.Id</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> <span class="number">2</span>;  <span class="comment">-- 2表示第2个字段</span></span><br></pre></td></tr></table></figure>
+<p>代码解释为：</p>
+<p>1、两张相同的表分别命令为s1和s2</p>
+<p>2、在给定s1.Score的情况下，找出有多少个分数满足：s2.Score &gt;= s1.Score。比如s1.Score=3.65，那么就有：[4.00 ,4.00, 3.85, 3.65, 3.65]满足要求，但是相同分数的排名相同，所以对分数进行了去重：count(distinct s2.Score)，那么3.65的排名就是3</p>
+<p>3、group by对s1的数据进行分组排名，要不然只会返回一条数据</p>
+<p>4、排名的升序排列</p>
+<h3 id="整体思想">整体思想</h3>
+<p>不管是思路1，还是思路2，基本上都是两个步骤实现的：</p>
+<ul>
+<li>第一部分是降序排列的分数</li>
+<li>第二部分是每个分数对应的排名</li>
+</ul>
+<p>1、关于第一部分的实现：直接排名降序实现</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> a.Score</span><br><span class="line"><span class="keyword">from</span> Scores a</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> a.Score <span class="keyword">DESC</span>   <span class="comment">-- 直接根据分数降序实现</span></span><br></pre></td></tr></table></figure>
+<p>2、关于第二部分的实现：假设现在给你一个分数S，我们如何算出它的排名Rank？</p>
+<p>我们可以先提取出大于等于 S 的所有分数集合 H ，将 H 去重后的元素个数就是 S 的排名。比如某次考试小明考了98分，大于小明分数有[100,99,100,99,98]；去重之后就是[100,99,98]，总共3个元素；所以小明同学的排名就是第3名。</p>
+<p>先提取满足要求的集合H：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> b.Score</span><br><span class="line"><span class="keyword">from</span> Scores b</span><br><span class="line"><span class="keyword">where</span> b.Score &gt;= S;</span><br></pre></td></tr></table></figure>
+<p>再对集合H去重之后的个数作为排名：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">distinct</span> b.Score)   <span class="comment">-- 去重后的个数当做排名</span></span><br><span class="line"><span class="keyword">from</span> Scores b</span><br><span class="line"><span class="keyword">where</span> b.Score &gt;= S <span class="keyword">as</span> <span class="keyword">Rank</span>;</span><br></pre></td></tr></table></figure>
+<p>实际上这里的S对应的就是a.Score：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">	a.Score <span class="keyword">as</span> Score,</span><br><span class="line">	(<span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">distinct</span> b.Score)</span><br><span class="line">   <span class="keyword">from</span> Scores b</span><br><span class="line">   <span class="keyword">where</span> b.Score &gt;= a.Score) <span class="keyword">as</span> <span class="keyword">Rank</span>  <span class="comment">-- 将S替代成了a.Score</span></span><br><span class="line"><span class="keyword">from</span> Scores a</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> a.Score <span class="keyword">DESC</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="窗口函数">窗口函数</h2>
+<p>窗口函数，也叫<code>OLAP</code>函数（Online Anallytical Processing，联机分析处理），可以对数据库数据进行实时分析处理。</p>
+<h4 id="语法">语法</h4>
+<p>窗口函数的基本语法：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;窗口函数&gt; over (partition by &lt;用于分组的字段名&gt;  -- partition子句可省略，不指定分组</span><br><span class="line">             order by &lt;用于排序的列名&gt;)</span><br></pre></td></tr></table></figure>
+<p><code>&lt;窗口函数&gt;</code>的位置上可以放两种函数：</p>
+<ul>
+<li>专用窗口函数，如rank、dense_rank、row_number等</li>
+<li>聚合函数，如sum、avg、count、max、min等</li>
+</ul>
+<h4 id="功能">功能</h4>
+<ul>
+<li>同时具有分组和排序的功能</li>
+<li>不改变原有表的行数</li>
+<li>窗口函数原则上只能写在<code>select</code>子句中</li>
+</ul>
+<h3 id="rank-dense-rank-row-number">rank/dense_rank/row_number</h3>
+<p>在MySQL8.X或者hive中专用的窗口函数有3个：</p>
+<ul>
+<li><code>rank</code>：并列跳跃排名</li>
+<li><code>dense_rank</code>：并列连续排名</li>
+<li><code>row_number</code>：连续排名</li>
+</ul>
+<p>通过一个例子来说明3个函数的排序差异体现在哪里。现在给定五个成绩：93，93，85，80，75，分别使用3个不同的开窗函数得到的结果分别是：</p>
+<p>1、使用 DENSE_RANK() 进行排名会得到：1，1，2，3，4</p>
+<p>2、使用 RANK() 进行排名会得到：1，1，3，4，5</p>
+<p>3、使用 ROW_NUMBER() 进行排名会得到：1，2，3，4，5</p>
+<p>最后再通过一个表格来说明下区别：下图是待排序的数据</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr0oy4tt2lj30ie0ce75a.jpg" alt=""></p>
+<p>通过3种函数排名之后的表格和区别：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">	<span class="keyword">name</span>,price,</span><br><span class="line">	row_number() (<span class="keyword">order</span> <span class="keyword">by</span> price <span class="keyword">desc</span>) <span class="keyword">as</span> <span class="string">`row_number`</span>,</span><br><span class="line">	<span class="keyword">rank</span>() <span class="keyword">over</span> (<span class="keyword">order</span> <span class="keyword">by</span> price <span class="keyword">desc</span>) <span class="keyword">as</span> <span class="string">`rank`</span>,</span><br><span class="line">	<span class="keyword">dense_rank</span>() (<span class="keyword">order</span> <span class="keyword">by</span> price <span class="keyword">desc</span>) <span class="keyword">as</span> <span class="string">`dense_rank`</span></span><br><span class="line"><span class="keyword">from</span> products;</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr0p36v7ojj315m0eqmyy.jpg" alt=""></p>
+<h2 id="MySQL5-实现窗口函数">MySQL5 实现窗口函数</h2>
+<p>MySQL8中已经内置的窗口函数，但是MySQL中是没有的，下面介绍的是如何在MySQL5 中实现上面3个窗口函数的功能。</p>
+<p>1、实现row_number功能：连续排名</p>
+<p>实现的过程并不复杂：直接降序排列，只是需要加上一个排名，自动加1的功能；row_number的实现参考一篇英文文章；<a href="https://www.mysqltutorial.org/mysql-row_number/%EF%BC%8C%E9%80%9A%E8%BF%87%E4%B8%80%E4%B8%AA%E5%8F%98%E9%87%8F%E6%9D%A5%E5%AE%9E%E7%8E%B0" target="_blank" rel="noopener">https://www.mysqltutorial.org/mysql-row_number/，通过一个变量来实现</a></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> @row_number = <span class="number">0</span>;   <span class="comment">-- 设置变量</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">    (@row_number:=@row_number + <span class="number">1</span>) <span class="keyword">AS</span> <span class="keyword">num</span>,  <span class="comment">-- 变量的自加1</span></span><br><span class="line">    firstName,</span><br><span class="line">    lastName</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">    employees</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> firstName, lastName</span><br><span class="line"><span class="keyword">LIMIT</span> <span class="number">5</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr0pupoyo1j30qi0fy426.jpg" alt=""></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> @<span class="keyword">rank</span> := <span class="number">0</span>;  <span class="comment">-- 设置初始值为0</span></span><br><span class="line"><span class="keyword">select</span></span><br><span class="line">	<span class="keyword">name</span>,</span><br><span class="line">	price,</span><br><span class="line">	(@<span class="keyword">rank</span> := @<span class="keyword">rank</span> + <span class="number">1</span>) <span class="keyword">as</span> row_number</span><br><span class="line"><span class="keyword">from</span> products</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> price <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr0q0d99fyj30sk0veadd.jpg" alt=""></p>
+<p>2、实现rank功能：并列跳跃</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> p1.name,p1.price,</span><br><span class="line">			(<span class="keyword">select</span> <span class="keyword">count</span>(p2.price)  <span class="comment">-- 价格不同去重</span></span><br><span class="line">       <span class="keyword">from</span> products p2</span><br><span class="line">       <span class="keyword">where</span> p2.price &gt; p1.price) + <span class="number">1</span></span><br><span class="line">       <span class="keyword">as</span> rank_1</span><br><span class="line"><span class="keyword">from</span> products</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> rank_1;</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gi8xioeyfuj31pt0u078f.jpg" alt=""></p>
+<p>3、实现dense_rank功能：并列连续排名</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> p1.name, p1.price,</span><br><span class="line">    (<span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">distinct</span> p2.price)   <span class="comment">-- 价格去重处理</span></span><br><span class="line">     <span class="keyword">from</span> products p2</span><br><span class="line">     <span class="keyword">where</span> p2.price &gt; p1.price) + <span class="number">1</span> <span class="keyword">as</span> <span class="keyword">dense_rank</span></span><br><span class="line"><span class="keyword">from</span> products p1</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> <span class="keyword">dense_rank</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr0q36bo89j312g0petbu.jpg" alt=""></p>
+<h2 id="总结">总结</h2>
+<p>SQL中的排名问题是一个非常重要的考点，面试的时候经常会被问到，尤其是3种开窗函数的使用，更是高频考点。总结下：</p>
+<ul>
+<li>hive或者 MySQL8 已经存在函数能够实现</li>
+<li>MySQL5 中需要自己根据不同的场景需求来写脚本统计</li>
+<li>3种开窗函数的使用务必掌握</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2021/06/01/leetcode-for-sql-%E6%8E%92%E5%90%8D%E5%92%8C%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0.html">leetcode-for-sql-排名和窗口函数</a></p>
+  <p><span>发布时间:</span>2021年06月01日 - 16:06</p>
+  <p><span>原始链接:</span><a href="/2021/06/01/leetcode-for-sql-%E6%8E%92%E5%90%8D%E5%92%8C%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0.html" title="leetcode-for-sql-排名和窗口函数">http://www.renpeter.cn/2021/06/01/leetcode-for-sql-%E6%8E%92%E5%90%8D%E5%92%8C%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2021/06/01/leetcode-for-sql-%E6%8E%92%E5%90%8D%E5%92%8C%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+          
+            <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+          
+            <a href="/tags/LeetCode/" rel="tag"># LeetCode</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/30/leetcode-for-sql-%E6%94%B6%E5%85%A5%E8%B6%85%E8%BF%87%E7%BB%8F%E7%90%86%E7%9A%84%E5%91%98%E5%B7%A5.html" rel="next" title="leetcode-for-sql-收入超过经理的员工">
+                <i class="fa fa-chevron-left"></i> leetcode-for-sql-收入超过经理的员工
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">587</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">76</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">56</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-178-分数排名"><span class="nav-number">1.</span> <span class="nav-text">LeetCode-178-分数排名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#题目"><span class="nav-number">2.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#思路"><span class="nav-number">3.</span> <span class="nav-text">思路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#思路1"><span class="nav-number">3.1.</span> <span class="nav-text">思路1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#思路2"><span class="nav-number">3.2.</span> <span class="nav-text">思路2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#整体思想"><span class="nav-number">3.3.</span> <span class="nav-text">整体思想</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#窗口函数"><span class="nav-number">4.</span> <span class="nav-text">窗口函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#语法"><span class="nav-number">4.0.1.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#功能"><span class="nav-number">4.0.2.</span> <span class="nav-text">功能</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rank-dense-rank-row-number"><span class="nav-number">4.1.</span> <span class="nav-text">rank/dense_rank/row_number</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL5-实现窗口函数"><span class="nav-number">5.</span> <span class="nav-text">MySQL5 实现窗口函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IC/" rel="tag">IC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">59</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/leetcode/" rel="tag">leetcode</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">74</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">33</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">57</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">98</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">98</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">70</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">51</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共808.4k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2021/06/01/leetcode-for-sql-%E6%8E%92%E5%90%8D%E5%92%8C%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0.html';
+          this.page.identifier = '2021/06/01/leetcode-for-sql-排名和窗口函数.html';
+          this.page.title = 'leetcode-for-sql-排名和窗口函数';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
