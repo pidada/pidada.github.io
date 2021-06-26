@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="pandas,数据分析," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="8_图解Pandas的groupby机制 在自己的数据处理分析日常中，经常会遇到对数据的某个字段进行分组再求和或均值等其他操作的需求，比如电商中根据不同的支付用户、不同的月份、不同的性别、不同的用户来源进行用户的画像细分，来研究不同组用户的偏好和消费情况等。 在pandas中自己都是使用groupby来解决这类问题，本文结合一份模拟的数据来讲解groupby的内部机制">
+<meta name="keywords" content="pandas,数据分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图解pandas的groupby机制">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2021&#x2F;06&#x2F;26&#x2F;%E5%9B%BE%E8%A7%A3pandas%E7%9A%84groupby%E6%9C%BA%E5%88%B6.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="8_图解Pandas的groupby机制 在自己的数据处理分析日常中，经常会遇到对数据的某个字段进行分组再求和或均值等其他操作的需求，比如电商中根据不同的支付用户、不同的月份、不同的性别、不同的用户来源进行用户的画像细分，来研究不同组用户的偏好和消费情况等。 在pandas中自己都是使用groupby来解决这类问题，本文结合一份模拟的数据来讲解groupby的内部机制">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvop3xgfnj30i00fmdgs.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvov390qsj30yg09oq4s.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvowqtmbsj30zi0c8tak.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvp349nm5j30pq0j8wgt.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvp521cswj30su0fwac1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvo1qu2jqj315c0n6jv1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvs39fo2tj30uy0geju4.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvs4i1vfcj30pq082t9i.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvs9b6cyyj317e09c3zt.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvpmcmslfj30xy0fcac1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvpozu56ej30ko08q74w.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvpqaweztj30uc08wt9k.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvpt2r51rj30vo0c8q46.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvpwwiwr0j30ok0aqq41.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvpzjqsiyj30x20ae0tu.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvq3prx7jj30zs09eabf.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvomf4e9xj31is0rm0xp.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvqbev6o8j30km0a6gm7.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvqfbxvtsj30yg0ac0tt.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvqg8l8zzj30yw09oq3w.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvqlyocuwj30a60hut9s.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvquwh2zbj30z20hwdhz.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvr23t2ubj31840c0wg4.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvr2mebl9j31880c60tx.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvr3cpdt3j30ue0awta1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvsgn7i2ij318c0k0god.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvrostufpj30na0j00un.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvrhlzi41j30ym0ioq4u.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvrtis1m0j30wo05umy4.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvrw4xg8zj30se0j0dhz.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1grvrkntxq0j310k0rajuj.jpg">
+<meta property="og:updated_time" content="2021-06-26T09:42:30.492Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2021/06/26/图解pandas的groupby机制.html"/>
+
+
+
+
+
+  <title>图解pandas的groupby机制 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2021/06/26/%E5%9B%BE%E8%A7%A3pandas%E7%9A%84groupby%E6%9C%BA%E5%88%B6.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">图解pandas的groupby机制</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-06-26T17:22:20+08:00">
+                2021-6-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/" itemprop="url" rel="index">
+                    <span itemprop="name">pandas</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/%E6%95%99%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">教程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/06/26/%E5%9B%BE%E8%A7%A3pandas%E7%9A%84groupby%E6%9C%BA%E5%88%B6.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2021/06/26/图解pandas的groupby机制.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  2.1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  7
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="8-图解Pandas的groupby机制">8_图解Pandas的groupby机制</h2>
+<p>在自己的数据处理分析日常中，经常会遇到对数据的某个字段进行分组再求和或均值等其他操作的需求，比如电商中根据不同的支付用户、不同的月份、不同的性别、不同的用户来源进行用户的画像细分，来研究不同组用户的偏好和消费情况等。</p>
+<p>在pandas中自己都是使用groupby来解决这类问题，本文结合一份模拟的数据来讲解groupby的内部机制</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg" alt=""></p>
+<a id="more"></a>
+<h2 id="模拟数据">模拟数据</h2>
+<p>为了方便解释，自己模拟了一份虚拟数据，仅包含3个字段：员工姓名employees、薪资salary、得分score</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">employees = [<span class="string">"小明"</span>,<span class="string">"小周"</span>,<span class="string">"小孙"</span>]   <span class="comment"># 3位员工</span></span><br><span class="line"></span><br><span class="line">df=pd.DataFrame(&#123;</span><br><span class="line">    <span class="string">"employees"</span>:[employees[x] <span class="keyword">for</span> x <span class="keyword">in</span> np.random.randint(<span class="number">0</span>,len(employees),<span class="number">9</span>)],  <span class="comment"># 在员工中重复选择9个人</span></span><br><span class="line">    <span class="string">"salary"</span>:np.random.randint(<span class="number">800</span>,<span class="number">1000</span>,<span class="number">9</span>),  <span class="comment"># 800-1000之间的薪资选择9个数值</span></span><br><span class="line">    <span class="string">"score"</span>:np.random.randint(<span class="number">6</span>,<span class="number">11</span>,<span class="number">9</span>)  <span class="comment"># 6-11的分数选择9个</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">df</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvop3xgfnj30i00fmdgs.jpg" alt=""></p>
+<h2 id="DataFrameGroupBy对象">DataFrameGroupBy对象</h2>
+<h3 id="内部情况">内部情况</h3>
+<p>我们现在根据员工进行groupby分组，得到的一个DataFrameGroupBy对象</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># groupbying = df.groupby("employees")  by可以省略</span></span><br><span class="line"></span><br><span class="line">groupbying = df.groupby(by=<span class="string">"employees"</span>)</span><br><span class="line">groupbying</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvov390qsj30yg09oq4s.jpg" alt=""></p>
+<p>那这个DataFrameGroupBy对象到底长的什么样子？我们用list展开看看：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看对象内部的情况</span></span><br><span class="line"></span><br><span class="line">list(groupbying)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvowqtmbsj30zi0c8tak.jpg" alt=""></p>
+<p>我们终于看到了这个对象的神秘面目：</p>
+<ul>
+<li>对象是一个大列表，里面包含3个元素，每个元素有个元组对象：[tuple1,tuple2,tuple3]</li>
+<li>元素就是按照我们指定的员工进行分组：分别是小周、小孙、小明的全部数据信息</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvp349nm5j30pq0j8wgt.jpg" alt=""></p>
+<p>我们看看小明的具体信息：发现xiaoming是一个元组，转成列表之后看下具体信息：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvp521cswj30su0fwac1.jpg" alt=""></p>
+<p>我们发现：元组转成列表后的第一个信息就是分组的员工名，第二个就是这个员工的全部信息构成的一个小DataFrame数据帧。</p>
+<p>下面的图形能够很好的展示DataFrameGroupBy对象的内部情况：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvo1qu2jqj315c0n6jv1.jpg" alt=""></p>
+<p>总结：当我们根据某个字段进行group机制分组的时候，最后能够生成多少个子DataFrame，取决于我们的字段中有多少个不同的元素（案例有3个）；当我们分组之后，便可以进行后续的各种聚合操作，比如sum、mean、min等。</p>
+<h3 id="遍历DataFrameGroupBy对象">遍历DataFrameGroupBy对象</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> name,group <span class="keyword">in</span> groupbying:  <span class="comment"># 遍历.DataFrameGroupBy对象</span></span><br><span class="line">    print(name)</span><br><span class="line">    print(group)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvs39fo2tj30uy0geju4.jpg" alt=""></p>
+<h3 id="选择分组get-group">选择分组get_group()</h3>
+<p>对DataFrameGroupBy对象使用get_group()方法，能够让我们得到分组元素中的指定组的数据：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvs4i1vfcj30pq082t9i.jpg" alt=""></p>
+<h3 id="同一个列名使用不同聚合函数">同一个列名使用不同聚合函数</h3>
+<p>分组之后对同一个列名使用不同的函数，函数使用列表形式：下面👇表示的是对score分别求和、最大值、最小值、均值、个数（size）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df9 = df.groupby(<span class="string">"employees"</span>)[<span class="string">"score"</span>].agg([<span class="string">"sum"</span>,<span class="string">"max"</span>,<span class="string">"min"</span>,<span class="string">"mean"</span>,<span class="string">"size"</span>]).reset_index()</span><br><span class="line">df9</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvs9b6cyyj317e09c3zt.jpg" alt=""></p>
+<h2 id="聚合函数">聚合函数</h2>
+<p>相信很多朋友都知道聚合操作或者聚合函数，在SQL中我们可以这样写：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">	<span class="keyword">name</span>  <span class="comment">-- 姓名</span></span><br><span class="line">	,<span class="keyword">sum</span>(score)  <span class="comment">-- 分数最大值</span></span><br><span class="line">	,<span class="keyword">avg</span>(score)  <span class="comment">--  平均值</span></span><br><span class="line"><span class="keyword">from</span> score</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">name</span>  <span class="comment">-- 根据学生姓名分组统计</span></span><br></pre></td></tr></table></figure>
+<p>在上面的SQL语句中，sum和avg就是常见的聚合操作，归类整理下pandas常用的聚合操作：</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>min/max</td>
+<td>最小值、最大值</td>
+</tr>
+<tr>
+<td>sum</td>
+<td>求和</td>
+</tr>
+<tr>
+<td>mean</td>
+<td>均值</td>
+</tr>
+<tr>
+<td>median</td>
+<td>中位数</td>
+</tr>
+<tr>
+<td>std</td>
+<td>标准差</td>
+</tr>
+<tr>
+<td>var</td>
+<td>方差</td>
+</tr>
+<tr>
+<td>count</td>
+<td>计数统计</td>
+</tr>
+</tbody>
+</table>
+<p>除了上面的聚合函数，我们还可以使用numpy库的方法，比如unique（不同的元素）、nunique（不同元素的个数，count是统计全部）等，下面会结合实际的例子来说明。</p>
+<h2 id="agg聚合操作">agg聚合操作</h2>
+<p>聚合操作是通过agg来完成的，可以指定一个列或者多个列分别使用不同的聚合函数来聚合。</p>
+<p>1、对单个列进行聚合操作，比如：我们想对salary列求总和sum：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># df.groupby("employees")["salary"].sum</span></span><br><span class="line"><span class="comment"># 如果只是单个元素，上下两种写法等价</span></span><br><span class="line">df.groupby(<span class="string">"employees"</span>).agg(&#123;<span class="string">"salary"</span>:<span class="string">"sum"</span>&#125;)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvpmcmslfj30xy0fcac1.jpg" alt=""></p>
+<p>一般情况下，结果是一个以分组字段为行索引的数据帧，那如果我们也想把这个行索引变成数据帧中的一个列名属性，使用reset_index完成：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvpozu56ej30ko08q74w.jpg" alt=""></p>
+<p>一行代码写作为：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvpqaweztj30uc08wt9k.jpg" alt=""></p>
+<p>2、对多个列使用不同的聚合函数，比如：我们想对salry求和、对score求均值，使用字段对的方式来实现</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">salary_score = df.groupby(<span class="string">"employees"</span>).agg(&#123;<span class="string">"salary"</span>:<span class="string">"sum"</span>,</span><br><span class="line">                                            <span class="string">"score"</span>:<span class="string">"mean"</span></span><br><span class="line">                                           &#125;)</span><br><span class="line">salary_score</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvpt2r51rj30vo0c8q46.jpg" alt=""></p>
+<p>同样地，我们可以进行索引重置工作：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvpwwiwr0j30ok0aqq41.jpg" alt=""></p>
+<p>但是重置之后，我们无法看到具体的聚合函数，考虑给生成的数据帧改下列名，新的名字可以根据自己的喜欢任意指定，一般是要能够代表列名的含义：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvpzjqsiyj30x20ae0tu.jpg" alt=""></p>
+<p>⚠️前方高能：使用一行代码实现上面的全部过程：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.groupby(<span class="string">"employees"</span>).agg(&#123;<span class="string">"salary"</span>:<span class="string">"sum"</span>,<span class="string">"score"</span>:<span class="string">"mean"</span>&#125;).reset_index().rename(columns=&#123;<span class="string">"salary"</span>:<span class="string">"salary_sum"</span>,<span class="string">"score"</span>:<span class="string">"score_mean"</span>&#125;)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvq3prx7jj30zs09eabf.jpg" alt=""></p>
+<p>详细地解释下上面的一行代码的各个函数功能：</p>
+<ol>
+<li>groupby：指定分组的列名字段</li>
+<li>agg：指定列名和想实施的聚合函数</li>
+<li>reset_index：对生成的数据帧进行索引重置</li>
+<li>rename：对生成的列名进行修改；上面是手动指定，需要全部列出来；rename可以对我们想要修改的列名进行重命名</li>
+</ol>
+<p>下面的图形的很好地展示从原始数据到DataFrameGroupBy对象，最后再到多个列名聚合的过程：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvomf4e9xj31is0rm0xp.jpg" alt=""></p>
+<h2 id="统计列名的非重复个数">统计列名的非重复个数</h2>
+<p>在这个需求中我们使用的numpy中的nunqiue方法，给定一个需求：我们想统计每位员工的不同分数以及对应个数。实际的结果应该是：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvqbev6o8j30km0a6gm7.jpg" alt=""></p>
+<p>1、统计每个员工的不同分数：使用的unique方法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.groupby(<span class="string">"employees"</span>).agg(&#123;<span class="string">"score"</span>:<span class="string">"unique"</span>&#125;).reset_index()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvqfbxvtsj30yg0ac0tt.jpg" alt=""></p>
+<p>2、统计每位员工的不同分数个数：使用nunique方法</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvqg8l8zzj30yw09oq3w.jpg" alt=""></p>
+<p>为甚么在这里要特别讲解这两个方法？因为在自己的实际需求中进行遇到，模拟下自己的需求。比如给定一组数据，包含手机订单中的：订单号、型号、厂家</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvqlyocuwj30a60hut9s.jpg" alt=""></p>
+<p>现在需要：统计每个型号对应的订单数、厂家名（去重）、厂家数（去重）。这个时候就可以使用上面的方法来实现这个需求，最终的结果应该是这样子：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvquwh2zbj30z20hwdhz.jpg" alt=""></p>
+<p>1、先生成订单数和厂家名相关的数据：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvr23t2ubj31840c0wg4.jpg" alt=""></p>
+<p>2、再生成和厂家个数相关的数据：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvr2mebl9j31880c60tx.jpg" alt=""></p>
+<p>3、通过pandas中的merge函数进行数据的合并：</p>
+<p>可以看到下面的数据和实际的结果是一致的</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvr3cpdt3j30ue0awta1.jpg" alt=""></p>
+<p>一行代码也可以实现上面的需求：对厂家列同时使用两个不同的函数，一个是统计名称，一个是统计个数，结果是一个多重索引的数据帧。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df4.groupby(<span class="string">"型号"</span>).agg(&#123;<span class="string">"订单号"</span>:<span class="string">"count"</span>,<span class="string">"厂家"</span>:[<span class="string">"unique"</span>,<span class="string">"nunique"</span>]&#125;).reset_index()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvsgn7i2ij318c0k0god.jpg" alt=""></p>
+<h2 id="transform函数">transform函数</h2>
+<p>transform方法解决的是什么问题呢？它和agg又有什么不同呢？我们从一个实际的新需求出发，比如：我们想在数据的后面加上一列，代表的是每位员工的平均得分，数据会变成下面的样子，绿色部分就是我们的需要：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvrostufpj30na0j00un.jpg" alt=""></p>
+<p>好方法：通过transform能够轻松实现上面的需求</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"score_mean"</span>] = df.groupby(<span class="string">"employees"</span>)[<span class="string">"score"</span>].transform(<span class="string">"mean"</span>)  <span class="comment"># transform后面指定需要聚合的函数</span></span><br><span class="line">df</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvrhlzi41j30ym0ioq4u.jpg" alt=""></p>
+<p>如果不用transform该如何实现上面的需求呢？首先我们还是生成每位员工的平均分数，用字典的形式来表示</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvrtis1m0j30wo05umy4.jpg" alt=""></p>
+<p>接下来，我们使用map来进行员工的匹配：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"score_avg"</span>] = df[<span class="string">"employees"</span>].map(avg_score)  <span class="comment"># 每位员工和平均值进行匹配</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvrw4xg8zj30se0j0dhz.jpg" alt=""></p>
+<p>transform和agg到底是什么样的区别呢？</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grvrkntxq0j310k0rajuj.jpg" alt=""></p>
+<p>总结下二者的区别：</p>
+<ol>
+<li>transform是在原数据基础上加新的列，agg是根据分组字段和聚合函数生成新的数据帧</li>
+<li>transform的数据是填充到分组对象的每列上，agg只是生成了一个最终的聚合结果</li>
+</ol>
+<h2 id="总结">总结</h2>
+<p>在实际的数据处理和统计工作中，分组统计求和、均值、个数等是十分常见的需求，本文结合实际的例子详解了pandas内部的groupby机制，以及如何聚合函数，希望对读者有所帮助。</p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2021/06/26/%E5%9B%BE%E8%A7%A3pandas%E7%9A%84groupby%E6%9C%BA%E5%88%B6.html">图解pandas的groupby机制</a></p>
+  <p><span>发布时间:</span>2021年06月26日 - 17:06</p>
+  <p><span>原始链接:</span><a href="/2021/06/26/%E5%9B%BE%E8%A7%A3pandas%E7%9A%84groupby%E6%9C%BA%E5%88%B6.html" title="图解pandas的groupby机制">http://www.renpeter.cn/2021/06/26/%E5%9B%BE%E8%A7%A3pandas%E7%9A%84groupby%E6%9C%BA%E5%88%B6.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2021/06/26/%E5%9B%BE%E8%A7%A3pandas%E7%9A%84groupby%E6%9C%BA%E5%88%B6.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pandas/" rel="tag"># pandas</a>
+          
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag"># 数据分析</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/06/23/%E5%88%A9%E7%94%A8Python%E8%BF%9B%E8%A1%8C%E7%BE%A4%E7%BB%84%E5%88%86%E6%9E%90.html" rel="next" title="利用Python进行群组分析">
+                <i class="fa fa-chevron-left"></i> 利用Python进行群组分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">600</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">78</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#8-图解Pandas的groupby机制"><span class="nav-number">1.</span> <span class="nav-text">8_图解Pandas的groupby机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模拟数据"><span class="nav-number">2.</span> <span class="nav-text">模拟数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DataFrameGroupBy对象"><span class="nav-number">3.</span> <span class="nav-text">DataFrameGroupBy对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内部情况"><span class="nav-number">3.1.</span> <span class="nav-text">内部情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#遍历DataFrameGroupBy对象"><span class="nav-number">3.2.</span> <span class="nav-text">遍历DataFrameGroupBy对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选择分组get-group"><span class="nav-number">3.3.</span> <span class="nav-text">选择分组get_group()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#同一个列名使用不同聚合函数"><span class="nav-number">3.4.</span> <span class="nav-text">同一个列名使用不同聚合函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聚合函数"><span class="nav-number">4.</span> <span class="nav-text">聚合函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#agg聚合操作"><span class="nav-number">5.</span> <span class="nav-text">agg聚合操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#统计列名的非重复个数"><span class="nav-number">6.</span> <span class="nav-text">统计列名的非重复个数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#transform函数"><span class="nav-number">7.</span> <span class="nav-text">transform函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IC/" rel="tag">IC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">61</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">80</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">58</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">36</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">101</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">101</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">70</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">51</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共826.2k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2021/06/26/%E5%9B%BE%E8%A7%A3pandas%E7%9A%84groupby%E6%9C%BA%E5%88%B6.html';
+          this.page.identifier = '2021/06/26/图解pandas的groupby机制.html';
+          this.page.title = '图解pandas的groupby机制';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
