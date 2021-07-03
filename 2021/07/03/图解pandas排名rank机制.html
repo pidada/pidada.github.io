@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="数据分析,plotly," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="图解Pandas的排名rank机制 在我们的生活经常会遇到各种排名问题：学生成绩排名、销售员业绩排名、各种比赛排名等。在之前一篇关于SQL的文章-《面试必备：SQL排名和窗口函数》中有提到过如何使用SQL来实现3种主要的排名方式：顺序排名、跳跃排名和密集排名。 Pandas这个强大的数据分析库也可以快速实现多种排名方式，主要是通过rank函数来解决的，本文将通过多个例子来讲解。">
+<meta name="keywords" content="数据分析,plotly">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图解pandas排名rank机制">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2021&#x2F;07&#x2F;03&#x2F;%E5%9B%BE%E8%A7%A3pandas%E6%8E%92%E5%90%8Drank%E6%9C%BA%E5%88%B6.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="图解Pandas的排名rank机制 在我们的生活经常会遇到各种排名问题：学生成绩排名、销售员业绩排名、各种比赛排名等。在之前一篇关于SQL的文章-《面试必备：SQL排名和窗口函数》中有提到过如何使用SQL来实现3种主要的排名方式：顺序排名、跳跃排名和密集排名。 Pandas这个强大的数据分析库也可以快速实现多种排名方式，主要是通过rank函数来解决的，本文将通过多个例子来讲解。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0bfd0esgj30oq0auq3n.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0bgwaesqj30po0bo758.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0bvk1aepj30lk0ac0te.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0cjju6ynj30oq0dmjsc.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0cpemknuj30ym0kowgs.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0cr94b12j30sk0eaq40.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0cvhcngzj30pq0dsq3z.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0d07k1z6j30n209wwf6.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0d4wpr40j30qq0eagmo.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0d6cp095j30ri0akgmo.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0d98lb6nj30ja0acq3u.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0dcjkknvj30ja0fudgr.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0dd8ge3tj30ri0p2412.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0deov9e5j30qo0bw75l.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0dhgggswj30ts0bk0tq.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0di85s12j30s60aojsd.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0diwg4wqj30tg0a0t9w.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0djh3jf6j30t60ae3zq.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0dk6a8owj30jk0j6gmx.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0dlc8sgij30p00dsgmo.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0dmbnpwtj31380cimys.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0dojef45j30ya0lg76n.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0dqlvdk3j31400m6gon.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0dtolimjj31360hon02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0dunaafej30pc0k4tah.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0dwge742j30u80cuq46.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0dwxrb4oj30yu0jgwh5.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs0e0muhzoj30u00am400.jpg">
+<meta property="og:updated_time" content="2021-07-03T03:01:20.898Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2021/07/03/图解pandas排名rank机制.html"/>
+
+
+
+
+
+  <title>图解pandas排名rank机制 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2021/07/03/%E5%9B%BE%E8%A7%A3pandas%E6%8E%92%E5%90%8Drank%E6%9C%BA%E5%88%B6.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">图解pandas排名rank机制</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-07-03T10:59:52+08:00">
+                2021-7-3
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/" itemprop="url" rel="index">
+                    <span itemprop="name">pandas</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/%E6%95%99%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">教程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/07/03/%E5%9B%BE%E8%A7%A3pandas%E6%8E%92%E5%90%8Drank%E6%9C%BA%E5%88%B6.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2021/07/03/图解pandas排名rank机制.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="图解Pandas的排名rank机制">图解Pandas的排名rank机制</h2>
+<p>在我们的生活经常会遇到各种排名问题：学生成绩排名、销售员业绩排名、各种比赛排名等。在之前一篇关于SQL的文章-《面试必备：SQL排名和窗口函数》中有提到过如何使用SQL来实现3种主要的排名方式：顺序排名、跳跃排名和密集排名。</p>
+<p>Pandas这个强大的数据分析库也可以快速实现多种排名方式，主要是通过rank函数来解决的，本文将通过多个例子来讲解。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg" alt=""></p>
+<a id="more"></a>
+<h2 id="Rank参数">Rank参数</h2>
+<p>下面是rank函数的主要参数为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">DataFrame.rank(axis=<span class="number">0</span>,</span><br><span class="line">               method=<span class="string">'average'</span>,</span><br><span class="line">               numeric_only=<span class="literal">None</span>,</span><br><span class="line">               na_option=<span class="string">'keep'</span>,</span><br><span class="line">               ascending=<span class="literal">True</span>,</span><br><span class="line">               pct=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<p>参数的具体解释为：</p>
+<ul>
+<li>axis：表示排名是根据哪个轴，axis=0表示横轴，axis=1表示纵轴</li>
+<li>method：取值可以为’average’，‘first’，‘min’， ‘max’，‘dense’；后面重点介绍，默认是average</li>
+<li>numeric_only：是否仅仅计算数字型的columns</li>
+<li>na_optiaon：NaN值是否参与排名以及如何排名，取值为keep、top、bottom</li>
+<li>ascending：升序还是降序；默认是升序</li>
+<li>pct：是否以排名的百分比显示排名；所有排名和最大排名的百分比</li>
+</ul>
+<p>本文将会讲解rank函数在Series和DataFrame两种数据类型的使用。</p>
+<h2 id="Series排名">Series排名</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br></pre></td></tr></table></figure>
+<p>首先我们模拟一份简单的数据：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0bfd0esgj30oq0auq3n.jpg" alt=""></p>
+<h3 id="参数method">参数method</h3>
+<p>1、默认情况的排名method=“average”：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0bgwaesqj30po0bo758.jpg" alt=""></p>
+<p>2、method=“first”</p>
+<p>根据值在原始数据中出现的顺序进行排名，相同数值的排名依次加1：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0bvk1aepj30lk0ac0te.jpg" alt=""></p>
+<p>解释上面两个结果：</p>
+<ul>
+<li>first：直接根据数值的大小顺序进行排名</li>
+<li>average：表示的是，如果两个数值相同，排名是它们的均值</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0cjju6ynj30oq0dmjsc.jpg" alt=""></p>
+<p>我们看到first的使用就是数值的自然顺序出现的排名；在使用average的情况解释如下：</p>
+<p>-5的排名是1.0，0的排名是2.0，3的排名是3.0，5（3号索引位置）的排名是4.0，5(6号索引位置)的排名是5.0，8(0号索引位置)的排名是6.0，8(2号索引)的排名是7.0</p>
+<p>通过average的使用，相同数值的排名rank会取出<strong>均值</strong>，5的排名统一成4.5，8的排名统一成6.5</p>
+<p>3、max和min的使用</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0cpemknuj30ym0kowgs.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0cr94b12j30sk0eaq40.jpg" alt=""></p>
+<p>比如当：method= “max”：如果数值相同，取该数值最大的那个排名。比如5最大的排名是5，所以原始数据中两个5的排名都是5；两个8的排名都是7（8的两个排名是6和7，取大值7）</p>
+<p>4、method=“dense”</p>
+<p>相同的数值排名相同，下个数值的排名<strong>不出现跳跃</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0cvhcngzj30pq0dsq3z.jpg" alt=""></p>
+<p>这个时候排名的时候是不会出现跳跃的情况</p>
+<h3 id="参数ascending">参数ascending</h3>
+<p>默认情况下是升序的情况，可以使用降序：值越大，排名越靠前：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0d07k1z6j30n209wwf6.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0d4wpr40j30qq0eagmo.jpg" alt=""></p>
+<p>数值中8的排名，如果是method=“first”，排名是1和2，如是使用average，排名则会变成1.5；其他的数值排名类似。再看看max的情况：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0d6cp095j30ri0akgmo.jpg" alt=""></p>
+<h3 id="参数pct">参数pct</h3>
+<p>是否以排名的百分比显示排名；所有排名和最大排名的百分比</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0d98lb6nj30ja0acq3u.jpg" alt=""></p>
+<p>上面的排名是如何计算出来的呢？我们最大的排名是7：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0dcjkknvj30ja0fudgr.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0dd8ge3tj30ri0p2412.jpg" alt=""></p>
+<p>再比如dense情况下的pct参数使用类似：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0deov9e5j30qo0bw75l.jpg" alt=""></p>
+<h3 id="参数na-option">参数na_option</h3>
+<p>这个参数表示的是空值是否参与排名，取值为keep、top、bottom。我们再模拟一份带有空值的数据：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0dhgggswj30ts0bk0tq.jpg" alt=""></p>
+<p>看看3种不同的情况：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0di85s12j30s60aojsd.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0diwg4wqj30tg0a0t9w.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0djh3jf6j30t60ae3zq.jpg" alt=""></p>
+<h2 id="DataFrame排名">DataFrame排名</h2>
+<h3 id="模拟数据">模拟数据</h3>
+<p>还是先模拟一份数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">df0 = pd.DataFrame(&#123;<span class="string">"科目"</span>:[<span class="string">"语文"</span>,<span class="string">"语文"</span>,<span class="string">"语文"</span>,<span class="string">"语文"</span>,<span class="string">"语文"</span>,<span class="string">"数学"</span>,<span class="string">"数学"</span>,<span class="string">"数学"</span>,<span class="string">"数学"</span>,<span class="string">"数学"</span>],</span><br><span class="line">                  <span class="string">"姓名"</span>:[<span class="string">"小明"</span>,<span class="string">"小苏"</span>,<span class="string">"小周"</span>,<span class="string">"小孙"</span>,<span class="string">"小王"</span>,<span class="string">"小明"</span>,<span class="string">"小苏"</span>,<span class="string">"小周"</span>,<span class="string">"小孙"</span>,<span class="string">"小王"</span>],</span><br><span class="line">                  <span class="string">"分数"</span>:[<span class="number">137</span>,<span class="number">125</span>,<span class="number">125</span>,<span class="number">115</span>,<span class="number">115</span>,<span class="number">80</span>,<span class="number">111</span>,<span class="number">130</span>,<span class="number">130</span>,<span class="number">140</span>]&#125;)</span><br><span class="line"></span><br><span class="line">df = df0.copy()   <span class="comment"># 生成一个副本df</span></span><br><span class="line">df</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0dk6a8owj30jk0j6gmx.jpg" alt=""></p>
+<h3 id="单个科目排名">单个科目排名</h3>
+<p>比如我们想看语文这门科目的排名情况，取出同学们的语文成绩：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0dlc8sgij30p00dsgmo.jpg" alt=""></p>
+<p>分别使用顺序排名、跳跃排名和密集排名来展示排名情况：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 默认排名方式</span></span><br><span class="line"></span><br><span class="line">df1[<span class="string">"均值排名_默认"</span>] = df1[<span class="string">"分数"</span>].rank(ascending=<span class="literal">False</span>)</span><br><span class="line">df1[<span class="string">"跳跃排名_min"</span>] = df1[<span class="string">"分数"</span>].rank(method=<span class="string">"min"</span>,ascending=<span class="literal">False</span>)</span><br><span class="line">df1[<span class="string">"跳跃_max"</span>] = df1[<span class="string">"分数"</span>].rank(method=<span class="string">"max"</span>,ascending=<span class="literal">False</span>)</span><br><span class="line">df1[<span class="string">"密集排名_dense"</span>] = df1[<span class="string">"分数"</span>].rank(method=<span class="string">"dense"</span>,ascending=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">df1</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0dmbnpwtj31380cimys.jpg" alt=""></p>
+<h3 id="同学总分排名">同学总分排名</h3>
+<p>先通过transform生成每个同学的总分：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"总分"</span>] = df.groupby(<span class="string">"姓名"</span>)[<span class="string">"分数"</span>].transform(<span class="string">"sum"</span>)</span><br><span class="line">df</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0dojef45j30ya0lg76n.jpg" alt=""></p>
+<p>我们使用密集排名的方式对总分进行排名：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0dqlvdk3j31400m6gon.jpg" alt=""></p>
+<h2 id="分组取出指定排名">分组取出指定排名</h2>
+<p>我们现在看到每个科目下的第二名的学生，如果成绩相同，排名相同（不跳跃），我们使用密集排名：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义一个排名第二的函数</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rank_second</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> x[x[<span class="string">"分数"</span>].rank(method=<span class="string">"dense"</span>,ascending=<span class="literal">False</span>) == <span class="number">2</span>]</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0dtolimjj31360hon02.jpg" alt=""></p>
+<p>我们看看真实数据中每个科目的第二名同学：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0dunaafej30pc0k4tah.jpg" alt=""></p>
+<p>上面自定义的排名第二的函数分为两步；</p>
+<p>1、先实现密集排名</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0dwge742j30u80cuq46.jpg" alt=""></p>
+<p>2、指定排名等于2</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0dwxrb4oj30yu0jgwh5.jpg" alt=""></p>
+<p>当我们使用这个自定义函数的时候，我们需要先根据科目进行分组，然后再每个组中单独使用这个自定义函数，就能获得每个科目下的第二名。</p>
+<h2 id="总结">总结</h2>
+<p>讲解完rank函数的使用，可以和SQL中的窗口函数进行类比：</p>
+<ul>
+<li>row_number：顺序排名，rank函数的中的method=first</li>
+<li>rank：跳跃排名，rank函数的中的method=min</li>
+<li>dense_rank：密集排名，rank函数的中的method=dense</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs0e0muhzoj30u00am400.jpg" alt=""></p>
+<p>最后附上rank函数的官网学习地址，还得多看官网：</p>
+<p><a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rank.html" target="_blank" rel="noopener">https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rank.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2021/07/03/%E5%9B%BE%E8%A7%A3pandas%E6%8E%92%E5%90%8Drank%E6%9C%BA%E5%88%B6.html">图解pandas排名rank机制</a></p>
+  <p><span>发布时间:</span>2021年07月03日 - 10:07</p>
+  <p><span>原始链接:</span><a href="/2021/07/03/%E5%9B%BE%E8%A7%A3pandas%E6%8E%92%E5%90%8Drank%E6%9C%BA%E5%88%B6.html" title="图解pandas排名rank机制">http://www.renpeter.cn/2021/07/03/%E5%9B%BE%E8%A7%A3pandas%E6%8E%92%E5%90%8Drank%E6%9C%BA%E5%88%B6.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2021/07/03/%E5%9B%BE%E8%A7%A3pandas%E6%8E%92%E5%90%8Drank%E6%9C%BA%E5%88%B6.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag"># 数据分析</a>
+          
+            <a href="/tags/plotly/" rel="tag"># plotly</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/06/27/%E5%8F%AF%E8%A7%86%E5%8C%96%E7%A5%9E%E5%99%A8Plotly%E7%8E%A9%E8%BD%AC%E6%A1%91%E5%9F%BA%E5%9B%BE.html" rel="next" title="可视化神器Plotly玩转桑基图">
+                <i class="fa fa-chevron-left"></i> 可视化神器Plotly玩转桑基图
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">602</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">78</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#图解Pandas的排名rank机制"><span class="nav-number">1.</span> <span class="nav-text">图解Pandas的排名rank机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rank参数"><span class="nav-number">2.</span> <span class="nav-text">Rank参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Series排名"><span class="nav-number">3.</span> <span class="nav-text">Series排名</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参数method"><span class="nav-number">3.1.</span> <span class="nav-text">参数method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数ascending"><span class="nav-number">3.2.</span> <span class="nav-text">参数ascending</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数pct"><span class="nav-number">3.3.</span> <span class="nav-text">参数pct</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数na-option"><span class="nav-number">3.4.</span> <span class="nav-text">参数na_option</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DataFrame排名"><span class="nav-number">4.</span> <span class="nav-text">DataFrame排名</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模拟数据"><span class="nav-number">4.1.</span> <span class="nav-text">模拟数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单个科目排名"><span class="nav-number">4.2.</span> <span class="nav-text">单个科目排名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#同学总分排名"><span class="nav-number">4.3.</span> <span class="nav-text">同学总分排名</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分组取出指定排名"><span class="nav-number">5.</span> <span class="nav-text">分组取出指定排名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IC/" rel="tag">IC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">61</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">80</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">58</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">36</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">102</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">101</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">70</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">51</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共829.9k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2021/07/03/%E5%9B%BE%E8%A7%A3pandas%E6%8E%92%E5%90%8Drank%E6%9C%BA%E5%88%B6.html';
+          this.page.identifier = '2021/07/03/图解pandas排名rank机制.html';
+          this.page.title = '图解pandas排名rank机制';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
