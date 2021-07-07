@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="pandas,数据分析," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="图解Pandas缺失值空值处理 数据清洗真的是一项复杂且繁琐的工作，但也是整个数据分析过程中最为重要的环。  搞数据的，80%的时间花在了数据清洗上。听起来匪夷所思的，但实际情况真的就是如此呀！  本篇文章将介绍几种常见的使用Pandas库处理缺失值的方法。">
+<meta name="keywords" content="pandas,数据分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图解pandas的缺失值处理">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2021&#x2F;07&#x2F;07&#x2F;%E5%9B%BE%E8%A7%A3pandas%E7%9A%84%E7%BC%BA%E5%A4%B1%E5%80%BC%E5%A4%84%E7%90%86.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="图解Pandas缺失值空值处理 数据清洗真的是一项复杂且繁琐的工作，但也是整个数据分析过程中最为重要的环。  搞数据的，80%的时间花在了数据清洗上。听起来匪夷所思的，但实际情况真的就是如此呀！  本篇文章将介绍几种常见的使用Pandas库处理缺失值的方法。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7gkrej4ej31sf0u0ndn.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7h2wkqc6j314s0dk789.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7h4j1a0hj30re07emxz.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7h5qkaujj30ze0iidhy.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7h8umm8qj30r40c075t.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7hag1p7qj30wc0b20u7.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7hdobchvj30r80c6wfm.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7hf0caoij30q209oq42.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7hgtxd7rj30r40aeq3y.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7hhwd7nwj30qu0kmgnn.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7hk13qdxj30sc0cmjsf.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7hl5c8anj30kq09yt9e.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7hmdg6rej30wq0dignl.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7hnks0lkj30w409ymyr.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7hpgkkhyj30zw0qcn0d.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7hrqrg5wj311k0o2n1a.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7hwee2evj31320p842x.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7hyrlyj7j311k0m2gpj.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7hzq85vmj30yo0io776.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7i1d8o8wj30zi0mcdj6.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7i40a8x2j30ve0bkjsw.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7iefb1p8j30wo0gejsz.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7ifncrkcj30s80q4tb3.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7igb5874j30qo0dsq4b.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7ih8y43rj30xg0ew0ul.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7ii58fx5j30u80ckgmn.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7ij2gzp1j30yu0nq0v1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7imqz1cqj30rg0nitaj.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7ioegghrj30sy0qk76w.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gs7ib6ryqjj30yh0u078b.jpg">
+<meta property="og:updated_time" content="2021-07-07T01:36:09.462Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2021/07/07/图解pandas的缺失值处理.html"/>
+
+
+
+
+
+  <title>图解pandas的缺失值处理 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2021/07/07/%E5%9B%BE%E8%A7%A3pandas%E7%9A%84%E7%BC%BA%E5%A4%B1%E5%80%BC%E5%A4%84%E7%90%86.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">图解pandas的缺失值处理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-07-07T09:34:53+08:00">
+                2021-7-7
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/" itemprop="url" rel="index">
+                    <span itemprop="name">pandas</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/%E6%95%99%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">教程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/07/07/%E5%9B%BE%E8%A7%A3pandas%E7%9A%84%E7%BC%BA%E5%A4%B1%E5%80%BC%E5%A4%84%E7%90%86.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2021/07/07/图解pandas的缺失值处理.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.8k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="图解Pandas缺失值空值处理">图解Pandas缺失值空值处理</h2>
+<p>数据清洗真的是一项复杂且繁琐的工作，但也是整个数据分析过程中最为重要的环。</p>
+<blockquote>
+<p>搞数据的，80%的时间花在了数据清洗上。听起来匪夷所思的，但实际情况真的就是如此呀！</p>
+</blockquote>
+<p>本篇文章将介绍几种常见的使用Pandas库处理缺失值的方法。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg" alt=""></p>
+<a id="more"></a>
+<h3 id="Pandas系列">Pandas系列</h3>
+<p>Pandas文章已经连载12篇，往期精选文章：</p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzI4NjI3MzI2Ng==&amp;mid=2247492035&amp;idx=1&amp;sn=f49ffd392a4d499c992d22ab3f496959&amp;chksm=ebddda5edcaa5348dadaf7d340e02b3f5243bb28dccba78a627edb0856868c8c4263f1495f98&amp;token=430230441&amp;lang=zh_CN#rd" target="_blank" rel="noopener">1-图解pandas的排序机制</a></p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzI4NjI3MzI2Ng==&amp;mid=2247492004&amp;idx=1&amp;sn=d0602ee2d71f3a23417209cb8da519ec&amp;chksm=ebddda39dcaa532f1fa6e9f10d067ad2de0997d31a31ca104f017caf74168186883e70eac4e8&amp;token=430230441&amp;lang=zh_CN#rd" target="_blank" rel="noopener">2-图解pandas的排名机制</a></p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzI4NjI3MzI2Ng==&amp;mid=2247491765&amp;idx=1&amp;sn=e63fe83db79cdb8b74f403c458a135cc&amp;chksm=ebdddb28dcaa523e3e9392a792776fc2f2a511a0d2e546014ee2e32d753c120f2aac79aed9da&amp;token=430230441&amp;lang=zh_CN#rd" target="_blank" rel="noopener">3-图解pandas的groupby机制</a></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7gkrej4ej31sf0u0ndn.jpg" alt=""></p>
+<h2 id="常用函数">常用函数</h2>
+<p>当我们的数据中出现了空值或者缺失值之后，我们经常处理的函数有：判断是否是缺失值、直接删除缺失值、填充缺失值</p>
+<ul>
+<li>df.isnull()、df.notnull()：两个函数互为取反</li>
+<li>df.isna()：等同于df.isnull()</li>
+<li>df.dropna()：删除缺失值</li>
+<li>df.fillna()：填充缺失值</li>
+</ul>
+<h2 id="相关概念">相关概念</h2>
+<p>首先介绍下Pandas或者Python涉及到的几个可能模糊的概念：</p>
+<ul>
+<li>空值在pandas中的空值是&quot;&quot;（直接一对双引号）；空字符串：&quot; &quot;，中间多了一个空格</li>
+<li>缺失值在DataFrame指的是NaN或者NaT，在Series中指的是none或者nan</li>
+<li>当我们需要人为指定一个缺失值的时候，默认用None和np.nan来表示</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7h2wkqc6j314s0dk789.jpg" alt=""></p>
+<p>其次，我们看看Pandas中None和NaN的关联：</p>
+<ul>
+<li>在我们创建的时候，默认二者是相同的</li>
+<li>如果我们指定赋值为None，在Series中依然会变成none，并且是以float64的数据类型显示</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7h4j1a0hj30re07emxz.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7h5qkaujj30ze0iidhy.jpg" alt=""></p>
+<h2 id="模拟数据">模拟数据</h2>
+<p>为了进行解释，笔者模拟了一份存在缺失值和空值的数据：</p>
+<p>在生日、地址、英语中存在缺失值；在地址中还存在空值：直接按下空格键即可生成</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7h8umm8qj30r40c075t.jpg" alt=""></p>
+<p>我们将数据读取到notebook的样子为下图：空值没有任何内容，缺失值显示为NaN或者NaT。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7hag1p7qj30wc0b20u7.jpg" alt=""></p>
+<h2 id="查看缺失值">查看缺失值</h2>
+<p>两个函数可以查看数据中是否存在缺失值：isnull()、isna()</p>
+<h3 id="查看每个位置的缺失值情况">查看每个位置的缺失值情况</h3>
+<p>存在缺失值的位置会用True表示</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.isnull()  <span class="comment"># 空值的位置标记为True</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7hdobchvj30r80c6wfm.jpg" alt=""></p>
+<h3 id="查看每个列属性是否存在缺失值">查看每个列属性是否存在缺失值</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.isnull().any() <span class="comment"># 只要有一个缺失值及为True</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7hf0caoij30q209oq42.jpg" alt=""></p>
+<h3 id="查看每个列属性存在多少缺失值">查看每个列属性存在多少缺失值</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.isnull().sum()   <span class="comment"># 每个列属性的缺失值总数</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7hgtxd7rj30r40aeq3y.jpg" alt=""></p>
+<p>⚠️：isna()和isnull()的用法相同：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7hhwd7nwj30qu0kmgnn.jpg" alt=""></p>
+<h2 id="查看非缺失值情况notnull">查看非缺失值情况notnull()</h2>
+<p>notnull()和isnull()的用法是完全相反的：</p>
+<p>1、查看每个非缺失值的情况，此时缺失值用False表示</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7hk13qdxj30sc0cmjsf.jpg" alt=""></p>
+<p>2、查看每个列属性的非缺失值个数</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7hl5c8anj30kq09yt9e.jpg" alt=""></p>
+<h2 id="删除缺失值dropna">删除缺失值dropna</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DataFrame.dropna(axis=<span class="number">0</span>, how=<span class="string">'any'</span>, thresh=<span class="literal">None</span>, subset=<span class="literal">None</span>, inplace=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="参数说明">参数说明</h3>
+<p>参数的具体解释为：</p>
+<ul>
+<li>axis：删除的行或者列，axis=0表示index索引方向；axis=1表示columns列；默认为0</li>
+<li>how：“all”，“any”；all：表示行或者列全部缺失才删除（全部），any：表示只要有一个（至少）就删除，默认情况</li>
+<li>thresh：一行或者一列中至少出现多少个不会删除</li>
+<li>subset：只针对指定的列的子集进行删除；不在子集中的行或者列不进行操作</li>
+<li>inplace：表示在生成一个新的DataFrame，还是直接在原数据上进行删除</li>
+</ul>
+<p>为了解释方便，我们先生成一个副本df1：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7hmdg6rej30wq0dignl.jpg" alt=""></p>
+<h3 id="参数axis">参数axis</h3>
+<p>默认是axis=0的删除：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7hnks0lkj30w409ymyr.jpg" alt=""></p>
+<p>除了用axis=0或者axis=1表示之外，还可用axis=&quot;index&quot;或者axis=“columns”：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7hpgkkhyj30zw0qcn0d.jpg" alt=""></p>
+<h3 id="参数how">参数how</h3>
+<p>两种方式进行删除：</p>
+<ul>
+<li>how=“any”：至少有一个缺失值就删除，默认方式</li>
+<li>how=“all”：全部是缺失值删除</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7hrqrg5wj311k0o2n1a.jpg" alt=""></p>
+<h3 id="参数thresh">参数thresh</h3>
+<p>thresh参数表示的是：thresh=N，当存在至少N个不缺失值的情况下，才会保留数据。</p>
+<p>下面的例子中，N=6表示至少要有6个非缺失值才会保留；索引为1的数据存在两个缺失值，索引 被删除了</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7hwee2evj31320p842x.jpg" alt=""></p>
+<p>当我们改成N=7：只要存在缺失值的行都会被删除</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7hyrlyj7j311k0m2gpj.jpg" alt=""></p>
+<h3 id="参数subset">参数subset</h3>
+<p>subset表示的使用指定通过某个子集元素来进行删除。可以是一个或者多个，多个使用列表形式</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7hzq85vmj30yo0io776.jpg" alt=""></p>
+<h3 id="参数inplace">参数inplace</h3>
+<p>删除过缺失值得新数据是存为副本还是直接在原数据上进行修改。</p>
+<p>如果不指定inplace，默认是存为副本，生成新的数据帧</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7i1d8o8wj30zi0mcdj6.jpg" alt=""></p>
+<p>如果指定为True，则原数据直接修改：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7i40a8x2j30ve0bkjsw.jpg" alt=""></p>
+<h2 id="缺失值填充fillna">缺失值填充fillna</h2>
+<p>有时候处理数据的时候，我们可以直接删除缺失值；但有时为了数据的完整性，我们需要对缺失值进行填充：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DataFrame.fillna(value=<span class="literal">None</span>, method=<span class="literal">None</span>, axis=<span class="literal">None</span>, inplace=<span class="literal">False</span>, limit=<span class="literal">None</span>, downcast=<span class="literal">None</span>, **kwargs)</span><br></pre></td></tr></table></figure>
+<h3 id="参数解释">参数解释</h3>
+<ul>
+<li>value：填充的值，可以是具体某个值，也可以用字典形式，或者函数计算出来的值等</li>
+<li>axis：填充的方向，axis=0(行)，默认；axis=1（列）</li>
+<li>method：填充的方法{‘backfill’, ‘bfill’, ‘pad’, ‘ffill’, None}, 默认是 None</li>
+<li>inplace：生成新的副本还是原数据直接修改</li>
+<li>limit：缺失值填充个数</li>
+<li>downcast：数据类型的降低，<code>item-&amp;gt; dtype</code>的字典，如果可能的话，将向下转换，或者是字符串<code>“infer”</code>，将尝试向下转换为适当的相等类型。看下官网解释，用的少</li>
+</ul>
+<blockquote>
+<p>downcast：A dict of item-&gt;dtype of what to downcast if possible, or the string ‘infer’ which will try to downcast to an appropriate equal type (e.g. float64 to int64 if possible).</p>
+</blockquote>
+<h3 id="模拟数据-v2">模拟数据</h3>
+<p>再模拟一份数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">df2 = pd.DataFrame([[np.nan, <span class="number">2</span>, np.nan, <span class="number">0</span>],</span><br><span class="line">                   [<span class="number">3</span>, <span class="number">4</span>, np.nan, <span class="number">1</span>],</span><br><span class="line">                   [np.nan, np.nan, np.nan, <span class="number">5</span>],</span><br><span class="line">                   [np.nan, <span class="number">3</span>, np.nan, <span class="number">4</span>]],</span><br><span class="line">                  columns=list(<span class="string">"ABCD"</span>))</span><br><span class="line">df2</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7iefb1p8j30wo0gejsz.jpg" alt=""></p>
+<h3 id="参数value">参数value</h3>
+<p>参数value是我们需要填充的值，有多种形式：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7ifncrkcj30s80q4tb3.jpg" alt=""></p>
+<p>通过字典的形式进行填充，字典的键是我们的列属性名称：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7igb5874j30qo0dsq4b.jpg" alt=""></p>
+<p>通过函数计算出来的值进行填充：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7ih8y43rj30xg0ew0ul.jpg" alt=""></p>
+<h3 id="参数axis-v2">参数axis</h3>
+<p>axis参数用来表示填充的方向，默认是axis=0</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7ii58fx5j30u80ckgmn.jpg" alt=""></p>
+<h3 id="参数limit">参数limit</h3>
+<p>参数limit表示的是缺失值的最多填充个数：下面的例子是最多填充2个</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7ij2gzp1j30yu0nq0v1.jpg" alt=""></p>
+<h3 id="参数method">参数method</h3>
+<p>参数method表示的是填充的方式，这个参数<strong>不能和value值同时存在</strong></p>
+<ul>
+<li>ffill、pad：用缺失值前一个值填充</li>
+<li>bfill、backfill：用缺失值后一个数值填充</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7imqz1cqj30rg0nitaj.jpg" alt=""></p>
+<p>bfill和backfill表示的是用缺失值的后面一个值来进行填充当前缺失值的位置：比如索引为0的缺失值，后面是3，填充即可。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7ioegghrj30sy0qk76w.jpg" alt=""></p>
+<h3 id="参数Inplace">参数Inplace</h3>
+<p>作用效果类似dropna；如果加上inplace=True，则会直接修改原数据。不多介绍，一般我们都是默认用False，不直接修改原数据</p>
+<h3 id="参数downcast">参数downcast</h3>
+<p>为了解释downcast的使用，在Stack Overflow上找到了一个案例：</p>
+<p><a href="https://stackoverflow.com/questions/27066412/using-fillna-downcast-and-pandas" target="_blank" rel="noopener">https://stackoverflow.com/questions/27066412/using-fillna-downcast-and-pandas</a></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gs7ib6ryqjj30yh0u078b.jpg" alt=""></p>
+<h2 id="总结">总结</h2>
+<p>数据不可能总是那么的完美，存在缺失值是十分常见的情况。本文从查看缺失值、删除缺失值到缺失值的填充进行详解地介绍，重点掌握dropna和fillna的使用，希望对读者有所帮助。</p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2021/07/07/%E5%9B%BE%E8%A7%A3pandas%E7%9A%84%E7%BC%BA%E5%A4%B1%E5%80%BC%E5%A4%84%E7%90%86.html">图解pandas的缺失值处理</a></p>
+  <p><span>发布时间:</span>2021年07月07日 - 09:07</p>
+  <p><span>原始链接:</span><a href="/2021/07/07/%E5%9B%BE%E8%A7%A3pandas%E7%9A%84%E7%BC%BA%E5%A4%B1%E5%80%BC%E5%A4%84%E7%90%86.html" title="图解pandas的缺失值处理">http://www.renpeter.cn/2021/07/07/%E5%9B%BE%E8%A7%A3pandas%E7%9A%84%E7%BC%BA%E5%A4%B1%E5%80%BC%E5%A4%84%E7%90%86.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2021/07/07/%E5%9B%BE%E8%A7%A3pandas%E7%9A%84%E7%BC%BA%E5%A4%B1%E5%80%BC%E5%A4%84%E7%90%86.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pandas/" rel="tag"># pandas</a>
+          
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag"># 数据分析</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/07/03/%E5%9B%BE%E8%A7%A3pandas%E6%8E%92%E5%90%8Drank%E6%9C%BA%E5%88%B6.html" rel="next" title="图解pandas排名rank机制">
+                <i class="fa fa-chevron-left"></i> 图解pandas排名rank机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">603</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">78</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#图解Pandas缺失值空值处理"><span class="nav-number">1.</span> <span class="nav-text">图解Pandas缺失值空值处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Pandas系列"><span class="nav-number">1.1.</span> <span class="nav-text">Pandas系列</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用函数"><span class="nav-number">2.</span> <span class="nav-text">常用函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关概念"><span class="nav-number">3.</span> <span class="nav-text">相关概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模拟数据"><span class="nav-number">4.</span> <span class="nav-text">模拟数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看缺失值"><span class="nav-number">5.</span> <span class="nav-text">查看缺失值</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#查看每个位置的缺失值情况"><span class="nav-number">5.1.</span> <span class="nav-text">查看每个位置的缺失值情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查看每个列属性是否存在缺失值"><span class="nav-number">5.2.</span> <span class="nav-text">查看每个列属性是否存在缺失值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查看每个列属性存在多少缺失值"><span class="nav-number">5.3.</span> <span class="nav-text">查看每个列属性存在多少缺失值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看非缺失值情况notnull"><span class="nav-number">6.</span> <span class="nav-text">查看非缺失值情况notnull()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除缺失值dropna"><span class="nav-number">7.</span> <span class="nav-text">删除缺失值dropna</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参数说明"><span class="nav-number">7.1.</span> <span class="nav-text">参数说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数axis"><span class="nav-number">7.2.</span> <span class="nav-text">参数axis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数how"><span class="nav-number">7.3.</span> <span class="nav-text">参数how</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数thresh"><span class="nav-number">7.4.</span> <span class="nav-text">参数thresh</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数subset"><span class="nav-number">7.5.</span> <span class="nav-text">参数subset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数inplace"><span class="nav-number">7.6.</span> <span class="nav-text">参数inplace</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缺失值填充fillna"><span class="nav-number">8.</span> <span class="nav-text">缺失值填充fillna</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参数解释"><span class="nav-number">8.1.</span> <span class="nav-text">参数解释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模拟数据-v2"><span class="nav-number">8.2.</span> <span class="nav-text">模拟数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数value"><span class="nav-number">8.3.</span> <span class="nav-text">参数value</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数axis-v2"><span class="nav-number">8.4.</span> <span class="nav-text">参数axis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数limit"><span class="nav-number">8.5.</span> <span class="nav-text">参数limit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数method"><span class="nav-number">8.6.</span> <span class="nav-text">参数method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数Inplace"><span class="nav-number">8.7.</span> <span class="nav-text">参数Inplace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数downcast"><span class="nav-number">8.8.</span> <span class="nav-text">参数downcast</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IC/" rel="tag">IC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">61</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">81</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">58</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">36</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">102</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">101</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">70</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">51</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共831.7k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2021/07/07/%E5%9B%BE%E8%A7%A3pandas%E7%9A%84%E7%BC%BA%E5%A4%B1%E5%80%BC%E5%A4%84%E7%90%86.html';
+          this.page.identifier = '2021/07/07/图解pandas的缺失值处理.html';
+          this.page.title = '图解pandas的缺失值处理';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
