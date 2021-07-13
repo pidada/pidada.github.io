@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="python,pandas,数据处理," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="12_图解Pandas重复值处理 pandas中处理重复值使用的是两个函数：  duplicated()：判断是否有重复值 drop_duplicates() ：删除重复值">
+<meta name="keywords" content="python,pandas,数据处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图解Pandas重复值处理">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2021&#x2F;07&#x2F;13&#x2F;%E5%9B%BE%E8%A7%A3Pandas%E9%87%8D%E5%A4%8D%E5%80%BC%E5%A4%84%E7%90%86.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="12_图解Pandas重复值处理 pandas中处理重复值使用的是两个函数：  duplicated()：判断是否有重复值 drop_duplicates() ：删除重复值">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse5dnh7cfj31kd0u01cc.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse4i6d2p9j30jy0negnt.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse27neassj30y00mugn9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse28nb1hgj30l40iidgo.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse2b51tnkj30rg0dmmyo.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse2icm6uaj30vi0ts775.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsdx9zx6lnj31720mg42p.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse2of1s9wj30m60l0gna.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse2q2rg28j30z40skwhi.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse2rc5cf0j30sg0rwac9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse2wvycksj30t80hq0uj.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse2xek0zuj31360m4goa.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse2yh2lcnj31ac0fw76o.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse3x5tafzj310e0qagoe.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse3y23ez7j30v409cjsc.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse4j11e0wj30km0myjuk.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse4jrhfhsj30m008sq3p.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse4l2sxllj30mi0i6dhp.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse4flay09j30wa04mdgj.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse4lvpdonj30oc0oa40z.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse4m9tozqj30rw0o6wh6.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gse4ngvnarj30i00cet9q.jpg">
+<meta property="og:updated_time" content="2021-07-13T10:07:19.157Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2021/07/13/图解Pandas重复值处理.html"/>
+
+
+
+
+
+  <title>图解Pandas重复值处理 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2021/07/13/%E5%9B%BE%E8%A7%A3Pandas%E9%87%8D%E5%A4%8D%E5%80%BC%E5%A4%84%E7%90%86.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">图解Pandas重复值处理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-07-13T18:05:13+08:00">
+                2021-7-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/" itemprop="url" rel="index">
+                    <span itemprop="name">pandas</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/%E6%95%99%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">教程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/07/13/%E5%9B%BE%E8%A7%A3Pandas%E9%87%8D%E5%A4%8D%E5%80%BC%E5%A4%84%E7%90%86.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2021/07/13/图解Pandas重复值处理.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="12-图解Pandas重复值处理">12_图解Pandas重复值处理</h2>
+<p>pandas中处理重复值使用的是两个函数：</p>
+<ul>
+<li>duplicated()：判断是否有重复值</li>
+<li>drop_duplicates() ：删除重复值</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg" alt=""></p>
+<a id="more"></a>
+<h2 id="Pandas连载文章">Pandas连载文章</h2>
+<p>Pandas的文章已经形成连载，欢迎关注阅读：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse5dnh7cfj31kd0u01cc.jpg" alt=""></p>
+<h2 id="模拟数据">模拟数据</h2>
+<p>在本文中模拟了两份不同的数据：</p>
+<p>1、一份订单数据，后面会使用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 导入一份模拟数据：待用</span></span><br><span class="line"></span><br><span class="line">df1 = pd.read_excel(<span class="string">"订单重复值.xlsx"</span>)</span><br><span class="line">df1</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse4i6d2p9j30jy0negnt.jpg" alt=""></p>
+<p>2、模拟的另一份数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">df2 = pd.DataFrame(np.ones([<span class="number">10</span>,<span class="number">2</span>]),  <span class="comment"># 生成6*2的全部为1的数据</span></span><br><span class="line">                   columns=[<span class="string">"col1"</span>,<span class="string">"col2"</span>]</span><br><span class="line">                  )</span><br><span class="line">df2</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse27neassj30y00mugn9.jpg" alt=""></p>
+<p>再增加了两个字段：都是从列表中随机有抽样放回的选取</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 增加两列</span></span><br><span class="line">list1 = [<span class="string">"a"</span>,<span class="string">"b"</span>]</span><br><span class="line">list2 = [<span class="number">2</span>,<span class="number">3</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在列表中随机选择10个元素，有放回抽样</span></span><br><span class="line">df2[<span class="string">"col3"</span>] = np.random.choice(list1,<span class="number">10</span>)  </span><br><span class="line">df2[<span class="string">"col4"</span>] = np.random.choice(list2,<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">df2</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse28nb1hgj30l40iidgo.jpg" alt=""></p>
+<h2 id="duplicated">duplicated()</h2>
+<p>函数的功能是检查数据中是否有重复值，用于标记 Series 中的值、DataFrame 中的记录行是否重复，重复为 True，不重复为 False。</p>
+<p>每行数据都是和它前面的记录相比较。</p>
+<h3 id="语法">语法</h3>
+<p>针对DataFrame类型数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pandas.DataFrame.duplicated(subset=<span class="literal">None</span>,keep=<span class="string">'first'</span>)</span><br></pre></td></tr></table></figure>
+<p>或者针对Series的数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pandas.Series.duplicated(keep=<span class="string">'first'</span>)</span><br></pre></td></tr></table></figure>
+<p>keep参数的3种取值解释：</p>
+<ul>
+<li>first：将重复项标记True为第一次出现的除外</li>
+<li>last：将重复项标记True为最后一次除外</li>
+<li>False：将所有重复项标记为True</li>
+</ul>
+<h3 id="判断哪些数据重复">判断哪些数据重复</h3>
+<p>通过这个函数能够判断哪些数据是重复的：重复标记为True，否则为False</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse2b51tnkj30rg0dmmyo.jpg" alt=""></p>
+<h3 id="参数subset">参数subset</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">df2.duplicated(subset=[<span class="string">"col3"</span>])  <span class="comment"># 单独看col3列是否重复</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果</span></span><br><span class="line"><span class="number">0</span>    <span class="literal">False</span></span><br><span class="line"><span class="number">1</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">2</span>    <span class="literal">False</span></span><br><span class="line"><span class="number">3</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">4</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">5</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">6</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">7</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">8</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">9</span>     <span class="literal">True</span></span><br><span class="line">dtype: bool</span><br><span class="line">  </span><br><span class="line">df2.duplicated(subset=[<span class="string">"col1"</span>])  <span class="comment"># 单独看col1：全部是1，后面全部是重复的</span></span><br><span class="line"><span class="number">0</span>    <span class="literal">False</span></span><br><span class="line"><span class="number">1</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">2</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">3</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">4</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">5</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">6</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">7</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">8</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">9</span>     <span class="literal">True</span></span><br><span class="line">dtype: bool</span><br></pre></td></tr></table></figure>
+<p>上面的两个例子都是看单个字段是否重复，下面的例子是通过查看多个属性：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">df2.duplicated(subset=[<span class="string">"col3"</span>,<span class="string">"col4"</span>])  <span class="comment"># 同时看col3和col4</span></span><br><span class="line"></span><br><span class="line"><span class="number">0</span>    <span class="literal">False</span></span><br><span class="line"><span class="number">1</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">2</span>    <span class="literal">False</span></span><br><span class="line"><span class="number">3</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">4</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">5</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">6</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">7</span>    <span class="literal">False</span></span><br><span class="line"><span class="number">8</span>    <span class="literal">False</span></span><br><span class="line"><span class="number">9</span>     <span class="literal">True</span></span><br><span class="line">dtype: bool</span><br></pre></td></tr></table></figure>
+<h3 id="参数keep">参数keep</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">df2.duplicated(subset=[<span class="string">"col3"</span>],keep=<span class="string">"last"</span>) </span><br><span class="line"></span><br><span class="line"><span class="number">0</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">1</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">2</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">3</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">4</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">5</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">6</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">7</span>    <span class="literal">False</span>   <span class="comment"># 第一次出现</span></span><br><span class="line"><span class="number">8</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">9</span>    <span class="literal">False</span>   <span class="comment"># 第一次出现</span></span><br><span class="line">dtype: bool</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse2icm6uaj30vi0ts775.jpg" alt=""></p>
+<ul>
+<li>上面的keep参数使用的是last，相当于是最后的一条数据是初始值，前面的值和它进行比较，是否有重复值</li>
+<li>下面的案例中keep使用的first(默认)，相当于是将第一次出现的数据看做是初始值，后面的数据和它相比；如果重复标记为True</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">df2.duplicated(subset=[<span class="string">"col3"</span>],keep=<span class="string">"first"</span>)   <span class="comment"># 默认是first</span></span><br><span class="line"></span><br><span class="line"><span class="number">0</span>    <span class="literal">False</span>  <span class="comment"># 第一次出现</span></span><br><span class="line"><span class="number">1</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">2</span>    <span class="literal">False</span>  <span class="comment"># 第一次出现</span></span><br><span class="line"><span class="number">3</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">4</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">5</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">6</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">7</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">8</span>     <span class="literal">True</span></span><br><span class="line"><span class="number">9</span>     <span class="literal">True</span></span><br><span class="line">dtype: bool</span><br><span class="line">  </span><br><span class="line">df2.duplicated(subset=[<span class="string">"col3"</span>],keep=<span class="literal">False</span>)   <span class="comment"># 将所有的重复值标记为True</span></span><br><span class="line"></span><br><span class="line"><span class="number">0</span>    <span class="literal">True</span></span><br><span class="line"><span class="number">1</span>    <span class="literal">True</span></span><br><span class="line"><span class="number">2</span>    <span class="literal">True</span></span><br><span class="line"><span class="number">3</span>    <span class="literal">True</span></span><br><span class="line"><span class="number">4</span>    <span class="literal">True</span></span><br><span class="line"><span class="number">5</span>    <span class="literal">True</span></span><br><span class="line"><span class="number">6</span>    <span class="literal">True</span></span><br><span class="line"><span class="number">7</span>    <span class="literal">True</span></span><br><span class="line"><span class="number">8</span>    <span class="literal">True</span></span><br><span class="line"><span class="number">9</span>    <span class="literal">True</span></span><br><span class="line">dtype: bool</span><br></pre></td></tr></table></figure>
+<h2 id="drop-duplicates">drop_duplicates()</h2>
+<p>该函数的作用是删除数据中的重复值</p>
+<h3 id="语法形式">语法形式</h3>
+<ul>
+<li>subset：表示按照指定的一个或者多个列属性来删除重复值，可选性；默认是全部列属性</li>
+<li>keep：表示删除重复值后保留的数据，默认是保留第一条数据</li>
+<li>inplace：表示删除重复是生成副本，还是直接在原数据上进行修改。这个参数的功能在pandas的功能都是如此</li>
+<li>ingoore_index：生成数据的索引是元数据的，还是从0,1,2…到n-1的自然数排列</li>
+</ul>
+<p>下面是来自官网的参数解释：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsdx9zx6lnj31720mg42p.jpg" alt=""></p>
+<h3 id="全部使用默认参数">全部使用默认参数</h3>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse2of1s9wj30m60l0gna.jpg" alt=""></p>
+<p>上面的结果有两个特点：</p>
+<ul>
+<li>索引还是原数据的索引</li>
+<li>保留的数据是每条值的第一条（如果存在重复值）</li>
+<li>判断是否重复，使用的是全部列属性</li>
+<li>上面的数据就是下面判断是否重复的为False的数据（对比序号）</li>
+</ul>
+<h3 id="参数subset-v2">参数subset</h3>
+<p>subset是可以指定我们想通过哪些属性来进行删除：</p>
+<p>1、通过单个属性字段来删除</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse2q2rg28j30z40skwhi.jpg" alt=""></p>
+<p>2、通过多个字段属性来删除</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse2rc5cf0j30sg0rwac9.jpg" alt=""></p>
+<h3 id="参数keep-v2">参数keep</h3>
+<p>keep参数保留我们想要的数据：第一条还是最后一条</p>
+<p>1、keep=“first”</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse2wvycksj30t80hq0uj.jpg" alt="image-20210712130038445"></p>
+<p>2、keep=“last”</p>
+<p>通过duplicated()查看数据是否重复，可以看多索引为7和9的数据为False，因为它们是最后一次出现</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse2xek0zuj31360m4goa.jpg" alt=""></p>
+<h3 id="参数ignore-index">参数ignore_index</h3>
+<p>该参数表示的是生成数据的索引是原数据的索引还是直接重新排名</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse2yh2lcnj31ac0fw76o.jpg" alt=""></p>
+<h3 id="参数inplace">参数inplace</h3>
+<p>如果是使用默认值False：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse3x5tafzj310e0qagoe.jpg" alt=""></p>
+<p>如果inplace使用True，不会生成数据，因为是在原数据的基础上修改的，导致原数据直接变化了：我们直接看df2</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse3y23ez7j30v409cjsc.jpg" alt=""></p>
+<h2 id="实战案例">实战案例</h2>
+<p>在文章的最开始，我们已经导入了数据，几点需求说明：</p>
+<ul>
+<li>每个订单可能存在多个状态，也可能只存在一个</li>
+<li>我们想要找出最终的订单状态为“通过”的订单的所有数据</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse4j11e0wj30km0myjuk.jpg" alt=""></p>
+<p>比如订单S1，存在3条状态，有两条是通过的，但是我们只想取出最近的一条通过的数据：2021-01-06</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse4jrhfhsj30m008sq3p.jpg" alt=""></p>
+<p>解决步骤1：先找出通过的全部订单，发现只有S7没有通过</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse4l2sxllj30mi0i6dhp.jpg" alt=""></p>
+<p>通过下面的代码也能够找出最终是通过的订单：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">order_pass = df1.query(<span class="string">"状态 == '通过'"</span>)[<span class="string">"订单号"</span>].unique()</span><br><span class="line">order_pass</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse4flay09j30wa04mdgj.jpg" alt=""></p>
+<p>解决步骤2：筛选出最终状态为通过的订单信息，下面提供了两种方式</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse4lvpdonj30oc0oa40z.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse4m9tozqj30rw0o6wh6.jpg" alt=""></p>
+<p>解决步骤3：对df3进行去重即可</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">df3.drop_duplicates(</span><br><span class="line">  subset=<span class="string">"订单号"</span>,  <span class="comment"># 根据订单号去重</span></span><br><span class="line">  keep=<span class="string">"last"</span>,  <span class="comment"># 保留最后一条</span></span><br><span class="line">  inplace=<span class="literal">True</span>,  <span class="comment"># 原地修改</span></span><br><span class="line">  ignore_index=<span class="literal">True</span>  <span class="comment"># 索引重排</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">df3  <span class="comment"># 结果中没有S7</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gse4ngvnarj30i00cet9q.jpg" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2021/07/13/%E5%9B%BE%E8%A7%A3Pandas%E9%87%8D%E5%A4%8D%E5%80%BC%E5%A4%84%E7%90%86.html">图解Pandas重复值处理</a></p>
+  <p><span>发布时间:</span>2021年07月13日 - 18:07</p>
+  <p><span>原始链接:</span><a href="/2021/07/13/%E5%9B%BE%E8%A7%A3Pandas%E9%87%8D%E5%A4%8D%E5%80%BC%E5%A4%84%E7%90%86.html" title="图解Pandas重复值处理">http://www.renpeter.cn/2021/07/13/%E5%9B%BE%E8%A7%A3Pandas%E9%87%8D%E5%A4%8D%E5%80%BC%E5%A4%84%E7%90%86.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2021/07/13/%E5%9B%BE%E8%A7%A3Pandas%E9%87%8D%E5%A4%8D%E5%80%BC%E5%A4%84%E7%90%86.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/pandas/" rel="tag"># pandas</a>
+          
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag"># 数据处理</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/07/07/%E5%9B%BE%E8%A7%A3pandas%E7%9A%84%E7%BC%BA%E5%A4%B1%E5%80%BC%E5%A4%84%E7%90%86.html" rel="next" title="图解pandas的缺失值处理">
+                <i class="fa fa-chevron-left"></i> 图解pandas的缺失值处理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">604</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">78</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">56</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#12-图解Pandas重复值处理"><span class="nav-number">1.</span> <span class="nav-text">12_图解Pandas重复值处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pandas连载文章"><span class="nav-number">2.</span> <span class="nav-text">Pandas连载文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模拟数据"><span class="nav-number">3.</span> <span class="nav-text">模拟数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#duplicated"><span class="nav-number">4.</span> <span class="nav-text">duplicated()</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#语法"><span class="nav-number">4.1.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#判断哪些数据重复"><span class="nav-number">4.2.</span> <span class="nav-text">判断哪些数据重复</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数subset"><span class="nav-number">4.3.</span> <span class="nav-text">参数subset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数keep"><span class="nav-number">4.4.</span> <span class="nav-text">参数keep</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#drop-duplicates"><span class="nav-number">5.</span> <span class="nav-text">drop_duplicates()</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#语法形式"><span class="nav-number">5.1.</span> <span class="nav-text">语法形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#全部使用默认参数"><span class="nav-number">5.2.</span> <span class="nav-text">全部使用默认参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数subset-v2"><span class="nav-number">5.3.</span> <span class="nav-text">参数subset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数keep-v2"><span class="nav-number">5.4.</span> <span class="nav-text">参数keep</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数ignore-index"><span class="nav-number">5.5.</span> <span class="nav-text">参数ignore_index</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数inplace"><span class="nav-number">5.6.</span> <span class="nav-text">参数inplace</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实战案例"><span class="nav-number">6.</span> <span class="nav-text">实战案例</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IC/" rel="tag">IC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">61</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">82</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">59</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">36</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">102</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag">数据处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">101</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">70</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">51</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共833.1k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2021/07/13/%E5%9B%BE%E8%A7%A3Pandas%E9%87%8D%E5%A4%8D%E5%80%BC%E5%A4%84%E7%90%86.html';
+          this.page.identifier = '2021/07/13/图解Pandas重复值处理.html';
+          this.page.title = '图解Pandas重复值处理';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
