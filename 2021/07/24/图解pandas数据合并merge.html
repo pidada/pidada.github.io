@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="数据分析,python,pandas," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="图解Pandas的数据合并merge函数 在实际的业务需求中，我们的数据可能存在于不同的库表中。很多情况下，我们需要进行多表的连接查询来实现数据的提取，通过SQL的join，比如left join、left join、inner join等来实现。 在pandas中也有实现合并功能的函数，比如：concat、append、join、merge。本文中重点介绍的是merge函数，也是pandas中最">
+<meta name="keywords" content="数据分析,python,pandas">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图解pandas数据合并merge">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2021&#x2F;07&#x2F;24&#x2F;%E5%9B%BE%E8%A7%A3pandas%E6%95%B0%E6%8D%AE%E5%90%88%E5%B9%B6merge.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="图解Pandas的数据合并merge函数 在实际的业务需求中，我们的数据可能存在于不同的库表中。很多情况下，我们需要进行多表的连接查询来实现数据的提取，通过SQL的join，比如left join、left join、inner join等来实现。 在pandas中也有实现合并功能的函数，比如：concat、append、join、merge。本文中重点介绍的是merge函数，也是pandas中最">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrw2ngd1zj31lh0u0wke.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrcykuyywj30u80r4mz7.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrcwqs30cj30ty0mkabo.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrrqxeqffj30z20jumyt.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrs68ir4fj317k0j240t.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrs9als5ej30oy0ao3z2.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrsavzsmfj30ni0e2js3.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrsm4r6y6j317w0nsmzu.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrsraligkj30nc0dijrz.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrssg4wuej317q0kqtb9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrswarha0j30ly08wdg9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrsxjn2l4j31780ow0v2.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrt3okvh5j30oq0j03zg.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrtikmr0zj31ar0u0wik.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrtnceub2j30yu0ja75q.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrtsrsj9hj30ue0i2ta0.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsru30yf9sj30we0gedhf.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsru6lce11j30tc0g475o.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsru74y1n5j30s60g0abg.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrumj8rw3j30vy08ydgn.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsruk7svegj31ge0m0jv8.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrux9j656j30vi0esab8.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrv0eixofj31di0pktd0.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrvr4l0mvj30m60ko0tt.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrvseetekj30xe080mxu.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrvun65goj31i40u0doh.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrv6yqdoxj30uk0j83zm.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrv7w2uflj310s0hewfx.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrvdqql1jj30za0cidh3.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gsrveq47l9j30w80codgp.jpg">
+<meta property="og:updated_time" content="2021-07-24T08:05:45.503Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2021/07/24/图解pandas数据合并merge.html"/>
+
+
+
+
+
+  <title>图解pandas数据合并merge | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2021/07/24/%E5%9B%BE%E8%A7%A3pandas%E6%95%B0%E6%8D%AE%E5%90%88%E5%B9%B6merge.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">图解pandas数据合并merge</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-07-24T16:03:20+08:00">
+                2021-7-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/" itemprop="url" rel="index">
+                    <span itemprop="name">pandas</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/%E6%95%99%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">教程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/07/24/%E5%9B%BE%E8%A7%A3pandas%E6%95%B0%E6%8D%AE%E5%90%88%E5%B9%B6merge.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2021/07/24/图解pandas数据合并merge.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.8k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="图解Pandas的数据合并merge函数">图解Pandas的数据合并merge函数</h2>
+<p>在实际的业务需求中，我们的数据可能存在于不同的库表中。很多情况下，我们需要进行多表的连接查询来实现数据的提取，通过SQL的join，比如left join、left join、inner join等来实现。</p>
+<p>在pandas中也有实现合并功能的函数，比如：concat、append、join、merge。本文中重点介绍的是<strong>merge函数</strong>，也是pandas中最为重要的一个实现数据合并的函数。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg" alt=""></p>
+<a id="more"></a>
+<h2 id="Pandas连载文章">Pandas连载文章</h2>
+<p>目前Pandas系列文章已经更新了13篇，文章都是以案例+图解的风格，欢迎访问阅读。有很多个人推荐的文章：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrw2ngd1zj31lh0u0wke.jpg" alt=""></p>
+<h2 id="参数">参数</h2>
+<p>官网学习地址：<a href="https://pandas.pydata.org/pandas-docs/stable/user_guide/merging.html#" target="_blank" rel="noopener">https://pandas.pydata.org/pandas-docs/stable/user_guide/merging.html#</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">pd.merge(left,   <span class="comment"># 待合并的2个数据框</span></span><br><span class="line">         right,</span><br><span class="line">         how=<span class="string">'inner'</span>,  <span class="comment"># ‘left’, ‘right’, ‘outer’, ‘inner’, ‘cross’</span></span><br><span class="line">         on=<span class="literal">None</span>, <span class="comment"># 连接的键，默认是相同的键</span></span><br><span class="line">         left_on=<span class="literal">None</span>,  <span class="comment"># 指定不同的连接字段：键不同，但是键的取值有相同的内容</span></span><br><span class="line">         right_on=<span class="literal">None</span>,</span><br><span class="line">         left_index=<span class="literal">False</span>,   <span class="comment"># 根据索引来连接</span></span><br><span class="line">         right_index=<span class="literal">False</span>,</span><br><span class="line">         sort=<span class="literal">False</span>, <span class="comment"># 是否排序</span></span><br><span class="line">         suffixes=(<span class="string">'_x'</span>, <span class="string">'_y'</span>),   <span class="comment"># 改变后缀</span></span><br><span class="line">         copy=<span class="literal">True</span>,</span><br><span class="line">         indicator=<span class="literal">False</span>,   <span class="comment"># 显示字段来源</span></span><br><span class="line">         validate=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+<p>参数的具体解释为：</p>
+<ul>
+<li>
+<p>left、right：待合并的数据帧</p>
+</li>
+<li>
+<p>how：合并的方式，有5种：{‘left’, ‘right’, ‘outer’, ‘inner’, ‘cross’}, 默认是 ‘inner’</p>
+<p>1、 left：左连接，保留left的全部数据；right类似；类比于SQL的left join 或者right join</p>
+<p>2、outer：全连接功能，类似SQL的full outer join</p>
+<p>3、inner：交叉连接，类比于SQL的inner join</p>
+<p>4、cross：创建两个数据帧DataFrame的<strong>笛卡尔积</strong>，默认保留左边的顺序</p>
+</li>
+<li>
+<p>on：连接的列属性；默认是两个DataFrame的相同字段</p>
+</li>
+<li>
+<p>left_on/right_on：指定两个不同的键进行联结</p>
+</li>
+<li>
+<p>left_index、right_index：通过索引进行合并</p>
+</li>
+<li>
+<p>suffixes：指定我们自己想要的后缀</p>
+</li>
+<li>
+<p>indictor：显示字段的来源</p>
+</li>
+</ul>
+<h2 id="模拟数据">模拟数据</h2>
+<p>我们创建了4个DataFrame数据框；其中df1和df2、df3是具有相同的键userid；df4有类似的键userid1，取值也是ac，和df1或df2的userid取值有相同的部分。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrcykuyywj30u80r4mz7.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrcwqs30cj30ty0mkabo.jpg" alt=""></p>
+<h2 id="参数left、right">参数left、right</h2>
+<p>left、how就是需要连接的两个数据帧，一般有两种写法：</p>
+<ul>
+<li>pd.merge(left,right)，个人习惯</li>
+<li>left.merge(right)</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrrqxeqffj30z20jumyt.jpg" alt=""></p>
+<p>图解过程如下：</p>
+<ul>
+<li>两个数据框df1（left）、df2（right）有相同的字段userid</li>
+<li>默认是通过相同的字段（键）进行关联，取出键中相同的值（ac），而且每个键的记录要全部显示，比如a有多条记录</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrs68ir4fj317k0j240t.jpg" alt=""></p>
+<h2 id="参数how">参数how</h2>
+<h3 id="inner">inner</h3>
+<p>inner称之为<strong>内连接</strong>。它会直接根据相同的列属性userid进行关联，取出属性下面相同的数据信息a、c</p>
+<p>⚠️上面的图解过程就是默认的使用how=“inner”</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrs9als5ej30oy0ao3z2.jpg" alt=""></p>
+<h3 id="outer">outer</h3>
+<p>outer称之为外连接，在拼接的过程中会取两个数据框中键的并集进行拼接</p>
+<ul>
+<li>外连接，取出全部交集键的并集。例子中是user的并集</li>
+<li>如果某个键在某个数据框中不存在数据，则为NaN</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrsavzsmfj30ni0e2js3.jpg" alt=""></p>
+<p>图解过程如下：</p>
+<ul>
+<li>也是根据相同的字段来进行联结：userid</li>
+<li>保留两边的全部数据，所以abcde全部存在</li>
+<li>如果某边不存在键下面的某个值，则结果中用NaN补充。比如df1的userid中存在b，但是df3中不存在，则结果b对应的score为NaN，cd类似；e在df3中存在e的取值，但是df1中不存在，则age的值为NaN</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrsm4r6y6j317w0nsmzu.jpg" alt=""></p>
+<h3 id="left">left</h3>
+<p>以左边数据框中的键为基准；如果左边存在但是右边不存在，则右边用NaN表示</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrsraligkj30nc0dijrz.jpg" alt=""></p>
+<p>图解过程如下：</p>
+<ul>
+<li>和上面图解过程的结果差别在于，没有出现e；</li>
+<li>当how=“left”，只会保留df1（left）中userid下面的全部取值，不包含e</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrssg4wuej317q0kqtb9.jpg" alt=""></p>
+<h3 id="right">right</h3>
+<p>以右边数据框中的键的取值为基准；如果右边存在但是左边不存在，则左边用NaN表示</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrswarha0j30ly08wdg9.jpg" alt=""></p>
+<p>图解过程如下：</p>
+<ul>
+<li>当how=“right”，只会保留df3（right）中userid的全部取值</li>
+<li>结果只保留了df3的userid下面的全部取值：a、e</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrsxjn2l4j31780ow0v2.jpg" alt=""></p>
+<h3 id="cross">cross</h3>
+<p>笛卡尔积：两个数据框中的数据交叉匹配，出现<code>n1*n2</code>的数据量</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrt3okvh5j30oq0j03zg.jpg" alt=""></p>
+<p>笛卡尔积的图解过程如下：</p>
+<ul>
+<li>出现的数据量是4*2，userid下面的数据交叉匹配</li>
+<li>在最终结果中相同的字段userid为了避免混淆，会带上默认的后缀<code>_x、_y</code></li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrtikmr0zj31ar0u0wik.jpg" alt=""></p>
+<h2 id="参数on">参数on</h2>
+<p>如果待连接的两个数据框有相同的键，则默认使用该相同的键进行联结。</p>
+<p>上面的所有图解例子的参数on默认都是使用相同的键进行联结，所以有时候可省略。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrtnceub2j30yu0ja75q.jpg" alt=""></p>
+<p>再看个例子：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrtsrsj9hj30ue0i2ta0.jpg" alt=""></p>
+<p>还可以将left和right的位置进行互换：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsru30yf9sj30we0gedhf.jpg" alt=""></p>
+<p>上面的两个例子都是针对数据框只有具有相同的一个键，如果不止通过一个键进行联结，该如何处理？通过一个来自官网的例子来解释，我们先创建两个DataFrame：df5、df6</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsru6lce11j30tc0g475o.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsru74y1n5j30s60g0abg.jpg" alt=""></p>
+<p>现在进行两个数据框的合并：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrumj8rw3j30vy08ydgn.jpg" alt=""></p>
+<p>合并的图解过程如下：</p>
+<ul>
+<li>通过on参数指定两个连接的字段key1、key2</li>
+<li>只有当两个数据框中的key1和key2的取值完全相同的时候（交集），才会保留下来；比如都出现了key1=K0,key2=K0和key1=K1,key2=K0。</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsruk7svegj31ge0m0jv8.jpg" alt=""></p>
+<p>在看一个通过how=&quot;outer&quot;进行连接的案例：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrux9j656j30vi0esab8.jpg" alt=""></p>
+<p>看看图解的过程：</p>
+<ul>
+<li>指定连接的两个键key1、key2</li>
+<li>使用how=“outer”，会保留两个数据框中的全部数据。某个数据框中不存在键的值，则取NaN</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrv0eixofj31di0pktd0.jpg" alt=""></p>
+<h2 id="参数left-on、right-on">参数left_on、right_on</h2>
+<p>上面在连接合并的时候，两个数据框之前都是有相同的字段，比如userid或者key1和key2。但是如何两个数据框中没有相同的键，但是这些键中的取值有相同的部分，比如我们的df1、df3：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrvr4l0mvj30m60ko0tt.jpg" alt=""></p>
+<p>在这个时候我们就使用left_on和right_on参数，分别指定两边的连接的键：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrvseetekj30xe080mxu.jpg" alt=""></p>
+<p>如果我们不指定，系统就会报错，因为这两个数据框是没有相同的键，本身是无法连接的：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrvun65goj31i40u0doh.jpg" alt=""></p>
+<h2 id="参数suffixes">参数suffixes</h2>
+<p>如果连接之后结果有相同的字段出现，默认后缀是<code>_x_、_y</code>。这个参数就是改变我们默认的后缀。我们回顾下笛卡尔积的形成；</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrv6yqdoxj30uk0j83zm.jpg" alt=""></p>
+<p>现在我们可以指定想要的后缀：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrv7w2uflj310s0hewfx.jpg" alt=""></p>
+<h2 id="indicator">indicator</h2>
+<p>这个参数的作用是表明生成的一条记录是来自哪个DataFrame：both、left_only、right_only</p>
+<p>如果带上参数会显示一个新字段<code>_merge</code>：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrvdqql1jj30za0cidh3.jpg" alt=""></p>
+<p>不带上参数的话，默认是不会显示来源的，看默认的情况：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gsrveq47l9j30w80codgp.jpg" alt=""></p>
+<h2 id="总结">总结</h2>
+<p>merge函数真的是非常强大，在工作中也使用地很频繁，完全可以实现SQL中的join效果。希望本文的图解能够帮助读者理解这个合并函数的使用。同时pandas还有另外几个与合并相关的函数，比如：join、concat、append，会在下一篇文中统一讲解。</p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2021/07/24/%E5%9B%BE%E8%A7%A3pandas%E6%95%B0%E6%8D%AE%E5%90%88%E5%B9%B6merge.html">图解pandas数据合并merge</a></p>
+  <p><span>发布时间:</span>2021年07月24日 - 16:07</p>
+  <p><span>原始链接:</span><a href="/2021/07/24/%E5%9B%BE%E8%A7%A3pandas%E6%95%B0%E6%8D%AE%E5%90%88%E5%B9%B6merge.html" title="图解pandas数据合并merge">http://www.renpeter.cn/2021/07/24/%E5%9B%BE%E8%A7%A3pandas%E6%95%B0%E6%8D%AE%E5%90%88%E5%B9%B6merge.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2021/07/24/%E5%9B%BE%E8%A7%A3pandas%E6%95%B0%E6%8D%AE%E5%90%88%E5%B9%B6merge.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag"># 数据分析</a>
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/pandas/" rel="tag"># pandas</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/07/18/%E5%8F%AF%E8%A7%86%E5%8C%96%E7%A5%9E%E5%99%A8plotly%E7%BB%98%E5%88%B6%E5%A4%9A%E5%AD%90%E5%9B%BE.html" rel="next" title="可视化神器plotly绘制多子图">
+                <i class="fa fa-chevron-left"></i> 可视化神器plotly绘制多子图
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">607</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">78</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">56</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#图解Pandas的数据合并merge函数"><span class="nav-number">1.</span> <span class="nav-text">图解Pandas的数据合并merge函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pandas连载文章"><span class="nav-number">2.</span> <span class="nav-text">Pandas连载文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数"><span class="nav-number">3.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模拟数据"><span class="nav-number">4.</span> <span class="nav-text">模拟数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数left、right"><span class="nav-number">5.</span> <span class="nav-text">参数left、right</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数how"><span class="nav-number">6.</span> <span class="nav-text">参数how</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#inner"><span class="nav-number">6.1.</span> <span class="nav-text">inner</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#outer"><span class="nav-number">6.2.</span> <span class="nav-text">outer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#left"><span class="nav-number">6.3.</span> <span class="nav-text">left</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#right"><span class="nav-number">6.4.</span> <span class="nav-text">right</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cross"><span class="nav-number">6.5.</span> <span class="nav-text">cross</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数on"><span class="nav-number">7.</span> <span class="nav-text">参数on</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数left-on、right-on"><span class="nav-number">8.</span> <span class="nav-text">参数left_on、right_on</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数suffixes"><span class="nav-number">9.</span> <span class="nav-text">参数suffixes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#indicator"><span class="nav-number">10.</span> <span class="nav-text">indicator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">11.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IC/" rel="tag">IC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">61</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">83</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">62</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">37</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">103</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag">数据处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">101</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">70</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">51</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共841.8k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2021/07/24/%E5%9B%BE%E8%A7%A3pandas%E6%95%B0%E6%8D%AE%E5%90%88%E5%B9%B6merge.html';
+          this.page.identifier = '2021/07/24/图解pandas数据合并merge.html';
+          this.page.title = '图解pandas数据合并merge';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
