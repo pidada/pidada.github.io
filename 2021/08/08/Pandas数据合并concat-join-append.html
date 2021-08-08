@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="pandas,python,数据分析," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="图解pandas数据合并：concat+join+append 在上一篇文章中介绍过pandas中最为常用的一个合并函数merge的使用，本文中介绍的是另外3个与合并操作相关的函数：  concat join append">
+<meta name="keywords" content="pandas,python,数据分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pandas数据合并concat+join+append">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2021&#x2F;08&#x2F;08&#x2F;Pandas%E6%95%B0%E6%8D%AE%E5%90%88%E5%B9%B6concat-join-append.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="图解pandas数据合并：concat+join+append 在上一篇文章中介绍过pandas中最为常用的一个合并函数merge的使用，本文中介绍的是另外3个与合并操作相关的函数：  concat join append">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt1506c40lj31hb0u0gr7.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt158484mej30qy0dg0th.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt158c24rfj30mk0ck74w.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt158qk051j30os0cyt9h.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt1591c9muj30oc0d4gmj.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt159csujjj30uy0g6abd.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15au3ymtj30ke0cugm9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15cjxvxkj30sw0q2jt7.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15cxspzzj30q00asjrz.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15dd8wolj30na09maao.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15fpnhu7j30uy0qqabt.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15hg54l7j30yq0t40v3.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15hv0vqfj30vo0dkgmb.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15ioert2j30s80qs0ud.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15jhkqvpj30l60dwgma.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15kb3kesj30q80hmwfg.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15ku39bpj30ku08i3yw.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15nvsxm1j30k00a8gm5.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15oizbtmj30yo0rutar.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15pytmvhj30wa0he3zt.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15q8sugtj30qm0ew759.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15quazm7j30ru0r0ac2.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15supm7nj30t60d2t9z.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15tnv8b0j30w6036weq.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15yn4l8tj30tu0ck3zn.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15yvl1msj30to0akgmn.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt15zuaqq2j30q20qkq4e.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt160fqsj4j30ug0fqwfp.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt160z9j2ej31120egta0.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt161mqjtej30ti0cydgs.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt162njxfsj30ui0esgmy.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt163bju4nj30x60d03zq.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt164knlw2j30z00l2myw.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt1655wukbj30p20c43z8.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt165i5kmfj30qy0g2dgu.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt16659apsj30re0i8gmo.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt166q8obgj30h40awwes.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt167qwsxqj30tg0nc75j.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt17acscs9j310408cjsr.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt17apddbjj30qu0aywez.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt1eqgbjgzj30i6082q3k.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt1er54rdrj30fg0iaabl.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt1estr24jj30hk0esaby.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt1euzwr4jj30zg0by75e.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt1ewtjo7sj31120kmdhs.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt1eyyiqjvj30ua0pmwhq.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt1f1fo4jzj30zq0pgq75.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt1f5r24smj311u0kqq4d.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gt1fl3r0qxj312y0d475e.jpg">
+<meta property="og:updated_time" content="2021-08-08T15:09:45.914Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2021/08/08/Pandas数据合并concat-join-append.html"/>
+
+
+
+
+
+  <title>Pandas数据合并concat+join+append | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2021/08/08/Pandas%E6%95%B0%E6%8D%AE%E5%90%88%E5%B9%B6concat-join-append.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Pandas数据合并concat+join+append</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-08-08T23:07:57+08:00">
+                2021-8-8
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/" itemprop="url" rel="index">
+                    <span itemprop="name">pandas</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/%E6%95%99%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">教程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/08/08/Pandas%E6%95%B0%E6%8D%AE%E5%90%88%E5%B9%B6concat-join-append.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2021/08/08/Pandas数据合并concat-join-append.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.5k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="图解pandas数据合并：concat-join-append">图解pandas数据合并：concat+join+append</h2>
+<p>在上一篇文章中介绍过pandas中最为常用的一个合并函数merge的使用，本文中介绍的是另外3个与合并操作相关的函数：</p>
+<ul>
+<li>concat</li>
+<li>join</li>
+<li>append</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg" alt=""></p>
+<a id="more"></a>
+<h2 id="Pandas连载">Pandas连载</h2>
+<p>本文是Pandas数据分析库的第15篇，欢迎阅读：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt1506c40lj31hb0u0gr7.jpg" alt=""></p>
+<h2 id="模拟数据">模拟数据</h2>
+<p>首先是模拟几份不同的数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt158484mej30qy0dg0th.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt158c24rfj30mk0ck74w.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt158qk051j30os0cyt9h.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt1591c9muj30oc0d4gmj.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt159csujjj30uy0g6abd.jpg" alt=""></p>
+<h2 id="concat">concat</h2>
+<p>concat也是一个常用的合并函数，下面通过具体例子来介绍它的使用。</p>
+<h3 id="参数">参数</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">pandas.concat(objs,  <span class="comment"># 合并对象</span></span><br><span class="line">              axis=<span class="number">0</span>,   <span class="comment"># 合并方向，默认是0纵轴方向</span></span><br><span class="line">              join=<span class="string">'outer'</span>, <span class="comment"># 合并取的是交集inner还是并集outer</span></span><br><span class="line">              ignore_index=<span class="literal">False</span>, <span class="comment"># 合并之后索引是否重新</span></span><br><span class="line">              keys=<span class="literal">None</span>, <span class="comment"># 在行索引的方向上带上原来数据的名字；主要是用于层次化索引，可以是任意的列表或者数组、元组数据或者列表数组</span></span><br><span class="line">              levels=<span class="literal">None</span>, <span class="comment"># 指定用作层次化索引各级别上的索引，如果是设置了keys</span></span><br><span class="line">              names=<span class="literal">None</span>, <span class="comment"># 行索引的名字，列表形式</span></span><br><span class="line">              verify_integrity=<span class="literal">False</span>, <span class="comment"># 检查行索引是否重复；有则报错</span></span><br><span class="line">              sort=<span class="literal">False</span>, <span class="comment"># 对非连接的轴进行排序</span></span><br><span class="line">              copy=<span class="literal">True</span>   <span class="comment"># 是否进行深拷贝</span></span><br><span class="line">             )</span><br></pre></td></tr></table></figure>
+<h3 id="默认情况">默认情况</h3>
+<p>默认情况是直接在纵向上进行合并</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15au3ymtj30ke0cugm9.jpg" alt=""></p>
+<h3 id="axis">axis</h3>
+<p>指定合并的方向</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15cjxvxkj30sw0q2jt7.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15cxspzzj30q00asjrz.jpg" alt=""></p>
+<p>如果某个数据框中不存在，则会显示为NaN：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15dd8wolj30na09maao.jpg" alt=""></p>
+<ul>
+<li>根据实际数据调整合并的方向，默认是axis=0</li>
+<li>某个数据库中不存在的数据，用NaN代替</li>
+</ul>
+<h3 id="参数ignore-index">参数ignore_index</h3>
+<p>是否保留原表索引，默认保留，为 True 会自动增加自然索引。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15fpnhu7j30uy0qqabt.jpg" alt=""></p>
+<h3 id="参数join">参数join</h3>
+<p>指定取得交集inner还是并集outer，默认是并集outer</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15hg54l7j30yq0t40v3.jpg" alt=""></p>
+<p>df3和df4只有地址这个字段是相同的，所以保留了它，其他的舍弃了：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15hv0vqfj30vo0dkgmb.jpg" alt=""></p>
+<h3 id="参数keys">参数keys</h3>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15ioert2j30s80qs0ud.jpg" alt=""></p>
+<p>当我们设置了索引重排(ignore_index=True)，keys参数就无效啦</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15jhkqvpj30l60dwgma.jpg" alt=""></p>
+<h3 id="参数name">参数name</h3>
+<p>指定每个层级索引的名字</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15kb3kesj30q80hmwfg.jpg" alt=""></p>
+<p>我们可以检查下df6的索引，发现是层级索引：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15ku39bpj30ku08i3yw.jpg" alt=""></p>
+<h3 id="合并多个DataFrame">合并多个DataFrame</h3>
+<p>同时合并df1、df2、df5</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.concat([pd.concat([df1,df2],axis=<span class="number">0</span>,ignore_index=<span class="literal">True</span>),df5],axis=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15nvsxm1j30k00a8gm5.jpg" alt=""></p>
+<p>分两步来实现：先合并df1、df2，将得到的结果和df5合并</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15oizbtmj30yo0rutar.jpg" alt=""></p>
+<h2 id="join">join</h2>
+<h3 id="参数-v2">参数</h3>
+<p>来自官网的参数说明：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">dataframe.join(other,  <span class="comment"># 待合并的另一个数据框</span></span><br><span class="line">        on=<span class="literal">None</span>,  <span class="comment"># 连接的键</span></span><br><span class="line">        how=<span class="string">'left'</span>,   <span class="comment"># 连接方式：‘left’, ‘right’, ‘outer’, ‘inner’ 默认是left</span></span><br><span class="line">        lsuffix=<span class="string">''</span>,  <span class="comment"># 左边（第一个）数据框相同键的后缀</span></span><br><span class="line">        rsuffix=<span class="string">''</span>,  <span class="comment"># 第二个数据框的键的后缀</span></span><br><span class="line">        sort=<span class="literal">False</span>)  <span class="comment"># 是否根据连接的键进行排序；默认False</span></span><br></pre></td></tr></table></figure>
+<h3 id="模拟数据-v2">模拟数据</h3>
+<p>为了解释join的操作，再模拟下数据：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15pytmvhj30wa0he3zt.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15q8sugtj30qm0ew759.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15quazm7j30ru0r0ac2.jpg" alt=""></p>
+<h3 id="参数-lsuffix、rsuffix">参数 lsuffix、rsuffix</h3>
+<p>功能是为了添加指定的后缀</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15supm7nj30t60d2t9z.jpg" alt=""></p>
+<p>如果不指定的话，会报错：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15tnv8b0j30w6036weq.jpg" alt=""></p>
+<h3 id="参数how">参数how</h3>
+<p>how参数默认是left，保留左边的全部字段。右边不存在的数据用NaN</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15yn4l8tj30tu0ck3zn.jpg" alt=""></p>
+<p>改成right之后，保留右边的全部数据：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15yvl1msj30to0akgmn.jpg" alt=""></p>
+<p>可以在默认的参数结果中，name字段被分成了name_left和name_right，如何进行字段的合并呢？？？</p>
+<ol>
+<li>先把键当做行索引</li>
+<li>通过join合并</li>
+<li>通过reset_index()重新设置索引</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt15zuaqq2j30q20qkq4e.jpg" alt=""></p>
+<p>合并两个数据：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt160fqsj4j30ug0fqwfp.jpg" alt=""></p>
+<p>最后进行索引重置的功能：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt160z9j2ej31120egta0.jpg" alt=""></p>
+<p>还有一种更为简便的方法：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt161mqjtej30ti0cydgs.jpg" alt=""></p>
+<h3 id="合并多个DataFrame-v2">合并多个DataFrame</h3>
+<p>利用join来实现多个DataFrame的合并：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt162njxfsj30ui0esgmy.jpg" alt=""></p>
+<p>如果我们想要用merge函数来实现呢？</p>
+<p>使用how=“outer”，保留全部字段的数据信息</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt163bju4nj30x60d03zq.jpg" alt=""></p>
+<h2 id="append">append</h2>
+<p>字面意思是“追加”。向dataframe对象中添加新的行，如果添加的列名不在dataframe对象中，将会被当作新的列进行添加</p>
+<h3 id="参数-v3">参数</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DataFrame.append(other,</span><br><span class="line">                 ignore_index=<span class="literal">False</span>,</span><br><span class="line">                 verify_integrity=<span class="literal">False</span>,</span><br><span class="line">                 sort=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<p>参数解释：</p>
+<ul>
+<li>other：待合并的数据。可以是pandas中的DataFrame、series，或者是Python中的字典、列表这样的数据结构</li>
+<li>ignore_index：是否忽略原来的索引，生成新的自然数索引</li>
+<li>verify_integrity：默认是False，如果值为True，创建相同的index则会抛出异常的错误</li>
+<li>sort：boolean，默认是None。如果self和other的列没有对齐，则对列进行排序，并且属性只在版本0.23.0中出现。</li>
+</ul>
+<h3 id="模拟数据-v3">模拟数据</h3>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt164knlw2j30z00l2myw.jpg" alt=""></p>
+<h3 id="添加不同类型数据">添加不同类型数据</h3>
+<p>1、Python字典</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt1655wukbj30p20c43z8.jpg" alt=""></p>
+<p>2、Series类型</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt165i5kmfj30qy0g2dgu.jpg" alt=""></p>
+<p>3、最常用的DataFrame</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt16659apsj30re0i8gmo.jpg" alt=""></p>
+<h3 id="默认合并">默认合并</h3>
+<p>df12和df13默认合并的结果：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt166q8obgj30h40awwes.jpg" alt=""></p>
+<h3 id="参数ignore-index-v2">参数ignore_index</h3>
+<p>改变生成的索引值</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt167qwsxqj30tg0nc75j.jpg" alt=""></p>
+<h3 id="参数verify-integrity">参数verify_integrity</h3>
+<p>默认是False，如果值为True，创建相同的index则会抛出异常的错误</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt17acscs9j310408cjsr.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt17apddbjj30qu0aywez.jpg" alt=""></p>
+<h2 id="案例实战">案例实战</h2>
+<p>假设现在一个excel表中有3个sheet：订单表、订单商品表、商品信息表：</p>
+<p>1、订单表</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt1eqgbjgzj30i6082q3k.jpg" alt=""></p>
+<p>2、订单商品表</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt1er54rdrj30fg0iaabl.jpg" alt=""></p>
+<p>3、商品信息表</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt1estr24jj30hk0esaby.jpg" alt=""></p>
+<p>现在我们通过合并函数将3个sheet中的内容关联起来：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取订单表中的内容</span></span><br><span class="line">df1 = pd.read_excel(<span class="string">"水果订单商品信息3个表.xlsx"</span>,sheet_name=<span class="number">0</span>)  <span class="comment"># 第一个sheet的内容，索引从0开始</span></span><br><span class="line">df1</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt1euzwr4jj30zg0by75e.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#  读取订单商品表</span></span><br><span class="line">df2 = pd.read_excel(<span class="string">"水果订单商品信息3个表.xlsx"</span>,sheet_name=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 商品信息表</span></span><br><span class="line">df3 = pd.read_excel(<span class="string">"水果订单商品信息3个表.xlsx"</span>,sheet_name=<span class="string">"商品信息"</span>)  <span class="comment"># 可以直接指定sheet的名字name，不通过索引</span></span><br><span class="line">df3</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt1ewtjo7sj31120kmdhs.jpg" alt=""></p>
+<p>第一步：订单表和订单商品表的合并</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt1eyyiqjvj30ua0pmwhq.jpg" alt=""></p>
+<p>第二步：将上面的结果和商品信息表合并</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt1f1fo4jzj30zq0pgq75.jpg" alt=""></p>
+<p>当我们得到上面的结果后，就可以完成很多的需求，举2个例子说明：</p>
+<p>1、不同水果的销量和订单数：根据水果进行分组统计数量和订单数</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt1f5r24smj311u0kqq4d.jpg" alt=""></p>
+<p>2、不同区域的水果销售额和客户数</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gt1fl3r0qxj312y0d475e.jpg" alt=""></p>
+<h2 id="总结">总结</h2>
+<p>两篇关于pandas数据合并的文章，详细介绍了4个函数：merge、concat、join、append的使用；其中，<strong>merge和concat最为常用</strong>。它们可以是实现SQL中join的功能。不管是交集、并集、还是左右连接，甚至是全连接都是可以直接实现的。</p>
+<p>上面的实战案例数据是存放在一个Excel表中。在pandas中，我们可以从不同的来源：Excel、数据库、本地文件夹等获取来进行数据合并，方便后续实现我们的需求，希望本文对读者有所帮助。</p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2021/08/08/Pandas%E6%95%B0%E6%8D%AE%E5%90%88%E5%B9%B6concat-join-append.html">Pandas数据合并concat+join+append</a></p>
+  <p><span>发布时间:</span>2021年08月08日 - 23:08</p>
+  <p><span>原始链接:</span><a href="/2021/08/08/Pandas%E6%95%B0%E6%8D%AE%E5%90%88%E5%B9%B6concat-join-append.html" title="Pandas数据合并concat+join+append">http://www.renpeter.cn/2021/08/08/Pandas%E6%95%B0%E6%8D%AE%E5%90%88%E5%B9%B6concat-join-append.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2021/08/08/Pandas%E6%95%B0%E6%8D%AE%E5%90%88%E5%B9%B6concat-join-append.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pandas/" rel="tag"># pandas</a>
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag"># 数据分析</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/07/31/python%E5%85%A5%E9%97%A8-2-55%E4%B8%AA%E6%A1%88%E4%BE%8B%E5%90%83%E9%80%8Fpython%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%A0%BC%E5%BC%8F%E5%8C%96.html" rel="next" title="python入门-2-55个案例吃透python字符串格式化">
+                <i class="fa fa-chevron-left"></i> python入门-2-55个案例吃透python字符串格式化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/08/08/%E5%9B%BE%E8%A7%A3pandas%E8%BD%B4%E6%97%8B%E8%BD%AC%E5%87%BD%E6%95%B0stack-unstack.html" rel="prev" title="图解pandas轴旋转函数stack+unstack">
+                图解pandas轴旋转函数stack+unstack <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">611</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">56</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#图解pandas数据合并：concat-join-append"><span class="nav-number">1.</span> <span class="nav-text">图解pandas数据合并：concat+join+append</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pandas连载"><span class="nav-number">2.</span> <span class="nav-text">Pandas连载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模拟数据"><span class="nav-number">3.</span> <span class="nav-text">模拟数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#concat"><span class="nav-number">4.</span> <span class="nav-text">concat</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参数"><span class="nav-number">4.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#默认情况"><span class="nav-number">4.2.</span> <span class="nav-text">默认情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#axis"><span class="nav-number">4.3.</span> <span class="nav-text">axis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数ignore-index"><span class="nav-number">4.4.</span> <span class="nav-text">参数ignore_index</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数join"><span class="nav-number">4.5.</span> <span class="nav-text">参数join</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数keys"><span class="nav-number">4.6.</span> <span class="nav-text">参数keys</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数name"><span class="nav-number">4.7.</span> <span class="nav-text">参数name</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#合并多个DataFrame"><span class="nav-number">4.8.</span> <span class="nav-text">合并多个DataFrame</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#join"><span class="nav-number">5.</span> <span class="nav-text">join</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参数-v2"><span class="nav-number">5.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模拟数据-v2"><span class="nav-number">5.2.</span> <span class="nav-text">模拟数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数-lsuffix、rsuffix"><span class="nav-number">5.3.</span> <span class="nav-text">参数 lsuffix、rsuffix</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数how"><span class="nav-number">5.4.</span> <span class="nav-text">参数how</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#合并多个DataFrame-v2"><span class="nav-number">5.5.</span> <span class="nav-text">合并多个DataFrame</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#append"><span class="nav-number">6.</span> <span class="nav-text">append</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参数-v3"><span class="nav-number">6.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模拟数据-v3"><span class="nav-number">6.2.</span> <span class="nav-text">模拟数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加不同类型数据"><span class="nav-number">6.3.</span> <span class="nav-text">添加不同类型数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#默认合并"><span class="nav-number">6.4.</span> <span class="nav-text">默认合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数ignore-index-v2"><span class="nav-number">6.5.</span> <span class="nav-text">参数ignore_index</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数verify-integrity"><span class="nav-number">6.6.</span> <span class="nav-text">参数verify_integrity</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#案例实战"><span class="nav-number">7.</span> <span class="nav-text">案例实战</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IC/" rel="tag">IC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">61</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">85</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">66</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">37</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">103</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag">数据处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">101</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">70</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">51</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共849.9k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2021/08/08/Pandas%E6%95%B0%E6%8D%AE%E5%90%88%E5%B9%B6concat-join-append.html';
+          this.page.identifier = '2021/08/08/Pandas数据合并concat-join-append.html';
+          this.page.title = 'Pandas数据合并concat+join+append';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
