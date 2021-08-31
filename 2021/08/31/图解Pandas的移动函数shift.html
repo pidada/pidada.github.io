@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="pandas,数据分析," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="19_图解Pandas偏移函数shift 本文主要介绍的是pandas中的一个移动函数：shift，主要是4个参数的使用。最后结合一个具体的电商领域中用户的复购周期来说明如何使用shift函数。 这个案例综合性很强，除了学习掌握shift函数，你还会复习到以下pandas中的多个函数使用技巧：  分组统计：groupby 过滤筛选数据：query 排序函数：sort_values 合并函数：con">
+<meta name="keywords" content="pandas,数据分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图解Pandas的移动函数shift">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2021&#x2F;08&#x2F;31&#x2F;%E5%9B%BE%E8%A7%A3Pandas%E7%9A%84%E7%A7%BB%E5%8A%A8%E5%87%BD%E6%95%B0shift.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="19_图解Pandas偏移函数shift 本文主要介绍的是pandas中的一个移动函数：shift，主要是4个参数的使用。最后结合一个具体的电商领域中用户的复购周期来说明如何使用shift函数。 这个案例综合性很强，除了学习掌握shift函数，你还会复习到以下pandas中的多个函数使用技巧：  分组统计：groupby 过滤筛选数据：query 排序函数：sort_values 合并函数：con">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gtucn3hk9jj615v0u043r02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gtuaje9iawj60x80f40u202.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gtuak63yp0j61300km0v502.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gtual677nwj60ow0ne3zp02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gtuaudae7bj60um0nmq4v02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gtuavah1nwj60rq0nm0u902.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gtuavow057j60ti0bqaav02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gtuawfr0luj60v80nmjsy02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gtuax5tz8ej60rm0c20tf02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gtuaz9cuxoj60xy0o2dhk02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gtub015e42j610k0ns76902.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gtub1oh90jj60v10u0juc02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gtub28emvrj611y0dmdh202.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gtub2nzdxaj60xu0e20tx02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gtub8xax15j608408g3yr02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gtubirtd02j60c60syq5q02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gtubl2bdjcj61cw0isq4e02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gtubm1z5qij60ku0hgq3q02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gtubomnwwwj60wq0sewgs02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gtubqknp6kj60me0rctan02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gtubvzaedtj60gw0r6abn02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gtubymhsz1j60mc0ieta702.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gtuc0ikyocj60m60l876202.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gtuc30i7idj60r00uugoz02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gtuc48sn7jj60ky07st9d02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gtuc5vu30fj60v00u0q6q02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gtuc7in6juj60jq0dyaai02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gtuc7zq6fvj60sa0hojsr02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gtuc8fsl66j60mw03ydg302.jpg">
+<meta property="og:updated_time" content="2021-08-31T01:26:17.398Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2021/08/31/图解Pandas的移动函数shift.html"/>
+
+
+
+
+
+  <title>图解Pandas的移动函数shift | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2021/08/31/%E5%9B%BE%E8%A7%A3Pandas%E7%9A%84%E7%A7%BB%E5%8A%A8%E5%87%BD%E6%95%B0shift.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">图解Pandas的移动函数shift</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-08-31T09:21:38+08:00">
+                2021-8-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/" itemprop="url" rel="index">
+                    <span itemprop="name">pandas</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/%E6%95%99%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">教程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/08/31/%E5%9B%BE%E8%A7%A3Pandas%E7%9A%84%E7%A7%BB%E5%8A%A8%E5%87%BD%E6%95%B0shift.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2021/08/31/图解Pandas的移动函数shift.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.8k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="19-图解Pandas偏移函数shift">19_图解Pandas偏移函数shift</h2>
+<p>本文主要介绍的是pandas中的一个移动函数：shift，主要是4个参数的使用。最后结合一个具体的电商领域中用户的复购周期来说明如何使用shift函数。</p>
+<p>这个案例综合性很强，除了学习掌握shift函数，你还会复习到以下pandas中的多个函数使用技巧：</p>
+<ul>
+<li>分组统计：groupby</li>
+<li>过滤筛选数据：query</li>
+<li>排序函数：sort_values</li>
+<li>合并函数：concat</li>
+<li>字段重命名：rename</li>
+<li>缺失值删除：dropna</li>
+<li>宝藏函数：apply</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg" alt=""></p>
+<a id="more"></a>
+<h2 id="Pandas连载">Pandas连载</h2>
+<p>Pandas文章连载系列，主要分为3类：</p>
+<p>基础部分：1-16篇，主要是介绍Pandas中基础和常用操作，比如数据创建、检索查询、排名排序、缺失值/重复值处理等</p>
+<p>进阶部分：第17篇开始讲解Pandas中的高级操作方法</p>
+<p>对比SQL，学习Pandas：将SQL和Pandas的操作对比起来进行学习</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtucn3hk9jj615v0u043r02.jpg" alt=""></p>
+<h2 id="参数说明">参数说明</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DataFrame.shift(periods=<span class="number">1</span>, freq=<span class="literal">None</span>, axis=<span class="number">0</span>, fill_value=&lt;no_default&gt;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>
+<p>periods：表示移动的幅度，可正可负；默认值是1,1就表示移动一次。注意这里移动的都是数据，而索引是不移动的，移动之后没有对应值的，就赋值为NaN。</p>
+</li>
+<li>
+<p>freq：DateOffset, timedelta, or time rule string，可选参数，默认值为None，只适用于时间序列。如果这个参数存在，那么会按照参数值移动时间索引，而数据值没有发生变化。</p>
+</li>
+<li>
+<p>axis：表示按照哪个轴移动。axis=0表示index，横轴；axis=1表示columns，纵轴</p>
+</li>
+<li>
+<p>fill_value：表示当我们数据发生了移动之后，产生的缺失值用什么数据填充。如果是数值型的缺失值，用np.nan；如果是时间类型的缺失值，用NaT（not a time）</p>
+</li>
+</ul>
+<h2 id="模拟数据">模拟数据</h2>
+<p>模拟了两份数据，其中一份和时间相关。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtuaje9iawj60x80f40u202.jpg" alt=""></p>
+<p>另一份是和时间相关的：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtuak63yp0j61300km0v502.jpg" alt=""></p>
+<h2 id="参数periods">参数periods</h2>
+<p>表示每次移动的幅度</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtual677nwj60ow0ne3zp02.jpg" alt=""></p>
+<p>可以看到默认情况下，shift函数是在行方向上移动一个单位</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gtuaudae7bj60um0nmq4v02.jpg" alt=""></p>
+<h2 id="参数axis">参数axis</h2>
+<p>用来表示在哪个方向上进行移动，上面的例子默认是在axis=0，或者表示成：axis=“index”</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gtuavah1nwj60rq0nm0u902.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gtuavow057j60ti0bqaav02.jpg" alt=""></p>
+<p>如果我们想在列方向上移动，可以使用axis=1或者axis=“columns”</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gtuawfr0luj60v80nmjsy02.jpg" alt=""></p>
+<p>同时移动的幅度是可正可负的：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gtuax5tz8ej60rm0c20tf02.jpg" alt=""></p>
+<h2 id="参数fill-value">参数fill_value</h2>
+<p>移动之后缺失值的填充数据</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtuaz9cuxoj60xy0o2dhk02.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtub015e42j610k0ns76902.jpg" alt=""></p>
+<h2 id="参数freq">参数freq</h2>
+<p>表示移动的频率，专门用于时间序列的移动中</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtub1oh90jj60v10u0juc02.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gtub28emvrj611y0dmdh202.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gtub2nzdxaj60xu0e20tx02.jpg" alt=""></p>
+<h3 id="频率">频率</h3>
+<p>时间序列变化频率有间隔相同的，也有不同的。许多字符串别名被赋予有用的普通时间序列频率。我们将这些别名称为<strong>偏移别名</strong>。上面的shift函数中使用的就是这些别名，具体如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">别名</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">B</td>
+<td style="text-align:left">工作日频率</td>
+</tr>
+<tr>
+<td style="text-align:left">C</td>
+<td style="text-align:left">自定义工作日频率</td>
+</tr>
+<tr>
+<td style="text-align:left">D</td>
+<td style="text-align:left">日历日频率</td>
+</tr>
+<tr>
+<td style="text-align:left">W</td>
+<td style="text-align:left">每周频率</td>
+</tr>
+<tr>
+<td style="text-align:left">M</td>
+<td style="text-align:left">每月最后一个日历日</td>
+</tr>
+<tr>
+<td style="text-align:left">SM</td>
+<td style="text-align:left">每半个月最后一个日历日（15日和月末）</td>
+</tr>
+<tr>
+<td style="text-align:left">BM</td>
+<td style="text-align:left">每月最后一个工作日</td>
+</tr>
+<tr>
+<td style="text-align:left">CBM</td>
+<td style="text-align:left">自定义每月最后一个工作日</td>
+</tr>
+<tr>
+<td style="text-align:left">MS</td>
+<td style="text-align:left">每月第一个日历日</td>
+</tr>
+<tr>
+<td style="text-align:left">SMS</td>
+<td style="text-align:left">每半月第一个日历日（第1和第15）</td>
+</tr>
+<tr>
+<td style="text-align:left">BMS</td>
+<td style="text-align:left">每月第一个工作日</td>
+</tr>
+<tr>
+<td style="text-align:left">CBMS</td>
+<td style="text-align:left">自定义每月第一个工作日</td>
+</tr>
+<tr>
+<td style="text-align:left">Q</td>
+<td style="text-align:left">每季度最后一个月的最后一个日历日</td>
+</tr>
+<tr>
+<td style="text-align:left">BQ</td>
+<td style="text-align:left">每季度最后一个月的最后一个工作日</td>
+</tr>
+<tr>
+<td style="text-align:left">QS</td>
+<td style="text-align:left">每季度最后一个月的第一个日历日</td>
+</tr>
+<tr>
+<td style="text-align:left">BQS</td>
+<td style="text-align:left">每季度最后一个月的第一个工作日</td>
+</tr>
+<tr>
+<td style="text-align:left">A, Y</td>
+<td style="text-align:left">每年的最后一个日历日</td>
+</tr>
+<tr>
+<td style="text-align:left">BA, BY</td>
+<td style="text-align:left">每年的最后一个工作日</td>
+</tr>
+<tr>
+<td style="text-align:left">AS, YS</td>
+<td style="text-align:left">每年的第一个日历日</td>
+</tr>
+<tr>
+<td style="text-align:left">BAS, BYS</td>
+<td style="text-align:left">每年的第一个工作日</td>
+</tr>
+<tr>
+<td style="text-align:left">BH</td>
+<td style="text-align:left">工作日按“时”计算频率</td>
+</tr>
+<tr>
+<td style="text-align:left">H</td>
+<td style="text-align:left">每小时频率</td>
+</tr>
+<tr>
+<td style="text-align:left">T, min</td>
+<td style="text-align:left">每分钟频率</td>
+</tr>
+<tr>
+<td style="text-align:left">S</td>
+<td style="text-align:left">每秒频率</td>
+</tr>
+<tr>
+<td style="text-align:left">L, ms</td>
+<td style="text-align:left">毫秒频率</td>
+</tr>
+<tr>
+<td style="text-align:left">U, us</td>
+<td style="text-align:left">微秒频率</td>
+</tr>
+<tr>
+<td style="text-align:left">N</td>
+<td style="text-align:left">纳秒频率</td>
+</tr>
+</tbody>
+</table>
+<h2 id="电商用户复购数据实战">电商用户复购数据实战</h2>
+<h3 id="什么是用户的复购周期">什么是用户的复购周期</h3>
+<p>在这里我们结合一个电商销售数据来感受下shift函数的使用。我们有一份客户和购买时间的数据，现在想统计每位用户在今年的平均复购周期和全部用户的平均复购周期。</p>
+<ul>
+<li>每位用户的平均复购周期：每两个复购时间之间的天数之和 / 用户总复购次数</li>
+<li>全部用户的平均复购周期：全部用户的平均复购周期之和 / 总复购用户数</li>
+</ul>
+<p>通过一个例子来解释<strong>用户的平均复购周期</strong>，假设某位用户购买情况如下：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtub8xax15j608408g3yr02.jpg" alt=""></p>
+<p>张三用户的复购间隔分别为：6（1号和7号的间隔），3（7号和10号），10，8；也就是相邻两次购买时间之间的间隔。</p>
+<p>那么张三的平均复购周期：（6+3+8+10）/ 4 = 6.75</p>
+<h3 id="模拟数据-v2">模拟数据</h3>
+<p>模拟了一份电商数据，多位用户购买了一次或者多次：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtubirtd02j60c60syq5q02.jpg" alt=""></p>
+<p>下面通过Pandas来求解每位用户的平均复购周期和全部的平均复购周期</p>
+<h3 id="确定哪些用户存在复购行为">确定哪些用户存在复购行为</h3>
+<p>复购的用户指的是：在统计时间范围内，存在多次购买的用户。所以我们首先找到那些<strong>至少购买两次的用户</strong></p>
+<p>统计发现：<strong>小王同学只购买了一次，没有复购行为</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gtubl2bdjcj61cw0isq4e02.jpg" alt=""></p>
+<p>筛选出复购用户：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gtubm1z5qij60ku0hgq3q02.jpg" alt=""></p>
+<h3 id="从原始数据中提取出复购用户的数据">从原始数据中提取出复购用户的数据</h3>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtubomnwwwj60wq0sewgs02.jpg" alt=""></p>
+<h3 id="根据每位用户的购买时间来升序排列">根据每位用户的购买时间来升序排列</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 姓名的升序或者降序不重要，重要的是第二个字段-时间，一定要是升序</span></span><br><span class="line">df3 = df2.sort_values([<span class="string">"姓名"</span>,<span class="string">"时间"</span>],ascending=[<span class="literal">True</span>,<span class="literal">True</span>]).reset_index(drop=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">df3</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gtubqknp6kj60me0rctan02.jpg" alt=""></p>
+<h3 id="根据每位复购用户的数据移动一个单位">根据每位复购用户的数据移动一个单位</h3>
+<p>在行方向上移动一个单位：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df4 = df3.groupby(<span class="string">"姓名"</span>).shift(<span class="number">1</span>).rename(columns=&#123;<span class="string">"时间"</span>:<span class="string">"时间1"</span>&#125;)  <span class="comment"># 改下名字，避免重复</span></span><br><span class="line">df4</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gtubvzaedtj60gw0r6abn02.jpg" alt=""></p>
+<h3 id="拼接数据">拼接数据</h3>
+<p>将排序后的df3和我们根据df3平移后的数据在列方向上拼接起来：</p>
+<p>字段<strong>时间1</strong>相当于每个购买时间的前一个购买时间点</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df5 = pd.concat([df3,df4],axis=<span class="number">1</span>)</span><br><span class="line">df5.head(<span class="number">10</span>)  <span class="comment"># 查看前10行</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtubymhsz1j60mc0ieta702.jpg" alt=""></p>
+<p>上面的数据框中：</p>
+<ul>
+<li>时间: 可以看做是我们的本次购买时间</li>
+<li>时间1：上次购买时间。每个用户的第一次购买时间是不存在上次购买时间，所以显示为NaT</li>
+</ul>
+<h3 id="将NaT数据删除">将NaT数据删除</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df6 = df5.dropna().reset_index(drop=<span class="literal">True</span>)</span><br><span class="line">df6</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gtuc0ikyocj60m60l876202.jpg" alt=""></p>
+<h3 id="求出复购时间间隔">求出复购时间间隔</h3>
+<p>两个字段：<strong>时间</strong>和<strong>时间1</strong>的差值，就是每位用户的复购时间间隔，可能存在多个</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gtuc30i7idj60r00uugoz02.jpg" alt=""></p>
+<p>查看数据的字段类型，我们发现<strong>间隔</strong>这个字段是一个timedelta64[ns]的类型</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtuc48sn7jj60ky07st9d02.jpg" alt=""></p>
+<p>我们直接通过apply函数来获取timedelta64[ns]的days属性，也就是对一个的天数</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gtuc5vu30fj60v00u0q6q02.jpg" alt=""></p>
+<h3 id="统计每个复购用户的复购总天数和总次数">统计每个复购用户的复购总天数和总次数</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df7 = df6.groupby(<span class="string">"姓名"</span>).agg(&#123;<span class="string">"天"</span>:<span class="string">"sum"</span>,<span class="string">"间隔"</span>:<span class="string">"count"</span>&#125;).reset_index().rename(columns=&#123;<span class="string">"间隔"</span>:<span class="string">"复购次数"</span>&#125;)</span><br><span class="line">df7</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gtuc7in6juj60jq0dyaai02.jpg" alt=""></p>
+<h3 id="求出每位用户平均复购周期">求出每位用户平均复购周期</h3>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gtuc7zq6fvj60sa0hojsr02.jpg" alt=""></p>
+<h3 id="全部用户的平均复购周期">全部用户的平均复购周期</h3>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gtuc8fsl66j60mw03ydg302.jpg" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2021/08/31/%E5%9B%BE%E8%A7%A3Pandas%E7%9A%84%E7%A7%BB%E5%8A%A8%E5%87%BD%E6%95%B0shift.html">图解Pandas的移动函数shift</a></p>
+  <p><span>发布时间:</span>2021年08月31日 - 09:08</p>
+  <p><span>原始链接:</span><a href="/2021/08/31/%E5%9B%BE%E8%A7%A3Pandas%E7%9A%84%E7%A7%BB%E5%8A%A8%E5%87%BD%E6%95%B0shift.html" title="图解Pandas的移动函数shift">http://www.renpeter.cn/2021/08/31/%E5%9B%BE%E8%A7%A3Pandas%E7%9A%84%E7%A7%BB%E5%8A%A8%E5%87%BD%E6%95%B0shift.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2021/08/31/%E5%9B%BE%E8%A7%A3Pandas%E7%9A%84%E7%A7%BB%E5%8A%A8%E5%87%BD%E6%95%B0shift.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pandas/" rel="tag"># pandas</a>
+          
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag"># 数据分析</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/08/31/%E9%98%BF%E9%87%8C%E5%BC%80%E6%BA%90%E7%9A%84%E5%8F%AF%E8%A7%86%E5%8C%96%E7%A5%9E%E5%99%A8.html" rel="next" title="阿里开源的可视化神器">
+                <i class="fa fa-chevron-left"></i> 阿里开源的可视化神器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">626</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">78</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">60</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#19-图解Pandas偏移函数shift"><span class="nav-number">1.</span> <span class="nav-text">19_图解Pandas偏移函数shift</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pandas连载"><span class="nav-number">2.</span> <span class="nav-text">Pandas连载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数说明"><span class="nav-number">3.</span> <span class="nav-text">参数说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模拟数据"><span class="nav-number">4.</span> <span class="nav-text">模拟数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数periods"><span class="nav-number">5.</span> <span class="nav-text">参数periods</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数axis"><span class="nav-number">6.</span> <span class="nav-text">参数axis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数fill-value"><span class="nav-number">7.</span> <span class="nav-text">参数fill_value</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数freq"><span class="nav-number">8.</span> <span class="nav-text">参数freq</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#频率"><span class="nav-number">8.1.</span> <span class="nav-text">频率</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#电商用户复购数据实战"><span class="nav-number">9.</span> <span class="nav-text">电商用户复购数据实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是用户的复购周期"><span class="nav-number">9.1.</span> <span class="nav-text">什么是用户的复购周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模拟数据-v2"><span class="nav-number">9.2.</span> <span class="nav-text">模拟数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#确定哪些用户存在复购行为"><span class="nav-number">9.3.</span> <span class="nav-text">确定哪些用户存在复购行为</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从原始数据中提取出复购用户的数据"><span class="nav-number">9.4.</span> <span class="nav-text">从原始数据中提取出复购用户的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#根据每位用户的购买时间来升序排列"><span class="nav-number">9.5.</span> <span class="nav-text">根据每位用户的购买时间来升序排列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#根据每位复购用户的数据移动一个单位"><span class="nav-number">9.6.</span> <span class="nav-text">根据每位复购用户的数据移动一个单位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拼接数据"><span class="nav-number">9.7.</span> <span class="nav-text">拼接数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将NaT数据删除"><span class="nav-number">9.8.</span> <span class="nav-text">将NaT数据删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#求出复购时间间隔"><span class="nav-number">9.9.</span> <span class="nav-text">求出复购时间间隔</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#统计每个复购用户的复购总天数和总次数"><span class="nav-number">9.10.</span> <span class="nav-text">统计每个复购用户的复购总天数和总次数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#求出每位用户平均复购周期"><span class="nav-number">9.11.</span> <span class="nav-text">求出每位用户平均复购周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#全部用户的平均复购周期"><span class="nav-number">9.12.</span> <span class="nav-text">全部用户的平均复购周期</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IC/" rel="tag">IC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">62</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">91</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">34</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyg2plot/" rel="tag">pyg2plot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">74</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">38</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">105</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E5%85%B8/" rel="tag">字典</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag">数据处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">101</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">72</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">51</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%B1%BC%E5%A4%B4%E8%B1%86%E8%85%90%E6%B1%A4/" rel="tag">鱼头豆腐汤</a><span class="tag-list-count">1</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共875.1k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2021/08/31/%E5%9B%BE%E8%A7%A3Pandas%E7%9A%84%E7%A7%BB%E5%8A%A8%E5%87%BD%E6%95%B0shift.html';
+          this.page.identifier = '2021/08/31/图解Pandas的移动函数shift.html';
+          this.page.title = '图解Pandas的移动函数shift';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
