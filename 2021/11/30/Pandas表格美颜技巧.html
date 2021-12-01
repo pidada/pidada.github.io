@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="pandas,数据分析,可视化," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="本文中主要介绍的是如何来美化Pandas的DataFrame的数据。主要是通过Pandas中的两个方法来实现：  Styler.applymap：逐个元素，返回带有CSS属性-值对的单个字符串 Styler.apply：列、表、行的方式，返回具有相同形状的Series或者DataFrame，其中每个值都是带有CSS属性值对的字符串。该方法在作用的时候，通过参数axis来传递，axis=0表示按列作">
+<meta name="keywords" content="pandas,数据分析,可视化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pandas表格美颜技巧">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2021&#x2F;11&#x2F;30&#x2F;Pandas%E8%A1%A8%E6%A0%BC%E7%BE%8E%E9%A2%9C%E6%8A%80%E5%B7%A7.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="本文中主要介绍的是如何来美化Pandas的DataFrame的数据。主要是通过Pandas中的两个方法来实现：  Styler.applymap：逐个元素，返回带有CSS属性-值对的单个字符串 Styler.apply：列、表、行的方式，返回具有相同形状的Series或者DataFrame，其中每个值都是带有CSS属性值对的字符串。该方法在作用的时候，通过参数axis来传递，axis=0表示按列作">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxhyx0qljj30w40u0tdr.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gwxb3a67q9j30p40iq76e.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gwxb4ap15lj30tc0qe419.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gwxb56bx8lj30t60ksgo1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gwxb6ub5bej31nc0em77o.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gwxb7tkt4jj30qs0kkwgy.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gwxb85r1stj30ue0l0762.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gwxba2fd5ij30sk0iiq6n.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gwxbfmr1k3j30se0ka0vf.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gwxbgmksgkj30ru0litbm.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gwxbh10n4rj30ue0jy0vk.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gwxbhkp3c1j30s80kmtbc.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gwxbi79rb0j30ua0lcwha.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gwxbjkhd9mj30s60lwwhj.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gwxbz7xiylj30vc0mq0x1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gwxbz5262hj30wa0ky42q.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gwxbzjg43gj313o0jmtbl.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxg0bf9rgj30wa0k4tbk.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxg16gqwoj30ye0kogov.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxg318ye4j30vk0lg413.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxg3hng27j30wu0ky416.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxg4io8n8j30ze0lowhk.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxg8h16pbj31060t079e.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxg8r95gqj30vi0k6dil.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxg9a1qwoj30u40k6ju6.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxg9kan7wj30xa0l0diu.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxga1qd1zj31280pw42t.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxgat8rq9j30uq0miad2.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxgbeqk3wj30ri0jiadl.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxgd6yapdj30wu0eugo2.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxgf194hfj30yu0hygog.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxgevb2h1j30r00j4q70.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxgfm0j2lj30zq0ky41o.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxgglgz4bj314g0l60w6.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxggyq3j4j315u0kwn0l.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxghqh3wqj31400kywhz.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxgiakyyrj30s40lkdi7.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxgizis7cj30uk0ma42s.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxgjgpifxj30y00oi78v.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxgks5zj8j30qs0kkwg2.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxgknpe6rj30rc0ocwh5.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxgmf5rwxj30xk0non1k.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxgnues7hj30sw0iodi8.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxgr9oqkij30po0ks0uo.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxgsdedb4j30ze0u0ad3.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxh7bf20yj316w0lc41i.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxh2suw2uj30kc0e4dih.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gwxh8wj4n8j30h80dwdie.jpg">
+<meta property="og:updated_time" content="2021-11-30T15:52:15.295Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2021/11/30/Pandas表格美颜技巧.html"/>
+
+
+
+
+
+  <title>Pandas表格美颜技巧 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2021/11/30/Pandas%E8%A1%A8%E6%A0%BC%E7%BE%8E%E9%A2%9C%E6%8A%80%E5%B7%A7.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Pandas表格美颜技巧</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-11-30T23:51:05+08:00">
+                2021-11-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/" itemprop="url" rel="index">
+                    <span itemprop="name">pandas</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/%E6%95%99%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">教程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/11/30/Pandas%E8%A1%A8%E6%A0%BC%E7%BE%8E%E9%A2%9C%E6%8A%80%E5%B7%A7.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2021/11/30/Pandas表格美颜技巧.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  7
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文中主要介绍的是如何来美化Pandas的DataFrame的数据。主要是通过Pandas中的两个方法来实现：</p>
+<ol>
+<li>Styler.applymap：逐个元素，返回带有CSS<strong>属性-值</strong>对的单个字符串</li>
+<li>Styler.apply：列、表、行的方式，返回具有相同形状的Series或者DataFrame，其中每个值都是带有CSS属性值对的字符串。该方法在作用的时候，通过参数axis来传递，axis=0表示按列作用，axis=1表示按行作用。</li>
+</ol>
+<p>官网学习地址：</p>
+<ul>
+<li><a href="https://pandas.pydata.org/pandas-docs/version/1.1.5/user_guide/style.html#Export-to-Excel" target="_blank" rel="noopener">https://pandas.pydata.org/pandas-docs/version/1.1.5/user_guide/style.html#Export-to-Excel</a></li>
+<li><a href="https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html" target="_blank" rel="noopener">https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html</a></li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg" alt=""></p>
+<a id="more"></a>
+<h2 id="Pandas连载">Pandas连载</h2>
+<p>Pandas的文章一直在连载中：<br>
+<img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxhyx0qljj30w40u0tdr.jpg" alt=""></p>
+<h2 id="模拟数据">模拟数据</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置随机种子，保证每次运行结果相同</span></span><br><span class="line">np.random.seed(<span class="number">20</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 模拟数据</span></span><br><span class="line">df = pd.DataFrame(&#123;<span class="string">'A'</span>: np.linspace(<span class="number">1</span>, <span class="number">10</span>, <span class="number">10</span>)&#125;)</span><br><span class="line"><span class="comment"># 将两个DataFrame进行合并</span></span><br><span class="line">df1 = pd.concat([df, pd.DataFrame(np.random.randn(<span class="number">10</span>,<span class="number">4</span>), columns=list(<span class="string">"BCDE"</span>))],axis=<span class="number">1</span>)</span><br><span class="line">df1</span><br></pre></td></tr></table></figure>
+<p>numpy中的<code>linspace(start,stop,setp)</code>：表示按照步长取数，包含头尾的数据：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gwxb3a67q9j30p40iq76e.jpg" alt=""></p>
+<p>为了查看空值的效果，特意设置了3个空值nan：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gwxb4ap15lj30tc0qe419.jpg" alt=""></p>
+<h2 id="查看和隐藏样式">查看和隐藏样式</h2>
+<p>首先是查看DataFrame的样式设置：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gwxb56bx8lj30t60ksgo1.jpg" alt=""></p>
+<p>我们可以通过render方法来查看数据框样式的具体值：<strong>发现都是默认的CSS样式的代码</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gwxb6ub5bej31nc0em77o.jpg" alt=""></p>
+<h3 id="隐藏索引">隐藏索引</h3>
+<p>隐藏index的代码：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gwxb7tkt4jj30qs0kkwgy.jpg" alt=""></p>
+<h3 id="隐藏指定的列">隐藏指定的列</h3>
+<p>我们发现AC两个列被隐藏了，使用的是参数subset参数：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gwxb85r1stj30ue0l0762.jpg" alt=""></p>
+<p>下面是各种显示样式的案例讲解：</p>
+<h2 id="案例1：正负颜色">案例1：正负颜色</h2>
+<p>小于0显示红色，大于0显示蓝色</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">color_change</span><span class="params">(val)</span>:</span></span><br><span class="line">    color = <span class="string">'red'</span> <span class="keyword">if</span> val &lt; <span class="number">0</span> <span class="keyword">else</span> <span class="string">'blue'</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'color: %s'</span> % color</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用applymap并调用写好的函数</span></span><br><span class="line">df1.style.applymap(color_change)</span><br></pre></td></tr></table></figure>
+<p>applymap方法是针对整个DataFrame的</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gwxba2fd5ij30sk0iiq6n.jpg" alt=""></p>
+<h2 id="案例2：高亮显示数据">案例2：高亮显示数据</h2>
+<p>可以高亮显示最大、最小和缺失值。手写一个简单的高亮函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">highlight_min</span><span class="params">(x)</span>:</span></span><br><span class="line">    is_min = x == x.min()</span><br><span class="line">    <span class="keyword">return</span> [<span class="string">"background-color: yellow"</span> <span class="keyword">if</span> v <span class="keyword">else</span> <span class="string">''</span> <span class="keyword">for</span> v <span class="keyword">in</span> is_min]</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gwxbfmr1k3j30se0ka0vf.jpg" alt=""></p>
+<h2 id="实例3：使用默认高亮函数">实例3：使用默认高亮函数</h2>
+<p>Pandas中已经默认写好了内置的3个高亮函数：</p>
+<ul>
+<li>highlight_max(): 最大</li>
+<li>highlight_min(): 最小</li>
+<li>highlight_null(): 空值</li>
+</ul>
+<p>同时我们还可以搭配参数axis来显示行或者列</p>
+<p>1、高亮最大值</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gwxbgmksgkj30ru0litbm.jpg" alt=""></p>
+<p>2、高亮每列的最小值</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gwxbh10n4rj30ue0jy0vk.jpg" alt=""></p>
+<p>3、高亮空值：默认是红色</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gwxbhkp3c1j30s80kmtbc.jpg" alt=""></p>
+<p>当然我们是可以改变颜色的，通过使用参数null_color：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gwxbi79rb0j30ua0lcwha.jpg" alt=""></p>
+<p>使用参数axis=1，表示在行的方向上进行操作：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gwxbjkhd9mj30s60lwwhj.jpg" alt=""></p>
+<h2 id="案例4：链式调用">案例4：链式调用</h2>
+<p>链式调用指的是在同一个样式操作中同时使用多个函数（方法）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># color_change + highlight_max</span></span><br><span class="line">df1.style.applymap(color_change).apply(highlight_min)</span><br></pre></td></tr></table></figure>
+<p>如果方法特别多，可以分行写：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># color_change + highlight_max</span></span><br><span class="line">df1.style.\</span><br><span class="line">applymap(color_change).\</span><br><span class="line">apply(highlight_min)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或者：外面再加层括号，表示整个代码是一个整体</span></span><br><span class="line">(df1.style.</span><br><span class="line">applymap(color_change).</span><br><span class="line">apply(highlight_min))</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gwxbz7xiylj30vc0mq0x1.jpg" alt=""></p>
+<p>空值高亮和改变颜色参数同时使用，实现链式调用：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gwxbz5262hj30wa0ky42q.jpg" alt=""></p>
+<p>隐藏列属性和自定义参数同时使用：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gwxbzjg43gj313o0jmtbl.jpg" alt=""></p>
+<h2 id="实例5：部分数据美化">实例5：部分数据美化</h2>
+<p>使用参数subset参数控制作用的行列，传入的参数可以是：</p>
+<ul>
+<li>列标签</li>
+<li>列表（numpy数组）</li>
+<li>元组（row_indexer， column_indexer）</li>
+</ul>
+<h3 id="部分列属性">部分列属性</h3>
+<p>通过参数subset来指定我们想要美化的列属性：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxg0bf9rgj30wa0k4tbk.jpg" alt=""></p>
+<h3 id="pd-IndexSlice构造列表">pd.IndexSlice构造列表</h3>
+<p>通过pd.IndexSlice来构造</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxg16gqwoj30ye0kogov.jpg" alt=""></p>
+<h2 id="实例6：值的格式化显示（Styler-format）">实例6：值的格式化显示（Styler.format）</h2>
+<p>Styler.format来控制数值的格式化输出，类似于Python中的字符串格式化</p>
+<h3 id="整体显示">整体显示</h3>
+<p>比如我们想要全部数据只显示两位小数：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxg318ye4j30vk0lg413.jpg" alt=""></p>
+<h3 id="使用字典，格式化特定列">使用字典，格式化特定列</h3>
+<p>通过字典的形式，<strong>列属性名当做键，格式说明当做值</strong>，进行格式化设置：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxg3hng27j30wu0ky416.jpg" alt=""></p>
+<h3 id="使用lambda匿名函数">使用lambda匿名函数</h3>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxg4io8n8j30ze0lowhk.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxg8h16pbj31060t079e.jpg" alt=""></p>
+<h3 id="空值显示">空值显示</h3>
+<p>通过参数na_rep，将空值进行替代：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxg8r95gqj30vi0k6dil.jpg" alt=""></p>
+<p>用“空值”两个字来替代：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxg9a1qwoj30u40k6ju6.jpg" alt=""></p>
+<p>链式调用同时使用“-”来替代：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxg9kan7wj30xa0l0diu.jpg" alt=""></p>
+<h3 id="表情符">表情符</h3>
+<p>使用emoji表情符：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxga1qd1zj31280pw42t.jpg" alt=""></p>
+<h2 id="实例7：内置样式">实例7：内置样式</h2>
+<h3 id="内置函数">内置函数</h3>
+<p>在这里使用的是内置的空值高亮函数：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxgat8rq9j30uq0miad2.jpg" alt=""></p>
+<h3 id="热力图制作">热力图制作</h3>
+<p>我们借助seaborn库来实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"></span><br><span class="line">cm = sns.light_palette(<span class="string">"blue"</span>, as_cmap=<span class="literal">True</span>)</span><br><span class="line">s = df1.style.background_gradient(cmap=cm)</span><br><span class="line">s</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxgbeqk3wj30ri0jiadl.jpg" alt=""></p>
+<h3 id="连续色谱">连续色谱</h3>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxgd6yapdj30wu0eugo2.jpg" alt=""></p>
+<p>通过参数low和high来指定色谱的范围：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxgf194hfj30yu0hygog.jpg" alt=""></p>
+<h3 id="set-properties使用">set_properties使用</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">### set_properties使用</span></span><br><span class="line"></span><br><span class="line">df1.style.set_properties(**&#123;<span class="string">"background"</span>:<span class="string">"yellow"</span>,  <span class="comment"># 背景色</span></span><br><span class="line">                           <span class="string">"color"</span>:<span class="string">"red"</span>,  <span class="comment"># 字体</span></span><br><span class="line">                           <span class="string">"border-color"</span>:<span class="string">"black"</span>&#125;)  <span class="comment"># 边界</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxgevb2h1j30r00j4q70.jpg" alt=""></p>
+<h2 id="实例8：个性化条形图">实例8：个性化条形图</h2>
+<h3 id="默认方式">默认方式</h3>
+<p>通过bar方法来操作：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxgfm0j2lj30zq0ky41o.jpg" alt=""></p>
+<h3 id="参数align">参数align</h3>
+<p>有3种对齐方式：</p>
+<ul>
+<li>left：最小值从单元格的左侧开始</li>
+<li>zero：零值位于单元格的中心</li>
+<li>mid：单元格中的中心在（max-min)/2处</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxgglgz4bj314g0l60w6.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxggyq3j4j315u0kwn0l.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxghqh3wqj31400kywhz.jpg" alt=""></p>
+<h2 id="实例9：样式共享">实例9：样式共享</h2>
+<p>假设我们某个一个DataFrame创建了一个样式，然后想在另一个DataFrame中直接使用这个样式，该怎么做呢？</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxgiakyyrj30s40lkdi7.jpg" alt=""></p>
+<p>我们先创建一个样式style1：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxgizis7cj30uk0ma42s.jpg" alt=""></p>
+<p>将style1运用到style2中：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxgjgpifxj30y00oi78v.jpg" alt=""></p>
+<h2 id="实例10：设置精度set-precision">实例10：设置精度set_precision</h2>
+<p>通常是给数据框中的数据指定精度（小数位）：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxgks5zj8j30qs0kkwg2.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxgknpe6rj30rc0ocwh5.jpg" alt=""></p>
+<h2 id="实例11：设置标题">实例11：设置标题</h2>
+<p>使用set_caption方法</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxgmf5rwxj30xk0non1k.jpg" alt=""></p>
+<h2 id="缺失值设置">缺失值设置</h2>
+<p>使用的是set_na_rep函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(df1.style.set_na_rep(<span class="string">"FAIL"</span>)</span><br><span class="line">    .format(<span class="literal">None</span>, na_rep=<span class="string">"PASS"</span>, subset=[<span class="string">"D"</span>])</span><br><span class="line">    .highlight_null(<span class="string">"yellow"</span>))</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxgnues7hj30sw0iodi8.jpg" alt=""></p>
+<h2 id="实例13：综合案例">实例13：综合案例</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">(df1.style</span><br><span class="line">  .set_na_rep(<span class="string">'-'</span>)  <span class="comment"># 设置空值</span></span><br><span class="line">  .format(&#123;<span class="string">'C'</span>:<span class="string">'&#123;:.4f&#125;'</span>,  <span class="comment"># 精度设置</span></span><br><span class="line">           <span class="string">'D'</span>:<span class="string">'&#123;:.4f&#125;'</span>,</span><br><span class="line">           <span class="string">'E'</span>:<span class="string">'&#123;:.2%&#125;'</span>&#125;,na_rep=<span class="string">"-"</span>)  <span class="comment"># 精度和空值同时设置</span></span><br><span class="line">  .highlight_null(<span class="string">"green"</span>)  <span class="comment"># 空值高亮</span></span><br><span class="line">  .applymap(color_change,subset=[<span class="string">'D'</span>])  <span class="comment"># D列使用color_change函数</span></span><br><span class="line">  .apply(highlight_min,subset=[<span class="string">'C'</span>])  <span class="comment"># C列使用highlight_min</span></span><br><span class="line">  .background_gradient(cmap=<span class="string">'cubehelix'</span>,subset=[<span class="string">'B'</span>,<span class="string">'D'</span>])  <span class="comment"># 背景色设置</span></span><br><span class="line">  .bar(subset=[<span class="string">'E'</span>], align=<span class="string">'mid'</span>, color=[<span class="string">'#60BCD4'</span>,<span class="string">'#6A1B9A'</span>])  <span class="comment"># 柱状图设置</span></span><br><span class="line">  .set_caption(<span class="string">"Title of Pandas Style"</span>)  <span class="comment"># 标题设置</span></span><br><span class="line">  .hide_index()  <span class="comment"># 隐藏索引</span></span><br><span class="line">  .hide_columns(subset=[<span class="string">'A'</span>]))  <span class="comment"># 隐藏A列</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxgr9oqkij30po0ks0uo.jpg" alt=""></p>
+<h2 id="实例14：终极武器">实例14：终极武器</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 版本至少需要pandas1.2.0</span></span><br><span class="line">style1 = [</span><br><span class="line">    dict(selector=<span class="string">"th"</span>, props=[(<span class="string">"font-size"</span>, <span class="string">"125%"</span>),</span><br><span class="line">                               (<span class="string">"text-align"</span>, <span class="string">"center"</span>),</span><br><span class="line">                               (<span class="string">"background-color"</span>, <span class="string">"#F0F3CF"</span>),</span><br><span class="line">                               (<span class="string">'width'</span>,<span class="string">"100px"</span>),</span><br><span class="line">                               (<span class="string">'height'</span>,<span class="string">'80px'</span>)]),</span><br><span class="line"></span><br><span class="line">    dict(selector=<span class="string">"td"</span>, props=[(<span class="string">"font-size"</span>, <span class="string">"105%"</span>),</span><br><span class="line">                               (<span class="string">"text-align"</span>, <span class="string">"right"</span>),</span><br><span class="line">                               (<span class="string">'width'</span>,<span class="string">"150px"</span>),</span><br><span class="line">                               (<span class="string">'height'</span>,<span class="string">'50px'</span>)]),</span><br><span class="line"></span><br><span class="line">    dict(selector=<span class="string">"caption"</span>, props=[(<span class="string">"caption-side"</span>, <span class="string">"top"</span>),</span><br><span class="line">                                    (<span class="string">"font-size"</span>,<span class="string">"150%"</span>),</span><br><span class="line">                                    (<span class="string">"font-weight"</span>,<span class="string">"bold"</span>),</span><br><span class="line">                                    (<span class="string">"text-align"</span>, <span class="string">"left"</span>),</span><br><span class="line">                                    (<span class="string">'height'</span>,<span class="string">'50px'</span>),</span><br><span class="line">                                    (<span class="string">'color'</span>,<span class="string">'#E74C3C'</span>)])]</span><br><span class="line"></span><br><span class="line">style2 = &#123;</span><br><span class="line">    <span class="string">'A'</span>: [dict(selector=<span class="string">'td'</span>, props=[(<span class="string">'text-align'</span>,<span class="string">'center'</span>),</span><br><span class="line">                                     (<span class="string">"font-weight"</span>,<span class="string">"bold"</span>),</span><br><span class="line">                                     (<span class="string">"text-transform"</span>,<span class="string">"capitalize"</span>)])],</span><br><span class="line">    <span class="string">'B'</span>: [dict(selector=<span class="string">'td'</span>, props=[(<span class="string">'text-align'</span>,<span class="string">'left'</span>),</span><br><span class="line">                                     (<span class="string">"font-style"</span>,<span class="string">"italic"</span>)])],</span><br><span class="line">    <span class="string">'C'</span>: [dict(selector=<span class="string">'td'</span>, props=[(<span class="string">'text-decoration'</span>,<span class="string">'underline'</span>),</span><br><span class="line">                                     (<span class="string">'text-decoration-color'</span>,<span class="string">'red'</span>),</span><br><span class="line">                                     (<span class="string">'text-decoration-style'</span>,<span class="string">'wavy'</span>)])]&#125;</span><br><span class="line"><span class="comment"># 链式调用各种设置方法</span></span><br><span class="line">(df1.style</span><br><span class="line">  .set_na_rep(<span class="string">'-'</span>)  <span class="comment"># 整体空值</span></span><br><span class="line">  .format(&#123;<span class="string">'C'</span>:<span class="string">'&#123;:.4f&#125;'</span>,<span class="string">'D'</span>:<span class="string">'&#123;:.4f&#125;'</span>,<span class="string">'E'</span>:<span class="string">'&#123;:.2%&#125;'</span>&#125;,na_rep=<span class="string">"-"</span>)  <span class="comment"># 精度</span></span><br><span class="line">  .highlight_null(<span class="string">"gray"</span>)  <span class="comment"># 高亮空值</span></span><br><span class="line">  .applymap(color_change,subset=[<span class="string">'B'</span>]).highlight_max(subset=[<span class="string">'A'</span>])  <span class="comment"># color_change函数和最大值高亮</span></span><br><span class="line">  .background_gradient(cmap=<span class="string">'Pastel1'</span>,subset=[<span class="string">'C'</span>,<span class="string">'D'</span>])  <span class="comment">#  背景</span></span><br><span class="line">  .bar(subset=[<span class="string">'E'</span>], align=<span class="string">'mid'</span>, color=[<span class="string">'#90BCD4'</span>,<span class="string">'#6A1B9A'</span>])  <span class="comment"># 柱状</span></span><br><span class="line">  .set_caption(<span class="string">"Advanced use of Pandas Style"</span>)  <span class="comment"># 标题</span></span><br><span class="line"> 	.hide_index()  <span class="comment"># 隐藏索引</span></span><br><span class="line">  .hide_columns(subset=[<span class="string">'E'</span>])  <span class="comment"># 隐藏E列</span></span><br><span class="line">  .set_table_styles(style1).set_table_styles(style2,overwrite=<span class="literal">False</span>)  <span class="comment"># 样式传递</span></span><br><span class="line">  .set_properties(**&#123;<span class="string">'font-family'</span>: <span class="string">'Microsoft Yahei'</span>,<span class="string">'border-collapse'</span>: <span class="string">'collapse'</span>,  <span class="comment"># 属性设置</span></span><br><span class="line">                     <span class="string">'border-top'</span>: <span class="string">'1px solid black'</span>,<span class="string">'border-bottom'</span>: <span class="string">'1px solid black'</span>&#125;))</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxgsdedb4j30ze0u0ad3.jpg" alt=""></p>
+<h2 id="输出到Excel">输出到Excel</h2>
+<p>这是一个还在开发阶段的功能，将DataFrame使用openyxl或者xlswriter作为引擎导出到Excel表格中，官网是这样说的：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxh7bf20yj316w0lc41i.jpg" alt=""></p>
+<p>在这里看一个简单的案例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(df1.style</span><br><span class="line">   .applymap(color_change)  <span class="comment"># 正负改变颜色</span></span><br><span class="line">   .apply(highlight_min)  <span class="comment"># 高亮最小值</span></span><br><span class="line">   .to_excel(<span class="string">'styled.xlsx'</span>, engine=<span class="string">'openpyxl'</span>))</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxh2suw2uj30kc0e4dih.jpg" alt=""></p>
+<p>如果我们不想要索引号，添加index=False：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(df1.style</span><br><span class="line">   .applymap(color_change)  <span class="comment"># 正负改变颜色</span></span><br><span class="line">   .apply(highlight_min)  <span class="comment"># 高亮最小值</span></span><br><span class="line">   .to_excel(<span class="string">'styled.xlsx'</span>, engine=<span class="string">'openpyxl'</span>, index=<span class="literal">False</span>))</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gwxh8wj4n8j30h80dwdie.jpg" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2021/11/30/Pandas%E8%A1%A8%E6%A0%BC%E7%BE%8E%E9%A2%9C%E6%8A%80%E5%B7%A7.html">Pandas表格美颜技巧</a></p>
+  <p><span>发布时间:</span>2021年11月30日 - 23:11</p>
+  <p><span>原始链接:</span><a href="/2021/11/30/Pandas%E8%A1%A8%E6%A0%BC%E7%BE%8E%E9%A2%9C%E6%8A%80%E5%B7%A7.html" title="Pandas表格美颜技巧">http://www.renpeter.cn/2021/11/30/Pandas%E8%A1%A8%E6%A0%BC%E7%BE%8E%E9%A2%9C%E6%8A%80%E5%B7%A7.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2021/11/30/Pandas%E8%A1%A8%E6%A0%BC%E7%BE%8E%E9%A2%9C%E6%8A%80%E5%B7%A7.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pandas/" rel="tag"># pandas</a>
+          
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag"># 数据分析</a>
+          
+            <a href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag"># 可视化</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/11/27/%E4%BB%8E%E7%BB%9F%E8%AE%A1%E5%92%8C%E6%95%B0%E6%8D%AE%E5%87%BA%E5%8F%91%EF%BC%8C%E5%A6%82%E4%BD%95%E7%9C%8B%E5%BE%85%E6%88%BF%E4%BB%B7.html" rel="next" title="从统计和数据出发，如何看待房价">
+                <i class="fa fa-chevron-left"></i> 从统计和数据出发，如何看待房价
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">660</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">82</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Pandas连载"><span class="nav-number">1.</span> <span class="nav-text">Pandas连载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模拟数据"><span class="nav-number">2.</span> <span class="nav-text">模拟数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看和隐藏样式"><span class="nav-number">3.</span> <span class="nav-text">查看和隐藏样式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#隐藏索引"><span class="nav-number">3.1.</span> <span class="nav-text">隐藏索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#隐藏指定的列"><span class="nav-number">3.2.</span> <span class="nav-text">隐藏指定的列</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#案例1：正负颜色"><span class="nav-number">4.</span> <span class="nav-text">案例1：正负颜色</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#案例2：高亮显示数据"><span class="nav-number">5.</span> <span class="nav-text">案例2：高亮显示数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例3：使用默认高亮函数"><span class="nav-number">6.</span> <span class="nav-text">实例3：使用默认高亮函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#案例4：链式调用"><span class="nav-number">7.</span> <span class="nav-text">案例4：链式调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例5：部分数据美化"><span class="nav-number">8.</span> <span class="nav-text">实例5：部分数据美化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#部分列属性"><span class="nav-number">8.1.</span> <span class="nav-text">部分列属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pd-IndexSlice构造列表"><span class="nav-number">8.2.</span> <span class="nav-text">pd.IndexSlice构造列表</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例6：值的格式化显示（Styler-format）"><span class="nav-number">9.</span> <span class="nav-text">实例6：值的格式化显示（Styler.format）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#整体显示"><span class="nav-number">9.1.</span> <span class="nav-text">整体显示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用字典，格式化特定列"><span class="nav-number">9.2.</span> <span class="nav-text">使用字典，格式化特定列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用lambda匿名函数"><span class="nav-number">9.3.</span> <span class="nav-text">使用lambda匿名函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#空值显示"><span class="nav-number">9.4.</span> <span class="nav-text">空值显示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表情符"><span class="nav-number">9.5.</span> <span class="nav-text">表情符</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例7：内置样式"><span class="nav-number">10.</span> <span class="nav-text">实例7：内置样式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内置函数"><span class="nav-number">10.1.</span> <span class="nav-text">内置函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#热力图制作"><span class="nav-number">10.2.</span> <span class="nav-text">热力图制作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连续色谱"><span class="nav-number">10.3.</span> <span class="nav-text">连续色谱</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#set-properties使用"><span class="nav-number">10.4.</span> <span class="nav-text">set_properties使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例8：个性化条形图"><span class="nav-number">11.</span> <span class="nav-text">实例8：个性化条形图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#默认方式"><span class="nav-number">11.1.</span> <span class="nav-text">默认方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数align"><span class="nav-number">11.2.</span> <span class="nav-text">参数align</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例9：样式共享"><span class="nav-number">12.</span> <span class="nav-text">实例9：样式共享</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例10：设置精度set-precision"><span class="nav-number">13.</span> <span class="nav-text">实例10：设置精度set_precision</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例11：设置标题"><span class="nav-number">14.</span> <span class="nav-text">实例11：设置标题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缺失值设置"><span class="nav-number">15.</span> <span class="nav-text">缺失值设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例13：综合案例"><span class="nav-number">16.</span> <span class="nav-text">实例13：综合案例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例14：终极武器"><span class="nav-number">17.</span> <span class="nav-text">实例14：终极武器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输出到Excel"><span class="nav-number">18.</span> <span class="nav-text">输出到Excel</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IC/" rel="tag">IC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">62</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">103</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyg2plot/" rel="tag">pyg2plot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">89</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tableau/" rel="tag">tableau</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">38</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">114</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E5%85%B8/" rel="tag">字典</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AA%E7%8E%AF/" rel="tag">循环</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">38</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag">数据处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">101</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" rel="tag">数据挖掘</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">74</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">51</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1/" rel="tag">统计</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag">编程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">自动化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%B1%BC%E5%A4%B4%E8%B1%86%E8%85%90%E6%B1%A4/" rel="tag">鱼头豆腐汤</a><span class="tag-list-count">1</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共934.2k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2021/11/30/Pandas%E8%A1%A8%E6%A0%BC%E7%BE%8E%E9%A2%9C%E6%8A%80%E5%B7%A7.html';
+          this.page.identifier = '2021/11/30/Pandas表格美颜技巧.html';
+          this.page.title = 'Pandas表格美颜技巧';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
