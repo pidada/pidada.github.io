@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="机器学习,kaggle," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="本文是kaggle案例分享的第3篇，赛题的名称是：Mushroom Classification，Safe to eat or deadly poison? 数据来自UCI：https:&#x2F;&#x2F;archive.ics.uci.edu&#x2F;ml&#x2F;datasets&#x2F;mushroom kaggle源码地址：https:&#x2F;&#x2F;www.kaggle.com&#x2F;nirajvermafcb&#x2F;comparing-variou">
+<meta name="keywords" content="机器学习,kaggle">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于6种监督学习的毒蘑菇分类">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2021&#x2F;12&#x2F;14&#x2F;%E5%9F%BA%E4%BA%8E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%E7%9A%84%E6%AF%92%E8%98%91%E8%8F%87%E5%88%86%E7%B1%BB.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="本文是kaggle案例分享的第3篇，赛题的名称是：Mushroom Classification，Safe to eat or deadly poison? 数据来自UCI：https:&#x2F;&#x2F;archive.ics.uci.edu&#x2F;ml&#x2F;datasets&#x2F;mushroom kaggle源码地址：https:&#x2F;&#x2F;www.kaggle.com&#x2F;nirajvermafcb&#x2F;comparing-variou">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx92mj677uj305o06vq2y.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx92hgju5yj31lc0u0te0.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx93av9yrwj315g094abs.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx93c83hvyj315y0m4dnw.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx92t99g3gj314y0ewmzt.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx92u0waryj30mk0q2dhy.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx939095v3j30lw06ygm1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx92vg0ti2j30yg0mmdgy.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx92wgr9muj31kq0qmtaw.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx92ycn1ukj315a0e40tz.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx92z59o5sj31l20qq0v7.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx932h65paj30vq0ksdgw.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx933ejs62j31ku0ro0v4.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx935uh6ytj31220eqwfr.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx936h2i8ej31lq0roac1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx93l2spmlj30cx0a0751.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx93dxt9q4j31oy0hygo3.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx93eyepzvj31o20fawgn.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx93fmagtmj30r20cedgy.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx93hr4t3sj30w00ca0tl.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx93i75nvkj30ag07qjrf.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx93nbw97tj313y0kajuy.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx945xuc7fj313y07gwg9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx93qyv7lmj30bs07st8s.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx93ubd61zj308m08fmxe.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx93v5tm1rj308m08fweo.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx9444qp4aj310y0gi0vn.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx948toknaj30xo0ckmyx.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx94e8x8hnj30gx0gsmxf.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx94jircxqj310y0600ts.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx94knauugj311k0o0dj4.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx94lknr5nj30gx0gsjrn.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx94oh33wnj31ey04c0tk.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx94povty9j311q0emgnb.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx94qfkx73j31340iyjtp.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx94rkw5wcj30gx0gs3ys.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx94uboitrj30ps05et92.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx94vcwtdcj30y80noju4.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx94wec7qgj30gx0gs74j.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx94z0bwcsj30zw0bit9z.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx94yy5dzjj30zo0l6ac9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx94zpoem5j30gx0gs74j.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx951ygepfj312q0n4taw.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx95327aqwj30gx0gs74j.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx954ahstmj30we0ek75v.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx954txdwcj30yy0mmjtw.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx955p03s8j30gx0gs74j.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx9585nx3gj319e0980u4.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx95887qf6j31eq0u0tgs.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx959oqvxkj30gx0gs74j.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx95qfvimsj310q0hegmz.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx95rbmkzfj30y20h2gn7.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx95s9jdsxj30rq050dg2.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx95sy9ytzj316o0d6q48.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx95tnu5a3j30s608adg5.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx95u391qhj30xy06waag.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx95vjr6j5j30dw0dh3z0.jpg">
+<meta property="og:updated_time" content="2021-12-14T09:37:00.292Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gx92mj677uj305o06vq2y.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2021/12/14/基于监督学习的毒蘑菇分类.html"/>
+
+
+
+
+
+  <title>基于6种监督学习的毒蘑菇分类 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2021/12/14/%E5%9F%BA%E4%BA%8E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%E7%9A%84%E6%AF%92%E8%98%91%E8%8F%87%E5%88%86%E7%B1%BB.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">基于6种监督学习的毒蘑菇分类</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-12-14T17:35:40+08:00">
+                2021-12-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/kaggle/" itemprop="url" rel="index">
+                    <span itemprop="name">kaggle</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/12/14/%E5%9F%BA%E4%BA%8E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%E7%9A%84%E6%AF%92%E8%98%91%E8%8F%87%E5%88%86%E7%B1%BB.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2021/12/14/基于监督学习的毒蘑菇分类.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  3.3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  14
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文是kaggle案例分享的第3篇，赛题的名称是：Mushroom Classification，Safe to eat or deadly poison?</p>
+<p>数据来自UCI：<a href="https://archive.ics.uci.edu/ml/datasets/mushroom" target="_blank" rel="noopener">https://archive.ics.uci.edu/ml/datasets/mushroom</a></p>
+<p>kaggle源码地址：<a href="https://www.kaggle.com/nirajvermafcb/comparing-various-ml-models-roc-curve-comparison" target="_blank" rel="noopener">https://www.kaggle.com/nirajvermafcb/comparing-various-ml-models-roc-curve-comparison</a></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx92mj677uj305o06vq2y.jpg" alt=""></p>
+<a id="more"></a>
+<h2 id="排名">排名</h2>
+<p>下面是kaggle上针对本题的排名。第一名侧重点是特征选择，没有用到本题的数据，我个人感觉跑偏了；第二名侧重点是基于贝叶斯理论的分类，能力有限，贝叶斯这块学习好了专门再说。</p>
+<p>所以，选择了第三名的notebook源码来学习。作者将6种监督学习的方法在本数据集上的建模、模型评估等过程进行了比较。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx92hgju5yj31lc0u0te0.jpg" alt=""></p>
+<h2 id="数据集">数据集</h2>
+<p>这份数据集是UCI捐献给kaggle的。总样本数为8124，其中6513个样本做训练，1611个样本做测试；并且，其中可食用有4208样本，占51.8%；有毒的样本为3916，占48.2%。每个样本描述了蘑菇的22个属性，比如形状、气味等。</p>
+<p>误食野生蘑菇中毒事件时有发生，且蘑菇形态千差万别，对于非专业人士，无法从外观、形态、颜色等方面区分有毒蘑菇与可食用蘑菇，没有一个简单的标准能够将有毒蘑菇和可食用蘑菇区分开来。要了解蘑菇是否可食用，必须采集具有不同特征属性的蘑菇是否有毒进行分析。</p>
+<p>对蘑菇的22种特征属性进行分析，从而得到蘑菇可使用性模型，更好的预测出蘑菇是否可食用。</p>
+<p>下面是UCI显示的具体数据信息：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx93av9yrwj315g094abs.jpg" alt=""></p>
+<p>属性特征的解释：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx93c83hvyj315y0m4dnw.jpg" alt=""></p>
+<h2 id="数据EDA">数据EDA</h2>
+<h3 id="导入数据">导入数据</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> plotly_express <span class="keyword">as</span> px</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"></span><br><span class="line"><span class="comment"># 忽略警告</span></span><br><span class="line"><span class="keyword">import</span> warnings</span><br><span class="line">warnings.filterwarnings(<span class="string">'ignore'</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx92t99g3gj314y0ewmzt.jpg" alt=""></p>
+<p>原始数据有8124条记录，23个属性；并且<strong>不存在缺失值</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx92u0waryj30mk0q2dhy.jpg" alt=""></p>
+<h3 id="有无毒对比">有无毒对比</h3>
+<p>统计有毒和无毒的数量对比：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx939095v3j30lw06ygm1.jpg" alt=""></p>
+<h2 id="可视化分析">可视化分析</h2>
+<h3 id="菌盖颜色">菌盖颜色</h3>
+<p>首先我们讨论下菌盖的颜色：<strong>每种菌盖颜色的次数</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx92vg0ti2j30yg0mmdgy.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">fig = px.bar(cap,x=<span class="string">"color"</span>,</span><br><span class="line">             y=<span class="string">"number"</span>,</span><br><span class="line">             color=<span class="string">"number"</span>,</span><br><span class="line">             text=<span class="string">"number"</span>,</span><br><span class="line">             color_continuous_scale=<span class="string">"rainbow"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># fig.update_layout(text_position="outside")</span></span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx92wgr9muj31kq0qmtaw.jpg" alt=""></p>
+<p>到底有毒的蘑菇是哪几种颜色较多了？统计有毒和无毒下的颜色分布：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx92ycn1ukj315a0e40tz.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> fig = px.bar(cap_class,x=<span class="string">"color"</span>,</span><br><span class="line">              y=<span class="string">"number"</span>,</span><br><span class="line">              color=<span class="string">"class"</span>,</span><br><span class="line">              text=<span class="string">"number"</span>,</span><br><span class="line">              barmode=<span class="string">"group"</span>,</span><br><span class="line">             )</span><br><span class="line"></span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx92z59o5sj31l20qq0v7.jpg" alt=""></p>
+<p>小结：<strong>颜色n、g、e在有毒p情况是比较多的</strong>。</p>
+<h3 id="菌的气味">菌的气味</h3>
+<p>统计每种气味的数量：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx932h65paj30vq0ksdgw.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">fig = px.bar(odor,</span><br><span class="line">             x=<span class="string">"odor"</span>,</span><br><span class="line">             y=<span class="string">"number"</span>,</span><br><span class="line">             color=<span class="string">"number"</span>,</span><br><span class="line">             text=<span class="string">"number"</span>,</span><br><span class="line">             color_continuous_scale=<span class="string">"rainbow"</span>)</span><br><span class="line"></span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx933ejs62j31ku0ro0v4.jpg" alt=""></p>
+<p>上面是针对整体数据的情况，下面分有毒和无毒来继续讨论：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx935uh6ytj31220eqwfr.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> fig = px.bar(odor_class,</span><br><span class="line">              x=<span class="string">"odor"</span>,</span><br><span class="line">              y=<span class="string">"number"</span>,</span><br><span class="line">              color=<span class="string">"class"</span>,</span><br><span class="line">              text=<span class="string">"number"</span>,</span><br><span class="line">              barmode=<span class="string">"group"</span>,</span><br><span class="line">             )</span><br><span class="line"></span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx936h2i8ej31lq0roac1.jpg" alt=""></p>
+<p>小结：从上面的两张图中，我们看出来：<strong>f这种气味是最容易造成有毒</strong></p>
+<h2 id="特征相关性">特征相关性</h2>
+<p>将特征之间的相关性系数绘制成热力图，查看分布情况：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">corr = data.corr()</span><br><span class="line">sns.heatmap(corr)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx93l2spmlj30cx0a0751.jpg" alt=""></p>
+<h2 id="特征工程">特征工程</h2>
+<h3 id="特征转换">特征转换</h3>
+<p>原数据中的特征都是文本类型，我们将其转成数值型，方便后续分析：</p>
+<p>1、转换前</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx93dxt9q4j31oy0hygo3.jpg" alt=""></p>
+<p>2、实施转换</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> LabelEncoder  <span class="comment"># 类型编码</span></span><br><span class="line">labelencoder = LabelEncoder()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> col <span class="keyword">in</span> data.columns:</span><br><span class="line">    data[col] = labelencoder.fit_transform(data[col])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 转换后</span></span><br><span class="line">data.head()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx93eyepzvj31o20fawgn.jpg" alt=""></p>
+<p>3、查看部分属性的转换结果</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx93fmagtmj30r20cedgy.jpg" alt=""></p>
+<h3 id="数据分布">数据分布</h3>
+<p>查看数据转换编码后的数据分布情况：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx93hr4t3sj30w00ca0tl.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">ax = sns.boxplot(x=<span class="string">'class'</span>,</span><br><span class="line">                 y=<span class="string">'stalk-color-above-ring'</span>,</span><br><span class="line">                 data=data)</span><br><span class="line"></span><br><span class="line">ax = sns.stripplot(x=<span class="string">"class"</span>,</span><br><span class="line">                   y=<span class="string">'stalk-color-above-ring'</span>,</span><br><span class="line">                   data=data,</span><br><span class="line">                   jitter=<span class="literal">True</span>,</span><br><span class="line">                   edgecolor=<span class="string">"gray"</span>)</span><br><span class="line"></span><br><span class="line">plt.title(<span class="string">"Class w.r.t stalkcolor above ring"</span>,fontsize=<span class="number">12</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx93i75nvkj30ag07qjrf.jpg" alt=""></p>
+<h3 id="分离特征和标签">分离特征和标签</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">X = data.iloc[:,<span class="number">1</span>:<span class="number">23</span>]  <span class="comment"># 特征</span></span><br><span class="line">y = data.iloc[:, <span class="number">0</span>]  <span class="comment"># 标签</span></span><br></pre></td></tr></table></figure>
+<h3 id="数据标准化">数据标准化</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 归一化（Normalization）、标准化（Standardization）</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line">scaler = StandardScaler()</span><br><span class="line">X = scaler.fit_transform(X)</span><br><span class="line">X</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx93nbw97tj313y0kajuy.jpg" alt=""></p>
+<h2 id="主成分分析PCA">主成分分析PCA</h2>
+<h3 id="PCA过程">PCA过程</h3>
+<p>原始数据中22个属性可能并不是特征都是有效数据，或者说某些属性本身就存在一定的关系，造成了特征属性的重叠。我们采用主成分分析，先找出关键的特征：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1、实施pca</span></span><br><span class="line"><span class="keyword">from</span> sklearn.decomposition <span class="keyword">import</span> PCA</span><br><span class="line">pca = PCA()</span><br><span class="line">pca.fit_transform(X)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2、得到相关系数</span></span><br><span class="line">covariance = pca.get_covariance()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3、得到每个变量对应的方差值</span></span><br><span class="line">explained_variance=pca.explained_variance_</span><br><span class="line">explained_variance</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx945xuc7fj313y07gwg9.jpg" alt=""></p>
+<p>通过绘图来展示每个主成分的得分关系：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> plt.style.context(<span class="string">"dark_background"</span>):  <span class="comment"># 背景</span></span><br><span class="line">    plt.figure(figsize=(<span class="number">6</span>,<span class="number">4</span>))  <span class="comment"># 大小</span></span><br><span class="line"></span><br><span class="line">    plt.bar(range(<span class="number">22</span>),  <span class="comment"># 主成分个数</span></span><br><span class="line">           explained_variance,  <span class="comment"># 方差值</span></span><br><span class="line">            alpha=<span class="number">0.5</span>,  <span class="comment"># 透明度</span></span><br><span class="line">            align=<span class="string">"center"</span>,</span><br><span class="line">            label=<span class="string">"individual explained variance"</span>  <span class="comment"># 标签</span></span><br><span class="line">           )</span><br><span class="line">    plt.ylabel(<span class="string">'Explained variance ratio'</span>)  <span class="comment"># 轴名称和图例</span></span><br><span class="line">    plt.xlabel(<span class="string">'Principal components'</span>)</span><br><span class="line">    plt.legend(loc=<span class="string">"best"</span>)</span><br><span class="line">    plt.tight_layout()  <span class="comment"># 自动调整子图参数</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx93qyv7lmj30bs07st8s.jpg" alt=""></p>
+<p>结论：从上面的图形中看出来最后的4个主成分方差之和很小；前面的17个占据了90%以上的方差，可作为主成分。</p>
+<blockquote>
+<p><strong>We can see that the last 4 components has less amount of variance of the data.The 1st 17 components retains more than 90% of the data.</strong></p>
+</blockquote>
+<h3 id="2个主成分下的数据分布">2个主成分下的数据分布</h3>
+<p>然后我们利用基于2个属性的数据来实施K-means聚类：</p>
+<p>1、2个主成分下的原始数据分布</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">N = data.values</span><br><span class="line">pca = PCA(n_components=<span class="number">2</span>)</span><br><span class="line">x = pca.fit_transform(N)</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">5</span>,<span class="number">5</span>))</span><br><span class="line">plt.scatter(x[:,<span class="number">0</span>],x[:,<span class="number">1</span>])</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx93ubd61zj308m08fmxe.jpg" alt=""></p>
+<p>2、实施聚类建模后的分布：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.cluster <span class="keyword">import</span> KMeans</span><br><span class="line">km = KMeans(n_clusters=<span class="number">2</span>,random_state=<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">N = data.values  <span class="comment"># numpy数组形式</span></span><br><span class="line">X_clustered = km.fit_predict(N)  <span class="comment"># 建模结果0-1</span></span><br><span class="line"></span><br><span class="line">label_color_map = &#123;<span class="number">0</span>:<span class="string">"g"</span>,  <span class="comment"># 分类结果只有0和1，进行打标</span></span><br><span class="line">                  <span class="number">1</span>:<span class="string">"y"</span>&#125;</span><br><span class="line">label_color = [label_color_map[l] <span class="keyword">for</span> l <span class="keyword">in</span> X_clustered]</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">5</span>,<span class="number">5</span>))</span><br><span class="line"><span class="comment"># x = pca.fit_transform(N)</span></span><br><span class="line">plt.scatter(x[:,<span class="number">0</span>],x[:,<span class="number">1</span>], c=label_color)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx93v5tm1rj308m08fweo.jpg" alt=""></p>
+<h3 id="基于17主成分下的建模">基于17主成分下的建模</h3>
+<p>这个地方自己也没有看懂：总共是22个属性，上面选取了4个特征，为什么这里是基于17个主成分的分析？？</p>
+<p><strong>先做了基于17个主成分的转换</strong>：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx9444qp4aj310y0gi0vn.jpg" alt=""></p>
+<p>数据集的划分：训练集和测试集占比为8-2</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="number">0.2</span>, random_state=<span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+<p>下面开始是6种监督学习方法的具体过程：</p>
+<h2 id="模型1：逻辑回归">模型1：逻辑回归</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LogisticRegression  <span class="comment"># 逻辑回归（分类）</span></span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> cross_val_score  <span class="comment"># 交叉验证得分</span></span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> metrics  <span class="comment"># 模型评价</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 建立模型</span></span><br><span class="line">model_LR = LogisticRegression()</span><br><span class="line">model_LR.fit(X_train, y_train)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx948toknaj30xo0ckmyx.jpg" alt=""></p>
+<p>查看具体的预测效果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">model_LR.score(X_test,y_pred)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果</span></span><br><span class="line"><span class="number">1.0</span>  <span class="comment"># 效果很好</span></span><br></pre></td></tr></table></figure>
+<p>逻辑回归下的混淆矩阵：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">confusion_matrix = metrics.confusion_matrix(y_test, y_pred)</span><br><span class="line">confusion_matrix</span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果</span></span><br><span class="line">array([[<span class="number">815</span>,  <span class="number">30</span>],</span><br><span class="line">       [ <span class="number">36</span>, <span class="number">744</span>]])</span><br></pre></td></tr></table></figure>
+<p>具体的auc值：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">auc_roc = metrics.roc_auc_score(y_test, y_pred)  <span class="comment"># 测试纸和预测值</span></span><br><span class="line">auc_roc</span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果</span></span><br><span class="line"><span class="number">0.9591715976331362</span></span><br></pre></td></tr></table></figure>
+<h3 id="真假阳性">真假阳性</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> roc_curve, auc</span><br><span class="line">false_positive_rate, true_positive_rate,thresholds = roc_curve(y_test, y_prob)</span><br><span class="line"></span><br><span class="line">roc_auc = auc(false_positive_rate,true_positive_rate)</span><br><span class="line">roc_auc</span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果</span></span><br><span class="line"><span class="number">0.9903474434835382</span></span><br></pre></td></tr></table></figure>
+<h3 id="ROC曲线">ROC曲线</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>,<span class="number">10</span>))</span><br><span class="line">plt.title(<span class="string">"ROC"</span>)  <span class="comment"># Receiver Operating Characteristic</span></span><br><span class="line">plt.plot(false_positive_rate,</span><br><span class="line">         true_positive_rate,</span><br><span class="line">         color=<span class="string">"red"</span>,</span><br><span class="line">         label=<span class="string">"AUC = %0.2f"</span>%roc_auc</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">plt.legend(loc=<span class="string">"lower right"</span>)</span><br><span class="line">plt.plot([<span class="number">0</span>,<span class="number">1</span>],[<span class="number">0</span>,<span class="number">1</span>],linestyle=<span class="string">"--"</span>)</span><br><span class="line">plt.axis(<span class="string">"tight"</span>)</span><br><span class="line"><span class="comment"># 真阳性：预测类别为1的positive；预测正确True</span></span><br><span class="line">plt.ylabel(<span class="string">"True Positive Rate"</span>)</span><br><span class="line"><span class="comment"># 假阳性：预测类别为1的positive；预测错误False</span></span><br><span class="line">plt.xlabel(<span class="string">"False Positive Rate"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx94e8x8hnj30gx0gsmxf.jpg" alt=""></p>
+<p>下面是对逻辑回归模型进行校正。这里的校正主要就是采取<strong>网格搜索</strong>的方法来选取最佳的参数，然后进行下一步的建模。网格搜索的过程：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LogisticRegression</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> cross_val_score</span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> metrics</span><br><span class="line"></span><br><span class="line"><span class="comment"># 未优化的模型</span></span><br><span class="line">LR_model= LogisticRegression()</span><br><span class="line"><span class="comment"># 待确定的参数</span></span><br><span class="line">tuned_parameters = &#123;<span class="string">"C"</span>:[<span class="number">0.001</span>,<span class="number">0.01</span>,<span class="number">0.1</span>,<span class="number">1</span>,<span class="number">10</span>,<span class="number">100</span>,<span class="number">1000</span>],</span><br><span class="line">                    <span class="string">"penalty"</span>:[<span class="string">'l1'</span>,<span class="string">'l2'</span>]  <span class="comment"># 选择不同的正则方式，防止过拟合</span></span><br><span class="line">                   &#125;</span><br><span class="line"><span class="comment"># 网格搜索模块</span></span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> GridSearchCV</span><br><span class="line"><span class="comment"># 加入网格搜索功能</span></span><br><span class="line">LR = GridSearchCV(LR_model, tuned_parameters,cv=<span class="number">10</span>)</span><br><span class="line"><span class="comment"># 搜索之后再建模</span></span><br><span class="line">LR.fit(X_train, y_train)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 确定参数</span></span><br><span class="line">print(LR.best_params_)</span><br><span class="line"></span><br><span class="line">&#123;<span class="string">'C'</span>: <span class="number">100</span>, <span class="string">'penalty'</span>: <span class="string">'l2'</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>查看优化后的预测情况：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx94jircxqj310y0600ts.jpg" alt=""></p>
+<p>混淆矩阵和AUC情况：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx94knauugj311k0o0dj4.jpg" alt=""></p>
+<p>ROC曲线情况：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> roc_curve, auc</span><br><span class="line">false_positive_rate, true_positive_rate, thresholds = roc_curve(y_test, y_prob)</span><br><span class="line"></span><br><span class="line"><span class="comment">#roc_auc = auc(false_positive_rate, true_positive_rate)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>,<span class="number">10</span>))</span><br><span class="line">plt.title(<span class="string">"ROC"</span>)  <span class="comment"># Receiver Operating Characteristic</span></span><br><span class="line">plt.plot(false_positive_rate,</span><br><span class="line">         true_positive_rate,</span><br><span class="line">         color=<span class="string">"red"</span>,</span><br><span class="line">         label=<span class="string">"AUC = %0.2f"</span>%roc_auc</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">plt.legend(loc=<span class="string">"lower right"</span>)</span><br><span class="line">plt.plot([<span class="number">0</span>,<span class="number">1</span>],[<span class="number">0</span>,<span class="number">1</span>],linestyle=<span class="string">"--"</span>)</span><br><span class="line">plt.axis(<span class="string">"tight"</span>)</span><br><span class="line"><span class="comment"># 真阳性：预测类别为1的positive；预测正确True</span></span><br><span class="line">plt.ylabel(<span class="string">"True Positive Rate"</span>)</span><br><span class="line"><span class="comment"># 假阳性：预测类别为1的positive；预测错误False</span></span><br><span class="line">plt.xlabel(<span class="string">"False Positive Rate"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx94lknr5nj30gx0gsjrn.jpg" alt=""></p>
+<h2 id="模型2：高斯朴素贝叶斯">模型2：高斯朴素贝叶斯</h2>
+<h3 id="建模">建模</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.naive_bayes <span class="keyword">import</span> GaussianNB</span><br><span class="line">model_naive = GaussianNB()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 建模</span></span><br><span class="line">model_naive.fit(X_train, y_train)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 预测概率</span></span><br><span class="line">y_prob = model_naive.predict_proba(X_test)[:,<span class="number">1</span>]</span><br><span class="line">y_pred = np.where(y_prob &gt; <span class="number">0.5</span>,<span class="number">1</span>,<span class="number">0</span>)</span><br><span class="line">model_naive.score(X_test,y_pred)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果</span></span><br><span class="line"><span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>预测值和真实值不等的数量：111个</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx94oh33wnj31ey04c0tk.jpg" alt=""></p>
+<h3 id="交叉验证">交叉验证</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">scores = cross_val_score(model_naive,</span><br><span class="line">                        X,</span><br><span class="line">                        y,</span><br><span class="line">                        cv=<span class="number">10</span>,</span><br><span class="line">                        scoring=<span class="string">"accuracy"</span></span><br><span class="line">                       )</span><br><span class="line">scores</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx94povty9j311q0emgnb.jpg" alt=""></p>
+<h3 id="混淆矩阵和AUC">混淆矩阵和AUC</h3>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx94qfkx73j31340iyjtp.jpg" alt=""></p>
+<h3 id="真假阳性-v2">真假阳性</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入评价模块</span></span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> roc_curve, auc</span><br><span class="line"></span><br><span class="line"><span class="comment"># 评价指标</span></span><br><span class="line">false_positive_rate, true_positive_rate, thresholds = roc_curve(y_test, y_prob)</span><br><span class="line"></span><br><span class="line"><span class="comment"># roc曲线面积</span></span><br><span class="line">roc_auc = auc(false_positive_rate, true_positive_rate)</span><br><span class="line">roc_auc</span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果</span></span><br><span class="line"><span class="number">0.9592201486876043</span></span><br></pre></td></tr></table></figure>
+<h3 id="ROC曲线-v2">ROC曲线</h3>
+<p>AUC的值才0.96</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 绘图</span></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>,<span class="number">10</span>))</span><br><span class="line"></span><br><span class="line">plt.title(<span class="string">"ROC"</span>)</span><br><span class="line">plt.plot(false_positive_rate,true_positive_rate,color=<span class="string">"red"</span>,label=<span class="string">"AUC=%0.2f"</span>%roc_auc)</span><br><span class="line"></span><br><span class="line">plt.legend(loc=<span class="string">"lower right"</span>)</span><br><span class="line">plt.plot([<span class="number">0</span>,<span class="number">1</span>],[<span class="number">0</span>,<span class="number">1</span>],linestyle=<span class="string">'--'</span>)</span><br><span class="line"></span><br><span class="line">plt.axis(<span class="string">"tight"</span>)</span><br><span class="line">plt.xlabel(<span class="string">'False Positive Rate'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'True Positive Rate'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx94rkw5wcj30gx0gs3ys.jpg" alt=""></p>
+<h2 id="模型3：支持向量机SVM">模型3：支持向量机SVM</h2>
+<p>默认参数下的支持向量机过程</p>
+<h3 id="建模过程">建模过程</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.svm <span class="keyword">import</span> SVC</span><br><span class="line">svm_model = SVC()</span><br><span class="line"></span><br><span class="line">tuned_parameters = &#123;</span><br><span class="line">    <span class="string">'C'</span>: [<span class="number">1</span>, <span class="number">10</span>, <span class="number">100</span>,<span class="number">500</span>, <span class="number">1000</span>],</span><br><span class="line">    <span class="string">'kernel'</span>: [<span class="string">'linear'</span>,<span class="string">'rbf'</span>],</span><br><span class="line">    <span class="string">'C'</span>: [<span class="number">1</span>, <span class="number">10</span>, <span class="number">100</span>,<span class="number">500</span>, <span class="number">1000</span>],</span><br><span class="line">    <span class="string">'gamma'</span>: [<span class="number">1</span>,<span class="number">0.1</span>,<span class="number">0.01</span>,<span class="number">0.001</span>, <span class="number">0.0001</span>],</span><br><span class="line">    <span class="string">'kernel'</span>: [<span class="string">'rbf'</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="随机网格搜索-RandomizedSearchCV">随机网格搜索-RandomizedSearchCV</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> RandomizedSearchCV</span><br><span class="line"></span><br><span class="line"><span class="comment"># 建立随机搜索模型</span></span><br><span class="line">model_svm = RandomizedSearchCV(</span><br><span class="line">    svm_model,  <span class="comment"># 待搜索模型</span></span><br><span class="line">    tuned_parameters,  <span class="comment"># 参数</span></span><br><span class="line">    cv=<span class="number">10</span>,  <span class="comment"># 10折交叉验证</span></span><br><span class="line">    scoring=<span class="string">"accuracy"</span>,  <span class="comment"># 评分标准</span></span><br><span class="line">    n_iter=<span class="number">20</span>  <span class="comment"># 迭代次数</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line"><span class="comment"># 训练模型</span></span><br><span class="line">model_svm.fit(X_train,y_train)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">RandomizedSearchCV(cv=<span class="number">10</span>,</span><br><span class="line">                   estimator=SVC(),</span><br><span class="line">                   n_iter=<span class="number">20</span>,</span><br><span class="line">                   param_distributions=&#123;<span class="string">'C'</span>: [<span class="number">1</span>, <span class="number">10</span>, <span class="number">100</span>, <span class="number">500</span>, <span class="number">1000</span>],</span><br><span class="line">                                        <span class="string">'gamma'</span>: [<span class="number">1</span>, <span class="number">0.1</span>, <span class="number">0.01</span>, <span class="number">0.001</span>, <span class="number">0.0001</span>],</span><br><span class="line">                                        <span class="string">'kernel'</span>: [<span class="string">'rbf'</span>]&#125;,</span><br><span class="line">                   scoring=<span class="string">'accuracy'</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 最佳得分效果</span></span><br><span class="line">print(model_svm.best_score_)</span><br><span class="line"><span class="number">1.0</span></span><br></pre></td></tr></table></figure>
+<p>得分最佳匹配参数：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx94uboitrj30ps05et92.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 预测</span></span><br><span class="line">y_pred = model_svm.predict(X_test)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 预测值和原始标签值计算：分类准确率</span></span><br><span class="line">metrics.accuracy_score(y_pred, y_test)</span><br><span class="line"><span class="comment"># 结果</span></span><br><span class="line"><span class="number">1</span></span><br></pre></td></tr></table></figure>
+<h3 id="混淆矩阵">混淆矩阵</h3>
+<p>查看具体的混淆矩阵和预测情况：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx94vcwtdcj30y80noju4.jpg" alt=""></p>
+<h3 id="ROC曲线-v3">ROC曲线</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> roc_curve, auc</span><br><span class="line">false_positive_rate, true_positive_rate, thresholds = roc_curve(y_test, y_pred)</span><br><span class="line">roc_auc = auc(false_positive_rate, true_positive_rate)</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>,<span class="number">10</span>))</span><br><span class="line">plt.title(<span class="string">'ROC'</span>)</span><br><span class="line"></span><br><span class="line">plt.plot(false_positive_rate,true_positive_rate, color=<span class="string">'red'</span>,label = <span class="string">'AUC = %0.2f'</span> % roc_auc)</span><br><span class="line"></span><br><span class="line">plt.legend(loc = <span class="string">'lower right'</span>)</span><br><span class="line">plt.plot([<span class="number">0</span>, <span class="number">1</span>], [<span class="number">0</span>, <span class="number">1</span>],linestyle=<span class="string">'--'</span>)</span><br><span class="line"></span><br><span class="line">plt.axis(<span class="string">'tight'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'True Positive Rate'</span>)</span><br><span class="line">plt.xlabel(<span class="string">'False Positive Rate'</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx94wec7qgj30gx0gs74j.jpg" alt=""></p>
+<h2 id="模型5：随机森林">模型5：随机森林</h2>
+<h3 id="建模拟合">建模拟合</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier</span><br><span class="line"></span><br><span class="line"><span class="comment"># 建模</span></span><br><span class="line">model_RR = RandomForestClassifier()</span><br><span class="line"><span class="comment"># 拟合</span></span><br><span class="line">model_RR.fit(X_train, y_train)</span><br></pre></td></tr></table></figure>
+<h3 id="预测得分">预测得分</h3>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx94z0bwcsj30zw0bit9z.jpg" alt=""></p>
+<h3 id="混淆矩阵-v2">混淆矩阵</h3>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx94yy5dzjj30zo0l6ac9.jpg" alt=""></p>
+<h3 id="ROC曲线-v4">ROC曲线</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> roc_curve, auc</span><br><span class="line"></span><br><span class="line">false_positive_rate, true_positive_rate, thresholds = roc_curve(y_test, y_prob)</span><br><span class="line"></span><br><span class="line">roc_auc = auc(false_positive_rate, true_positive_rate)</span><br><span class="line">roc_auc  <span class="comment"># 1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>,<span class="number">10</span>))</span><br><span class="line">plt.title(<span class="string">'ROC'</span>)</span><br><span class="line"></span><br><span class="line">plt.plot(false_positive_rate,true_positive_rate, color=<span class="string">'red'</span>,label = <span class="string">'AUC = %0.2f'</span> % roc_auc)</span><br><span class="line"></span><br><span class="line">plt.legend(loc = <span class="string">'lower right'</span>)</span><br><span class="line">plt.plot([<span class="number">0</span>, <span class="number">1</span>], [<span class="number">0</span>, <span class="number">1</span>],linestyle=<span class="string">'--'</span>)</span><br><span class="line"></span><br><span class="line">plt.axis(<span class="string">'tight'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'True Positive Rate'</span>)</span><br><span class="line">plt.xlabel(<span class="string">'False Positive Rate'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx94zpoem5j30gx0gs74j.jpg" alt=""></p>
+<h2 id="模型6：决策树（CART）">模型6：决策树（CART）</h2>
+<h3 id="建模-v2">建模</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.tree <span class="keyword">import</span> DecisionTreeClassifier</span><br><span class="line"></span><br><span class="line"><span class="comment"># 建模</span></span><br><span class="line">model_tree = DecisionTreeClassifier()</span><br><span class="line">model_tree.fit(X_train, y_train)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 预测</span></span><br><span class="line">y_prob = model_tree.predict_proba(X_test)[:,<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 预测的概率转成0-1分类</span></span><br><span class="line">y_pred = np.where(y_prob &gt; <span class="number">0.5</span>, <span class="number">1</span>, <span class="number">0</span>)</span><br><span class="line">model_tree.score(X_test, y_pred)</span><br><span class="line"><span class="comment"># 结果</span></span><br><span class="line"><span class="number">1</span></span><br></pre></td></tr></table></figure>
+<h3 id="混淆矩阵-v3">混淆矩阵</h3>
+<p>各种评价指标的体现：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx951ygepfj312q0n4taw.jpg" alt=""></p>
+<h3 id="ROC曲线-v5">ROC曲线</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> roc_curve, auc</span><br><span class="line">false_positive_rate, true_positive_rate, thresholds = roc_curve(y_test, y_prob)</span><br><span class="line">roc_auc = auc(false_positive_rate, true_positive_rate)</span><br><span class="line">roc_auc  <span class="comment"># 1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>,<span class="number">10</span>))  <span class="comment"># 画布</span></span><br><span class="line">plt.title(<span class="string">'ROC'</span>)  <span class="comment"># 标题</span></span><br><span class="line"></span><br><span class="line">plt.plot(false_positive_rate,  <span class="comment"># 绘图</span></span><br><span class="line">         true_positive_rate,</span><br><span class="line">         color=<span class="string">'red'</span>,</span><br><span class="line">         label = <span class="string">'AUC = %0.2f'</span> % roc_auc)</span><br><span class="line"></span><br><span class="line">plt.legend(loc = <span class="string">'lower right'</span>) <span class="comment">#  图例位置</span></span><br><span class="line">plt.plot([<span class="number">0</span>, <span class="number">1</span>], [<span class="number">0</span>, <span class="number">1</span>],linestyle=<span class="string">'--'</span>)  <span class="comment"># 正比例直线</span></span><br><span class="line"></span><br><span class="line">plt.axis(<span class="string">'tight'</span>)</span><br><span class="line">plt.xlabel(<span class="string">'False Positive Rate'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'True Positive Rate'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx95327aqwj30gx0gs74j.jpg" alt=""></p>
+<h2 id="模型6：神经网络ANN">模型6：神经网络ANN</h2>
+<h3 id="建模-v3">建模</h3>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx954ahstmj30we0ek75v.jpg" alt=""></p>
+<h3 id="混淆矩阵-v4">混淆矩阵</h3>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx954txdwcj30yy0mmjtw.jpg" alt=""></p>
+<h3 id="ROC曲线-v6">ROC曲线</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># 真假阳性</span></span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> roc_curve, auc</span><br><span class="line">false_positive_rate, true_positive_rate, thresholds = roc_curve(y_test, y_prob)</span><br><span class="line">roc_auc = auc(false_positive_rate, true_positive_rate)</span><br><span class="line">roc_auc  <span class="comment"># 1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制ROC曲线</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>,<span class="number">10</span>))</span><br><span class="line">plt.title(<span class="string">'ROC'</span>)</span><br><span class="line">plt.plot(false_positive_rate,true_positive_rate, color=<span class="string">'red'</span>,label = <span class="string">'AUC = %0.2f'</span> % roc_auc)</span><br><span class="line"></span><br><span class="line">plt.legend(loc = <span class="string">'lower right'</span>)</span><br><span class="line">plt.plot([<span class="number">0</span>, <span class="number">1</span>], [<span class="number">0</span>, <span class="number">1</span>],linestyle=<span class="string">'--'</span>)</span><br><span class="line"></span><br><span class="line">plt.axis(<span class="string">'tight'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'True Positive Rate'</span>)</span><br><span class="line">plt.xlabel(<span class="string">'False Positive Rate'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx955p03s8j30gx0gs74j.jpg" alt=""></p>
+<p>下面对神经网络的参数进行调优：</p>
+<ul>
+<li>hidden_layer_sizes：隐藏层个数</li>
+<li>activation：激活函数</li>
+<li>alpha：学习率</li>
+<li>max_iter：最大迭代次数</li>
+</ul>
+<h3 id="网格搜索">网格搜索</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.neural_network <span class="keyword">import</span> MLPClassifier</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实例化</span></span><br><span class="line">mlp_model = MLPClassifier()</span><br><span class="line"><span class="comment"># 待调节参数</span></span><br><span class="line">tuned_parameters=&#123;<span class="string">'hidden_layer_sizes'</span>: range(<span class="number">1</span>,<span class="number">200</span>,<span class="number">10</span>),</span><br><span class="line">                  <span class="string">'activation'</span>: [<span class="string">'tanh'</span>,<span class="string">'logistic'</span>,<span class="string">'relu'</span>],</span><br><span class="line">                  <span class="string">'alpha'</span>:[<span class="number">0.0001</span>,<span class="number">0.001</span>,<span class="number">0.01</span>,<span class="number">0.1</span>,<span class="number">1</span>,<span class="number">10</span>],</span><br><span class="line">                  <span class="string">'max_iter'</span>: range(<span class="number">50</span>,<span class="number">200</span>,<span class="number">50</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">model_mlp= RandomizedSearchCV(mlp_model,</span><br><span class="line">                              tuned_parameters,</span><br><span class="line">                              cv=<span class="number">10</span>,</span><br><span class="line">                              scoring=<span class="string">'accuracy'</span>,</span><br><span class="line">                              n_iter=<span class="number">5</span>,</span><br><span class="line">                              n_jobs= <span class="number">-1</span>,</span><br><span class="line">                              random_state=<span class="number">5</span>)</span><br><span class="line">model_mlp.fit(X_train,y_train)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx9585nx3gj319e0980u4.jpg" alt=""></p>
+<h3 id="模型属性">模型属性</h3>
+<p>调优之后的模型属性情况以及合适的参数：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx95887qf6j31eq0u0tgs.jpg" alt=""></p>
+<h3 id="ROC曲线-v7">ROC曲线</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> roc_curve, auc</span><br><span class="line">false_positive_rate, true_positive_rate, thresholds = roc_curve(y_test, y_prob)</span><br><span class="line">roc_auc = auc(false_positive_rate, true_positive_rate)</span><br><span class="line">roc_auc  <span class="comment"># 1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>,<span class="number">10</span>))</span><br><span class="line">plt.title(<span class="string">'ROC'</span>)</span><br><span class="line"></span><br><span class="line">plt.plot(false_positive_rate,true_positive_rate, color=<span class="string">'red'</span>,label = <span class="string">'AUC = %0.2f'</span> % roc_auc)</span><br><span class="line"></span><br><span class="line">plt.legend(loc = <span class="string">'lower right'</span>)</span><br><span class="line">plt.plot([<span class="number">0</span>, <span class="number">1</span>], [<span class="number">0</span>, <span class="number">1</span>],linestyle=<span class="string">'--'</span>)</span><br><span class="line"></span><br><span class="line">plt.axis(<span class="string">'tight'</span>)</span><br><span class="line">plt.xlabel(<span class="string">'False Positive Rate'</span>)</span><br><span class="line">plt.ylabel(<span class="string">'True Positive Rate'</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx959oqvxkj30gx0gs74j.jpg" alt=""></p>
+<h2 id="混淆矩阵和ROC">混淆矩阵和ROC</h2>
+<p>这是一篇很好的文章来解释混淆矩阵和ROC：<a href="https://www.cnblogs.com/wuliytTaotao/p/9285227.html" target="_blank" rel="noopener">https://www.cnblogs.com/wuliytTaotao/p/9285227.html</a></p>
+<p>1、什么是混淆矩阵？</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx95qfvimsj310q0hegmz.jpg" alt=""></p>
+<p>2、4大指标</p>
+<p>TP、FP、TN、FN，第二个字母表示样本被预测的类别，第一个字母表示样本的预测类别与真实类别是否一致。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx95rbmkzfj30y20h2gn7.jpg" alt=""></p>
+<p>3、准确率</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx95s9jdsxj30rq050dg2.jpg" alt=""></p>
+<p>4、精准率和召回率</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx95sy9ytzj316o0d6q48.jpg" alt=""></p>
+<p>5、F_1和F_B</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx95tnu5a3j30s608adg5.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx95u391qhj30xy06waag.jpg" alt=""></p>
+<p>6、ROC曲线</p>
+<p>AUC全称为Area Under Curve，表示一条曲线下面的面积，ROC曲线的AUC值可以用来对模型进行评价。ROC曲线如图 1 所示：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gx95vjr6j5j30dw0dh3z0.jpg" alt=""></p>
+<h2 id="总结">总结</h2>
+<p>看完这篇notebook源码，你需要掌握的知识点：</p>
+<ul>
+<li>机器学习建模整体思路：选择模型、建模、网格搜索调参、模型评估、ROC曲线（分类）</li>
+<li>特征工程的技术：编码转换、数据标准化、数据集划分</li>
+<li>评价指标：<strong>混淆矩阵、ROC曲线</strong>作为重点，后续有文章专门讲解</li>
+</ul>
+<p>预告：后面Peter自己会专门写一篇来对这份数据进行建模分析，纯原创的思路，期待下~</p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2021/12/14/%E5%9F%BA%E4%BA%8E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%E7%9A%84%E6%AF%92%E8%98%91%E8%8F%87%E5%88%86%E7%B1%BB.html">基于6种监督学习的毒蘑菇分类</a></p>
+  <p><span>发布时间:</span>2021年12月14日 - 17:12</p>
+  <p><span>原始链接:</span><a href="/2021/12/14/%E5%9F%BA%E4%BA%8E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%E7%9A%84%E6%AF%92%E8%98%91%E8%8F%87%E5%88%86%E7%B1%BB.html" title="基于6种监督学习的毒蘑菇分类">http://www.renpeter.cn/2021/12/14/%E5%9F%BA%E4%BA%8E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%E7%9A%84%E6%AF%92%E8%98%91%E8%8F%87%E5%88%86%E7%B1%BB.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2021/12/14/%E5%9F%BA%E4%BA%8E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%E7%9A%84%E6%AF%92%E8%98%91%E8%8F%87%E5%88%86%E7%B1%BB.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/kaggle/" rel="tag"># kaggle</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/12/07/Typora%E6%94%B6%E8%B4%B9%E5%95%A6%EF%BC%9F.html" rel="next" title="Typora收费啦？">
+                <i class="fa fa-chevron-left"></i> Typora收费啦？
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/12/14/matplotlib%E7%BB%98%E5%9B%BE%E6%8A%80%E5%B7%A7.html" rel="prev" title="matplotlib绘图技巧">
+                matplotlib绘图技巧 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">664</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">83</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">68</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#排名"><span class="nav-number">1.</span> <span class="nav-text">排名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据集"><span class="nav-number">2.</span> <span class="nav-text">数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据EDA"><span class="nav-number">3.</span> <span class="nav-text">数据EDA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#导入数据"><span class="nav-number">3.1.</span> <span class="nav-text">导入数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有无毒对比"><span class="nav-number">3.2.</span> <span class="nav-text">有无毒对比</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可视化分析"><span class="nav-number">4.</span> <span class="nav-text">可视化分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#菌盖颜色"><span class="nav-number">4.1.</span> <span class="nav-text">菌盖颜色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#菌的气味"><span class="nav-number">4.2.</span> <span class="nav-text">菌的气味</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特征相关性"><span class="nav-number">5.</span> <span class="nav-text">特征相关性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特征工程"><span class="nav-number">6.</span> <span class="nav-text">特征工程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特征转换"><span class="nav-number">6.1.</span> <span class="nav-text">特征转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据分布"><span class="nav-number">6.2.</span> <span class="nav-text">数据分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分离特征和标签"><span class="nav-number">6.3.</span> <span class="nav-text">分离特征和标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据标准化"><span class="nav-number">6.4.</span> <span class="nav-text">数据标准化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主成分分析PCA"><span class="nav-number">7.</span> <span class="nav-text">主成分分析PCA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PCA过程"><span class="nav-number">7.1.</span> <span class="nav-text">PCA过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2个主成分下的数据分布"><span class="nav-number">7.2.</span> <span class="nav-text">2个主成分下的数据分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于17主成分下的建模"><span class="nav-number">7.3.</span> <span class="nav-text">基于17主成分下的建模</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型1：逻辑回归"><span class="nav-number">8.</span> <span class="nav-text">模型1：逻辑回归</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#真假阳性"><span class="nav-number">8.1.</span> <span class="nav-text">真假阳性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ROC曲线"><span class="nav-number">8.2.</span> <span class="nav-text">ROC曲线</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型2：高斯朴素贝叶斯"><span class="nav-number">9.</span> <span class="nav-text">模型2：高斯朴素贝叶斯</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#建模"><span class="nav-number">9.1.</span> <span class="nav-text">建模</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#交叉验证"><span class="nav-number">9.2.</span> <span class="nav-text">交叉验证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#混淆矩阵和AUC"><span class="nav-number">9.3.</span> <span class="nav-text">混淆矩阵和AUC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#真假阳性-v2"><span class="nav-number">9.4.</span> <span class="nav-text">真假阳性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ROC曲线-v2"><span class="nav-number">9.5.</span> <span class="nav-text">ROC曲线</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型3：支持向量机SVM"><span class="nav-number">10.</span> <span class="nav-text">模型3：支持向量机SVM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#建模过程"><span class="nav-number">10.1.</span> <span class="nav-text">建模过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#随机网格搜索-RandomizedSearchCV"><span class="nav-number">10.2.</span> <span class="nav-text">随机网格搜索-RandomizedSearchCV</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#混淆矩阵"><span class="nav-number">10.3.</span> <span class="nav-text">混淆矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ROC曲线-v3"><span class="nav-number">10.4.</span> <span class="nav-text">ROC曲线</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型5：随机森林"><span class="nav-number">11.</span> <span class="nav-text">模型5：随机森林</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#建模拟合"><span class="nav-number">11.1.</span> <span class="nav-text">建模拟合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预测得分"><span class="nav-number">11.2.</span> <span class="nav-text">预测得分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#混淆矩阵-v2"><span class="nav-number">11.3.</span> <span class="nav-text">混淆矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ROC曲线-v4"><span class="nav-number">11.4.</span> <span class="nav-text">ROC曲线</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型6：决策树（CART）"><span class="nav-number">12.</span> <span class="nav-text">模型6：决策树（CART）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#建模-v2"><span class="nav-number">12.1.</span> <span class="nav-text">建模</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#混淆矩阵-v3"><span class="nav-number">12.2.</span> <span class="nav-text">混淆矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ROC曲线-v5"><span class="nav-number">12.3.</span> <span class="nav-text">ROC曲线</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型6：神经网络ANN"><span class="nav-number">13.</span> <span class="nav-text">模型6：神经网络ANN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#建模-v3"><span class="nav-number">13.1.</span> <span class="nav-text">建模</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#混淆矩阵-v4"><span class="nav-number">13.2.</span> <span class="nav-text">混淆矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ROC曲线-v6"><span class="nav-number">13.3.</span> <span class="nav-text">ROC曲线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网格搜索"><span class="nav-number">13.4.</span> <span class="nav-text">网格搜索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型属性"><span class="nav-number">13.5.</span> <span class="nav-text">模型属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ROC曲线-v7"><span class="nav-number">13.6.</span> <span class="nav-text">ROC曲线</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#混淆矩阵和ROC"><span class="nav-number">14.</span> <span class="nav-text">混淆矩阵和ROC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">15.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IC/" rel="tag">IC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">62</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">104</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyg2plot/" rel="tag">pyg2plot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">89</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tableau/" rel="tag">tableau</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">38</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%99%E4%BD%9C/" rel="tag">写作</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">115</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E5%85%B8/" rel="tag">字典</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AA%E7%8E%AF/" rel="tag">循环</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">40</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag">数据处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">101</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" rel="tag">数据挖掘</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">75</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">51</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1/" rel="tag">统计</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag">编程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">自动化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%B1%BC%E5%A4%B4%E8%B1%86%E8%85%90%E6%B1%A4/" rel="tag">鱼头豆腐汤</a><span class="tag-list-count">1</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共942.1k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2021/12/14/%E5%9F%BA%E4%BA%8E%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%E7%9A%84%E6%AF%92%E8%98%91%E8%8F%87%E5%88%86%E7%B1%BB.html';
+          this.page.identifier = '2021/12/14/基于监督学习的毒蘑菇分类.html';
+          this.page.title = '基于6种监督学习的毒蘑菇分类';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
