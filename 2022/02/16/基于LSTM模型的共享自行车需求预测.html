@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="机器学习,kaggle,深度学习," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="今天带来一篇新的kaggle数据分析实战案例：基于长短期记忆网络（LSTM）模型的伦敦自行车需求预测分析。本文的两个亮点：  高级可视化：本文使用seaborn进行了可视化探索分析，图表精美，分析维度多样化，结论清晰 使用LSTM模型：长短期网络模型的使用，使得结果更具价值和参考性">
+<meta name="keywords" content="机器学习,kaggle,深度学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于LSTM模型的共享自行车需求预测">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2022&#x2F;02&#x2F;16&#x2F;%E5%9F%BA%E4%BA%8ELSTM%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%85%B1%E4%BA%AB%E8%87%AA%E8%A1%8C%E8%BD%A6%E9%9C%80%E6%B1%82%E9%A2%84%E6%B5%8B.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="今天带来一篇新的kaggle数据分析实战案例：基于长短期记忆网络（LSTM）模型的伦敦自行车需求预测分析。本文的两个亮点：  高级可视化：本文使用seaborn进行了可视化探索分析，图表精美，分析维度多样化，结论清晰 使用LSTM模型：长短期网络模型的使用，使得结果更具价值和参考性">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzc5pf2trlj30go037t8s.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1gzfkp6vkwaj21qc0iu0vl.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gzeavdbjh7j30k80fijsd.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gz6gl55ssfj30zk0g4go8.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gz6glb1surj30l807idgd.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gzeb8ecaknj31c20dsmzi.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gzebaindxlj30k00e80th.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gz6gm79bc1j30qm0rojud.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gzebkc3waaj30se0eydh6.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gzeblj8b5rj30so0jswhg.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gzebo3xagxj31040g040f.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gzebokrdcxj31a00gmq5k.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gzebpo6oubj316y0g40v9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gzebt0j8p3j31l40ri10u.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gzebucqi9oj31ng098ta4.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gzebvlidqyj30f50bswf8.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gzeby7vy1uj30iu0h23zn.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gzebyyfxj4j31o60tygpv.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gzec3fkpr3j30oz0b8js9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gzec4ev5g5j31o20fiq6l.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzeis119icj30r10b8q3e.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzeiv59ix8j30qj0aewex.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzeix2ye6hj30qj0aedg5.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzeiyy10r3j30qj0aeglw.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzej16p3dpj30qj0aemxl.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzej561lrbj30qj0aeaan.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzej7pk57tj30qj0aeglz.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzek0s8ai2j30qj0aeq36.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzek26p300j30qj0aet8w.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzek9scp40j30qj0aeq3f.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzekadcp13j30qj0agdgm.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzek3nsx8cj30ql0aywfk.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzek6xxmi8j30qj0d375g.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzek7r05f3j30qj0atglv.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzekaqazsnj30qj0aet9o.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzekbzgn4xj30qd0aeq3i.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzekdaw1n9j30qj0aeaaq.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzekea5iifj30qj0ae3yx.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzekewfuu9j30qj0aedgv.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzekfkdbuij30qj0aeq3h.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzekkoxm0fj30qj0aemy8.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1gzfkqqfimtj21gy0mujt0.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1gzfkqvt3u8j21c60osgqk.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1gzfkr028gsj219l0u041k.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1gzfkr4atekj219l0u041k.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1gzfkr9vsjvj214y0jwmzl.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1gzfkre7rozj21he0k6gr0.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gzfc1y5qxrj30ia0b0gm2.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1gzfkrm2rjpj21gs0kmte6.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1gzfkrptnn7j21he0k6gr0.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1gzfkru11x1j21gs0kmte6.jpg">
+<meta property="og:updated_time" content="2022-02-16T12:38:15.046Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNly1gzc5pf2trlj30go037t8s.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2022/02/16/基于LSTM模型的共享自行车需求预测.html"/>
+
+
+
+
+
+  <title>基于LSTM模型的共享自行车需求预测 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2022/02/16/%E5%9F%BA%E4%BA%8ELSTM%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%85%B1%E4%BA%AB%E8%87%AA%E8%A1%8C%E8%BD%A6%E9%9C%80%E6%B1%82%E9%A2%84%E6%B5%8B.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">基于LSTM模型的共享自行车需求预测</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-02-16T20:36:39+08:00">
+                2022-2-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/kaggle/" itemprop="url" rel="index">
+                    <span itemprop="name">kaggle</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2022/02/16/%E5%9F%BA%E4%BA%8ELSTM%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%85%B1%E4%BA%AB%E8%87%AA%E8%A1%8C%E8%BD%A6%E9%9C%80%E6%B1%82%E9%A2%84%E6%B5%8B.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2022/02/16/基于LSTM模型的共享自行车需求预测.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  17
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>今天带来一篇新的kaggle数据分析实战案例：<strong>基于长短期记忆网络（LSTM）模型的伦敦自行车需求预测分析</strong>。本文的两个亮点：</p>
+<ul>
+<li>高级可视化：本文使用seaborn进行了可视化探索分析，图表精美，分析维度多样化，结论清晰</li>
+<li>使用LSTM模型：长短期网络模型的使用，使得结果更具价值和参考性</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzc5pf2trlj30go037t8s.jpg" alt=""></p>
+<a id="more"></a>
+<p>这是一个排名第三的方案：</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzfkp6vkwaj21qc0iu0vl.jpg" alt=""></p>
+<p>感兴趣的可以参考原notebook地址进行学习：</p>
+<p><a href="https://www.kaggle.com/yashgoyal401/advanced-visualizations-and-predictions-with-lstm/notebook" target="_blank" rel="noopener">https://www.kaggle.com/yashgoyal401/advanced-visualizations-and-predictions-with-lstm/notebook</a></p>
+<p>还有一篇类似文章：</p>
+<p><a href="https://www.kaggle.com/geometrein/helsinki-city-bike-network-analysis" target="_blank" rel="noopener">https://www.kaggle.com/geometrein/helsinki-city-bike-network-analysis</a></p>
+<h2 id="本文步骤">本文步骤</h2>
+<p>下面是原文中的主要步骤：<strong>数据信息、特征工程、数据EDA、预处理、模型构建、需求预测和评价模型</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gzeavdbjh7j30k80fijsd.jpg" alt=""></p>
+<h2 id="LSTM模型">LSTM模型</h2>
+<p>本文重点是使用了LSTM模型。LSTM是一种时间递归神经网络，适合于处理和预测时间序列中间隔和延迟相对较长的重要事件。</p>
+<p><strong>小编实力有限</strong>，关于模型的原理详细讲解参考书籍和文章：</p>
+<p>1、优秀书籍：《Long Short Term Memory Networks with Python》是澳大利亚机器学习专家Jason Brownlee的著作</p>
+<p>2、知乎文章：<a href="https://zhuanlan.zhihu.com/p/24018768" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/24018768</a></p>
+<p>3、B站：搜索<strong>李沐</strong>大佬关于LSTM的讲解</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz6gl55ssfj30zk0g4go8.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz6glb1surj30l807idgd.jpg" alt=""></p>
+<p>以后有实力了，肯定写一篇LSTM原理的文章~</p>
+<p><strong>一起学习吧！卷吧</strong>！</p>
+<h2 id="数据">数据</h2>
+<h3 id="导入库">导入库</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># seaborn可视化</span></span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">sns.set(context=<span class="string">"notebook"</span>, style=<span class="string">"darkgrid"</span>,</span><br><span class="line">        palette=<span class="string">"deep"</span>, font=<span class="string">"sans-serif"</span>,</span><br><span class="line">        font_scale=<span class="number">1</span>, color_codes=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 忽略警告</span></span><br><span class="line"><span class="keyword">import</span> warnings</span><br><span class="line">warnings.filterwarnings(<span class="string">"ignore"</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="读取数据">读取数据</h3>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gzeb8ecaknj31c20dsmzi.jpg" alt=""></p>
+<p>基本信息：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1、数据量</span></span><br><span class="line">data.shape</span><br><span class="line"></span><br><span class="line">(<span class="number">17414</span>, <span class="number">10</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2、数据字段类型</span></span><br><span class="line">data.dtypes</span><br><span class="line"></span><br><span class="line">timestamp        object</span><br><span class="line">cnt               int64</span><br><span class="line">t1              float64</span><br><span class="line">t2              float64</span><br><span class="line">hum             float64</span><br><span class="line">wind_speed      float64</span><br><span class="line">weather_code    float64</span><br><span class="line">is_holiday      float64</span><br><span class="line">is_weekend      float64</span><br><span class="line">season          float64</span><br><span class="line">dtype: object</span><br></pre></td></tr></table></figure>
+<p>数据中没有缺失值：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gzebaindxlj30k00e80th.jpg" alt=""></p>
+<h2 id="字段含义">字段含义</h2>
+<p>解释下数据中字段的含义：</p>
+<ul>
+<li>timestamp：用于将数据分组的时间戳字段</li>
+<li>cnt：新自行车份额的计数</li>
+<li>t1：以C为单位的实际温度</li>
+<li>t2：C中的温度“感觉像”，主观感受</li>
+<li>hum：湿度百分比</li>
+<li>windspeed：风速，以km / h为单位</li>
+<li>weathercode：天气类别；（具体的取值见下图中的最后）</li>
+<li>isholiday：布尔字段，1-假期，0-非假期</li>
+<li>isweekend：布尔字段，如果一天是周末，则为1</li>
+<li>Season：类别气象季节：0-春季；1-夏；2-秋；3-冬</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz6gm79bc1j30qm0rojud.jpg" alt=""></p>
+<h2 id="TensorFlow基本信息">TensorFlow基本信息</h2>
+<p>TensorFlow的GPU信息和版本查看：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gzebkc3waaj30se0eydh6.jpg" alt=""></p>
+<h2 id="特征工程">特征工程</h2>
+<p>下面介绍本文中特征工程的实现：</p>
+<h3 id="数据信息">数据信息</h3>
+<p>一个DataFrame的info信息能够显示出字段名、非空数量、数据类型等多个基本信息</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gzeblj8b5rj30so0jswhg.jpg" alt=""></p>
+<h3 id="时间字段处理">时间字段处理</h3>
+<p>对原始数据中的时间相关字段进行处理：</p>
+<p>1、将时间戳转成时间类型</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gzebo3xagxj31040g040f.jpg" alt=""></p>
+<p>2、转成索引</p>
+<p>使用set_index方法将timestamp属性转成索引</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gzebokrdcxj31a00gmq5k.jpg" alt=""></p>
+<p>3、提取时、一个月中的第几天、第几周、月份等信息</p>
+<p>提取时间相关的多个信息，同时查看数据的shape</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gzebpo6oubj316y0g40v9.jpg" alt=""></p>
+<h3 id="相关系数分析">相关系数分析</h3>
+<p>1、相关系数求出绝对值</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gzebt0j8p3j31l40ri10u.jpg" alt=""></p>
+<p>2、筛选两个属性之间的相关系数大于0.8</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gzebucqi9oj31ng098ta4.jpg" alt=""></p>
+<h2 id="数据EDA">数据EDA</h2>
+<h3 id="相关系数热力图">相关系数热力图</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.heatmap(data.corr(),</span><br><span class="line">            cmap=<span class="string">"YlGnBu"</span>,  <span class="comment"># 色系</span></span><br><span class="line">            square=<span class="literal">True</span>,  <span class="comment"># 方形</span></span><br><span class="line">            linewidths=<span class="number">.2</span>,</span><br><span class="line">            center=<span class="number">0</span>,</span><br><span class="line">            linecolor=<span class="string">"red"</span>  <span class="comment"># 线条颜色</span></span><br><span class="line">           )</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gzebvlidqyj30f50bswf8.jpg" alt=""></p>
+<p>通过热力图我们发现：t1和t2的相关系数是比较高的，和上面的“属性之间的系数大于0.8”的结论是吻合的</p>
+<h3 id="空值判断">空值判断</h3>
+<p>关于如何判断一份数据中是否存在空值，小编常用的方法：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gzeby7vy1uj30iu0h23zn.jpg" alt=""></p>
+<p>文章中使用的方法是：<strong>基于热力图显示</strong>。图形中没有任何信息，表明数据是不存在空值的</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gzebyyfxj4j31o60tygpv.jpg" alt=""></p>
+<h3 id="需求量变化">需求量变化</h3>
+<p>整体的需求量cnt随着时间变化的关系：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">15</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.lineplot(data=data,  <span class="comment"># 传入数据</span></span><br><span class="line">             x=data.index,  <span class="comment"># 时间</span></span><br><span class="line">             y=data.cnt  <span class="comment"># 需求量</span></span><br><span class="line">            )</span><br><span class="line"></span><br><span class="line">plt.xticks(rotation=<span class="number">90</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gzec3fkpr3j30oz0b8js9.jpg" alt=""></p>
+<p>从上面的图形，我们能够看到整体日期下的需求量变化情况。</p>
+<h3 id="按月采样resample">按月采样resample</h3>
+<p>pandas中的采样函数使用的是resample，频率可以是天、周、月等</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gzec4ev5g5j31o20fiq6l.jpg" alt=""></p>
+<p>查看随着时间的变化，每月的需求量变化情况：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.lineplot(data=df_by_month,</span><br><span class="line">             x=df_by_month.index,</span><br><span class="line">             y=df_by_month.cnt,</span><br><span class="line">             color=<span class="string">"red"</span></span><br><span class="line">            )</span><br><span class="line"></span><br><span class="line">plt.xticks(rotation=<span class="number">90</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzeis119icj30r10b8q3e.jpg" alt=""></p>
+<p>可以从图中观察到以下3点结论：</p>
+<ol>
+<li>年初到7、8月份需求量呈现上升趋势</li>
+<li>差不多在8月份达到一定的峰值</li>
+<li>8月份过后需求量开始降低</li>
+</ol>
+<h3 id="每小时需求量">每小时需求量</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.pointplot(data=data,  <span class="comment"># 数据</span></span><br><span class="line">              x=data.hour,  <span class="comment"># 小时</span></span><br><span class="line">              y=data.cnt,  <span class="comment"># 需求量</span></span><br><span class="line">              color=<span class="string">"red"</span>  <span class="comment"># 颜色</span></span><br><span class="line">             )</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzeiv59ix8j30qj0aewex.jpg" alt=""></p>
+<h3 id="每月的需求量对比">每月的需求量对比</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.pointplot(data=data,</span><br><span class="line">              x=data.month,</span><br><span class="line">              y=data.cnt,</span><br><span class="line">              color=<span class="string">"red"</span></span><br><span class="line">             )</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzeix2ye6hj30qj0aedg5.jpg" alt=""></p>
+<p>明显的结论：<strong>7月份是需求的高峰期</strong></p>
+<h3 id="按照星期统计">按照星期统计</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.pointplot(data=data,</span><br><span class="line">              x=data.day_of_week,</span><br><span class="line">              y=data.cnt,</span><br><span class="line">              color=<span class="string">"black"</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzeiyy10r3j30qj0aeglw.jpg" alt=""></p>
+<p>从图中观察到：</p>
+<ul>
+<li>周1到周五的需求是明显高于周末两天；</li>
+<li>同时在周五的时候已经呈现下降趋势</li>
+</ul>
+<h3 id="按照自然日">按照自然日</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.lineplot(</span><br><span class="line">  data=data,</span><br><span class="line">  x=data.day_of_month,  <span class="comment"># 一个月中的某天</span></span><br><span class="line">  y=data.cnt,  <span class="comment"># 需求量</span></span><br><span class="line">  color=<span class="string">"r"</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzej16p3dpj30qj0aemxl.jpg" alt=""></p>
+<p>3点结论：</p>
+<ul>
+<li>前10天需求量在逐步增加</li>
+<li>中间10天存在一定的小幅波动</li>
+<li>最后10天波动加大，呈现下降趋势</li>
+</ul>
+<h2 id="多个维度下的可视化化效果">多个维度下的可视化化效果</h2>
+<h3 id="基于是否节假日下的小时">基于是否节假日下的小时</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.pointplot(data=data,</span><br><span class="line">              x=data.hour,  <span class="comment"># 按照小时统计</span></span><br><span class="line">              y=data.cnt,</span><br><span class="line">              hue=data.is_holiday  <span class="comment"># 节假日分组</span></span><br><span class="line">             )</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzej561lrbj30qj0aeaan.jpg" alt=""></p>
+<p>通过上面图形呈现的结果；</p>
+<ul>
+<li>非节假日下（is_holiday=0）：在8点和下午的17、18点是用车的高峰期，恰好是上下班的时间点</li>
+<li>到了节假日（1）的情况下：下午的2-3点才是真正的用车高峰期</li>
+</ul>
+<h3 id="基于是否节假日的月份">基于是否节假日的月份</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.pointplot(data=data,</span><br><span class="line">              x=data.month,</span><br><span class="line">              y=data.cnt,</span><br><span class="line">              hue=data.is_holiday</span><br><span class="line">             )</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzej7pk57tj30qj0aeglz.jpg" alt=""></p>
+<p>在非节假日，7月份达到了用车的高峰期</p>
+<p>3、按照季度统计</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.pointplot(data=data,</span><br><span class="line">              y=data.cnt,</span><br><span class="line">              x=data.month,</span><br><span class="line">              hue=data.season, <span class="comment"># 季度分组</span></span><br><span class="line">             )</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzek0s8ai2j30qj0aeq36.jpg" alt=""></p>
+<p>从上图中观察到：第3个季度（6–7-8月份）才是用车需求量最多的时候</p>
+<p>4、季度+是否节假日</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 分组统计数量</span></span><br><span class="line">sns.countplot(data=data,</span><br><span class="line">              x=data.season,</span><br><span class="line">              hue=data.is_holiday,</span><br><span class="line">             )</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzek26p300j30qj0aet8w.jpg" alt=""></p>
+<p>从1-2-3-4季度来看，非节假日中的整体需求量1和2季度是稍高于0和3季度；而节假日中，0-3季度则存在一定的需求</p>
+<p>5、是否周末+小时</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.lineplot(</span><br><span class="line">    data=data,</span><br><span class="line">    x=data.hour,  <span class="comment"># 小时</span></span><br><span class="line">    y=data.cnt,</span><br><span class="line">    hue=data.is_weekend)  <span class="comment"># 分是否周末统计</span></span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzek9scp40j30qj0aeq3f.jpg" alt=""></p>
+<ul>
+<li>非周末（0）：仍然是上午的7-8点和下午的17-18点是用车高峰期</li>
+<li>周末（1）：下午的14-15点才是高峰期</li>
+</ul>
+<p>这个结论和上面的是吻合的</p>
+<p>6、季度+小时</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.pointplot(data=data,</span><br><span class="line">              x=data.hour,</span><br><span class="line">              y=data.cnt,</span><br><span class="line">              hue=data.season <span class="comment"># 分季度统计</span></span><br><span class="line">             )</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzekadcp13j30qj0agdgm.jpg" alt=""></p>
+<p>分季度查看每个小时的需求量：整体的趋势大体是相同的，都是在8点左右达到上午的高封期，下午的17-18点（下班的时候）达到另一个高封期</p>
+<h2 id="天气因素">天气因素</h2>
+<h3 id="湿度和需求量关系">湿度和需求量关系</h3>
+<p>观察不同湿度下，需求量的变化情况：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.pointplot(data=data,</span><br><span class="line">              x=data.hum,</span><br><span class="line">              y=data.cnt,</span><br><span class="line">              color=<span class="string">"black"</span>)</span><br><span class="line"></span><br><span class="line">plt.xticks(rotation=<span class="number">90</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzek3nsx8cj30ql0aywfk.jpg" alt=""></p>
+<p>可以看到：空气空气湿度越大，整体的需求量是呈现下降趋势</p>
+<h3 id="风速和需求量">风速和需求量</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.pointplot(data=data,</span><br><span class="line">              x=data.wind_speed,</span><br><span class="line">              y=data.cnt)</span><br><span class="line"></span><br><span class="line">plt.xticks(rotation=<span class="number">90</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzek6xxmi8j30qj0d375g.jpg" alt=""></p>
+<p>风速对需求量的影响：</p>
+<ul>
+<li>在风速为25.5的时候存在一个局部峰值</li>
+<li>风速偏高或者偏低的时候需求都有所降低</li>
+</ul>
+<h3 id="不同天气情况weather-code">不同天气情况weather_code</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.pointplot(data=data,</span><br><span class="line">              x=data.weather_code,</span><br><span class="line">              y=data.cnt)</span><br><span class="line"></span><br><span class="line">plt.xticks(rotation=<span class="number">90</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzek7r05f3j30qj0atglv.jpg" alt=""></p>
+<p>结论：可以看到在scattered coluds（weather_code=2）情况下，需求量是最大的</p>
+<h3 id="天气情况-小时">天气情况+小时</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.pointplot(data=data,</span><br><span class="line">              x=data.hour,</span><br><span class="line">              y=data.cnt,</span><br><span class="line">              hue=data.weather_code <span class="comment"># 分天气统计</span></span><br><span class="line">             )</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzekaqazsnj30qj0aet9o.jpg" alt=""></p>
+<p>从上午中观察到：不同的天气对小时需求量的趋势影响不大，仍然是在上下班高峰期的时候需求量最大，说明打工人上班出行几乎不受天气影响！！！</p>
+<h3 id="自然天-天气情况">自然天+天气情况</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.countplot(</span><br><span class="line">    data=data,</span><br><span class="line">    x=data.day_of_week,  <span class="comment"># 一周中的第几天</span></span><br><span class="line">    hue=data.weather_code,  <span class="comment"># 天气情况</span></span><br><span class="line">    palette=<span class="string">"viridis"</span>)</span><br><span class="line"></span><br><span class="line">plt.legend(loc=<span class="string">"best"</span>)  <span class="comment"># 位置选择</span></span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzekbzgn4xj30qd0aeq3i.jpg" alt=""></p>
+<p>从上图中观察到：</p>
+<ol>
+<li>不同的星期日期，code=1下的需求量都是最大的</li>
+<li>礼拜1到礼拜5：满足code=1 &gt; 2 &gt; 3 &gt; 7 &gt; 4 的需求量</li>
+<li>到礼拜6和礼拜天：大家出行的时候对天气关注影响偏低，除去code=1，其他天气情况的需求差距也在缩小！</li>
+</ol>
+<h2 id="箱型图">箱型图</h2>
+<p>箱型图能够反映一组数据的分布情况</p>
+<h3 id="按小时">按小时</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.boxplot(data=data,</span><br><span class="line">            x=data.hour,  <span class="comment"># 小时</span></span><br><span class="line">            y=data.cnt)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzekdaw1n9j30qj0aeaaq.jpg" alt=""></p>
+<p>从箱型图的分布观察到：两个重要的时间段：上午7-8点和下午的17-18点</p>
+<h3 id="每周星期几">每周星期几</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.boxplot(</span><br><span class="line">    data=data,</span><br><span class="line">    x=data[<span class="string">"day_of_week"</span>],</span><br><span class="line">    y=data.cnt)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzekea5iifj30qj0ae3yx.jpg" alt=""></p>
+<p>在基于星期的箱型图中，礼拜三的时候存在一定的用车高峰期</p>
+<h3 id="月的自然天">月的自然天</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.boxplot(data=data,</span><br><span class="line">            x=data[<span class="string">"day_of_month"</span>],</span><br><span class="line">            y=data.cnt)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzekewfuu9j30qj0aedgv.jpg" alt=""></p>
+<p>在基于自然日的情况下，9号的存在高峰期</p>
+<h3 id="按月">按月</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.boxplot(data=data,</span><br><span class="line">            x=data[<span class="string">"month"</span>],</span><br><span class="line">            y=data.cnt)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzekfkdbuij30qj0aeq3h.jpg" alt=""></p>
+<p>明显观察到：7-8月份存在一定的需求高峰期，两侧月份的需求相对较少些</p>
+<h3 id="是否节假日-月的天">是否节假日+月的天</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 每月中的天和是否节假日统计</span></span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.boxplot(</span><br><span class="line">    data=data,</span><br><span class="line">    x=data[<span class="string">"day_of_month"</span>],</span><br><span class="line">    y=data.cnt,</span><br><span class="line">    hue=data[<span class="string">"is_holiday"</span>])</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gzekkoxm0fj30qj0aemy8.jpg" alt=""></p>
+<h2 id="数据预处理">数据预处理</h2>
+<p>下面开始进行建模，首先进行的是数据预处理工作，主要是包含两点：</p>
+<ul>
+<li>数据集的切分</li>
+<li>数据归一化和标准化</li>
+</ul>
+<h3 id="切分数据">切分数据</h3>
+<p>按照9：1的比例来切分数据集：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 切分数据集的模块</span></span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line">train,test = train_test_split(data,test_size=<span class="number">0.1</span>, random_state=<span class="number">0</span>)</span><br><span class="line">print(train.shape)</span><br><span class="line">print(test.shape)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ------</span></span><br><span class="line">(<span class="number">15672</span>, <span class="number">13</span>)</span><br><span class="line">(<span class="number">1742</span>, <span class="number">13</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="数据归一化">数据归一化</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> MinMaxScaler</span><br><span class="line"><span class="comment"># 实例化对象</span></span><br><span class="line">scaler  = MinMaxScaler()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 部分字段的拟合</span></span><br><span class="line">num_col = [<span class="string">'t1'</span>, <span class="string">'t2'</span>, <span class="string">'hum'</span>, <span class="string">'wind_speed'</span>]</span><br><span class="line">trans_1 = scaler.fit(train[num_col].to_numpy())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 训练集转换</span></span><br><span class="line">train.loc[:,num_col] = trans_1.transform(train[num_col].to_numpy())</span><br><span class="line"><span class="comment"># 测试集转换</span></span><br><span class="line">test.loc[:,num_col] = trans_1.transform(test[num_col].to_numpy())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 对标签cnt的归一化</span></span><br><span class="line">cnt_scaler = MinMaxScaler()</span><br><span class="line"><span class="comment"># 数据拟合</span></span><br><span class="line">trans_2 = cnt_scaler.fit(train[[<span class="string">"cnt"</span>]])</span><br><span class="line"><span class="comment"># 数据转化</span></span><br><span class="line">train[<span class="string">"cnt"</span>] = trans_2.transform(train[[<span class="string">"cnt"</span>]])</span><br><span class="line">test[<span class="string">"cnt"</span>] = trans_2.transform(test[[<span class="string">"cnt"</span>]])</span><br></pre></td></tr></table></figure>
+<h2 id="训练集和测试集">训练集和测试集</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 用于显示进度条</span></span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm_notebook <span class="keyword">as</span> tqdm</span><br><span class="line">tqdm().pandas()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">prepare_data</span><span class="params">(X, y, time_steps=<span class="number">1</span>)</span>:</span></span><br><span class="line">    Xs = []</span><br><span class="line">    Ys = []</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> tqdm(range(len(X) - time_steps)):</span><br><span class="line">        a = X.iloc[i:(i + time_steps)].to_numpy()</span><br><span class="line">        Xs.append(a)</span><br><span class="line">        Ys.append(y.iloc[i + time_steps])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> np.array(Xs), np.array(Ys)</span><br><span class="line"></span><br><span class="line">steps = <span class="number">24</span></span><br><span class="line"></span><br><span class="line">X_train, y_train = prepare_data(train, train.cnt, time_steps=steps)</span><br><span class="line">X_test, y_test = prepare_data(test, test.cnt, time_steps=steps)</span><br><span class="line"></span><br><span class="line">print(X_train.shape)</span><br><span class="line">print(X_test.shape)</span><br><span class="line">print(y_train.shape)</span><br><span class="line">print(y_test.shape)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzfkqqfimtj21gy0mujt0.jpg" alt=""></p>
+<h2 id="LSTM建模">LSTM建模</h2>
+<h3 id="导入库-v2">导入库</h3>
+<p>在建模之前先导入相关的库：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1、导入需要的库</span></span><br><span class="line"><span class="keyword">from</span> keras.preprocessing <span class="keyword">import</span> sequence</span><br><span class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</span><br><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense, Dropout, LSTM, Bidirectional</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2、实例化对象并拟合建模</span></span><br><span class="line">model = Sequential()</span><br><span class="line">model.add(Bidirectional(LSTM(<span class="number">128</span>,</span><br><span class="line">                             input_shape=(X_train.shape[<span class="number">1</span>],</span><br><span class="line">                                          X_train.shape[<span class="number">2</span>]))))</span><br><span class="line"></span><br><span class="line">model.add(Dropout(<span class="number">0.2</span>))</span><br><span class="line">model.add(Dense(<span class="number">1</span>, activation=<span class="string">"sigmoid"</span>))</span><br><span class="line">model.compile(optimizer=<span class="string">"adam"</span>, loss=<span class="string">"mse"</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="模型准备">模型准备</h3>
+<p>传入训练集的数据后，进行数据的拟合建模过程：</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzfkqvt3u8j21c60osgqk.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzfkr028gsj219l0u041k.jpg" alt=""></p>
+<h3 id="均方差和Epoch的关系">均方差和Epoch的关系</h3>
+<p>探索在不同的Epoch下均方差的大小：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">plt.plot(prepared_model.history[<span class="string">"loss"</span>],label=<span class="string">"loss"</span>)</span><br><span class="line">plt.plot(prepared_model.history[<span class="string">"val_loss"</span>],label=<span class="string">"val_loss"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># lengend位置选择</span></span><br><span class="line">plt.legend(loc=<span class="string">"best"</span>)</span><br><span class="line"><span class="comment"># 两个轴的标题</span></span><br><span class="line">plt.xlabel(<span class="string">"No. Of Epochs"</span>)</span><br><span class="line">plt.ylabel(<span class="string">"mse score"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzfkr4atekj219l0u041k.jpg" alt=""></p>
+<h2 id="需求量预测">需求量预测</h2>
+<h3 id="生成真实值和预测值">生成真实值和预测值</h3>
+<p>inverse_transform 函数是将标准化后的数据转换为原始数据。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pred = model.predict(X_test)  <span class="comment"># 对测试集预测</span></span><br><span class="line">y_test_inv = cnt_scaler.inverse_transform(y_test.reshape(<span class="number">-1</span>,<span class="number">1</span>))  <span class="comment"># 转变数据</span></span><br><span class="line">pred_inv = cnt_scaler.inverse_transform(pred)  <span class="comment"># 预测值转换</span></span><br><span class="line">pred_inv</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzfkr9vsjvj214y0jwmzl.jpg" alt=""></p>
+<h3 id="绘图比较">绘图比较</h3>
+<p>将测试集转变后的值和基于模型的预测值进行绘图比较：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试集：真实值</span></span><br><span class="line">plt.plot(y_test_inv.flatten(), marker=<span class="string">"."</span>, label=<span class="string">"actual"</span>)</span><br><span class="line"><span class="comment"># 模型预测值</span></span><br><span class="line">plt.plot(pred_inv.flatten(), marker=<span class="string">"."</span>, label=<span class="string">"predicttion"</span>,color=<span class="string">"r"</span>)</span><br><span class="line"><span class="comment"># 图例位置</span></span><br><span class="line">plt.legend(loc=<span class="string">"best"</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzfkre7rozj21he0k6gr0.jpg" alt=""></p>
+<h3 id="生成数据">生成数据</h3>
+<p>将测试集的真实值和预测值进行对比，通过两个指标来进行评估：</p>
+<p>1、原文中的方法（个人认为复杂了）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 原方法过程复杂了</span></span><br><span class="line"></span><br><span class="line">y_test_actual = cnt_scaler.inverse_transform(y_test.reshape(<span class="number">-1</span>,<span class="number">1</span>))</span><br><span class="line">y_test_pred = cnt_scaler.inverse_transform(pred)</span><br><span class="line"></span><br><span class="line">arr_1 = np.array(y_test_actual)</span><br><span class="line">arr_2 = np.array(y_test_pred)</span><br><span class="line"></span><br><span class="line">actual = pd.DataFrame(data=arr_1.flatten(),columns=[<span class="string">"actual"</span>])</span><br><span class="line">predicted = pd.DataFrame(data=arr_2.flatten(),columns = [<span class="string">"predicted"</span>])</span><br><span class="line"></span><br><span class="line">final = pd.concat([actual,predicted],axis=<span class="number">1</span>)</span><br><span class="line">final.head()</span><br></pre></td></tr></table></figure>
+<p>2、个人方法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">y_test_actual = cnt_scaler.inverse_transform(y_test.reshape(<span class="number">-1</span>,<span class="number">1</span>))</span><br><span class="line">y_test_pred = cnt_scaler.inverse_transform(pred)</span><br><span class="line">final = pd.DataFrame(&#123;<span class="string">"actual"</span>: y_test_actual.flatten(),</span><br><span class="line">                      <span class="string">"pred"</span>: y_test_pred.flatten()&#125;)</span><br><span class="line">final.head()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gzfc1y5qxrj30ia0b0gm2.jpg" alt=""></p>
+<h3 id="模型评价">模型评价</h3>
+<p>通过mse和r2_score指标来评估模型：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># mse、r2_score</span></span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_squared_error, r2_score</span><br><span class="line"></span><br><span class="line">rmse = np.sqrt(mean_squared_error(final.actual, final.pred))</span><br><span class="line">r2 = r2_score(final.actual, final.pred)</span><br><span class="line"></span><br><span class="line">print(<span class="string">"rmse is : "</span>, rmse)</span><br><span class="line">print(<span class="string">"-------"</span>)</span><br><span class="line">print(<span class="string">"r2_score is : "</span>, r2)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果</span></span><br><span class="line">rmse <span class="keyword">is</span> :  <span class="number">1308.7482342002293</span></span><br><span class="line">-------</span><br><span class="line">r2_score <span class="keyword">is</span> :  <span class="number">-0.3951062293743659</span></span><br></pre></td></tr></table></figure>
+<p>下面作者又绘图来对比真实值和预测值：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 真实值和预测值绘图</span></span><br><span class="line">plt.plot(final.actual, marker=<span class="string">"."</span>, label=<span class="string">"Actual label"</span>)</span><br><span class="line">plt.plot(final.pred, marker=<span class="string">"."</span>, label=<span class="string">"predicted label"</span>)</span><br><span class="line"><span class="comment"># 图例位置</span></span><br><span class="line">plt.legend(loc=<span class="string">"best"</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzfkrm2rjpj21gs0kmte6.jpg" alt=""></p>
+<h2 id="疑点">疑点</h2>
+<p>Peter个人有个疑点：<strong>下面的两幅图有什么区别，除了颜色不同</strong>？看了整个源码，作图的数据和代码都是一样的。作者还写了两段话：</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzfkrptnn7j21he0k6gr0.jpg" alt=""></p>
+<blockquote>
+<p><strong>Note that our model is predicting only one point in the future. That being said, it is doing very well. Although our model can’t really capture the extreme values it does a good job of predicting (understanding) the general pattern.</strong></p>
+</blockquote>
+<p>说普通话：注意到，我们的模型仅预测未来的一个点。话虽如此，它仍做得很好。虽然我们的模型不能真正捕捉到极值，但它在预测（理解）一般模式方面还是做得很好</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzfkru11x1j21gs0kmte6.jpg" alt=""></p>
+<blockquote>
+<p><strong>AS you can see that I have used Bidirectional LSTM to train our model and Our model is working quite well.Our model is cap*able to capture the trend and not capturing the Extreme values which is a really good thing. SO, we can say that the overall perfomance is good.</strong></p>
+</blockquote>
+<p>说普通话：如你所见，我使用双向 LSTM 来训练我们的模型，并且我们的模型运行良好。我们的模型能够捕捉趋势而不是捕捉极值，这是一件非常好的事情。所以，我们可以说整体表现不错。</p>
+<p>下面是整个建模的源码，请参考学习，也可以讨论上面的疑点：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 划分数据集</span></span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line">train,test = train_test_split(data,test_size=<span class="number">0.1</span>,random_state=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 数据归一化</span></span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> MinMaxScaler</span><br><span class="line">scaler  = MinMaxScaler()</span><br><span class="line"><span class="comment"># 对4个自变量的归一化</span></span><br><span class="line">num_colu = [<span class="string">'t1'</span>, <span class="string">'t2'</span>, <span class="string">'hum'</span>, <span class="string">'wind_speed'</span>]</span><br><span class="line">trans_1 = scaler.fit(train[num_colu].to_numpy())</span><br><span class="line">train.loc[:,num_colu] = trans_1.transform(train[num_colu].to_numpy())</span><br><span class="line">test.loc[:,num_colu] = trans_1.transform(test[num_colu].to_numpy())</span><br><span class="line"><span class="comment"># 对因变量的归一化</span></span><br><span class="line">cnt_scaler = MinMaxScaler()</span><br><span class="line">trans_2 = cnt_scaler.fit(train[[<span class="string">"cnt"</span>]])</span><br><span class="line">train[<span class="string">"cnt"</span>] = trans_2.transform(train[[<span class="string">"cnt"</span>]])</span><br><span class="line">test[<span class="string">"cnt"</span>] = trans_2.transform(test[[<span class="string">"cnt"</span>]])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 导入建模库和实例化</span></span><br><span class="line"><span class="keyword">from</span> keras.preprocessing <span class="keyword">import</span> sequence</span><br><span class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</span><br><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense, Dropout , LSTM , Bidirectional</span><br><span class="line"><span class="comment"># 时序对象的实例化</span></span><br><span class="line">model = Sequential()</span><br><span class="line">model.add(Bidirectional(LSTM(<span class="number">128</span>,input_shape=(X_train.shape[<span class="number">1</span>],X_train.shape[<span class="number">2</span>]))))</span><br><span class="line">model.add(Dropout(<span class="number">0.2</span>))</span><br><span class="line">model.add(Dense(<span class="number">1</span>,activation=<span class="string">"sigmoid"</span>)) <span class="comment"># 激活函数选择</span></span><br><span class="line">model.compile(optimizer=<span class="string">"adam"</span>,loss=<span class="string">"mse"</span>)  <span class="comment"># 优化器和损失函数选择</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.device(<span class="string">'/GPU:0'</span>):</span><br><span class="line">    prepared_model = model.fit(X_train,</span><br><span class="line">                               y_train,</span><br><span class="line">                               batch_size=<span class="number">32</span>,</span><br><span class="line">                               epochs=<span class="number">100</span>,</span><br><span class="line">                               validation_data=[X_test,y_test])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 两种损失的对比</span></span><br><span class="line">plt.plot(prepared_model.history[<span class="string">"loss"</span>],label=<span class="string">"loss"</span>)</span><br><span class="line">plt.plot(prepared_model.history[<span class="string">"val_loss"</span>],label=<span class="string">"val_loss"</span>)</span><br><span class="line">plt.legend(loc=<span class="string">"best"</span>)</span><br><span class="line">plt.xlabel(<span class="string">"No. Of Epochs"</span>)</span><br><span class="line">plt.ylabel(<span class="string">"mse score"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试数据集的预测</span></span><br><span class="line">pred = model.predict(X_test)</span><br><span class="line"></span><br><span class="line"><span class="comment"># cnt数据的还原</span></span><br><span class="line">y_test_inv = cnt_scaler.inverse_transform(y_test.reshape(<span class="number">-1</span>,<span class="number">1</span>))</span><br><span class="line">pred_inv = cnt_scaler.inverse_transform(pred)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘图1</span></span><br><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line">plt.plot(y_test_inv.flatten(), marker=<span class="string">"."</span>,label=<span class="string">"actual"</span>)</span><br><span class="line">plt.plot(pred_inv.flatten(), marker=<span class="string">"."</span>,label=<span class="string">"prediction"</span>,color=<span class="string">"r"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># cnt数据的还原</span></span><br><span class="line">y_test_actual = cnt_scaler.inverse_transform(y_test.reshape(<span class="number">-1</span>,<span class="number">1</span>))</span><br><span class="line">y_test_pred = cnt_scaler.inverse_transform(pred)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 转成数组</span></span><br><span class="line">arr_1 = np.array(y_test_actual)</span><br><span class="line">arr_2 = np.array(y_test_pred)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成Pandas的DataFrame，合并数据</span></span><br><span class="line">actual = pd.DataFrame(data=arr_1.flatten(),columns=[<span class="string">"actual"</span>])</span><br><span class="line">predicted = pd.DataFrame(data=arr_2.flatten(),columns = [<span class="string">"predicted"</span>])</span><br><span class="line">final = pd.concat([actual,predicted],axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 评价指标</span></span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_squared_error, r2_score</span><br><span class="line">rmse = np.sqrt(mean_squared_error(final.actual,final.predicted))</span><br><span class="line">r2 = r2_score(final.actual,final.predicted)</span><br><span class="line">print(<span class="string">"rmse is : &#123;&#125;\nr2 is : &#123;&#125;"</span>.format(rmse,r2))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘图2</span></span><br><span class="line">plt.figure(figsize=(<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line">plt.plot(final.actual,label=<span class="string">"Actual data"</span>)</span><br><span class="line">plt.plot(final.predicted,label=<span class="string">"predicted values"</span>)</span><br><span class="line">plt.legend(loc=<span class="string">"best"</span>)</span><br></pre></td></tr></table></figure>
+<p>文中数据的获取方式，关注公众号【尤而小屋】，回复 <strong>自行车</strong> 即可。</p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2022/02/16/%E5%9F%BA%E4%BA%8ELSTM%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%85%B1%E4%BA%AB%E8%87%AA%E8%A1%8C%E8%BD%A6%E9%9C%80%E6%B1%82%E9%A2%84%E6%B5%8B.html">基于LSTM模型的共享自行车需求预测</a></p>
+  <p><span>发布时间:</span>2022年02月16日 - 20:02</p>
+  <p><span>原始链接:</span><a href="/2022/02/16/%E5%9F%BA%E4%BA%8ELSTM%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%85%B1%E4%BA%AB%E8%87%AA%E8%A1%8C%E8%BD%A6%E9%9C%80%E6%B1%82%E9%A2%84%E6%B5%8B.html" title="基于LSTM模型的共享自行车需求预测">http://www.renpeter.cn/2022/02/16/%E5%9F%BA%E4%BA%8ELSTM%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%85%B1%E4%BA%AB%E8%87%AA%E8%A1%8C%E8%BD%A6%E9%9C%80%E6%B1%82%E9%A2%84%E6%B5%8B.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2022/02/16/%E5%9F%BA%E4%BA%8ELSTM%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%85%B1%E4%BA%AB%E8%87%AA%E8%A1%8C%E8%BD%A6%E9%9C%80%E6%B1%82%E9%A2%84%E6%B5%8B.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/kaggle/" rel="tag"># kaggle</a>
+          
+            <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag"># 深度学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/02/10/5%E5%A4%A7%E5%B8%B8%E8%A7%81%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95.html" rel="next" title="5大常见机器学习算法">
+                <i class="fa fa-chevron-left"></i> 5大常见机器学习算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">682</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">84</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">71</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#本文步骤"><span class="nav-number">1.</span> <span class="nav-text">本文步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LSTM模型"><span class="nav-number">2.</span> <span class="nav-text">LSTM模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据"><span class="nav-number">3.</span> <span class="nav-text">数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#导入库"><span class="nav-number">3.1.</span> <span class="nav-text">导入库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读取数据"><span class="nav-number">3.2.</span> <span class="nav-text">读取数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字段含义"><span class="nav-number">4.</span> <span class="nav-text">字段含义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TensorFlow基本信息"><span class="nav-number">5.</span> <span class="nav-text">TensorFlow基本信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特征工程"><span class="nav-number">6.</span> <span class="nav-text">特征工程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据信息"><span class="nav-number">6.1.</span> <span class="nav-text">数据信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#时间字段处理"><span class="nav-number">6.2.</span> <span class="nav-text">时间字段处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#相关系数分析"><span class="nav-number">6.3.</span> <span class="nav-text">相关系数分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据EDA"><span class="nav-number">7.</span> <span class="nav-text">数据EDA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#相关系数热力图"><span class="nav-number">7.1.</span> <span class="nav-text">相关系数热力图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#空值判断"><span class="nav-number">7.2.</span> <span class="nav-text">空值判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#需求量变化"><span class="nav-number">7.3.</span> <span class="nav-text">需求量变化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#按月采样resample"><span class="nav-number">7.4.</span> <span class="nav-text">按月采样resample</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#每小时需求量"><span class="nav-number">7.5.</span> <span class="nav-text">每小时需求量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#每月的需求量对比"><span class="nav-number">7.6.</span> <span class="nav-text">每月的需求量对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#按照星期统计"><span class="nav-number">7.7.</span> <span class="nav-text">按照星期统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#按照自然日"><span class="nav-number">7.8.</span> <span class="nav-text">按照自然日</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多个维度下的可视化化效果"><span class="nav-number">8.</span> <span class="nav-text">多个维度下的可视化化效果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基于是否节假日下的小时"><span class="nav-number">8.1.</span> <span class="nav-text">基于是否节假日下的小时</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于是否节假日的月份"><span class="nav-number">8.2.</span> <span class="nav-text">基于是否节假日的月份</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#天气因素"><span class="nav-number">9.</span> <span class="nav-text">天气因素</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#湿度和需求量关系"><span class="nav-number">9.1.</span> <span class="nav-text">湿度和需求量关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#风速和需求量"><span class="nav-number">9.2.</span> <span class="nav-text">风速和需求量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不同天气情况weather-code"><span class="nav-number">9.3.</span> <span class="nav-text">不同天气情况weather_code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#天气情况-小时"><span class="nav-number">9.4.</span> <span class="nav-text">天气情况+小时</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自然天-天气情况"><span class="nav-number">9.5.</span> <span class="nav-text">自然天+天气情况</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#箱型图"><span class="nav-number">10.</span> <span class="nav-text">箱型图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#按小时"><span class="nav-number">10.1.</span> <span class="nav-text">按小时</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#每周星期几"><span class="nav-number">10.2.</span> <span class="nav-text">每周星期几</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#月的自然天"><span class="nav-number">10.3.</span> <span class="nav-text">月的自然天</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#按月"><span class="nav-number">10.4.</span> <span class="nav-text">按月</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#是否节假日-月的天"><span class="nav-number">10.5.</span> <span class="nav-text">是否节假日+月的天</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据预处理"><span class="nav-number">11.</span> <span class="nav-text">数据预处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#切分数据"><span class="nav-number">11.1.</span> <span class="nav-text">切分数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据归一化"><span class="nav-number">11.2.</span> <span class="nav-text">数据归一化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#训练集和测试集"><span class="nav-number">12.</span> <span class="nav-text">训练集和测试集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LSTM建模"><span class="nav-number">13.</span> <span class="nav-text">LSTM建模</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#导入库-v2"><span class="nav-number">13.1.</span> <span class="nav-text">导入库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型准备"><span class="nav-number">13.2.</span> <span class="nav-text">模型准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#均方差和Epoch的关系"><span class="nav-number">13.3.</span> <span class="nav-text">均方差和Epoch的关系</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#需求量预测"><span class="nav-number">14.</span> <span class="nav-text">需求量预测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#生成真实值和预测值"><span class="nav-number">14.1.</span> <span class="nav-text">生成真实值和预测值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绘图比较"><span class="nav-number">14.2.</span> <span class="nav-text">绘图比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成数据"><span class="nav-number">14.3.</span> <span class="nav-text">生成数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型评价"><span class="nav-number">14.4.</span> <span class="nav-text">模型评价</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#疑点"><span class="nav-number">15.</span> <span class="nav-text">疑点</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">62</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">110</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyg2plot/" rel="tag">pyg2plot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">90</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sklearn/" rel="tag">sklearn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tableau/" rel="tag">tableau</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">38</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%99%E4%BD%9C/" rel="tag">写作</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">118</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E5%85%B8/" rel="tag">字典</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%80%E6%BA%90/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AA%E7%8E%AF/" rel="tag">循环</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">52</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag">数据处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">101</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" rel="tag">数据挖掘</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">84</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">51</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1/" rel="tag">统计</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag">编程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB/" rel="tag">聚类</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">自动化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/" rel="tag">集成学习</a><span class="tag-list-count">1</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共982.3k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2022/02/16/%E5%9F%BA%E4%BA%8ELSTM%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%85%B1%E4%BA%AB%E8%87%AA%E8%A1%8C%E8%BD%A6%E9%9C%80%E6%B1%82%E9%A2%84%E6%B5%8B.html';
+          this.page.identifier = '2022/02/16/基于LSTM模型的共享自行车需求预测.html';
+          this.page.title = '基于LSTM模型的共享自行车需求预测';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
