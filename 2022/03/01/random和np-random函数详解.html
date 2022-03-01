@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="数据分析,python,统计," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="随机取数和采样：random和np.random模块 本文详细地介绍基于Python的第三方库random和numpy.random模块进行随机生成数据和随机采样的过程。">
+<meta name="keywords" content="数据分析,python,统计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="random和np.random函数详解">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2022&#x2F;03&#x2F;01&#x2F;random%E5%92%8Cnp-random%E5%87%BD%E6%95%B0%E8%AF%A6%E8%A7%A3.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="随机取数和采样：random和np.random模块 本文详细地介绍基于Python的第三方库random和numpy.random模块进行随机生成数据和随机采样的过程。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1gzursxjkemj211a0gk75l.jpg">
+<meta property="og:updated_time" content="2022-03-01T15:57:16.775Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1gzursxjkemj211a0gk75l.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2022/03/01/random和np-random函数详解.html"/>
+
+
+
+
+
+  <title>random和np.random函数详解 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2022/03/01/random%E5%92%8Cnp-random%E5%87%BD%E6%95%B0%E8%AF%A6%E8%A7%A3.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">random和np.random函数详解</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-03-01T23:54:38+08:00">
+                2022-3-1
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/%E7%BB%9F%E8%AE%A1/" itemprop="url" rel="index">
+                    <span itemprop="name">统计</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2022/03/01/random%E5%92%8Cnp-random%E5%87%BD%E6%95%B0%E8%AF%A6%E8%A7%A3.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2022/03/01/random和np-random函数详解.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  9
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="随机取数和采样：random和np-random模块">随机取数和采样：random和np.random模块</h2>
+<p>本文详细地介绍基于Python的第三方库random和numpy.random模块进行随机生成数据和随机采样的过程。</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzursxjkemj211a0gk75l.jpg" alt=""></p>
+<a id="more"></a>
+<h2 id="导入库">导入库</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br></pre></td></tr></table></figure>
+<h1>一、random模块</h1>
+<p>Python中的random模块实现了各种分布的伪随机数生成器。</p>
+<h2 id="random-random">random.random()</h2>
+<p>用于生成一个0到1的随机符点数: 0 &lt;= n &lt; 1.0</p>
+<p>我们可以模仿多次，每次生成的结果是不同的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.random()</span><br></pre></td></tr></table></figure>
+<pre><code>0.47917938679860983
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.random()</span><br></pre></td></tr></table></figure>
+<pre><code>0.5609907030373721
+</code></pre>
+<h2 id="random-uniform">random.uniform()</h2>
+<p>返回一个随机的浮点数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.uniform(<span class="number">1</span>,<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>6.001485472959377
+</code></pre>
+<p>同样的改变区间，每次生成不同的数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.uniform(<span class="number">2</span>,<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>3.9644214464183154
+</code></pre>
+<h2 id="random-randint">random.randint()</h2>
+<p>返回的是一个随机<strong>整数</strong>；重复操作生成不同的数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.randint(<span class="number">1</span>,<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>7
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.randint(<span class="number">2</span>,<span class="number">7</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>3
+</code></pre>
+<h2 id="random-randrange">random.randrange()</h2>
+<p>random.randrange([start], stop[, step])</p>
+<p>返回的结果就是一个数值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.randrange(<span class="number">10</span>)  <span class="comment"># 默认起始值是0</span></span><br></pre></td></tr></table></figure>
+<pre><code>1
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.randrange(<span class="number">1</span>,<span class="number">10</span>)  <span class="comment"># 指定头尾</span></span><br></pre></td></tr></table></figure>
+<pre><code>7
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.randrange(<span class="number">1</span>,<span class="number">10</span>,<span class="number">2</span>)  <span class="comment"># 指定步长</span></span><br></pre></td></tr></table></figure>
+<pre><code>1
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.randrange(<span class="number">-6</span>,<span class="number">-1</span>)  <span class="comment"># 范围为负数</span></span><br></pre></td></tr></table></figure>
+<pre><code>-2
+</code></pre>
+<h2 id="random-choices">random.choices()</h2>
+<p>针对序列进行随机取数的一个函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.choices(sequence, weights=<span class="literal">None</span>, cum_weights=<span class="literal">None</span>, k=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>sequence：待抽取的序列；list，tuple，字符串等</li>
+<li>weights：列表是可以权衡每个值的可能性，可选</li>
+<li>cum_weights：列表是可以权衡每个值的可能性，只有这一次累积的可能性</li>
+<li>k：可选。一个定义返回<strong>列表</strong>长度的整数</li>
+</ul>
+<p>来自中文官网的解释：<a href="https://docs.python.org/zh-cn/3/library/random.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/library/random.html</a></p>
+<p>如果指定了 weight 序列，则根据相对权重进行选择。 或者，如果给出 cum_weights 序列，则根据累积权重（可能使用 itertools.accumulate() 计算）进行选择。</p>
+<p>例如，相对权重<code>[10, 5, 30, 5]</code>相当于累积权重<code>[10, 15, 45, 50]</code>。 在内部，相对权重在进行选择之前会转换为累积权重，因此提供累积权重可以节省工作量。</p>
+<p>1、针对列表的随机取数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1、列表</span></span><br><span class="line">names = [<span class="string">"Mike"</span>,<span class="string">"Tom"</span>,<span class="string">"Peter"</span>,<span class="string">"Jimmy"</span>]</span><br><span class="line">random.choices(names)</span><br></pre></td></tr></table></figure>
+<pre><code>['Tom']
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.choices(names)</span><br></pre></td></tr></table></figure>
+<pre><code>['Mike']
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.choices(names)</span><br></pre></td></tr></table></figure>
+<pre><code>['Jimmy']
+</code></pre>
+<p>2、针对元组的随机取数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 2、元组</span></span><br><span class="line">fruits = (<span class="string">"苹果"</span>,<span class="string">"梨"</span>,<span class="string">"葡萄"</span>,<span class="string">"香蕉"</span>)</span><br><span class="line">random.choices(fruits)</span><br></pre></td></tr></table></figure>
+<pre><code>['梨']
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.choices(fruits)</span><br></pre></td></tr></table></figure>
+<pre><code>['梨']
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.choices(fruits)</span><br></pre></td></tr></table></figure>
+<pre><code>['葡萄']
+</code></pre>
+<p>3、针对字符串的随机取数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 3、字符串</span></span><br><span class="line">address = <span class="string">"abcdefg"</span></span><br><span class="line">random.choices(address)</span><br></pre></td></tr></table></figure>
+<pre><code>['g']
+</code></pre>
+<p>重复操作返回不同的数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.choices(address)</span><br></pre></td></tr></table></figure>
+<pre><code>['a']
+</code></pre>
+<h2 id="random-choice">random.choice()</h2>
+<p>从序列中随机选取一个数据，<strong>返回的是一个字符，而不是列表</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.choice(names)  <span class="comment"># choice</span></span><br></pre></td></tr></table></figure>
+<pre><code>'Mike'
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.choice(fruits)  <span class="comment"># choice</span></span><br></pre></td></tr></table></figure>
+<pre><code>'苹果'
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.choice(address)  <span class="comment"># choice</span></span><br></pre></td></tr></table></figure>
+<pre><code>'a'
+</code></pre>
+<p>要注意random.choices返回的是列表：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.choices(address)  <span class="comment"># choices：返回列表</span></span><br></pre></td></tr></table></figure>
+<pre><code>['g']
+</code></pre>
+<h2 id="random-shuffle">random.shuffle()</h2>
+<p>将一个列表（只针对列表）中的数据随机打乱</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">names  <span class="comment"># 打乱前</span></span><br></pre></td></tr></table></figure>
+<pre><code>['Mike', 'Tom', 'Peter', 'Jimmy']
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.shuffle(names)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">names  <span class="comment"># 打乱后</span></span><br></pre></td></tr></table></figure>
+<pre><code>['Tom', 'Peter', 'Mike', 'Jimmy']
+</code></pre>
+<h2 id="random-sample">random.sample()</h2>
+<p>random.sample的函数原型为：random.sample(sequence, k)</p>
+<p>从指定序列中随机获取指定长度的片断，sample函数不会修改原有序列。</p>
+<p><strong>用于无重复的随机抽样</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">number = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 从中随机选择6个数据</span></span><br><span class="line">random.sample(number, <span class="number">6</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>[9, 6, 7, 4, 8, 3]
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">number  <span class="comment"># 原数据是不变的</span></span><br></pre></td></tr></table></figure>
+<pre><code>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+</code></pre>
+<h2 id="random-seed">random.seed</h2>
+<p>random.seed(a, version)：自定义随机数生成器的起始编号，保证每次运行的结果是相同的。就是我们通常理解的设置随机种子</p>
+<p>同样的种子下操作3次，结果是相同的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">random.seed(<span class="number">3</span>)</span><br><span class="line">random.random()</span><br></pre></td></tr></table></figure>
+<pre><code>0.23796462709189137
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">random.seed(<span class="number">3</span>)</span><br><span class="line">random.random()</span><br></pre></td></tr></table></figure>
+<pre><code>0.23796462709189137
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">random.seed(<span class="number">3</span>)</span><br><span class="line">random.random()</span><br></pre></td></tr></table></figure>
+<pre><code>0.23796462709189137
+</code></pre>
+<h1>np.random模块</h1>
+<p>在numpy中同样也有一个random能够用于生成各种随机数据，同时也能够用于数据的随机采样</p>
+<h2 id="np-random-rand">np.random.rand()</h2>
+<p>生成指定维度的的[0,1)范围之间的随机数，输入参数为维度</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.rand(<span class="number">3</span>)  <span class="comment"># 一维</span></span><br></pre></td></tr></table></figure>
+<pre><code>array([0.56316478, 0.19472655, 0.77416481])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.rand(<span class="number">3</span>,<span class="number">2</span>)  <span class="comment"># 二维</span></span><br></pre></td></tr></table></figure>
+<pre><code>array([[0.53948953, 0.28900922],
+       [0.50819889, 0.87661466],
+       [0.6275246 , 0.50510408]])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.rand(<span class="number">3</span>,<span class="number">2</span>,<span class="number">2</span>)  <span class="comment"># 三维</span></span><br></pre></td></tr></table></figure>
+<pre><code>array([[[0.07652093, 0.08418762],
+        [0.26209203, 0.62653792]],
+
+       [[0.35453925, 0.79562255],
+        [0.38392161, 0.13594379]],
+
+       [[0.76627042, 0.46727042],
+        [0.71653905, 0.36350333]]])
+</code></pre>
+<h2 id="random-randint-v2">random.randint()</h2>
+<p>具体语法为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.randint(low, high=<span class="literal">None</span>, size=<span class="literal">None</span>, dtype=int)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.randint(<span class="number">10</span>)  <span class="comment"># 指定low</span></span><br></pre></td></tr></table></figure>
+<pre><code>1
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.randint(<span class="number">2</span>, <span class="number">100</span>)  <span class="comment"># 指定low和high</span></span><br></pre></td></tr></table></figure>
+<pre><code>2
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.randint(<span class="number">2</span>,<span class="number">100</span>,size=<span class="number">5</span>)  <span class="comment"># 指定size</span></span><br></pre></td></tr></table></figure>
+<pre><code>array([45, 45, 17, 78, 72])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.randint(<span class="number">2</span>,<span class="number">100</span>,<span class="number">5</span>)  <span class="comment"># 指定size</span></span><br></pre></td></tr></table></figure>
+<pre><code>array([13, 61,  9, 77, 25])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.randint(<span class="number">2</span>,<span class="number">100</span>,size=(<span class="number">5</span>,<span class="number">3</span>))  <span class="comment"># 指定多维度size</span></span><br></pre></td></tr></table></figure>
+<pre><code>array([[89,  4, 94],
+       [96, 26, 76],
+       [71,  2, 78],
+       [26, 79, 68],
+       [30, 85, 94]])
+</code></pre>
+<h2 id="np-random-randn">np.random.randn()</h2>
+<p>生成指定维度的服从标准正态分布的随机数，输入参数为维度</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.randn(<span class="number">3</span>)  <span class="comment"># 一维</span></span><br></pre></td></tr></table></figure>
+<pre><code>array([ 0.86231343, -0.17504608, -1.18435821])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.randn(<span class="number">2</span>, <span class="number">4</span>)  <span class="comment"># 二维</span></span><br></pre></td></tr></table></figure>
+<pre><code>array([[ 0.6815724 , -0.40425239, -0.70292058,  1.50423829],
+       [ 1.39392811,  1.21985809, -0.13557424,  0.01812161]])
+</code></pre>
+<h2 id="np-random-random-integers">np.random.random_integers()</h2>
+<p>返回范围为[low,high] 闭区间 随机整数；可放回的抽样取数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.random_integers(<span class="number">2</span>,size=<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>array([1, 1, 2, 1, 1])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.random_integers(<span class="number">1</span>,<span class="number">6</span>,size=<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>array([5, 3, 5, 1, 1])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.random_integers(<span class="number">1</span>,<span class="number">6</span>,size=<span class="number">8</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>array([4, 2, 4, 2, 4, 3, 5, 6])
+</code></pre>
+<h2 id="np-random-random">np.random.random()</h2>
+<p>返回0-1之间指定维度下的随机数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.random(size=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.random()</span><br></pre></td></tr></table></figure>
+<pre><code>0.5446614807473444
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.random(size=(<span class="number">2</span>,<span class="number">3</span>))</span><br></pre></td></tr></table></figure>
+<pre><code>array([[0.24849247, 0.24794785, 0.12318699],
+       [0.38708798, 0.12982558, 0.67378513]])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.random(size=(<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>))</span><br></pre></td></tr></table></figure>
+<pre><code>array([[[0.34112893, 0.19507699, 0.0998322 , 0.1613075 ],
+        [0.14750045, 0.64746506, 0.37992539, 0.96126298],
+        [0.4169575 , 0.21279002, 0.84499108, 0.46106979]],
+
+       [[0.35969999, 0.83434346, 0.435845  , 0.22377047],
+        [0.49878421, 0.7140939 , 0.19513683, 0.90309624],
+        [0.84402436, 0.94049321, 0.44680034, 0.12482742]]])
+</code></pre>
+<h2 id="np-random-seed">np.random.seed()</h2>
+<p>设置随机种子，保证每次的结果相同</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">np.random.seed(<span class="number">20</span>)</span><br><span class="line">np.random.random()</span><br></pre></td></tr></table></figure>
+<pre><code>0.5881308010772742
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">np.random.seed(<span class="number">20</span>)</span><br><span class="line">np.random.random()</span><br></pre></td></tr></table></figure>
+<pre><code>0.5881308010772742
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">np.random.seed(<span class="number">20</span>)</span><br><span class="line">np.random.random()</span><br></pre></td></tr></table></figure>
+<pre><code>0.5881308010772742
+</code></pre>
+<h2 id="np-random-choice">np.random.choice()</h2>
+<p>从序列中随机选择数据，放回或者不放回可指定</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.choice(a, size = <span class="literal">None</span>, replace = <span class="literal">True</span>, p = <span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+<p>p可以指定a中每个元素被选择的概率</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 等价于: np.random.randint(0,5,3)</span></span><br><span class="line">np.random.choice(<span class="number">5</span>, <span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>array([4, 2, 1])
+</code></pre>
+<p>下面通过一个详细的例子来说明各个参数的使用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">numbers = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.choice(numbers)  <span class="comment"># 抽一个数据</span></span><br></pre></td></tr></table></figure>
+<pre><code>5
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.choice(numbers,size=<span class="number">5</span>)  <span class="comment"># 一维抽样</span></span><br></pre></td></tr></table></figure>
+<pre><code>array([7, 8, 3, 1, 7])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.choice(numbers,size=(<span class="number">2</span>,<span class="number">4</span>))  <span class="comment"># 二维抽样</span></span><br></pre></td></tr></table></figure>
+<pre><code>array([[ 9,  6,  4,  1],
+       [ 7,  7,  1, 10]])
+</code></pre>
+<p>在无放回抽样中，取出来的数据是没有重复的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 无放回抽样</span></span><br><span class="line">np.random.choice(</span><br><span class="line">    numbers,</span><br><span class="line">    size=<span class="number">5</span>,</span><br><span class="line">    replace=<span class="literal">False</span>  <span class="comment"># 不放回</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<pre><code>array([1, 5, 2, 9, 4])
+</code></pre>
+<p>还可以指定每个元素被抽取的概率，p中所有元素的和为1，且个数必须为待抽取的序列中的个数相同：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">np.random.choice([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>],</span><br><span class="line">                 size=<span class="number">3</span>,</span><br><span class="line">                 p=[<span class="number">0.2</span>,<span class="number">0.2</span>,<span class="number">0.1</span>,<span class="number">0.2</span>,<span class="number">0.3</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>array([2, 2, 5])
+</code></pre>
+<h2 id="np-random-standard-normal">np.random.standard_normal()</h2>
+<p>标准正态分布随机取数，就一个可选参数size，用来指定维度</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.standard_normal()</span><br></pre></td></tr></table></figure>
+<pre><code>-2.098773908831827
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.standard_normal(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>array([-1.85559768,  0.55097131, -0.36372358, -0.99642606, -1.1653022 ,
+        1.30970062,  0.32287203,  0.64708367, -0.49947789, -0.38030095])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.standard_normal(size=(<span class="number">3</span>,<span class="number">2</span>))</span><br></pre></td></tr></table></figure>
+<pre><code>array([[ 1.60136877, -0.21666908],
+       [-0.76330235,  1.4667905 ],
+       [-0.45362263,  0.65496734]])
+</code></pre>
+<h2 id="np-random-random-sample">np.random.random_sample()</h2>
+<p>用于生成0-1之间的随机浮点数或者数组</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.random_sample()</span><br></pre></td></tr></table></figure>
+<pre><code>0.29533501415054364
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.random_sample(size=(<span class="number">3</span>,<span class="number">2</span>))</span><br></pre></td></tr></table></figure>
+<pre><code>array([[0.32882246, 0.26813417],
+       [0.13655489, 0.37195498],
+       [0.01574185, 0.34472747]])
+</code></pre>
+<h2 id="np-random-shuffle">np.random.shuffle()</h2>
+<p>对给定的数据进行重排序，如果数据为为多维数组，只沿第一条轴洗牌</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">names</span><br></pre></td></tr></table></figure>
+<pre><code>['Tom', 'Peter', 'Mike', 'Jimmy']
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.shuffle(names)  <span class="comment"># 第一次洗牌</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">names</span><br></pre></td></tr></table></figure>
+<pre><code>['Peter', 'Tom', 'Mike', 'Jimmy']
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.shuffle(names)  <span class="comment"># 第二次洗牌</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">names</span><br></pre></td></tr></table></figure>
+<pre><code>['Tom', 'Jimmy', 'Mike', 'Peter']
+</code></pre>
+<p>当给定的数据是多维度的，该如何处理？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 如果数据是多维度</span></span><br><span class="line">data = np.random.random_sample(size=(<span class="number">3</span>,<span class="number">2</span>))</span><br><span class="line">data</span><br></pre></td></tr></table></figure>
+<pre><code>array([[0.64656729, 0.42563648],
+       [0.51356833, 0.50125784],
+       [0.03708381, 0.7081161 ]])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.shuffle(data)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data</span><br></pre></td></tr></table></figure>
+<pre><code>array([[0.51356833, 0.50125784],
+       [0.03708381, 0.7081161 ],
+       [0.64656729, 0.42563648]])
+</code></pre>
+<h2 id="np-random-permutation">np.random.permutation()</h2>
+<p>同样也是洗牌的过程，只是<strong>不会打乱原数据的顺序</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">names</span><br></pre></td></tr></table></figure>
+<pre><code>['Tom', 'Jimmy', 'Mike', 'Peter']
+</code></pre>
+<p>permutation()没有改变names的顺序：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.permutation(names)</span><br></pre></td></tr></table></figure>
+<pre><code>array(['Peter', 'Jimmy', 'Mike', 'Tom'], dtype='&lt;U5')
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">names</span><br></pre></td></tr></table></figure>
+<pre><code>['Tom', 'Jimmy', 'Mike', 'Peter']
+</code></pre>
+<p>下面执行shuffle操作，已经改变了顺序：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.random.shuffle(names)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">names</span><br></pre></td></tr></table></figure>
+<pre><code>['Tom', 'Peter', 'Jimmy', 'Mike']
+</code></pre>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2022/03/01/random%E5%92%8Cnp-random%E5%87%BD%E6%95%B0%E8%AF%A6%E8%A7%A3.html">random和np.random函数详解</a></p>
+  <p><span>发布时间:</span>2022年03月01日 - 23:03</p>
+  <p><span>原始链接:</span><a href="/2022/03/01/random%E5%92%8Cnp-random%E5%87%BD%E6%95%B0%E8%AF%A6%E8%A7%A3.html" title="random和np.random函数详解">http://www.renpeter.cn/2022/03/01/random%E5%92%8Cnp-random%E5%87%BD%E6%95%B0%E8%AF%A6%E8%A7%A3.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2022/03/01/random%E5%92%8Cnp-random%E5%87%BD%E6%95%B0%E8%AF%A6%E8%A7%A3.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag"># 数据分析</a>
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/%E7%BB%9F%E8%AE%A1/" rel="tag"># 统计</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/02/26/kaggle%E9%A1%B9%E7%9B%AE-%E5%8F%AF%E8%A7%86%E5%8C%96%E6%8E%A2%E7%B4%A2AppStore.html" rel="next" title="kaggle项目-可视化探索AppStore">
+                <i class="fa fa-chevron-left"></i> kaggle项目-可视化探索AppStore
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">688</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">85</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#随机取数和采样：random和np-random模块"><span class="nav-number">1.</span> <span class="nav-text">随机取数和采样：random和np.random模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导入库"><span class="nav-number">2.</span> <span class="nav-text">导入库</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-number"></span> <span class="nav-text">一、random模块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#random-random"><span class="nav-number">1.</span> <span class="nav-text">random.random()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#random-uniform"><span class="nav-number">2.</span> <span class="nav-text">random.uniform()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#random-randint"><span class="nav-number">3.</span> <span class="nav-text">random.randint()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#random-randrange"><span class="nav-number">4.</span> <span class="nav-text">random.randrange()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#random-choices"><span class="nav-number">5.</span> <span class="nav-text">random.choices()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#random-choice"><span class="nav-number">6.</span> <span class="nav-text">random.choice()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#random-shuffle"><span class="nav-number">7.</span> <span class="nav-text">random.shuffle()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#random-sample"><span class="nav-number">8.</span> <span class="nav-text">random.sample()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#random-seed"><span class="nav-number">9.</span> <span class="nav-text">random.seed</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#null"><span class="nav-number"></span> <span class="nav-text">np.random模块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#np-random-rand"><span class="nav-number">1.</span> <span class="nav-text">np.random.rand()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#random-randint-v2"><span class="nav-number">2.</span> <span class="nav-text">random.randint()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#np-random-randn"><span class="nav-number">3.</span> <span class="nav-text">np.random.randn()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#np-random-random-integers"><span class="nav-number">4.</span> <span class="nav-text">np.random.random_integers()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#np-random-random"><span class="nav-number">5.</span> <span class="nav-text">np.random.random()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#np-random-seed"><span class="nav-number">6.</span> <span class="nav-text">np.random.seed()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#np-random-choice"><span class="nav-number">7.</span> <span class="nav-text">np.random.choice()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#np-random-standard-normal"><span class="nav-number">8.</span> <span class="nav-text">np.random.standard_normal()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#np-random-random-sample"><span class="nav-number">9.</span> <span class="nav-text">np.random.random_sample()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#np-random-shuffle"><span class="nav-number">10.</span> <span class="nav-text">np.random.shuffle()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#np-random-permutation"><span class="nav-number">11.</span> <span class="nav-text">np.random.permutation()</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">62</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">112</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyg2plot/" rel="tag">pyg2plot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">91</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sklearn/" rel="tag">sklearn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tableau/" rel="tag">tableau</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">38</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%99%E4%BD%9C/" rel="tag">写作</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">119</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E5%85%B8/" rel="tag">字典</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%80%E6%BA%90/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AA%E7%8E%AF/" rel="tag">循环</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">57</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag">数据处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">101</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" rel="tag">数据挖掘</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/" rel="tag">文本处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">84</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">51</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1/" rel="tag">统计</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag">编程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB/" rel="tag">聚类</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">自动化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/" rel="tag">集成学习</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%92%E6%98%A5/" rel="tag">青春</a><span class="tag-list-count">1</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共990.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2022/03/01/random%E5%92%8Cnp-random%E5%87%BD%E6%95%B0%E8%AF%A6%E8%A7%A3.html';
+          this.page.identifier = '2022/03/01/random和np-random函数详解.html';
+          this.page.title = 'random和np.random函数详解';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
