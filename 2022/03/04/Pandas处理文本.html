@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="pandas,数据分析,文本处理," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Pandas文本处理大全 本文介绍Pandas中针对文本数据处理的方法。文本数据也就是我们常说的字符串，Pandas 为 Series 提供了 str 属性，通过它可以方便的对每个元素进行操作。 首先需要清楚的是：Python中原生的字符串操作的相关的函数也是适用的。">
+<meta name="keywords" content="pandas,数据分析,文本处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pandas处理文本">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2022&#x2F;03&#x2F;04&#x2F;Pandas%E5%A4%84%E7%90%86%E6%96%87%E6%9C%AC.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="Pandas文本处理大全 本文介绍Pandas中针对文本数据处理的方法。文本数据也就是我们常说的字符串，Pandas 为 Series 提供了 str 属性，通过它可以方便的对每个元素进行操作。 首先需要清楚的是：Python中原生的字符串操作的相关的函数也是适用的。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg">
+<meta property="og:updated_time" content="2022-03-04T05:43:22.299Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2022/03/04/Pandas处理文本.html"/>
+
+
+
+
+
+  <title>Pandas处理文本 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2022/03/04/Pandas%E5%A4%84%E7%90%86%E6%96%87%E6%9C%AC.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Pandas处理文本</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-03-04T13:42:02+08:00">
+                2022-3-4
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/" itemprop="url" rel="index">
+                    <span itemprop="name">pandas</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/pandas/%E6%95%99%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">教程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2022/03/04/Pandas%E5%A4%84%E7%90%86%E6%96%87%E6%9C%AC.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2022/03/04/Pandas处理文本.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.8k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  8
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Pandas文本处理大全">Pandas文本处理大全</h2>
+<p>本文介绍Pandas中针对文本数据处理的方法。文本数据也就是我们常说的字符串，Pandas 为 Series 提供了 str 属性，通过它可以方便的对每个元素进行操作。</p>
+<p>首先需要清楚的是：Python中原生的字符串操作的相关的函数也是适用的。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg" alt=""></p>
+<a id="more"></a>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br></pre></td></tr></table></figure>
+<h2 id="模拟数据">模拟数据</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">df = pd.DataFrame(&#123;</span><br><span class="line">    <span class="string">"name"</span>:[<span class="string">"xiao ming"</span>,<span class="string">"xiao zhang"</span>,np.nan,<span class="string">"sun quan"</span>,<span class="string">"guan yu"</span>],</span><br><span class="line">    <span class="string">"age"</span>:[<span class="number">22</span>,<span class="number">19</span>,<span class="number">20</span>,<span class="number">34</span>,<span class="number">39</span>],</span><br><span class="line">    <span class="string">"sex"</span>:[<span class="string">"male"</span>,<span class="string">"Female"</span>,<span class="string">"female"</span>,<span class="string">"Female"</span>,<span class="string">"male"</span>],</span><br><span class="line">    <span class="string">"address"</span>:[<span class="string">" 广东省 深圳市 "</span>,<span class="string">"浙江省 杭州市"</span>,<span class="string">" 江苏省苏州市 "</span>,<span class="string">"福建省 泉州市"</span>,<span class="string">"广东省广州市"</span>]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">df</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<pre><code>.dataframe tbody tr th {
+    vertical-align: top;
+}
+
+.dataframe thead th {
+    text-align: right;
+}
+</code></pre>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>age</th>
+      <th>sex</th>
+      <th>address</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>xiao ming</td>
+      <td>22</td>
+      <td>male</td>
+      <td>广东省 深圳市</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>xiao zhang</td>
+      <td>19</td>
+      <td>Female</td>
+      <td>浙江省 杭州市</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>NaN</td>
+      <td>20</td>
+      <td>female</td>
+      <td>江苏省苏州市</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>sun quan</td>
+      <td>34</td>
+      <td>Female</td>
+      <td>福建省 泉州市</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>guan yu</td>
+      <td>39</td>
+      <td>male</td>
+      <td>广东省广州市</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.dtypes</span><br></pre></td></tr></table></figure>
+<pre><code>name       object
+age         int64
+sex        object
+address    object
+dtype: object
+</code></pre>
+<h2 id="字母转换函数">字母转换函数</h2>
+<p>在Python原生的字符串转换中有upper、lower、title等函数和字母转换相关</p>
+<h3 id="upper">upper</h3>
+<p>将字母全部转成大写的形式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"sex"</span>].str.upper()</span><br></pre></td></tr></table></figure>
+<pre><code>0      MALE
+1    FEMALE
+2    FEMALE
+3    FEMALE
+4      MALE
+Name: sex, dtype: object
+</code></pre>
+<h3 id="lower">lower</h3>
+<p>将字母全部转成小写形式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"sex"</span>].str.lower()</span><br></pre></td></tr></table></figure>
+<pre><code>0      male
+1    female
+2    female
+3    female
+4      male
+Name: sex, dtype: object
+</code></pre>
+<h3 id="capitalize">capitalize</h3>
+<p><strong>第一个单词</strong>的首字母大写</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"name"</span>].str.capitalize()</span><br></pre></td></tr></table></figure>
+<pre><code>0     Xiao ming
+1    Xiao zhang
+2           NaN
+3      Sun quan
+4       Guan yu
+Name: name, dtype: object
+</code></pre>
+<h3 id="title">title</h3>
+<p><strong>每个单词</strong>的首字母大写；注意和capitalize的区别：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"name"</span>].str.title()</span><br></pre></td></tr></table></figure>
+<pre><code>0     Xiao Ming
+1    Xiao Zhang
+2           NaN
+3      Sun Quan
+4       Guan Yu
+Name: name, dtype: object
+</code></pre>
+<h3 id="swapcase">swapcase</h3>
+<p>大小写互换：小写换成大写，反之，大写换成小写</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"name"</span>].str.swapcase()</span><br></pre></td></tr></table></figure>
+<p>原来的全部是小写，下面结果全部变成了大写：</p>
+<pre><code>0     XIAO MING
+1    XIAO ZHANG
+2           NaN
+3      SUN QUAN
+4       GUAN YU
+Name: name, dtype: object
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"sex"</span>].str.swapcase()</span><br></pre></td></tr></table></figure>
+<pre><code>0      MALE
+1    fEMALE
+2    FEMALE
+3    fEMALE
+4      MALE
+Name: sex, dtype: object
+</code></pre>
+<h3 id="casefold">casefold</h3>
+<p><code>lower()</code> 只对 ASCII 也就是 'A-Z’有效；此时casefold()和lower()相同效果</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"sex"</span>].str.lower()</span><br></pre></td></tr></table></figure>
+<pre><code>0      male
+1    female
+2    female
+3    female
+4      male
+Name: sex, dtype: object
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"sex"</span>].str.casefold()</span><br></pre></td></tr></table></figure>
+<pre><code>0      male
+1    female
+2    female
+3    female
+4      male
+Name: sex, dtype: object
+</code></pre>
+<p>但是其它一些语言里面存在小写的情况，<code>lower()</code>函数就不能处理。下面我们用德语中’ß’来区分二者，真实小写是’ss’：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">s = <span class="string">'ß'</span></span><br><span class="line">s.lower()</span><br></pre></td></tr></table></figure>
+<pre><code>'ß'
+</code></pre>
+<p>使用casefold函数能够实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s.casefold()</span><br></pre></td></tr></table></figure>
+<pre><code>'ss'
+</code></pre>
+<p>在对 Series 中每个元素处理时，我们可以使用Pandas中内置的 map 或 apply 方法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"name"</span>].apply(<span class="keyword">lambda</span> x: x.upper())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果</span></span><br><span class="line"></span><br><span class="line">---------------------------------------------------------------------------</span><br><span class="line">AttributeError                            Traceback (most recent call last)</span><br><span class="line">&lt;ipython-input<span class="number">-14</span><span class="number">-8</span>aacba359806&gt; <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">----&gt; 1 df["name"].apply(lambda x: x.upper())</span><br><span class="line"></span><br><span class="line">/Applications/downloads/anaconda/anaconda3/lib/python3<span class="number">.7</span>/site-packages/pandas/core/series.py <span class="keyword">in</span> apply(self, func, convert_dtype, args, **kwds)</span><br><span class="line">   <span class="number">4136</span>             <span class="keyword">else</span>:</span><br><span class="line">   <span class="number">4137</span>                 values = self.astype(object)._values</span><br><span class="line">-&gt; 4138                 mapped = lib.map_infer(values, f, convert=convert_dtype)</span><br><span class="line">   <span class="number">4139</span></span><br><span class="line">   <span class="number">4140</span>         <span class="keyword">if</span> len(mapped) <span class="keyword">and</span> isinstance(mapped[<span class="number">0</span>], Series):</span><br><span class="line"></span><br><span class="line">pandas/_libs/lib.pyx <span class="keyword">in</span> pandas._libs.lib.map_infer()</span><br><span class="line"></span><br><span class="line">&lt;ipython-input<span class="number">-14</span><span class="number">-8</span>aacba359806&gt; <span class="keyword">in</span> &lt;<span class="keyword">lambda</span>&gt;(x)</span><br><span class="line">----&gt; 1 df["name"].apply(lambda x: x.upper())</span><br><span class="line"></span><br><span class="line">AttributeError: <span class="string">'float'</span> object has no attribute <span class="string">'upper'</span></span><br></pre></td></tr></table></figure>
+<p>可以看到出现了报错：float类型的数据是没有upper属性的。这是因为数据中出现了NaN，NaN在Pandas中是被当做float类型。</p>
+<p>下面使用upper方法来实现转换：当使用str.upper进行转换的时候能够自动排除缺失值的数据。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"name"</span>].str.upper()  <span class="comment"># 写法1</span></span><br><span class="line">df.name.str.upper() <span class="comment"># 写法2</span></span><br></pre></td></tr></table></figure>
+<pre><code>0     XIAO MING
+1    XIAO ZHANG
+2           NaN
+3      SUN QUAN
+4       GUAN YU
+Name: name, dtype: object
+</code></pre>
+<h2 id="去除空白符函数">去除空白符函数</h2>
+<p>空白符主要包括\n、\r、\t、’ ‘，即：换行、回车、制表符、空格等，用到3个常用的函数；</p>
+<ul>
+<li>strip()：用来去除头尾字符</li>
+<li>lstrip()：开头字符（左边）</li>
+<li>rstrip()：结尾字符（右边）</li>
+</ul>
+<h3 id="左右空白符">左右空白符</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"address"</span>].str.strip()</span><br></pre></td></tr></table></figure>
+<pre><code>0    广东省 深圳市
+1    浙江省 杭州市
+2     江苏省苏州市
+3    福建省 泉州市
+4     广东省广州市
+Name: address, dtype: object
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"address"</span>].str.strip().tolist()</span><br></pre></td></tr></table></figure>
+<pre><code>['广东省 深圳市', '浙江省 杭州市', '江苏省苏州市', '福建省 泉州市', '广东省广州市']
+</code></pre>
+<h3 id="左空白符">左空白符</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"address"</span>].str.lstrip().tolist()</span><br></pre></td></tr></table></figure>
+<pre><code>['广东省 深圳市 ', '浙江省 杭州市', '江苏省苏州市 ', '福建省 泉州市', '广东省广州市']
+</code></pre>
+<h3 id="右空白符">右空白符</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"address"</span>].str.rstrip().tolist()</span><br></pre></td></tr></table></figure>
+<pre><code>[' 广东省 深圳市', '浙江省 杭州市', ' 江苏省苏州市', '福建省 泉州市', '广东省广州市']
+</code></pre>
+<h3 id="对比Python自带函数">对比Python自带函数</h3>
+<p><code>str.strip([chars)</code>：其中chars是可选的；</p>
+<ul>
+<li>
+<p>如果没有的话就是默认删除空白符，\n、\t、空白符等</p>
+</li>
+<li>
+<p>如果给定的字符，当chars不为空时，函数会把chars解成一个个的字符，然后将这些字符去掉</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">s = <span class="string">" AB CD EF "</span></span><br><span class="line">s</span><br></pre></td></tr></table></figure>
+<pre><code>' AB CD EF '
+</code></pre>
+<p>下面是chars选项为空的时候：</p>
+<p>1、删除左右两边的空白符</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s.strip()</span><br></pre></td></tr></table></figure>
+<pre><code>'AB CD EF'
+</code></pre>
+<p>2、删除左边的空白符</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s.lstrip()</span><br></pre></td></tr></table></figure>
+<pre><code>'AB CD EF '
+</code></pre>
+<p>3、删除右边的空白符</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s.rstrip()</span><br></pre></td></tr></table></figure>
+<pre><code>' AB CD EF'
+</code></pre>
+<p>当chars选项不为空的时候：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ss = <span class="string">"12AB C21D EF21"</span></span><br><span class="line">ss</span><br></pre></td></tr></table></figure>
+<pre><code>'12AB C21D EF21'
+</code></pre>
+<p>此时&quot;12&quot;字符串被拆解成两个字符<code>1</code>和<code>2</code>，然后单独去删除：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ss.strip(<span class="string">"12"</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>'AB C21D EF'
+</code></pre>
+<p>删除左边的1或者2：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ss.lstrip(<span class="string">"12"</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>'AB C21D EF21'
+</code></pre>
+<p>删除右边的1或者2</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ss.rstrip(<span class="string">"12"</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>'12AB C21D EF'
+</code></pre>
+<h2 id="分割函数">分割函数</h2>
+<h3 id="split函数">split函数</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Series.str.split(</span><br><span class="line">    pat=<span class="literal">None</span>,   <span class="comment"># 字符或正则表达式，默认是空白符</span></span><br><span class="line">    n=- <span class="number">1</span>,  <span class="comment"># 分割次数</span></span><br><span class="line">    expand=<span class="literal">False</span>,  <span class="comment"># 是否扩展</span></span><br><span class="line">    regex=<span class="literal">None</span>  <span class="comment"># 决定传入模式是否为正则</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>关于参数regex的解释（<strong>版本1.4.0开始出现的</strong>）：</p>
+<ul>
+<li>True：默认是正则</li>
+<li>False：默认是普通字符</li>
+<li>None and pat length is 1：普通字符</li>
+<li>None and pat length is not 1：正则表达式</li>
+</ul>
+<p>注意：当传入的是正则表达式的时候，不能设置成False</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"name"</span>].str.split()  <span class="comment"># 默认空白符分割</span></span><br></pre></td></tr></table></figure>
+<pre><code>0     [xiao, ming]
+1    [xiao, zhang]
+2              NaN
+3      [sun, quan]
+4       [guan, yu]
+Name: name, dtype: object
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"name"</span>].str.split(<span class="string">" "</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>0     [xiao, ming]
+1    [xiao, zhang]
+2              NaN
+3      [sun, quan]
+4       [guan, yu]
+Name: name, dtype: object
+</code></pre>
+<p>指定非空的分割符号：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"sex"</span>].str.split(<span class="string">"a"</span>)  <span class="comment"># 指定分隔符</span></span><br></pre></td></tr></table></figure>
+<pre><code>0      [m, le]
+1    [Fem, le]
+2    [fem, le]
+3    [Fem, le]
+4      [m, le]
+Name: sex, dtype: object
+</code></pre>
+<p>将分割的结果进行扩展，生成的是DataFrame：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"name"</span>].str.split(expand=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<pre><code>.dataframe tbody tr th {
+    vertical-align: top;
+}
+
+.dataframe thead th {
+    text-align: right;
+}
+</code></pre>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>xiao</td>
+      <td>ming</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>xiao</td>
+      <td>zhang</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>sun</td>
+      <td>quan</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>guan</td>
+      <td>yu</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<p>通过 get 函数或者<code>[]</code>来访问切割后的结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"name"</span>].str.split(expand=<span class="literal">True</span>).get(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>0     ming
+1    zhang
+2      NaN
+3     quan
+4       yu
+Name: 1, dtype: object
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"name"</span>].str.split(expand=<span class="literal">True</span>)[<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<pre><code>0     ming
+1    zhang
+2      NaN
+3     quan
+4       yu
+Name: 1, dtype: object
+</code></pre>
+<h3 id="rsplit函数">rsplit函数</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"sex"</span>].str.rsplit(<span class="string">"a"</span>)  <span class="comment"># 指定分隔符</span></span><br></pre></td></tr></table></figure>
+<pre><code>0      [m, le]
+1    [Fem, le]
+2    [fem, le]
+3    [Fem, le]
+4      [m, le]
+Name: sex, dtype: object
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"sex"</span>].str.rsplit(<span class="string">"f"</span>)  <span class="comment"># 指定分隔符</span></span><br></pre></td></tr></table></figure>
+<pre><code>0       [male]
+1     [Female]
+2    [, emale]
+3     [Female]
+4       [male]
+Name: sex, dtype: object
+</code></pre>
+<h3 id="如何理解分割次数n">如何理解分割次数n</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">s3 = pd.Series(<span class="string">"abcdabcab"</span>)</span><br><span class="line">s3</span><br></pre></td></tr></table></figure>
+<pre><code>0    abcdabcab
+dtype: object
+</code></pre>
+<p>通过字符b来进行切割，默认参数下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s3.str.rsplit(<span class="string">"b"</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>0    [a, cda, ca, ]
+dtype: object
+</code></pre>
+<p>切割的最大次数为2，生成3个元素：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s3.str.split(<span class="string">"b"</span>,n=<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>0    [a, cda, cab]
+dtype: object
+</code></pre>
+<p>指定切割3次后的结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s3.str.split(<span class="string">"b"</span>,n=<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>0    [a, cda, ca, ]
+dtype: object
+</code></pre>
+<p>最大的切割次数是3，下面切割4次和3次的效果相同：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s3.str.split(<span class="string">"b"</span>,n=<span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>0    [a, cda, ca, ]
+dtype: object
+</code></pre>
+<p>n=-1表示切割的最大次数，默认情况：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s3.str.split(<span class="string">"b"</span>,n=<span class="number">-1</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>0    [a, cda, ca, ]
+dtype: object
+</code></pre>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2022/03/04/Pandas%E5%A4%84%E7%90%86%E6%96%87%E6%9C%AC.html">Pandas处理文本</a></p>
+  <p><span>发布时间:</span>2022年03月04日 - 13:03</p>
+  <p><span>原始链接:</span><a href="/2022/03/04/Pandas%E5%A4%84%E7%90%86%E6%96%87%E6%9C%AC.html" title="Pandas处理文本">http://www.renpeter.cn/2022/03/04/Pandas%E5%A4%84%E7%90%86%E6%96%87%E6%9C%AC.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2022/03/04/Pandas%E5%A4%84%E7%90%86%E6%96%87%E6%9C%AC.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pandas/" rel="tag"># pandas</a>
+          
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag"># 数据分析</a>
+          
+            <a href="/tags/%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/" rel="tag"># 文本处理</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/03/01/random%E5%92%8Cnp-random%E5%87%BD%E6%95%B0%E8%AF%A6%E8%A7%A3.html" rel="next" title="random和np.random函数详解">
+                <i class="fa fa-chevron-left"></i> random和np.random函数详解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">689</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">85</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Pandas文本处理大全"><span class="nav-number">1.</span> <span class="nav-text">Pandas文本处理大全</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模拟数据"><span class="nav-number">2.</span> <span class="nav-text">模拟数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字母转换函数"><span class="nav-number">3.</span> <span class="nav-text">字母转换函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#upper"><span class="nav-number">3.1.</span> <span class="nav-text">upper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lower"><span class="nav-number">3.2.</span> <span class="nav-text">lower</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#capitalize"><span class="nav-number">3.3.</span> <span class="nav-text">capitalize</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#title"><span class="nav-number">3.4.</span> <span class="nav-text">title</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#swapcase"><span class="nav-number">3.5.</span> <span class="nav-text">swapcase</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#casefold"><span class="nav-number">3.6.</span> <span class="nav-text">casefold</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#去除空白符函数"><span class="nav-number">4.</span> <span class="nav-text">去除空白符函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#左右空白符"><span class="nav-number">4.1.</span> <span class="nav-text">左右空白符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#左空白符"><span class="nav-number">4.2.</span> <span class="nav-text">左空白符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#右空白符"><span class="nav-number">4.3.</span> <span class="nav-text">右空白符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对比Python自带函数"><span class="nav-number">4.4.</span> <span class="nav-text">对比Python自带函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分割函数"><span class="nav-number">5.</span> <span class="nav-text">分割函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#split函数"><span class="nav-number">5.1.</span> <span class="nav-text">split函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rsplit函数"><span class="nav-number">5.2.</span> <span class="nav-text">rsplit函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何理解分割次数n"><span class="nav-number">5.3.</span> <span class="nav-text">如何理解分割次数n</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">62</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">113</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyg2plot/" rel="tag">pyg2plot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">91</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sklearn/" rel="tag">sklearn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tableau/" rel="tag">tableau</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">38</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%99%E4%BD%9C/" rel="tag">写作</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">119</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E5%85%B8/" rel="tag">字典</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%80%E6%BA%90/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AA%E7%8E%AF/" rel="tag">循环</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">58</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag">数据处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">101</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" rel="tag">数据挖掘</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/" rel="tag">文本处理</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">84</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">51</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1/" rel="tag">统计</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag">编程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB/" rel="tag">聚类</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">自动化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/" rel="tag">集成学习</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%92%E6%98%A5/" rel="tag">青春</a><span class="tag-list-count">1</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共992.4k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2022/03/04/Pandas%E5%A4%84%E7%90%86%E6%96%87%E6%9C%AC.html';
+          this.page.identifier = '2022/03/04/Pandas处理文本.html';
+          this.page.title = 'Pandas处理文本';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
