@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="机器学习,集成学习,回归分析," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="深圳租房分析第二弹 之前从网上爬取了一份深圳的租房数据，并且从统计分析和可视化的角度进行了分析。今天还是使用之前的数据进行数据分析和建模，以及模型的可解释性探索。本文的主要内容包含：">
+<meta name="keywords" content="机器学习,集成学习,回归分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深圳租房第二波探索">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2022&#x2F;03&#x2F;11&#x2F;%E6%B7%B1%E5%9C%B3%E7%A7%9F%E6%88%BF%E7%AC%AC%E4%BA%8C%E6%B3%A2%E6%8E%A2%E7%B4%A2.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="深圳租房分析第二弹 之前从网上爬取了一份深圳的租房数据，并且从统计分析和可视化的角度进行了分析。今天还是使用之前的数据进行数据分析和建模，以及模型的可解释性探索。本文的主要内容包含：">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h059qn5ji9j21ba0hmgnu.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h040pd7ud4j20wf0u0jwi.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h040qk8kobj21o40i4ae9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h040r686ooj20iw0mswg1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h040s3053fj20io0g8aax.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h040tncxsrj21o40ngtf0.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0411oreskj21kq0n810d.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h04155ihkyj21n60gw77t.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0416nr0l3j21iy0pgq5v.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h041b5pt7aj21mg0g2tch.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h041rdixfdj21jy0bsmzv.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0422lqiv8j21kc0bwacr.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h04241pq7ij21mo0latd4.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0424fgjpmj21i00ocmzc.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0426b5edsj20ps0nimya.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h042701bd3j21mw0lkad3.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h042aflprqj21mm0k4acv.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h042emdmh9j21ia0pg40u.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h042g819flj21n20ia419.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h042i1wec8j20no0mcmyw.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h042nh4gqej21n40ky40v.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h042os5em7j21hs0ogq5i.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h042rhstnjj21n00am0uq.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h043pvuswpj21ly0ac402.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h059uz8re0j215q0m0jv9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h043ud3nfzj21mc0awtaf.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h043xb7dznj21mw0nsdko.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h043zpipbvj20me0hawfu.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0445aicitj20eo0bn3yz.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0446lye78j20wa0gqmyy.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h044aez2uej20jx0jotar.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h057j41ff7j21940b4jtn.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h057noti12j20jq0ngq43.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h057qweokkj20va0nojt1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h057rvx35cj20ts0n4404.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h057sd16efj20v60mmdhj.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h057ssdu0qj20w40ncwga.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h057ytuwksj20xc0irjro.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h059ud4dxsj20to0rsn0d.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h05825lsivj212g0om40r.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0583pazs9j211s0cwn0c.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h058g0kgmbj20ja0bcdgd.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0584qq2t4j20xm0nc3zz.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h058pbhml6j20fd0bkaal.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h058ji7ln9j20os0j4jt0.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h058lhub5rj20q20a0dgv.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h058mlq76vj21ea0b63zr.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h058oc9y0yj214i0b0gmr.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h058rmogzoj20br08wjri.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h058s0s3s9j20dl08w74i.jpg">
+<meta property="og:updated_time" content="2022-03-10T16:56:07.162Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h059qn5ji9j21ba0hmgnu.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2022/03/11/深圳租房第二波探索.html"/>
+
+
+
+
+
+  <title>深圳租房第二波探索 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2022/03/11/%E6%B7%B1%E5%9C%B3%E7%A7%9F%E6%88%BF%E7%AC%AC%E4%BA%8C%E6%B3%A2%E6%8E%A2%E7%B4%A2.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深圳租房第二波探索</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-03-11T00:54:45+08:00">
+                2022-3-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2022/03/11/%E6%B7%B1%E5%9C%B3%E7%A7%9F%E6%88%BF%E7%AC%AC%E4%BA%8C%E6%B3%A2%E6%8E%A2%E7%B4%A2.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2022/03/11/深圳租房第二波探索.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  3.1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  12
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="深圳租房分析第二弹">深圳租房分析第二弹</h2>
+<p>之前从网上爬取了一份深圳的租房数据，并且从统计分析和可视化的角度进行了分析。今天还是使用之前的数据进行数据分析和建模，以及模型的可解释性探索。本文的主要内容包含：</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h059qn5ji9j21ba0hmgnu.jpg" alt=""></p>
+<a id="more"></a>
+<h2 id="导入库">导入库</h2>
+<p>导入主要的库用于：数据处理、可视化、建模、特征可解释性等</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h040pd7ud4j20wf0u0jwi.jpg" alt=""></p>
+<h2 id="数据基本信息">数据基本信息</h2>
+<p>1、导入数据</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h040qk8kobj21o40i4ae9.jpg" alt=""></p>
+<p>2、数据形状和字段类型</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h040r686ooj20iw0mswg1.jpg" alt=""></p>
+<p>下面是具体的特征解释：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 下面是特征属性</span></span><br><span class="line">name：小区名字</span><br><span class="line">layout：几室几厅几卫</span><br><span class="line">location：朝向</span><br><span class="line">size：建筑面积</span><br><span class="line">sizeInside：套内面积</span><br><span class="line">zhuangxiu：装修方式</span><br><span class="line">time：小区建成时间</span><br><span class="line">zone：行政区</span><br><span class="line">position：行政区的具体位置；比如宝安壹方中心，龙华民治等</span><br><span class="line">way：出租方式，整租或者合租</span><br><span class="line"><span class="comment"># 最终的目标变量y</span></span><br><span class="line">money：价格</span><br></pre></td></tr></table></figure>
+<p>3、查看数据的缺失值情况</p>
+<p>使用的是<code>df.isnull().sum()</code>来查看：<strong>在time字段中存在6个缺失值</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h040s3053fj20io0g8aax.jpg" alt=""></p>
+<p>4、缺失值填充</p>
+<p>由于缺失量比较少，直接在网上搜索到相应的时间进行了<strong>人工填充</strong>：先定位缺失值的位置，再进行填充</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h040tncxsrj21o40ngtf0.jpg" alt=""></p>
+<h2 id="字段预处理">字段预处理</h2>
+<h3 id="name">name</h3>
+<p>小区的姓名name直接删除</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.drop(<span class="string">"name"</span>,axis=<span class="number">1</span>,inplace=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="layout">layout</h3>
+<p>layout分成3个具体的属性：<strong>室、厅、卫</strong></p>
+<p>特殊情况：当layout为&quot;商铺&quot;时，直接删除~</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0411oreskj21kq0n810d.jpg" alt=""></p>
+<p>使用正则解析出室厅卫：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">df1 = df[<span class="string">"layout"</span>].str.extract(<span class="string">r'(?P&lt;shi&gt;\d)室(?P&lt;ting&gt;\d)厅(?P&lt;wei&gt;\d)卫'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并到原数据</span></span><br><span class="line">df = pd.concat([df1,df],axis=<span class="number">1</span>)</span><br><span class="line"><span class="comment"># 删除layout</span></span><br><span class="line">df.drop(<span class="string">"layout"</span>,axis=<span class="number">1</span>,inplace=<span class="literal">True</span>)</span><br><span class="line"><span class="comment"># layout=商铺正则解析为NaN，直接删除</span></span><br><span class="line">df.dropna(subset=[<span class="string">"shi"</span>,<span class="string">"ting"</span>,<span class="string">"wei"</span>],inplace=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">df.head()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h04155ihkyj21n60gw77t.jpg" alt=""></p>
+<h3 id="location">location</h3>
+<p>不同朝向的房子数量：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"location"</span>].value_counts()</span><br><span class="line"></span><br><span class="line">朝南     <span class="number">552</span></span><br><span class="line">朝南北    <span class="number">284</span></span><br><span class="line">朝北     <span class="number">241</span></span><br><span class="line">朝东南    <span class="number">241</span></span><br><span class="line">朝西南    <span class="number">174</span></span><br><span class="line">朝西北    <span class="number">142</span></span><br><span class="line">朝东北    <span class="number">140</span></span><br><span class="line">朝东     <span class="number">132</span></span><br><span class="line">朝西      <span class="number">92</span></span><br><span class="line">朝东西      <span class="number">2</span></span><br><span class="line">Name: location, dtype: int64</span><br><span class="line"></span><br><span class="line"><span class="comment"># 小提琴图</span></span><br><span class="line">fig = px.violin(df,y=<span class="string">"money"</span>,color=<span class="string">"location"</span>)</span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0416nr0l3j21iy0pgq5v.jpg" alt=""></p>
+<p>小结：可以看到，在<strong>朝南北、朝南、朝北</strong>的房子数量比较多，而且整体的价格分布更为广泛。</p>
+<p>对不同朝向的房子实施硬编码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 自定义的顺序：根据朝向和价格的关系图（上面）</span></span><br><span class="line">location = [<span class="string">"朝东西"</span>,<span class="string">"朝东北"</span>,<span class="string">"朝西"</span>,<span class="string">"朝西北"</span>,<span class="string">"朝东"</span>,<span class="string">"朝西南"</span>,<span class="string">"朝东南"</span>,<span class="string">"朝南"</span>,<span class="string">"朝北"</span>,<span class="string">"朝南北"</span>]</span><br><span class="line"></span><br><span class="line">location_dict = &#123;&#125;</span><br><span class="line"><span class="keyword">for</span> n, i <span class="keyword">in</span> enumerate(location):</span><br><span class="line">    location_dict[i] = n+<span class="number">1</span> <span class="comment"># 保证序号从1开始</span></span><br><span class="line"></span><br><span class="line">df[<span class="string">"location"</span>] = df[<span class="string">"location"</span>].map(location_dict)</span><br><span class="line"></span><br><span class="line">df.head()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h041b5pt7aj21mg0g2tch.jpg" alt=""></p>
+<h3 id="size和sizeInside">size和sizeInside</h3>
+<p><strong>建筑面积</strong>和<strong>套内面积</strong>提取出数值部分，提供两种方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1、通过切割的方式来提取</span></span><br><span class="line">df[<span class="string">"size"</span>] = df[<span class="string">"size"</span>].apply(<span class="keyword">lambda</span> x: x.split(<span class="string">"面积"</span>)[<span class="number">1</span>].split(<span class="string">"㎡"</span>)[<span class="number">0</span>])</span><br><span class="line"><span class="comment"># 2、使用正则的方式提取</span></span><br><span class="line">df[<span class="string">"sizeInside"</span>] = df[<span class="string">"sizeInside"</span>].str.extract(<span class="string">r'面积(?P&lt;sizeInside&gt;[\d.]+)'</span>)</span><br><span class="line">df.head()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h041rdixfdj21jy0bsmzv.jpg" alt=""></p>
+<h3 id="zhuangxiu">zhuangxiu</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"zhuangxiu"</span>].value_counts()</span><br><span class="line"></span><br><span class="line">精装    <span class="number">1172</span></span><br><span class="line">普装     <span class="number">747</span></span><br><span class="line">豪装      <span class="number">62</span></span><br><span class="line">毛坯      <span class="number">19</span></span><br><span class="line">Name: zhuangxiu, dtype: int64</span><br></pre></td></tr></table></figure>
+<p>主观意义上的思路：<strong>毛坯的等级最低，豪装最高</strong>。下面实施硬编码过程：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 硬编码</span></span><br><span class="line">zhuangxiu = &#123;<span class="string">"毛坯"</span>:<span class="number">1</span>,<span class="string">"普装"</span>:<span class="number">2</span>, <span class="string">"精装"</span>:<span class="number">3</span>, <span class="string">"豪装"</span>:<span class="number">4</span>&#125;</span><br><span class="line">zhuangxiu</span><br><span class="line"></span><br><span class="line">&#123;<span class="string">'毛坯'</span>: <span class="number">1</span>, <span class="string">'普装'</span>: <span class="number">2</span>, <span class="string">'精装'</span>: <span class="number">3</span>, <span class="string">'豪装'</span>: <span class="number">4</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"zhuangxiu"</span>] = df[<span class="string">"zhuangxiu"</span>].map(zhuangxiu)</span><br><span class="line">df.head()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0422lqiv8j21kc0bwacr.jpg" alt=""></p>
+<h3 id="numberFloor">numberFloor</h3>
+<p>中低高楼层和价格money之间的关系</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 提取中低高楼层</span></span><br><span class="line"></span><br><span class="line">df[<span class="string">"numberFloor"</span>] = df[<span class="string">"numberFloor"</span>].apply(<span class="keyword">lambda</span> x: x.split(<span class="string">"("</span>)[<span class="number">0</span>])</span><br><span class="line">df.head()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h04241pq7ij21mo0latd4.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0424fgjpmj21i00ocmzc.jpg" alt=""></p>
+<p>小结：中低高3个楼层在房租上面的影响稍小。直接考虑<strong>独热编码</strong>的方式：</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0426b5edsj20ps0nimya.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">df = (df.join(pd.get_dummies(df[<span class="string">"numberFloor"</span>]))</span><br><span class="line">    .rename(columns=&#123;<span class="string">"中楼层"</span>:<span class="string">"middleFloor"</span>,</span><br><span class="line">                    <span class="string">"低楼层"</span>:<span class="string">"lowFloor"</span>,</span><br><span class="line">                    <span class="string">"高楼层"</span>:<span class="string">"highFloor"</span>&#125;))</span><br><span class="line"></span><br><span class="line">df.head()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h042701bd3j21mw0lkad3.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.drop(<span class="string">"numberFloor"</span>,axis=<span class="number">1</span>,inplace=<span class="literal">True</span>)  <span class="comment"># 删除原字段</span></span><br></pre></td></tr></table></figure>
+<h3 id="time">time</h3>
+<p>房子的建成时间处理：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"time"</span>].value_counts()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 部分结果</span></span><br><span class="line"><span class="number">2003</span>年建成    <span class="number">133</span></span><br><span class="line"><span class="number">2005</span>年建成    <span class="number">120</span></span><br><span class="line"><span class="number">2006</span>年建成    <span class="number">114</span></span><br><span class="line"><span class="number">2004</span>年建成    <span class="number">111</span></span><br><span class="line"><span class="number">2010</span>年建成    <span class="number">104</span></span><br><span class="line">......</span><br><span class="line"><span class="number">2019</span>年        <span class="number">3</span>   <span class="comment"># 人工填充的时间</span></span><br><span class="line"><span class="number">2022</span>年建成      <span class="number">2</span></span><br><span class="line"><span class="number">1983</span>年建成      <span class="number">1</span></span><br><span class="line"><span class="number">2003</span>年        <span class="number">1</span></span><br><span class="line"><span class="number">2020</span>年        <span class="number">1</span></span><br><span class="line"><span class="number">2004</span>年        <span class="number">1</span></span><br><span class="line">Name: time, dtype: int64</span><br></pre></td></tr></table></figure>
+<p>提取时间年份：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"time"</span>] = df[<span class="string">"time"</span>].str.extract(<span class="string">r'(?P&lt;time&gt;\d+)'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># time转成数值型</span></span><br><span class="line">df[<span class="string">"time"</span>] = df[<span class="string">"time"</span>].astype(<span class="string">"float"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 建成时间和当前的差距</span></span><br><span class="line">df[<span class="string">"time"</span>] = <span class="number">2022</span> - df[<span class="string">"time"</span>]</span><br><span class="line">df.head()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h042aflprqj21mm0k4acv.jpg" alt=""></p>
+<h3 id="zone-position">zone+position</h3>
+<p>行政区域和地理位置的合并处理</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"zone"</span>].value_counts()</span><br><span class="line"></span><br><span class="line">龙岗      <span class="number">548</span></span><br><span class="line">福田      <span class="number">532</span></span><br><span class="line">龙华      <span class="number">293</span></span><br><span class="line">南山      <span class="number">218</span></span><br><span class="line">宝安      <span class="number">173</span></span><br><span class="line">罗湖      <span class="number">167</span></span><br><span class="line">光明       <span class="number">32</span></span><br><span class="line">坪山       <span class="number">31</span></span><br><span class="line">盐田        <span class="number">5</span></span><br><span class="line">大鹏新区      <span class="number">1</span></span><br><span class="line">Name: zone, dtype: int64</span><br><span class="line"></span><br><span class="line"><span class="comment"># 行政区和价格的关系</span></span><br><span class="line">fig = px.violin(df,y=<span class="string">"money"</span>,color=<span class="string">"zone"</span>)</span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h042emdmh9j21ia0pg40u.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 合并字段</span></span><br><span class="line">df[<span class="string">"zone_position"</span>] = df[<span class="string">"zone"</span>] + <span class="string">"_"</span> + df[<span class="string">"position"</span>]</span><br><span class="line">df.head()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h042g819flj21n20ia419.jpg" alt=""></p>
+<p>不同行政区域不同地理位置下的价格均值统计：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">zone_position_mean =</span><br><span class="line">(df.groupby(<span class="string">"zone_position"</span>)[<span class="string">"money"</span>].mean()</span><br><span class="line">.reset_index()</span><br><span class="line">.sort_values(<span class="string">"money"</span>,ascending=<span class="literal">False</span>,ignore_index=<span class="literal">True</span>))</span><br><span class="line"></span><br><span class="line">zone_position_mean</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h042i1wec8j20no0mcmyw.jpg" alt=""></p>
+<p>根据合并的zone_position_mean数据框中的<code>money</code> 来进行硬编码：<strong>福田_车公庙</strong> 是最高位</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">zone_position = zone_position_mean[<span class="string">"zone_position"</span>].tolist()[::<span class="number">-1</span>]</span><br><span class="line">zone_position_dict = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> n, i <span class="keyword">in</span> enumerate(zone_position):</span><br><span class="line">    zone_position_dict[i] = n+<span class="number">1</span></span><br><span class="line"></span><br><span class="line">df[<span class="string">"zone_position"</span>] = df[<span class="string">"zone_position"</span>].map(zone_position_dict)</span><br><span class="line"><span class="comment"># 删除原字段</span></span><br><span class="line">df.drop([<span class="string">"zone"</span>,<span class="string">"position"</span>],axis=<span class="number">1</span>,inplace=<span class="literal">True</span>)</span><br><span class="line">df.head()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h042nh4gqej21n40ky40v.jpg" alt=""></p>
+<h3 id="way">way</h3>
+<p>出租方式和价格的关系探索：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fig = px.violin(df,y=<span class="string">"money"</span>,color=<span class="string">"way"</span>)</span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h042os5em7j21hs0ogq5i.jpg" alt=""></p>
+<p>从way的取值来看：大部分的房子是愿意整租的，而且押一付一和押二付一最为普遍。提取出“整租”和“合租”两种方式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"way"</span>] = df[<span class="string">"way"</span>].apply(<span class="keyword">lambda</span> x: x.split(<span class="string">" "</span>)[<span class="number">0</span>])</span><br><span class="line"><span class="comment"># 编码</span></span><br><span class="line">df[<span class="string">"way"</span>] = df[<span class="string">"way"</span>].map(&#123;<span class="string">"整租"</span>:<span class="number">1</span>,<span class="string">"合租"</span>:<span class="number">0</span>&#125;)</span><br><span class="line">df</span><br></pre></td></tr></table></figure>
+<p>终于：<strong>算是得到一份比较符合建模的数据</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h042rhstnjj21n00am0uq.jpg" alt=""></p>
+<h2 id="样本不均衡">样本不均衡</h2>
+<p>我们查看way字段下的数据情况：明显way=1的取值情况是远远大于way=0。</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h043pvuswpj21ly0ac402.jpg" alt=""></p>
+<p>解决方法：使用<strong>SMOTE算法</strong>来解决解决way=0过少的问题。</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h059uz8re0j215q0m0jv9.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">x = df.drop(<span class="string">"way"</span>,axis=<span class="number">1</span>)</span><br><span class="line">y = df[[<span class="string">"way"</span>]]</span><br><span class="line"></span><br><span class="line"><span class="comment"># SMOTE方法进行过采样处理</span></span><br><span class="line"><span class="comment"># 建立SMOTE模型对象</span></span><br><span class="line">model_smote = SMOTE()</span><br><span class="line"><span class="comment"># 输入数据做过抽样处理</span></span><br><span class="line">x_smote_resampled, y_smote_resampled = model_smote.fit_resample(x, y)</span><br><span class="line"><span class="comment"># 将数据转换为数据框并命名列名</span></span><br><span class="line">x_smote_resampled = pd.DataFrame(x_smote_resampled,</span><br><span class="line">                                 columns=x.columns.tolist())</span><br><span class="line">y_smote_resampled = pd.DataFrame(y_smote_resampled,</span><br><span class="line">                                 columns=[<span class="string">'way'</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 按列合并数据框</span></span><br><span class="line">smote_df = pd.concat([x_smote_resampled, y_smote_resampled],axis=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>解决之后的way=1和way=0的样本相同</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h043ud3nfzj21mc0awtaf.jpg" alt=""></p>
+<h2 id="字段异常处理">字段异常处理</h2>
+<p>1、填充样本后发现某些应该是整数，却出现了小数，比如：wei和time等</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h043xb7dznj21mw0nsdko.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cols = [<span class="string">"shi"</span>,<span class="string">"ting"</span>,<span class="string">"wei"</span>,<span class="string">"time"</span>]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> cols:</span><br><span class="line">    smote_df[i] = smote_df[i].apply(<span class="keyword">lambda</span> x: round(x))</span><br></pre></td></tr></table></figure>
+<p>2、类型转化</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h043zpipbvj20me0hawfu.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 转变数据类型</span></span><br><span class="line">smote_df[<span class="string">"size"</span>] = smote_df[<span class="string">"size"</span>].astype(float)</span><br><span class="line">smote_df[<span class="string">"sizeInside"</span>] = smote_df[<span class="string">"sizeInside"</span>].astype(float)</span><br></pre></td></tr></table></figure>
+<h2 id="相关性分析">相关性分析</h2>
+<h3 id="相关系数">相关系数</h3>
+<p>针对上面得到的smote_df数据进行下面的相关性分析：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 保存了再读取</span></span><br><span class="line"><span class="comment"># smote_df.to_csv("data_new.csv",index=False)</span></span><br><span class="line">df = pd.read_csv(<span class="string">"data_new.csv"</span>)</span><br></pre></td></tr></table></figure>
+<p>1、相关性</p>
+<p>能够直观看到money因变量和size与sizeInside相关性很强</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">corr = df.corr()</span><br><span class="line">f,ax=plt.subplots(figsize=(<span class="number">12</span>,<span class="number">6</span>))</span><br><span class="line">sns.heatmap(corr,vmax=<span class="number">0.8</span>,square=<span class="literal">True</span>,fmt=<span class="string">'.2f'</span>, cmap=<span class="string">'PuBu_r'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0445aicitj20eo0bn3yz.jpg" alt=""></p>
+<h3 id="相关系数排序">相关系数排序</h3>
+<p>单个属性和money之间的相关性大小排序，可以看到：size（房子面积）、sizeInsize（套内面积）和wei（卫）的相关型比较强。</p>
+<p><strong>单纯地从相关系数得到的结论，还是有待考证~</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0446lye78j20wa0gqmyy.jpg" alt=""></p>
+<h3 id="自变量和因变量关系">自变量和因变量关系</h3>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h044aez2uej20jx0jotar.jpg" alt=""></p>
+<p>上面举出3个字段和money之间的相关性，在最右侧：</p>
+<ul>
+<li>size和sizeInside相对集中的时候，money高频出现0-25000之间</li>
+<li>在不同的money取值情况，wei字段的取值集中在1-4之间</li>
+</ul>
+<h2 id="建模">建模</h2>
+<h3 id="特征归一化">特征归一化</h3>
+<p>下面是针对数据的归一化过程，采用的MinMaxScaler方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">X = df.drop(<span class="string">"money"</span>,axis=<span class="number">1</span>)</span><br><span class="line">y = df[[<span class="string">"money"</span>]]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实例化</span></span><br><span class="line">mm = MinMaxScaler()</span><br><span class="line">data = mm.fit_transform(X)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 归一化后的数据</span></span><br><span class="line">X = pd.DataFrame(data,columns=X.columns.tolist())</span><br><span class="line">X.head()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h057j41ff7j21940b4jtn.jpg" alt=""></p>
+<h3 id="数据集切分">数据集切分</h3>
+<p>按照训练集：测试集 = 8：2的比例进行数据集的划分：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"></span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(</span><br><span class="line">  X, y,</span><br><span class="line">  test_size=<span class="number">0.2</span>,  <span class="comment"># 比例</span></span><br><span class="line">  random_state=<span class="number">4</span>  <span class="comment"># 随机状态</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="特征选择">特征选择</h3>
+<p>在前面的工作我们从相关系数和因变量的相关性大小进行了比较，发现：Size、sizeInside和wei是比较相关的系数。</p>
+<p>下面是从使用mutual_info_classif来查看每个特征的重要性：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.feature_selection <span class="keyword">import</span> mutual_info_classif</span><br><span class="line">imp = pd.DataFrame(mutual_info_classif(X,y),</span><br><span class="line">                  index=X.columns)</span><br><span class="line"></span><br><span class="line">imp.columns=[<span class="string">'importance'</span>]</span><br><span class="line">imp.sort_values(by=<span class="string">'importance'</span>,ascending=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h057noti12j20jq0ngq43.jpg" alt=""></p>
+<p>我们发现：shi、wei、zhuangxiu、size都是比较重要的特征</p>
+<h3 id="评价指标">评价指标</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> r2_score,mean_absolute_error,mean_squared_error</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">predict</span><span class="params">(ml_model)</span>:</span></span><br><span class="line">    model = ml_model.fit(X_train, y_train)</span><br><span class="line">    <span class="comment"># 训练集得分</span></span><br><span class="line">    print(<span class="string">"Training score: "</span>, model.score(X_train,y_train))</span><br><span class="line">    <span class="comment"># 预测值</span></span><br><span class="line">    predictions = model.predict(X_test)</span><br><span class="line">    <span class="comment"># 评价指标r2系数</span></span><br><span class="line">    r2score = r2_score(y_test, predictions)</span><br><span class="line">    print(<span class="string">"r2 score is: "</span>, r2score)</span><br><span class="line">    <span class="comment"># MAE/MSE/RMSE</span></span><br><span class="line">    print(<span class="string">'MAE:'</span>, mean_absolute_error(y_test,predictions))</span><br><span class="line">    print(<span class="string">'MSE:'</span>, mean_squared_error(y_test,predictions))</span><br><span class="line">    print(<span class="string">'RMSE:'</span>, np.sqrt(mean_squared_error(y_test,predictions)))</span><br><span class="line">    <span class="comment"># 真实值和预测值的差值</span></span><br><span class="line">    sns.distplot(y_test - predictions.reshape(<span class="number">-1</span>,<span class="number">1</span>))</span><br></pre></td></tr></table></figure>
+<p>引入多种回归模型：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 线性回归</span></span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LinearRegression</span><br><span class="line"><span class="comment"># 决策树回归</span></span><br><span class="line"><span class="keyword">from</span> sklearn.tree <span class="keyword">import</span> DecisionTreeRegressor</span><br><span class="line"><span class="comment"># 梯度提升回归，随机森林回归</span></span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> GradientBoostingRegressor,RandomForestRegressor</span><br></pre></td></tr></table></figure>
+<h3 id="不同模型效果">不同模型效果</h3>
+<p><strong>重点关注模型的r2值</strong></p>
+<p>1、线性回归-LinearRegression</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h057qweokkj20va0nojt1.jpg" alt=""></p>
+<p>2、决策树回归-DecisionTreeRegressor</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h057rvx35cj20ts0n4404.jpg" alt=""></p>
+<p>3、随机森林回归-RandomForestRegressor</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h057sd16efj20v60mmdhj.jpg" alt=""></p>
+<p>4、梯度提升回归-GradientBoostingRegressor</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h057ssdu0qj20w40ncwga.jpg" alt=""></p>
+<p>通过3种回归模型的r2得分比较：GradientBoostingRegressor &gt; DecisionTreeRegressor &gt; RandomForestRegressor &gt; LinearRegression</p>
+<h2 id="模型可解释分析">模型可解释分析</h2>
+<p>为了更好理解机器学习模型的输出，下面使用SHAP库来探索<strong>调参后随机森林模型</strong>的可解释性。通过<code>pip install shap</code>即可安装</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h057ytuwksj20xc0irjro.jpg" alt=""></p>
+<h3 id="随机森林调参">随机森林调参</h3>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h059ud4dxsj20to0rsn0d.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 随机搜索调优</span></span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> RandomizedSearchCV</span><br><span class="line"></span><br><span class="line"><span class="comment"># 待调优的参数</span></span><br><span class="line">random_grid = &#123;</span><br><span class="line">    <span class="string">'n_estimators'</span> : [<span class="number">100</span>, <span class="number">120</span>, <span class="number">150</span>, <span class="number">180</span>, <span class="number">200</span>,<span class="number">220</span>],</span><br><span class="line">    <span class="string">'max_features'</span>:[<span class="string">'auto'</span>,<span class="string">'sqrt'</span>],</span><br><span class="line">    <span class="string">'max_depth'</span>:[<span class="number">5</span>,<span class="number">10</span>,<span class="number">15</span>,<span class="number">20</span>],</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 建模拟合</span></span><br><span class="line">rf=RandomForestRegressor()</span><br><span class="line"><span class="comment"># 随机搜索参数</span></span><br><span class="line">rf_random=RandomizedSearchCV(</span><br><span class="line">  estimator=rf,</span><br><span class="line">  param_distributions=random_grid,</span><br><span class="line">  cv=<span class="number">3</span>,</span><br><span class="line">  verbose=<span class="number">2</span>,</span><br><span class="line">  n_jobs=<span class="number">-1</span>)</span><br><span class="line"></span><br><span class="line">rf_random.fit(X_train,y_train)</span><br></pre></td></tr></table></figure>
+<p>进行fit拟合之后便得到了最优的参数组合：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rf_random.best_params_</span><br><span class="line"><span class="comment"># 结果</span></span><br><span class="line">&#123;<span class="string">'n_estimators'</span>: <span class="number">120</span>, <span class="string">'max_features'</span>: <span class="string">'auto'</span>, <span class="string">'max_depth'</span>: <span class="number">20</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>调参后随机森林模型的r2系数略优于调参前：</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h05825lsivj212g0om40r.jpg" alt=""></p>
+<p>建立最佳参数下的模型：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">rf_random = RandomForestRegressor(</span><br><span class="line">  n_estimators=<span class="number">180</span>,</span><br><span class="line">  max_features=<span class="string">"auto"</span>,</span><br><span class="line">  max_depth=<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">rf_random.fit(X_train, y_train)</span><br></pre></td></tr></table></figure>
+<h3 id="计算shap-values">计算shap_values</h3>
+<p>SHAP value最大的优势是SHAP能对于反映出<strong>每一个样本</strong>中的特征的影响力，而且还能够表现出影响的正负性。</p>
+<p>在SHAP中进行模型解释需要先创建一个<strong>explainer</strong>，SHAP支持很多类型的explainer</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1、传入调优模型rf_random创建explainer</span></span><br><span class="line">explainer = shap.TreeExplainer(rf_random)</span><br><span class="line"><span class="comment"># 2、计算shap值</span></span><br><span class="line">shap_values = explainer.shap_values(X_test)</span><br><span class="line">shap_values</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0583pazs9j211s0cwn0c.jpg" alt=""></p>
+<h3 id="均值对比">均值对比</h3>
+<p>1、通过模型预测得到的均值求解</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># y的预测值和真实值比较</span></span><br><span class="line">y_pred = rf_random.predict(X_test)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 预测值</span></span><br><span class="line">y_test[<span class="string">"pred"</span>] = y_pred</span><br><span class="line"><span class="comment"># money部分是真实值</span></span><br><span class="line">y_test.head()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h058g0kgmbj20ja0bcdgd.jpg" alt=""></p>
+<p>其中：money-真实值，pred-随机森林模型的预测值。得到的均值为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># 真实的平均值</span></span><br><span class="line">y_test[<span class="string">"pred"</span>].mean()</span><br><span class="line"></span><br><span class="line"><span class="number">5614.137953764154</span></span><br></pre></td></tr></table></figure>
+<p>2、通过SHAP得到的基准值base_value</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># shap得到的基准值</span></span><br><span class="line">y_base = explainer.expected_value</span><br><span class="line">y_base</span><br><span class="line"></span><br><span class="line">array([<span class="number">5487.93357763</span>])</span><br></pre></td></tr></table></figure>
+<h3 id="整体特征重要性">整体特征重要性</h3>
+<p>取出每个特征的shap值的绝对值的平均值作为该特征的重要性，得到水平的条形图：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">shap.summary_plot(shap_values,</span><br><span class="line">                  X_test,</span><br><span class="line">                  plot_type=<span class="string">"bar"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0584qq2t4j20xm0nc3zz.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shap.summary_plot(shap_values, X_test)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h058pbhml6j20fd0bkaal.jpg" alt=""></p>
+<p>可以看到，通过shap值来看：</p>
+<ul>
+<li><strong>size面积、zone_position区域位置、shi房间数</strong> 的重要性才是最靠前的，这个结果可以和相关系数的大小进行对比</li>
+<li>前5个特征中，蓝点主要还是集中在SHAP值小于0的区域</li>
+</ul>
+<h3 id="单个样本的SHAP值">单个样本的SHAP值</h3>
+<p>从数据中随机抽查一条样本查看shap值：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">i=<span class="number">18</span></span><br><span class="line"></span><br><span class="line">df0 = pd.DataFrame()</span><br><span class="line">df0[<span class="string">'feature'</span>] = X_test.columns.tolist()</span><br><span class="line"></span><br><span class="line">df0[<span class="string">'feature_value'</span>] = X_test.iloc[i].values</span><br><span class="line">df0[<span class="string">'shap_value'</span>] = shap_values[i]</span><br><span class="line">df0.head(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h058ji7ln9j20os0j4jt0.jpg" alt=""></p>
+<ul>
+<li>第一列是特征名称</li>
+<li>第二列是特征的具体数值</li>
+<li>第三列是各个特征在该样本中对应的SHAP值</li>
+</ul>
+<p><strong>注意</strong>：一个样本中各特征 SHAP 值的和加上<strong>基线值</strong>应该等于该样本的预测值</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h058lhub5rj20q20a0dgv.jpg" alt=""></p>
+<p>单条样本的特征可视化：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 可视化</span></span><br><span class="line">shap.initjs()</span><br><span class="line"></span><br><span class="line">shap.force_plot(</span><br><span class="line">  explainer.expected_value,</span><br><span class="line">  shap_values[i],</span><br><span class="line">  X_test.iloc[i])</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h058mlq76vj21ea0b63zr.jpg" alt=""></p>
+<p>红色表示higher部分：表明针对这条数据，zone_position和size是重要的特征。下面是换了另一个样本的结果：</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h058oc9y0yj214i0b0gmr.jpg" alt=""></p>
+<p><strong>不同的样本具有不同的重要属性</strong></p>
+<h3 id="部分依赖图-Partial-Dependence-Plot">部分依赖图-Partial Dependence Plot</h3>
+<p>1、单个变量的影响</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">shap.dependence_plot(<span class="string">'size'</span>,</span><br><span class="line">                     shap_values,</span><br><span class="line">                     X_test,</span><br><span class="line">                     interaction_index=<span class="literal">None</span>,</span><br><span class="line">                     show=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h058rmogzoj20br08wjri.jpg" alt=""></p>
+<p>通过图形我们观察到：size的取值在0.4以下，size的shap都是相对平和。一旦size达到一定值，对房租价格的拉升作用相当明显。</p>
+<p>2、两个变量的交互式影响</p>
+<p>SHAP同样能够查看两个变量的交互式影响，比如size和zone_position。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">shap.dependence_plot(</span><br><span class="line">    <span class="string">'size'</span>,</span><br><span class="line">    shap_values,</span><br><span class="line">    X_test,</span><br><span class="line">    interaction_index=<span class="string">'zone_position'</span>,  <span class="comment"># 指定</span></span><br><span class="line">    show=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h058s0s3s9j20dl08w74i.jpg" alt=""></p>
+<p>当指定了interaction_index 的取值情况，我们不仅能够观察到size和房租的关系，还可以看到size和zone_position之间存在的关系：size在分界点（大致在0.4）前后，one_position的相应都比较大（红色），这同时表明zone_position是一个重要性高的特征~</p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2022/03/11/%E6%B7%B1%E5%9C%B3%E7%A7%9F%E6%88%BF%E7%AC%AC%E4%BA%8C%E6%B3%A2%E6%8E%A2%E7%B4%A2.html">深圳租房第二波探索</a></p>
+  <p><span>发布时间:</span>2022年03月11日 - 00:03</p>
+  <p><span>原始链接:</span><a href="/2022/03/11/%E6%B7%B1%E5%9C%B3%E7%A7%9F%E6%88%BF%E7%AC%AC%E4%BA%8C%E6%B3%A2%E6%8E%A2%E7%B4%A2.html" title="深圳租房第二波探索">http://www.renpeter.cn/2022/03/11/%E6%B7%B1%E5%9C%B3%E7%A7%9F%E6%88%BF%E7%AC%AC%E4%BA%8C%E6%B3%A2%E6%8E%A2%E7%B4%A2.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2022/03/11/%E6%B7%B1%E5%9C%B3%E7%A7%9F%E6%88%BF%E7%AC%AC%E4%BA%8C%E6%B3%A2%E6%8E%A2%E7%B4%A2.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/" rel="tag"># 集成学习</a>
+          
+            <a href="/tags/%E5%9B%9E%E5%BD%92%E5%88%86%E6%9E%90/" rel="tag"># 回归分析</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/03/09/kaggle%E5%AE%9E%E6%88%98-6%E5%A4%A7%E5%9B%9E%E5%BD%92%E6%A8%A1%E5%9E%8B%E9%A2%84%E6%B5%8B%E6%9C%BA%E7%A5%A8%E4%BB%B7%E6%A0%BC.html" rel="next" title="kaggle实战_6大回归模型预测机票价格">
+                <i class="fa fa-chevron-left"></i> kaggle实战_6大回归模型预测机票价格
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">692</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">84</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">76</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#深圳租房分析第二弹"><span class="nav-number">1.</span> <span class="nav-text">深圳租房分析第二弹</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导入库"><span class="nav-number">2.</span> <span class="nav-text">导入库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据基本信息"><span class="nav-number">3.</span> <span class="nav-text">数据基本信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字段预处理"><span class="nav-number">4.</span> <span class="nav-text">字段预处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#name"><span class="nav-number">4.1.</span> <span class="nav-text">name</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#layout"><span class="nav-number">4.2.</span> <span class="nav-text">layout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#location"><span class="nav-number">4.3.</span> <span class="nav-text">location</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#size和sizeInside"><span class="nav-number">4.4.</span> <span class="nav-text">size和sizeInside</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zhuangxiu"><span class="nav-number">4.5.</span> <span class="nav-text">zhuangxiu</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#numberFloor"><span class="nav-number">4.6.</span> <span class="nav-text">numberFloor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#time"><span class="nav-number">4.7.</span> <span class="nav-text">time</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zone-position"><span class="nav-number">4.8.</span> <span class="nav-text">zone+position</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#way"><span class="nav-number">4.9.</span> <span class="nav-text">way</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#样本不均衡"><span class="nav-number">5.</span> <span class="nav-text">样本不均衡</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字段异常处理"><span class="nav-number">6.</span> <span class="nav-text">字段异常处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关性分析"><span class="nav-number">7.</span> <span class="nav-text">相关性分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#相关系数"><span class="nav-number">7.1.</span> <span class="nav-text">相关系数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#相关系数排序"><span class="nav-number">7.2.</span> <span class="nav-text">相关系数排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自变量和因变量关系"><span class="nav-number">7.3.</span> <span class="nav-text">自变量和因变量关系</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建模"><span class="nav-number">8.</span> <span class="nav-text">建模</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特征归一化"><span class="nav-number">8.1.</span> <span class="nav-text">特征归一化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据集切分"><span class="nav-number">8.2.</span> <span class="nav-text">数据集切分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特征选择"><span class="nav-number">8.3.</span> <span class="nav-text">特征选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#评价指标"><span class="nav-number">8.4.</span> <span class="nav-text">评价指标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不同模型效果"><span class="nav-number">8.5.</span> <span class="nav-text">不同模型效果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型可解释分析"><span class="nav-number">9.</span> <span class="nav-text">模型可解释分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#随机森林调参"><span class="nav-number">9.1.</span> <span class="nav-text">随机森林调参</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#计算shap-values"><span class="nav-number">9.2.</span> <span class="nav-text">计算shap_values</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#均值对比"><span class="nav-number">9.3.</span> <span class="nav-text">均值对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#整体特征重要性"><span class="nav-number">9.4.</span> <span class="nav-text">整体特征重要性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单个样本的SHAP值"><span class="nav-number">9.5.</span> <span class="nav-text">单个样本的SHAP值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部分依赖图-Partial-Dependence-Plot"><span class="nav-number">9.6.</span> <span class="nav-text">部分依赖图-Partial Dependence Plot</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">62</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">114</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyg2plot/" rel="tag">pyg2plot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">91</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sklearn/" rel="tag">sklearn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tableau/" rel="tag">tableau</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">38</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%99%E4%BD%9C/" rel="tag">写作</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">119</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E5%BD%92%E5%88%86%E6%9E%90/" rel="tag">回归分析</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E5%85%B8/" rel="tag">字典</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%80%E6%BA%90/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AA%E7%8E%AF/" rel="tag">循环</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">60</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag">数据处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">101</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" rel="tag">数据挖掘</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/" rel="tag">文本处理</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">86</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">51</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">监督学习</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1/" rel="tag">统计</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag">编程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB/" rel="tag">聚类</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">自动化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97/" rel="tag">随机森林</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/" rel="tag">集成学习</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%92%E6%98%A5/" rel="tag">青春</a><span class="tag-list-count">1</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共999.7k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2022/03/11/%E6%B7%B1%E5%9C%B3%E7%A7%9F%E6%88%BF%E7%AC%AC%E4%BA%8C%E6%B3%A2%E6%8E%A2%E7%B4%A2.html';
+          this.page.identifier = '2022/03/11/深圳租房第二波探索.html';
+          this.page.title = '深圳租房第二波探索';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
