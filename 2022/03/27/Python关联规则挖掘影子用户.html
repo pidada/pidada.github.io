@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="机器学习,数据挖掘,关联分析," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Python关联规则挖掘情侣、基友、闺蜜、渣男和狗 本文讲解的是机器学习中一个算法的应用：关联规则分析 整个故事从一张校园卡开始。相信小伙伴们都用过校园卡，它是一种其个人身份认证、校园消费、数据共享等多功能于一体的校园信息集成与管理系统。在它里面存储着大量的数据，包含：学生消费、宿舍门禁、图书馆进出等。 本文使用的是南京某高校学生一卡通在2019年4月1-20号的消费明细数据，从统计可视化分析、关">
+<meta name="keywords" content="机器学习,数据挖掘,关联分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python关联规则挖掘影子用户">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2022&#x2F;03&#x2F;27&#x2F;Python%E5%85%B3%E8%81%94%E8%A7%84%E5%88%99%E6%8C%96%E6%8E%98%E5%BD%B1%E5%AD%90%E7%94%A8%E6%88%B7.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="Python关联规则挖掘情侣、基友、闺蜜、渣男和狗 本文讲解的是机器学习中一个算法的应用：关联规则分析 整个故事从一张校园卡开始。相信小伙伴们都用过校园卡，它是一种其个人身份认证、校园消费、数据共享等多功能于一体的校园信息集成与管理系统。在它里面存储着大量的数据，包含：学生消费、宿舍门禁、图书馆进出等。 本文使用的是南京某高校学生一卡通在2019年4月1-20号的消费明细数据，从统计可视化分析、关">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h0of19ugyvj20na0dct94.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n4o6quicj212k0fidhy.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n4os0y2qj21n60heq7a.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n4p2hl3yj21480faju2.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n4rv4tdnj20w40ikjt9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n4sx6l3xj21000d275b.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n4t92sxgj20wc0najs9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n4tto8xhj21440j2abt.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n4udiu25j21hc0rqtev.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n4utjprbj213i0k8q57.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n4vd1lplj21ii0ta7c5.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n4vyexekj21ia0s6qct.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n4wja1duj20yg0okq4r.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n4wxbwntj21c20o8goi.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n4xyyvtrj218i0qg408.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n4zjdr7bj20n00aet92.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n5l7zd3hj21gq0pktbd.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n5n1qb9qj20lu0immyl.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n5ns9k7gj21jg0tigph.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n5rqm4eaj21ik0tmq6n.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n5tazz4wj21mq0b8wgl.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n5vpbebjj216606mdgu.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n600hwooj20ns0mudj7.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n75wtea6j21y80i2123.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0oddinnzcj225e0u0tsd.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h0oe4u407gj22100iy14g.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h0n627zuuvj20xi04c0t1.jpg">
+<meta property="og:updated_time" content="2022-03-27T07:11:35.602Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h0of19ugyvj20na0dct94.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2022/03/27/Python关联规则挖掘影子用户.html"/>
+
+
+
+
+
+  <title>Python关联规则挖掘影子用户 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2022/03/27/Python%E5%85%B3%E8%81%94%E8%A7%84%E5%88%99%E6%8C%96%E6%8E%98%E5%BD%B1%E5%AD%90%E7%94%A8%E6%88%B7.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Python关联规则挖掘影子用户</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-03-27T15:07:39+08:00">
+                2022-3-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2022/03/27/Python%E5%85%B3%E8%81%94%E8%A7%84%E5%88%99%E6%8C%96%E6%8E%98%E5%BD%B1%E5%AD%90%E7%94%A8%E6%88%B7.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2022/03/27/Python关联规则挖掘影子用户.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.9k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  8
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Python关联规则挖掘情侣、基友、闺蜜、渣男和狗">Python关联规则挖掘情侣、基友、闺蜜、渣男和狗</h2>
+<p>本文讲解的是机器学习中一个算法的应用：<strong>关联规则分析</strong></p>
+<p>整个故事从一张校园卡开始。相信小伙伴们都用过校园卡，它是一种其个人身份认证、校园消费、数据共享等多功能于一体的校园信息集成与管理系统。在它里面存储着大量的数据，包含：学生消费、宿舍门禁、图书馆进出等。</p>
+<p>本文使用的是南京某高校学生一卡通在2019年4月1-20号的消费明细数据，从<strong>统计可视化分析、关联规则分析</strong>，发现学生一卡通的使用情况和学生当中的情侣、基友、闺蜜、渣男和单身狗等有趣信息。</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h0of19ugyvj20na0dct94.jpg" alt=""></p>
+<p>使用的数据集地址如下：<a href="https://github.com/Nicole456/Analysis-of-students-consumption-behavior-on-campus" target="_blank" rel="noopener">https://github.com/Nicole456/Analysis-of-students-consumption-behavior-on-campus</a></p>
+<a id="more"></a>
+<h2 id="导入数据">导入数据</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"><span class="keyword">import</span> plotly_express <span class="keyword">as</span> px</span><br><span class="line"><span class="keyword">import</span> plotly.graph_objects <span class="keyword">as</span> go</span><br></pre></td></tr></table></figure>
+<p>1、数据1：每个学生的校园卡基本信息</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n4o6quicj212k0fidhy.jpg" alt=""></p>
+<p>2、数据2：校园卡每次消费和充值的明细数据</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n4os0y2qj21n60heq7a.jpg" alt=""></p>
+<p>3、数据3：门禁明细数据</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n4p2hl3yj21480faju2.jpg" alt=""></p>
+<h2 id="数据大小">数据大小</h2>
+<p>In [8]:</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">print</span><span class="params">(<span class="string">"df1: "</span>, df1.shape)</span></span></span><br><span class="line"><span class="function"><span class="title">print</span><span class="params">(<span class="string">"df2: "</span>, df2.shape)</span></span></span><br><span class="line"><span class="function"><span class="title">print</span><span class="params">(<span class="string">"df3: "</span>, df3.shape)</span></span></span><br><span class="line">df1:  (<span class="number">4341</span>, <span class="number">5</span>)</span><br><span class="line">df2:  (<span class="number">519367</span>, <span class="number">14</span>)</span><br><span class="line">df3:  (<span class="number">43156</span>, <span class="number">6</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="缺失值">缺失值</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># 每列缺失值</span></span><br><span class="line">df1.isnull().sum()</span><br><span class="line"><span class="comment"># 每列的缺失值占比</span></span><br><span class="line">df2.apply(<span class="keyword">lambda</span> x : sum(x.isnull())/len(x), axis=<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n4rv4tdnj20w40ikjt9.jpg" alt=""></p>
+<h2 id="人数对比">人数对比</h2>
+<h3 id="不同性别人数">不同性别人数</h3>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n4sx6l3xj21000d275b.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n4t92sxgj20wc0najs9.jpg" alt=""></p>
+<h3 id="不同专业人数">不同专业人数</h3>
+<p>In [16]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">df5 = df1[<span class="string">"Major"</span>]<span class="string">.value_counts</span><span class="params">()</span><span class="string">.reset_index</span><span class="params">()</span></span><br><span class="line"></span><br><span class="line">df5.columns = [<span class="string">"Major"</span>,<span class="string">"Number"</span>]</span><br><span class="line">df5.head<span class="params">()</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n4tto8xhj21440j2abt.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n4udiu25j21hc0rqtev.jpg" alt=""></p>
+<h3 id="不同专业不同性别人数">不同专业不同性别人数</h3>
+<p>In [18]:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df6 = df1.groupby([<span class="string">"Major"</span>,<span class="string">"Sex"</span>])[<span class="string">"CardNo"</span>].count().reset_index()</span><br><span class="line">df6.head()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n4utjprbj213i0k8q57.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n4vd1lplj21ii0ta7c5.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">fig = px.treemap(</span><br><span class="line">    df6,</span><br><span class="line">    path=[px.Constant(<span class="string">"all"</span>),<span class="string">"Major"</span>,<span class="string">"Sex"</span>],  <span class="comment"># 重点：传递数据路径</span></span><br><span class="line">    values=<span class="string">"CardNo"</span>,</span><br><span class="line">    color=<span class="string">"Major"</span>   <span class="comment"># 指定颜色变化的参数</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">fig.update_traces(root_color=<span class="string">"maroon"</span>)</span><br><span class="line"><span class="comment"># fig.update_traces(textposition="top right")</span></span><br><span class="line">fig.update_layout(margin=dict(t=<span class="number">30</span>,l=<span class="number">20</span>,r=<span class="number">25</span>,b=<span class="number">30</span>))</span><br><span class="line"></span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n4vyexekj21ia0s6qct.jpg" alt=""></p>
+<h2 id="进出门禁信息">进出门禁信息</h2>
+<h3 id="地址信息">地址信息</h3>
+<p>In [21]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1、处理address</span></span><br><span class="line"></span><br><span class="line">address = df3[<span class="string">"Address"</span>].str.extract(r<span class="string">"(?P&lt;Address_New&gt;[\w]+)\[(?P&lt;Out_In&gt;[\w]+)\]"</span>)</span><br><span class="line">address</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n4wja1duj20yg0okq4r.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n4wxbwntj21c20o8goi.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n4xyyvtrj218i0qg408.jpg" alt=""></p>
+<h3 id="进出门禁时间">进出门禁时间</h3>
+<p>In [25]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">df8 = pd.merge(df3,df1,on=<span class="string">"AccessCardNo"</span>)</span><br><span class="line">df8.loc[:,<span class="string">'Date'</span>] = pd.to_datetime(df8.loc[:,<span class="string">'Date'</span>],format=<span class="string">'%Y/%m/%d %H:%M'</span>,errors=<span class="string">'coerce'</span>)</span><br><span class="line"></span><br><span class="line">df8[<span class="string">"Hour"</span>] = df8[<span class="string">"Date"</span>].dt.hour</span><br><span class="line"><span class="comment"># df8["Minute"] = df8["Date"].dt.minute</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 进出门禁人数统计/小时</span></span><br><span class="line">df9 = df8.groupby([<span class="string">"Hour"</span>,<span class="string">"Out_In"</span>]).agg(&#123;<span class="string">"AccessCardNo"</span>:<span class="string">"count"</span>&#125;).reset_index()</span><br><span class="line">df9.head()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n4zjdr7bj20n00aet92.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 准备画布</span></span><br><span class="line">fig = go.Figure()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加不同的数据</span></span><br><span class="line">fig.add_trace(go.Scatter(</span><br><span class="line">    x=df9.query(<span class="string">"Out_In == '出门'"</span>)[<span class="string">"Hour"</span>].tolist(),</span><br><span class="line">    y=df9.query(<span class="string">"Out_In == '出门'"</span>)[<span class="string">"AccessCardNo"</span>].tolist(),</span><br><span class="line">    mode=<span class="string">'lines + markers'</span>, <span class="comment"># mode模式选择</span></span><br><span class="line">    name=<span class="string">'出门'</span>)) <span class="comment"># 名字</span></span><br><span class="line"></span><br><span class="line">fig.add_trace(go.Scatter(</span><br><span class="line">    x=df9.query(<span class="string">"Out_In == '进门'"</span>)[<span class="string">"Hour"</span>].tolist(),</span><br><span class="line">    y=df9.query(<span class="string">"Out_In == '进门'"</span>)[<span class="string">"AccessCardNo"</span>].tolist(),</span><br><span class="line">    mode=<span class="string">'lines + markers'</span>,</span><br><span class="line">    name=<span class="string">'进门'</span>))</span><br><span class="line"></span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n5l7zd3hj21gq0pktbd.jpg" alt=""></p>
+<h2 id="消费信息">消费信息</h2>
+<p>In [30]:</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 数据合并  只取出两个字段：卡号和性别</span></span><br><span class="line"></span><br><span class="line"><span class="attr">df10</span> = pd.merge(df2,df1[[<span class="string">"CardNo"</span>,<span class="string">"Sex"</span>]],<span class="literal">on</span>=<span class="string">"CardNo"</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="合并信息">合并信息</h3>
+<p>In [32]:</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df10[<span class="string">"Card_Sex"</span>] = df10[<span class="string">"CardNo"</span>].apply(lambda x: str(x)) + <span class="string">"_"</span> + df10[<span class="string">"Sex"</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="主要地点">主要地点</h3>
+<p>In [33]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Card_Sex：统计消费人次</span></span><br><span class="line"><span class="comment"># Money：统计消费金额</span></span><br><span class="line"></span><br><span class="line">df11 = (df10.groupby(<span class="string">"Dept"</span>).agg(&#123;<span class="string">"Card_Sex"</span>:<span class="string">"count"</span>,<span class="string">"Money"</span>:sum&#125;)</span><br><span class="line">        .reset_index().sort_values(<span class="string">"Money"</span>,<span class="attribute">ascending</span>=<span class="literal">False</span>))</span><br><span class="line"></span><br><span class="line">df11.head(10)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n5n1qb9qj20lu0immyl.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fig = px.bar(df11,x=<span class="string">"Dept"</span>,y=<span class="string">"Card_Sex"</span>)</span><br><span class="line">fig.update_layout(title_text=<span class="string">'不同地方的消费人数'</span>,xaxis_tickangle=<span class="number">45</span>)</span><br><span class="line"></span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n5ns9k7gj21jg0tigph.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fig = px.bar(df11,x=<span class="string">"Dept"</span>,y=<span class="string">"Money"</span>)</span><br><span class="line">fig.update_layout(title_text=<span class="string">'不同地方的消费金额'</span>,xaxis_tickangle=<span class="number">45</span>)</span><br><span class="line"></span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n5rqm4eaj21ik0tmq6n.jpg" alt=""></p>
+<h2 id="关联规则挖掘">关联规则挖掘</h2>
+<h3 id="时间处理">时间处理</h3>
+<p>时间处理主要是两个点：</p>
+<ul>
+<li>时间格式的转换</li>
+<li>时间离散化：每5分钟一个类型</li>
+</ul>
+<p>在这里我们默认：如果两个时间在同一个类型中，认为两人在一起消费</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">change_time</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="comment"># 转成标准时间格式</span></span><br><span class="line">    result = str(datetime.datetime.strptime(x, <span class="string">"%Y/%m/%d %H:%M"</span>))</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">time_five</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="comment"># ‘2022-02-24 15:46:09’ ---&gt; '2022-02-24 15_9'</span></span><br><span class="line">    res1 = x.split(<span class="string">":"</span>)[<span class="number">0</span>]</span><br><span class="line">    res2 = str(round(int(x.split(<span class="string">":"</span>)[<span class="number">1</span>]) / <span class="number">5</span>))</span><br><span class="line">    <span class="keyword">return</span> res1 + <span class="string">"_"</span> + res2</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">df10[<span class="string">"New_Date"</span>] = df10[<span class="string">"Date"</span>].apply(change_time)</span><br><span class="line">df10[<span class="string">"New_Date"</span>] = df10[<span class="string">"New_Date"</span>].apply(time_five)</span><br><span class="line">df10.head(<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n5tazz4wj21mq0b8wgl.jpg" alt=""></p>
+<p>提起每个时间类型的人员信息：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 方式1</span></span><br><span class="line"></span><br><span class="line">df11 = df10.groupby([<span class="string">"New_Date"</span>])[<span class="string">"Card_Sex"</span>].apply(list).reset_index()</span><br><span class="line"><span class="comment"># 每个列表中的元素去重</span></span><br><span class="line">df11[<span class="string">"Card_Sex"</span>] = df11[<span class="string">"Card_Sex"</span>].apply(<span class="keyword">lambda</span> x: list(set(x)))</span><br><span class="line">all_list = df11[<span class="string">"Card_Sex"</span>].tolist()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 方式2</span></span><br><span class="line"><span class="comment"># all_list = []</span></span><br><span class="line"><span class="comment"># for i in df10["New_Date"].unique().tolist():</span></span><br><span class="line"><span class="comment">#     lst = df10[df10["New_Date"] == i]["Card_Sex"].unique().tolist()</span></span><br><span class="line"><span class="comment">#     all_list.append(lst)</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n5vpbebjj216606mdgu.jpg" alt=""></p>
+<h3 id="频繁项集寻找">频繁项集寻找</h3>
+<p>In [44]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> efficient_apriori <span class="keyword">as</span> ea</span><br><span class="line"></span><br><span class="line"><span class="comment"># itemsets：频繁项  rules：关联规则</span></span><br><span class="line">itemsets, rules = ea.apriori(all_list,</span><br><span class="line">                min_support=<span class="number">0.005</span>,</span><br><span class="line">                min_confidence=<span class="number">1</span></span><br><span class="line">               )</span><br></pre></td></tr></table></figure>
+<h3 id="一个人">一个人</h3>
+<p>一个人消费的数据最多：2565条数据，单身毕竟多！</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">len(itemsets[<span class="number">1</span>])  <span class="comment"># 2565条</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 部分数据</span></span><br><span class="line">&#123;(<span class="string">'181539_男'</span>,): <span class="number">52</span>,</span><br><span class="line"> (<span class="string">'180308_女'</span>,): <span class="number">47</span>,</span><br><span class="line"> (<span class="string">'183262_女'</span>,): <span class="number">100</span>,</span><br><span class="line"> (<span class="string">'182958_男'</span>,): <span class="number">88</span>,</span><br><span class="line"> (<span class="string">'180061_女'</span>,): <span class="number">83</span>,</span><br><span class="line"> (<span class="string">'182936_男'</span>,): <span class="number">80</span>,</span><br><span class="line"> (<span class="string">'182931_男'</span>,): <span class="number">87</span>,</span><br><span class="line"> (<span class="string">'182335_女'</span>,): <span class="number">60</span>,</span><br><span class="line"> (<span class="string">'182493_女'</span>,): <span class="number">75</span>,</span><br><span class="line"> (<span class="string">'181944_女'</span>,): <span class="number">67</span>,</span><br><span class="line"> (<span class="string">'181058_男'</span>,): <span class="number">93</span>,</span><br><span class="line"> (<span class="string">'183391_女'</span>,): <span class="number">63</span>,</span><br><span class="line"> (<span class="string">'180313_女'</span>,): <span class="number">82</span>,</span><br><span class="line"> (<span class="string">'184275_男'</span>,): <span class="number">69</span>,</span><br><span class="line"> (<span class="string">'181322_女'</span>,): <span class="number">104</span>,</span><br><span class="line"> (<span class="string">'182391_女'</span>,): <span class="number">57</span>,</span><br><span class="line"> (<span class="string">'184153_女'</span>,): <span class="number">31</span>,</span><br><span class="line"> (<span class="string">'182711_女'</span>,): <span class="number">40</span>,</span><br><span class="line"> (<span class="string">'181594_女'</span>,): <span class="number">36</span>,</span><br><span class="line"> (<span class="string">'180193_女'</span>,): <span class="number">84</span>,</span><br><span class="line"> (<span class="string">'184263_男'</span>,): <span class="number">61</span>,</span><br></pre></td></tr></table></figure>
+<h3 id="两个人">两个人</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">len(itemsets[<span class="number">2</span>])  <span class="comment"># 378条</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n600hwooj20ns0mudj7.jpg" alt=""></p>
+<p>查看了全部的数据，统计了下面的结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">(<span class="string">'180433_男'</span>, <span class="string">'180499_女'</span>): <span class="number">34</span></span><br><span class="line"><span class="comment"># 可疑渣男1</span></span><br><span class="line">(<span class="string">'180624_男'</span>, <span class="string">'181013_女'</span>): <span class="number">36</span>,</span><br><span class="line">(<span class="string">'180624_男'</span>, <span class="string">'181042_女'</span>): <span class="number">37</span>,</span><br><span class="line"><span class="comment"># 可疑渣男2</span></span><br><span class="line">(<span class="string">'181461_男'</span>, <span class="string">'180780_女'</span>): <span class="number">38</span>,</span><br><span class="line">(<span class="string">'181461_男'</span>, <span class="string">'180856_女'</span>): <span class="number">34</span>,</span><br><span class="line"></span><br><span class="line">(<span class="string">'181597_男'</span>, <span class="string">'183847_女'</span>): <span class="number">44</span>,</span><br><span class="line"></span><br><span class="line">(<span class="string">'181699_男'</span>, <span class="string">'181712_女'</span>): <span class="number">31</span>,</span><br><span class="line"></span><br><span class="line">(<span class="string">'181889_男'</span>, <span class="string">'180142_女'</span>): <span class="number">33</span>,</span><br><span class="line"><span class="comment"># 可疑渣男3：NB</span></span><br><span class="line">(<span class="string">'182239_男'</span>, <span class="string">'182304_女'</span>): <span class="number">39</span>,</span><br><span class="line">(<span class="string">'182239_男'</span>, <span class="string">'182329_女'</span>): <span class="number">40</span>,</span><br><span class="line">(<span class="string">'182239_男'</span>, <span class="string">'182340_女'</span>): <span class="number">37</span>,</span><br><span class="line">(<span class="string">'182239_男'</span>, <span class="string">'182403_女'</span>): <span class="number">35</span>,</span><br><span class="line"></span><br><span class="line">(<span class="string">'182873_男'</span>, <span class="string">'182191_女'</span>): <span class="number">31</span>,</span><br><span class="line"></span><br><span class="line">(<span class="string">'183343_男'</span>, <span class="string">'183980_女'</span>): <span class="number">44</span>,</span><br></pre></td></tr></table></figure>
+<p>1、可疑男生1-180624</p>
+<p>回到原始数据，查看他和不同女生在时间上消费的交集情况。</p>
+<p>（1）和女生181013的交集：</p>
+<ul>
+<li>4月1号早上7.36：应该是一起吃了早餐；11点54一起吃了午饭</li>
+<li>4.10、4.12等不同时间点的交集</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n75wtea6j21y80i2123.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0oddinnzcj225e0u0tsd.jpg" alt=""></p>
+<p>（2）和女生181042的交集：</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h0oe4u407gj22100iy14g.jpg" alt=""></p>
+<p>2、看看可疑的渣男3</p>
+<p>这哥们实在是厉害呀~数据挖掘显示居然和4个女生同时存在一定的关联！</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(<span class="string">'182239_男'</span>, <span class="string">'182304_女'</span>): <span class="number">39</span></span><br><span class="line">(<span class="string">'182239_男'</span>, <span class="string">'182329_女'</span>): <span class="number">40</span></span><br><span class="line">(<span class="string">'182239_男'</span>, <span class="string">'182340_女'</span>): <span class="number">37</span></span><br><span class="line">(<span class="string">'182239_男'</span>, <span class="string">'182403_女'</span>): <span class="number">35</span></span><br></pre></td></tr></table></figure>
+<p>除了可能的男女朋友关系，在2元数据中更多的是基友或者闺蜜：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">(<span class="string">'180450_女'</span>, <span class="string">'180484_女'</span>): <span class="number">35</span>,</span><br><span class="line">(<span class="string">'180457_女'</span>, <span class="string">'180493_女'</span>): <span class="number">31</span>,</span><br><span class="line">(<span class="string">'180460_女'</span>, <span class="string">'180496_女'</span>): <span class="number">31</span>,</span><br><span class="line">(<span class="string">'180493_女'</span>, <span class="string">'180500_女'</span>): <span class="number">47</span>,</span><br><span class="line">(<span class="string">'180504_女'</span>, <span class="string">'180505_女'</span>): <span class="number">43</span>,</span><br><span class="line">(<span class="string">'180505_女'</span>, <span class="string">'180506_女'</span>): <span class="number">35</span>,</span><br><span class="line">(<span class="string">'180511_女'</span>, <span class="string">'181847_女'</span>): <span class="number">42</span>,</span><br><span class="line">(<span class="string">'180523_男'</span>, <span class="string">'182415_男'</span>): <span class="number">34</span>,</span><br><span class="line">(<span class="string">'180526_男'</span>, <span class="string">'180531_男'</span>): <span class="number">33</span>,</span><br><span class="line">(<span class="string">'180545_女'</span>, <span class="string">'180578_女'</span>): <span class="number">41</span>,</span><br><span class="line">(<span class="string">'180545_女'</span>, <span class="string">'180615_女'</span>): <span class="number">47</span>,</span><br><span class="line">(<span class="string">'180551_女'</span>, <span class="string">'180614_女'</span>): <span class="number">31</span>,</span><br><span class="line">(<span class="string">'180555_女'</span>, <span class="string">'180558_女'</span>): <span class="number">36</span>,</span><br><span class="line">(<span class="string">'180572_女'</span>, <span class="string">'180589_女'</span>): <span class="number">31</span>,</span><br><span class="line">(<span class="string">'181069_男'</span>, <span class="string">'181103_男'</span>): <span class="number">44</span>,</span><br><span class="line">(<span class="string">'181091_男'</span>, <span class="string">'181103_男'</span>): <span class="number">33</span>,</span><br><span class="line">(<span class="string">'181099_男'</span>, <span class="string">'181102_男'</span>): <span class="number">31</span>,</span><br><span class="line">(<span class="string">'181099_男'</span>, <span class="string">'181107_男'</span>): <span class="number">34</span>,</span><br><span class="line">(<span class="string">'181102_男'</span>, <span class="string">'181107_男'</span>): <span class="number">35</span>,</span><br><span class="line">(<span class="string">'181112_男'</span>, <span class="string">'181117_男'</span>): <span class="number">43</span>,</span><br><span class="line">(<span class="string">'181133_男'</span>, <span class="string">'181136_男'</span>): <span class="number">52</span>,</span><br><span class="line">(<span class="string">'181133_男'</span>, <span class="string">'181571_男'</span>): <span class="number">45</span>,</span><br><span class="line">(<span class="string">'181133_男'</span>, <span class="string">'181582_男'</span>): <span class="number">33</span>,</span><br></pre></td></tr></table></figure>
+<h3 id="3-4个人">3-4个人</h3>
+<p>3-4元的数据可能是一个宿舍的同学或者朋友一起的，相对数量会比较少：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">len(itemsets[<span class="number">3</span>])  <span class="comment"># 18条</span></span><br><span class="line"></span><br><span class="line">&#123;(<span class="string">'180363_女'</span>, <span class="string">'181876_女'</span>, <span class="string">'183979_女'</span>): <span class="number">40</span>,</span><br><span class="line"> (<span class="string">'180711_女'</span>, <span class="string">'180732_女'</span>, <span class="string">'180738_女'</span>): <span class="number">35</span>,</span><br><span class="line"> (<span class="string">'180792_女'</span>, <span class="string">'180822_女'</span>, <span class="string">'180849_女'</span>): <span class="number">35</span>,</span><br><span class="line"> (<span class="string">'181338_男'</span>, <span class="string">'181343_男'</span>, <span class="string">'181344_男'</span>): <span class="number">40</span>,</span><br><span class="line"> (<span class="string">'181503_男'</span>, <span class="string">'181507_男'</span>, <span class="string">'181508_男'</span>): <span class="number">33</span>,</span><br><span class="line"> (<span class="string">'181552_男'</span>, <span class="string">'181571_男'</span>, <span class="string">'181582_男'</span>): <span class="number">39</span>,</span><br><span class="line"> (<span class="string">'181556_男'</span>, <span class="string">'181559_男'</span>, <span class="string">'181568_男'</span>): <span class="number">35</span>,</span><br><span class="line"> (<span class="string">'181848_女'</span>, <span class="string">'181865_女'</span>, <span class="string">'181871_女'</span>): <span class="number">35</span>,</span><br><span class="line"> (<span class="string">'182304_女'</span>, <span class="string">'182329_女'</span>, <span class="string">'182340_女'</span>): <span class="number">36</span>,</span><br><span class="line"> (<span class="string">'182304_女'</span>, <span class="string">'182329_女'</span>, <span class="string">'182403_女'</span>): <span class="number">32</span>,</span><br><span class="line"> (<span class="string">'183305_女'</span>, <span class="string">'183308_女'</span>, <span class="string">'183317_女'</span>): <span class="number">32</span>,</span><br><span class="line"> (<span class="string">'183419_女'</span>, <span class="string">'183420_女'</span>, <span class="string">'183422_女'</span>): <span class="number">49</span>,</span><br><span class="line"> (<span class="string">'183419_女'</span>, <span class="string">'183420_女'</span>, <span class="string">'183424_女'</span>): <span class="number">45</span>,</span><br><span class="line"> (<span class="string">'183419_女'</span>, <span class="string">'183422_女'</span>, <span class="string">'183424_女'</span>): <span class="number">48</span>,</span><br><span class="line"> (<span class="string">'183420_女'</span>, <span class="string">'183422_女'</span>, <span class="string">'183424_女'</span>): <span class="number">51</span>,</span><br><span class="line"> (<span class="string">'183641_女'</span>, <span class="string">'183688_女'</span>, <span class="string">'183690_女'</span>): <span class="number">32</span>,</span><br><span class="line"> (<span class="string">'183671_女'</span>, <span class="string">'183701_女'</span>, <span class="string">'183742_女'</span>): <span class="number">35</span>,</span><br><span class="line"> (<span class="string">'183713_女'</span>, <span class="string">'183726_女'</span>, <span class="string">'183737_女'</span>): <span class="number">36</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>4元数据只有一条：</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n627zuuvj20xi04c0t1.jpg" alt=""></p>
+<h2 id="总结">总结</h2>
+<p>关联规则分析是一个经典数据挖掘算法，在消费明细数据、超市购物篮数据、金融保险、信用卡等领域应用的十分广泛。当我们运用关联分析技术挖掘出频繁出现的组合和强关联规则之后，就可以指定相应的营销策略或者找到不同对象之间的关系。</p>
+<p>上面的数据挖掘过程，其实也存在一定的缺陷：</p>
+<ul>
+<li>约束太宽：仅仅是根据时间间隔类型进行分组统计，忽略了学生的专业、消费地点等信息</li>
+<li>时间太窄：5分钟的时间间隔过去窄，会过滤掉很多信息</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2022/03/27/Python%E5%85%B3%E8%81%94%E8%A7%84%E5%88%99%E6%8C%96%E6%8E%98%E5%BD%B1%E5%AD%90%E7%94%A8%E6%88%B7.html">Python关联规则挖掘影子用户</a></p>
+  <p><span>发布时间:</span>2022年03月27日 - 15:03</p>
+  <p><span>原始链接:</span><a href="/2022/03/27/Python%E5%85%B3%E8%81%94%E8%A7%84%E5%88%99%E6%8C%96%E6%8E%98%E5%BD%B1%E5%AD%90%E7%94%A8%E6%88%B7.html" title="Python关联规则挖掘影子用户">http://www.renpeter.cn/2022/03/27/Python%E5%85%B3%E8%81%94%E8%A7%84%E5%88%99%E6%8C%96%E6%8E%98%E5%BD%B1%E5%AD%90%E7%94%A8%E6%88%B7.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2022/03/27/Python%E5%85%B3%E8%81%94%E8%A7%84%E5%88%99%E6%8C%96%E6%8E%98%E5%BD%B1%E5%AD%90%E7%94%A8%E6%88%B7.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" rel="tag"># 数据挖掘</a>
+          
+            <a href="/tags/%E5%85%B3%E8%81%94%E5%88%86%E6%9E%90/" rel="tag"># 关联分析</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/03/25/10%E5%88%86%E9%92%9F%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8Pandas.html" rel="next" title="10分钟快速入门Pandas">
+                <i class="fa fa-chevron-left"></i> 10分钟快速入门Pandas
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">700</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">86</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Python关联规则挖掘情侣、基友、闺蜜、渣男和狗"><span class="nav-number">1.</span> <span class="nav-text">Python关联规则挖掘情侣、基友、闺蜜、渣男和狗</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导入数据"><span class="nav-number">2.</span> <span class="nav-text">导入数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据大小"><span class="nav-number">3.</span> <span class="nav-text">数据大小</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缺失值"><span class="nav-number">4.</span> <span class="nav-text">缺失值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#人数对比"><span class="nav-number">5.</span> <span class="nav-text">人数对比</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#不同性别人数"><span class="nav-number">5.1.</span> <span class="nav-text">不同性别人数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不同专业人数"><span class="nav-number">5.2.</span> <span class="nav-text">不同专业人数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不同专业不同性别人数"><span class="nav-number">5.3.</span> <span class="nav-text">不同专业不同性别人数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进出门禁信息"><span class="nav-number">6.</span> <span class="nav-text">进出门禁信息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#地址信息"><span class="nav-number">6.1.</span> <span class="nav-text">地址信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进出门禁时间"><span class="nav-number">6.2.</span> <span class="nav-text">进出门禁时间</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消费信息"><span class="nav-number">7.</span> <span class="nav-text">消费信息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#合并信息"><span class="nav-number">7.1.</span> <span class="nav-text">合并信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主要地点"><span class="nav-number">7.2.</span> <span class="nav-text">主要地点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关联规则挖掘"><span class="nav-number">8.</span> <span class="nav-text">关联规则挖掘</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#时间处理"><span class="nav-number">8.1.</span> <span class="nav-text">时间处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#频繁项集寻找"><span class="nav-number">8.2.</span> <span class="nav-text">频繁项集寻找</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一个人"><span class="nav-number">8.3.</span> <span class="nav-text">一个人</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两个人"><span class="nav-number">8.4.</span> <span class="nav-text">两个人</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4个人"><span class="nav-number">8.5.</span> <span class="nav-text">3-4个人</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">62</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">120</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyg2plot/" rel="tag">pyg2plot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">91</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sklearn/" rel="tag">sklearn</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tableau/" rel="tag">tableau</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">38</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B3%E8%81%94%E5%88%86%E6%9E%90/" rel="tag">关联分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%99%E4%BD%9C/" rel="tag">写作</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">119</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E5%BD%92%E5%88%86%E6%9E%90/" rel="tag">回归分析</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E5%85%B8/" rel="tag">字典</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%80%E6%BA%90/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AA%E7%8E%AF/" rel="tag">循环</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">65</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag">数据处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">101</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" rel="tag">数据挖掘</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/" rel="tag">文本处理</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">90</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">51</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">监督学习</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1/" rel="tag">统计</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag">编程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB/" rel="tag">聚类</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">自动化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97/" rel="tag">随机森林</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/" rel="tag">集成学习</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%92%E6%98%A5/" rel="tag">青春</a><span class="tag-list-count">1</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共1013k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2022/03/27/Python%E5%85%B3%E8%81%94%E8%A7%84%E5%88%99%E6%8C%96%E6%8E%98%E5%BD%B1%E5%AD%90%E7%94%A8%E6%88%B7.html';
+          this.page.identifier = '2022/03/27/Python关联规则挖掘影子用户.html';
+          this.page.title = 'Python关联规则挖掘影子用户';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
