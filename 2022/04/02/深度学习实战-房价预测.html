@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="机器学习,深度学习,keras,回归," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="深度学习回归案例：房价预测 机器学习的另一个重要问题：回归。它预测的是一个连续值而不是离散的标签  逻辑回归不是回归算法，而是分类算法">
+<meta name="keywords" content="机器学习,深度学习,keras,回归">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习实战-房价预测.md">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2022&#x2F;04&#x2F;02&#x2F;%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-%E6%88%BF%E4%BB%B7%E9%A2%84%E6%B5%8B.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="深度学习回归案例：房价预测 机器学习的另一个重要问题：回归。它预测的是一个连续值而不是离散的标签  逻辑回归不是回归算法，而是分类算法">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h0u96czaikj20iw07awer.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h0u6597gt7j21ac0m4n1t.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h0u94uy12jj20ag07adfu.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h0u95c26bbj20ax07aweh.jpg">
+<meta property="og:updated_time" content="2022-04-01T08:00:33.535Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h0u96czaikj20iw07awer.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2022/04/02/深度学习实战-房价预测.html"/>
+
+
+
+
+
+  <title>深度学习实战-房价预测.md | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2022/04/02/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-%E6%88%BF%E4%BB%B7%E9%A2%84%E6%B5%8B.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深度学习实战-房价预测.md</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-04-02T21:57:34+08:00">
+                2022-4-2
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DL/" itemprop="url" rel="index">
+                    <span itemprop="name">DL</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DL/%E5%AE%9E%E6%88%98/" itemprop="url" rel="index">
+                    <span itemprop="name">实战</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2022/04/02/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-%E6%88%BF%E4%BB%B7%E9%A2%84%E6%B5%8B.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2022/04/02/深度学习实战-房价预测.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  7
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="深度学习回归案例：房价预测">深度学习回归案例：房价预测</h2>
+<p>机器学习的另一个重要问题：回归。它预测的是一个连续值而不是离散的标签</p>
+<blockquote>
+<p>逻辑回归不是回归算法，而是分类算法</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h0u96czaikj20iw07awer.jpg" alt=""></p>
+<a id="more"></a>
+<h2 id="波士顿房价数据集">波士顿房价数据集</h2>
+<p>506个样本，其中404个训练样本，102个测试样本</p>
+<p>In [1]:</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="title">from</span> keras.datasets <span class="keyword">import</span> boston_housing</span><br></pre></td></tr></table></figure>
+<h3 id="划分数据集">划分数据集</h3>
+<p>In [2]:</p>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># 限制前10000个最常见的单词</span></span><br><span class="line"></span><br><span class="line">(train_data, train_targets), (test_data, test_targets) = boston_housing.load_data()</span><br></pre></td></tr></table></figure>
+<p>In [3]:</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">train_data.<span class="keyword">shape </span> <span class="comment"># 每个样本都是13个特征</span></span><br></pre></td></tr></table></figure>
+<p>Out[3]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">404</span>, <span class="number">13</span>)</span><br></pre></td></tr></table></figure>
+<p>In [4]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">test_data</span><span class="selector-class">.shape</span></span><br></pre></td></tr></table></figure>
+<p>Out[4]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">102</span>, <span class="number">13</span>)</span><br></pre></td></tr></table></figure>
+<p>In [5]:</p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">train_targets<span class="string">[:10]</span></span><br></pre></td></tr></table></figure>
+<p>Out[5]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">array</span>([<span class="number">15.2</span>, <span class="number">42.3</span>, <span class="number">50.</span> , <span class="number">21.1</span>, <span class="number">17.7</span>, <span class="number">18.5</span>, <span class="number">11.3</span>, <span class="number">15.6</span>, <span class="number">15.6</span>, <span class="number">14.4</span>])</span><br></pre></td></tr></table></figure>
+<h3 id="数据标准化">数据标准化</h3>
+<p>神经网络中不能输入取值范围差异很大的数据集，需要进行标准化处理。</p>
+<p>每个特征的标准化：(原数据 - 特征平均值) / 标准差。 得到的就是特征平均值为0，标准差为1</p>
+<p>In [6]:</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># numpy实现</span></span><br><span class="line"></span><br><span class="line"><span class="attr">mean</span> = train_data.mean(<span class="attr">axis=0)</span></span><br><span class="line">train_data <span class="attr">-=</span> mean  <span class="comment"># 等价于 train_data = train_data - mean</span></span><br><span class="line"><span class="attr">std</span> = train_data.std(<span class="attr">axis=0)</span></span><br><span class="line">train_data / std</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试集</span></span><br><span class="line">test_data <span class="attr">-=</span> mean <span class="comment"># 训练集的均值和标准差</span></span><br><span class="line">test_data /= std</span><br></pre></td></tr></table></figure>
+<p>注意的点：</p>
+<ol>
+<li>测试集的标准化使用的是训练集的均值和方差</li>
+<li>我们不能使用在测试上计算得到的任何结果</li>
+</ol>
+<h2 id="构建网络">构建网络</h2>
+<p>样本量少，可构建2个隐藏层，每层64个单元。<strong>较小的网络能够降低过拟合</strong></p>
+<h3 id="建模">建模</h3>
+<p>In [7]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">import tensorflow as tf  # add</span><br><span class="line"><span class="keyword">from</span> keras import models</span><br><span class="line"><span class="keyword">from</span> keras import layers</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def build_model():</span><br><span class="line">    model = models.Sequential()  # 需要将同一个模型多次实例化，使用同一个函数来构建模型</span><br><span class="line">    model.<span class="builtin-name">add</span>(tf.keras.layers.Dense(64,</span><br><span class="line">                                    <span class="attribute">activation</span>=<span class="string">"relu"</span>,</span><br><span class="line">                                    # 训练集的shape的第二个取值</span><br><span class="line">                                    input_shape=(train_data.shape[1], )</span><br><span class="line">                                   ))</span><br><span class="line">    model.<span class="builtin-name">add</span>(tf.keras.layers.Dense(64,</span><br><span class="line">                                    <span class="attribute">activation</span>=<span class="string">"relu"</span>))</span><br><span class="line">    model.<span class="builtin-name">add</span>(tf.keras.layers.Dense(1))</span><br><span class="line"></span><br><span class="line">    model.compile(<span class="attribute">optimizer</span>=<span class="string">"rmsprop"</span>,</span><br><span class="line">                  <span class="attribute">loss</span>=<span class="string">"mse"</span>,</span><br><span class="line">                  metrics=[<span class="string">"mae"</span>]</span><br><span class="line">                 )</span><br><span class="line"></span><br><span class="line">    return model</span><br></pre></td></tr></table></figure>
+<p>网络的特点：</p>
+<ol>
+<li>最后一层：一个单元，没有激活，是一个线性层（<strong>标量回归的典型设置</strong>）</li>
+<li>损失函数mse-均方误差，(y_predict- y_true)^2；回归问题的常用损失函数</li>
+<li>监控指标mae-平均绝对误差，|y_predict- y_true|；预测值和目标值之差的绝对值</li>
+</ol>
+<h3 id="K折交叉验证">K折交叉验证</h3>
+<h4 id="原理">原理</h4>
+<p>当样本数量很少的时候，验证集的划分方式可能会造成验证分数上有很大的方差，无法对模型进行可靠的评估。</p>
+<p>最佳方法：使用K折交叉验证</p>
+<ul>
+<li>将数据划分为K个分区，通常是4或者5</li>
+<li>实例化K个模型，将模型在K-1个分区上训练，剩下的一个区上进行评估</li>
+<li>模型的验证分数等于K个验证分数的均值。</li>
+</ul>
+<p>如何K折交叉验证：以3折交叉验证为例</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h0u6597gt7j21ac0m4n1t.jpg" alt=""></p>
+<h4 id="代码实现">代码实现</h4>
+<p>In [8]:</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">import</span> <span class="string">numpy as np</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="attr">k</span> = <span class="string">4</span></span><br><span class="line"><span class="attr">num_val_samples</span> = <span class="string">len(train_data) // k</span></span><br><span class="line"></span><br><span class="line"><span class="attr">for</span> <span class="string">i in range(k):</span></span><br><span class="line">    <span class="meta">print("procesing</span> <span class="string">fold ......", i)</span></span><br><span class="line"><span class="comment">    # 准备验证数据：第k个分区的数据</span></span><br><span class="line">    <span class="attr">val_data</span> = <span class="string">train_data[i*num_val_samples: (i+1) * num_val_samples]</span></span><br><span class="line">    <span class="attr">val_targets</span> = <span class="string">train_targets[i*num_val_samples: (i+1) * num_val_samples]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">    # 训练数据集的合并：axis=0方向</span></span><br><span class="line"><span class="comment">    # train_data合并</span></span><br><span class="line">    <span class="attr">partial_train_data</span> = <span class="string">np.concatenate(</span></span><br><span class="line">        <span class="meta">[train_data[</span>:<span class="string">i*num_val_samples],</span></span><br><span class="line">        <span class="meta">train_data[(i+1)*num_val_samples</span>:<span class="string">]],</span></span><br><span class="line">        <span class="attr">axis</span>=<span class="string">0</span></span><br><span class="line">    <span class="attr">)</span></span><br><span class="line"><span class="comment">    # train_targets合并</span></span><br><span class="line">    <span class="attr">partial_train_targets</span> = <span class="string">np.concatenate(</span></span><br><span class="line">        <span class="meta">[train_targets[</span>:<span class="string">i*num_val_samples],</span></span><br><span class="line">        <span class="meta">train_targets[(i+1)*num_val_samples</span>:<span class="string">]],</span></span><br><span class="line">        <span class="attr">axis</span>=<span class="string">0</span></span><br><span class="line">    <span class="attr">)</span></span><br><span class="line"><span class="attr">procesing</span> <span class="string">fold ...... 0</span></span><br><span class="line"><span class="attr">procesing</span> <span class="string">fold ...... 1</span></span><br><span class="line"><span class="attr">procesing</span> <span class="string">fold ...... 2</span></span><br><span class="line"><span class="attr">procesing</span> <span class="string">fold ...... 3</span></span><br></pre></td></tr></table></figure>
+<h3 id="训练模型-验证集评估模型">训练模型 + 验证集评估模型</h3>
+<p>In [9]:</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">import</span> numpy as np</span><br><span class="line"></span><br><span class="line"><span class="attr">k</span> = <span class="number">4</span></span><br><span class="line"><span class="attr">num_val_samples</span> = len(train_data) // k</span><br><span class="line"><span class="attr">number_epochs</span> = <span class="number">100</span></span><br><span class="line"><span class="attr">all_scores</span> = []</span><br><span class="line"></span><br><span class="line">for i <span class="keyword">in</span> range(k):</span><br><span class="line">    print(<span class="string">"procesing fold ......"</span>, i)</span><br><span class="line">    <span class="comment"># 准备验证数据：第k个分区的数据</span></span><br><span class="line">    <span class="attr">val_data</span> = train_data[i*num_val_samples: (i+<span class="number">1</span>) * num_val_samples]</span><br><span class="line">    <span class="attr">val_targets</span> = train_targets[i*num_val_samples: (i+<span class="number">1</span>) * num_val_samples]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 训练数据集的合并：axis=0方向</span></span><br><span class="line">    <span class="comment"># train_data合并</span></span><br><span class="line">    <span class="attr">partial_train_data</span> = np.concatenate(</span><br><span class="line">        [train_data[:i*num_val_samples],</span><br><span class="line">        train_data[(i+<span class="number">1</span>)*num_val_samples:]],</span><br><span class="line">        <span class="attr">axis=0</span></span><br><span class="line">    )</span><br><span class="line">    <span class="comment"># train_targets合并</span></span><br><span class="line">    <span class="attr">partial_train_targets</span> = np.concatenate(</span><br><span class="line">        [train_targets[:i*num_val_samples],</span><br><span class="line">        train_targets[(i+<span class="number">1</span>)*num_val_samples:]],</span><br><span class="line">        <span class="attr">axis=0</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="attr">model</span> = build_model()</span><br><span class="line">    model.fit(partial_train_data,</span><br><span class="line">              partial_train_targets,</span><br><span class="line">              <span class="attr">epochs=number_epochs,</span></span><br><span class="line">              <span class="attr">batch_size=1,</span></span><br><span class="line">              <span class="attr">verbose=0</span>  <span class="comment"># 静默模式</span></span><br><span class="line">             )</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 验证数据上评估模型</span></span><br><span class="line">    val_mse, <span class="attr">val_mae</span> = model.evaluate(val_data, val_targets, <span class="attr">verbose=0)</span></span><br><span class="line"></span><br><span class="line">    all_scores.append(val_mae)</span><br><span class="line">procesing fold ...... <span class="number">0</span></span><br><span class="line">procesing fold ...... <span class="number">1</span></span><br><span class="line">procesing fold ...... <span class="number">2</span></span><br><span class="line">procesing fold ...... <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p>In [10]:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">all_scores</span><br></pre></td></tr></table></figure>
+<p>Out[10]:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">2.6683619022369385</span>,</span><br><span class="line"> <span class="number">2.8356902599334717</span>,</span><br><span class="line"> <span class="number">2.8533785343170166</span>,</span><br><span class="line"> <span class="number">2.9509527683258057</span>]</span><br></pre></td></tr></table></figure>
+<p>In [11]:</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">np</span>.<span class="built_in">mean</span>(all_scores)</span><br></pre></td></tr></table></figure>
+<p>Out[11]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2.827095866203308</span></span><br></pre></td></tr></table></figure>
+<p>每次运行模型得到的数值还是有很大的差异，但是均值最终还是在2.94接近3，是一个比较可靠的结果。</p>
+<h3 id="增加模型训练轮次（修改）">增加模型训练轮次（修改）</h3>
+<ul>
+<li>将模型训练500次</li>
+<li>保存每轮的验证分数记录</li>
+</ul>
+<h4 id="代码实现-v2">代码实现</h4>
+<p>In [14]:</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">import</span> numpy as np</span><br><span class="line"></span><br><span class="line"><span class="attr">k</span> = <span class="number">4</span></span><br><span class="line"><span class="attr">num_val_samples</span> = len(train_data) // k</span><br><span class="line"><span class="attr">number_epochs</span> = <span class="number">500</span></span><br><span class="line"><span class="comment"># 修改：统计mae得分</span></span><br><span class="line"><span class="attr">all_mae_histories</span> = []</span><br><span class="line"></span><br><span class="line">for i <span class="keyword">in</span> range(k):</span><br><span class="line">    print(<span class="string">"procesing fold ......"</span>, i)</span><br><span class="line">    <span class="comment"># 准备验证数据：第k个分区的数据</span></span><br><span class="line">    <span class="attr">val_data</span> = train_data[i*num_val_samples: (i+<span class="number">1</span>) * num_val_samples]</span><br><span class="line">    <span class="attr">val_targets</span> = train_targets[i*num_val_samples: (i+<span class="number">1</span>) * num_val_samples]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 训练数据集的合并：axis=0方向</span></span><br><span class="line">    <span class="comment"># train_data合并</span></span><br><span class="line">    <span class="attr">partial_train_data</span> = np.concatenate(</span><br><span class="line">        [train_data[:i*num_val_samples],</span><br><span class="line">        train_data[(i+<span class="number">1</span>)*num_val_samples:]],</span><br><span class="line">        <span class="attr">axis=0</span></span><br><span class="line">    )</span><br><span class="line">    <span class="comment"># train_targets合并</span></span><br><span class="line">    <span class="attr">partial_train_targets</span> = np.concatenate(</span><br><span class="line">        [train_targets[:i*num_val_samples],</span><br><span class="line">        train_targets[(i+<span class="number">1</span>)*num_val_samples:]],</span><br><span class="line">        <span class="attr">axis=0</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="attr">model</span> = build_model()</span><br><span class="line"></span><br><span class="line">    <span class="attr">history</span> = model.fit(</span><br><span class="line">        partial_train_data,</span><br><span class="line">        partial_train_targets,</span><br><span class="line">        <span class="attr">validation_data=(val_data,</span> val_targets),  <span class="comment"># 增加内容</span></span><br><span class="line">        <span class="attr">epochs=number_epochs,</span></span><br><span class="line">        <span class="attr">batch_size=1,</span></span><br><span class="line">        <span class="attr">verbose=0</span>  <span class="comment"># 静默模式</span></span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 验证数据上评估模型：记录mae</span></span><br><span class="line">    <span class="comment"># 原文使用的是全称</span></span><br><span class="line">    <span class="comment"># mae_history = history.history["val_mean_absolute_error"]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 目前版本已经使用缩写形式</span></span><br><span class="line">    <span class="attr">mae_history</span> = history.history[<span class="string">"val_mae"</span>]</span><br><span class="line">    all_mae_histories.append(mae_history)</span><br><span class="line">procesing fold ...... <span class="number">0</span></span><br><span class="line">procesing fold ...... <span class="number">1</span></span><br><span class="line">procesing fold ...... <span class="number">2</span></span><br><span class="line">procesing fold ...... <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p>计算每个轮次中所有折的MAE的平均值：</p>
+<p>In [24]:</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">len</span><span class="params">(all_mae_histories)</span></span></span><br></pre></td></tr></table></figure>
+<p>Out[24]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">4</span></span><br></pre></td></tr></table></figure>
+<p>In [25]:</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">len</span><span class="params">(all_mae_histories[<span class="number">0</span>])</span></span></span><br></pre></td></tr></table></figure>
+<p>Out[25]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">500</span></span><br></pre></td></tr></table></figure>
+<p>In [26]:</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">average_mae_history = [<span class="built_in">np</span>.<span class="built_in">mean</span>([x[i] <span class="keyword">for</span> x <span class="keyword">in</span> all_mae_histories]) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(number_epochs)]</span><br><span class="line">average_mae_history[:<span class="number">10</span>]</span><br></pre></td></tr></table></figure>
+<p>Out[26]:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">6.998382568359375</span>,</span><br><span class="line"> <span class="number">5.590555667877197</span>,</span><br><span class="line"> <span class="number">6.159129858016968</span>,</span><br><span class="line"> <span class="number">5.215211391448975</span>,</span><br><span class="line"> <span class="number">5.865886926651001</span>,</span><br><span class="line"> <span class="number">5.083814740180969</span>,</span><br><span class="line"> <span class="number">5.314043760299683</span>,</span><br><span class="line"> <span class="number">4.525156497955322</span>,</span><br><span class="line"> <span class="number">4.432371437549591</span>,</span><br><span class="line"> <span class="number">5.098088502883911</span>]</span><br></pre></td></tr></table></figure>
+<p>In [27]:</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">len</span><span class="params">(average_mae_history)</span></span></span><br></pre></td></tr></table></figure>
+<p>Out[27]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">500</span></span><br></pre></td></tr></table></figure>
+<h4 id="可视化：绘制验证分数">可视化：绘制验证分数</h4>
+<p>In [31]:</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">import</span> <span class="selector-tag">matplotlib</span><span class="selector-class">.pyplot</span> <span class="selector-tag">as</span> <span class="selector-tag">plt</span></span><br><span class="line"></span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.plot</span>(range(<span class="number">1</span>, len(average_mae_history) + <span class="number">1</span>), average_mae_history)</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.xlabel</span>(<span class="string">"Epochs"</span>)</span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.ylabel</span>(<span class="string">"Validation MEA"</span>)</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.show</span>()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h0u94uy12jj20ag07adfu.jpg" alt=""></p>
+<h4 id="可视化改进版">可视化改进版</h4>
+<p>上面的图形纵轴范围大，且数据的方差大，很难看清图形，重新绘制：</p>
+<ul>
+<li>删除前面10个点，它们的取值和其他点的取值差异大</li>
+<li>将每个数据点替换为前面数据点的指数移动平均值，得到光滑的曲线</li>
+</ul>
+<p>In [38]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">smooth_curve</span><span class="params">(points, factor=<span class="number">0.9</span>)</span>:</span></span><br><span class="line">    smoothed_points = []</span><br><span class="line">    <span class="keyword">for</span> point <span class="keyword">in</span> points:</span><br><span class="line">        <span class="keyword">if</span> smoothed_points:</span><br><span class="line">            previous = smoothed_points[<span class="number">-1</span>]</span><br><span class="line">            smoothed_points.append(previous * factor + point * (<span class="number">1</span> - factor))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            smoothed_points.append(point)</span><br><span class="line">    <span class="keyword">return</span> smoothed_points</span><br><span class="line"></span><br><span class="line">smooth_mae_history = smooth_curve(average_mae_history[<span class="number">10</span>:])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">plt.plot(range(<span class="number">1</span>, len(smooth_mae_history) + <span class="number">1</span>), smooth_mae_history)</span><br><span class="line"></span><br><span class="line">plt.xlabel(<span class="string">"Epochs"</span>)</span><br><span class="line">plt.ylabel(<span class="string">"Validation MEA"</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h0u95c26bbj20ax07aweh.jpg" alt=""></p>
+<h3 id="训练最终模型">训练最终模型</h3>
+<p>使用最佳参数在整个训练集上进行训练，然后在测试集上进行测试：</p>
+<p>In [40]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">model = build_model()</span><br><span class="line"></span><br><span class="line">model.fit(train_data,train_targets,</span><br><span class="line">          epochs=<span class="number">80</span>,</span><br><span class="line">          batch_size=<span class="number">16</span>,</span><br><span class="line">          verbose=<span class="number">0</span></span><br><span class="line">         )</span><br><span class="line"></span><br><span class="line">test_mse_score, test_mae_score = model.evaluate(test_data,test_targets)</span><br><span class="line"><span class="number">4</span>/<span class="number">4</span> [==============================] - <span class="number">0</span>s <span class="number">3</span>ms/step - loss: <span class="number">372.9089</span> - mae: <span class="number">18.3248</span></span><br></pre></td></tr></table></figure>
+<p>In [41]:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">test_mae_score</span><br></pre></td></tr></table></figure>
+<p>Out[41]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">18.324810028076172</span></span><br></pre></td></tr></table></figure>
+<p>可以看到预测的房价和真实的房价的相差约为1.8万美元</p>
+<h2 id="总结">总结</h2>
+<ul>
+<li>回归问题中，损失函数使用的是均方误差MSE</li>
+<li>回归问题中，评价指标使用的是平均绝对误差MAE</li>
+<li>如果数据的特征具有不同的取值范围，需要进行数据的归一化，进行数据缩放</li>
+<li>当数据少的时候，使用K折交叉验证来可靠的评估模型</li>
+<li>如果训练的数据少，最好使用隐藏层较少的小型网络，以避免严重的过拟合</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2022/04/02/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-%E6%88%BF%E4%BB%B7%E9%A2%84%E6%B5%8B.html">深度学习实战-房价预测.md</a></p>
+  <p><span>发布时间:</span>2022年04月02日 - 21:04</p>
+  <p><span>原始链接:</span><a href="/2022/04/02/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-%E6%88%BF%E4%BB%B7%E9%A2%84%E6%B5%8B.html" title="深度学习实战-房价预测.md">http://www.renpeter.cn/2022/04/02/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-%E6%88%BF%E4%BB%B7%E9%A2%84%E6%B5%8B.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2022/04/02/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-%E6%88%BF%E4%BB%B7%E9%A2%84%E6%B5%8B.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag"># 深度学习</a>
+          
+            <a href="/tags/keras/" rel="tag"># keras</a>
+          
+            <a href="/tags/%E5%9B%9E%E5%BD%92/" rel="tag"># 回归</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/04/02/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-%E7%94%B5%E5%BD%B1%E8%AF%84%E8%AE%BA%E5%88%86%E7%B1%BB.html" rel="next" title="深度学习实战-电影评论分类">
+                <i class="fa fa-chevron-left"></i> 深度学习实战-电影评论分类
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/04/04/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-%E6%96%B0%E9%97%BB%E5%A4%9A%E5%88%86%E7%B1%BB.html" rel="prev" title="深度学习实战-新闻多分类">
+                深度学习实战-新闻多分类 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">704</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">88</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">80</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#深度学习回归案例：房价预测"><span class="nav-number">1.</span> <span class="nav-text">深度学习回归案例：房价预测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#波士顿房价数据集"><span class="nav-number">2.</span> <span class="nav-text">波士顿房价数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#划分数据集"><span class="nav-number">2.1.</span> <span class="nav-text">划分数据集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据标准化"><span class="nav-number">2.2.</span> <span class="nav-text">数据标准化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构建网络"><span class="nav-number">3.</span> <span class="nav-text">构建网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#建模"><span class="nav-number">3.1.</span> <span class="nav-text">建模</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#K折交叉验证"><span class="nav-number">3.2.</span> <span class="nav-text">K折交叉验证</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#原理"><span class="nav-number">3.2.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码实现"><span class="nav-number">3.2.2.</span> <span class="nav-text">代码实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#训练模型-验证集评估模型"><span class="nav-number">3.3.</span> <span class="nav-text">训练模型 + 验证集评估模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#增加模型训练轮次（修改）"><span class="nav-number">3.4.</span> <span class="nav-text">增加模型训练轮次（修改）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#代码实现-v2"><span class="nav-number">3.4.1.</span> <span class="nav-text">代码实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可视化：绘制验证分数"><span class="nav-number">3.4.2.</span> <span class="nav-text">可视化：绘制验证分数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可视化改进版"><span class="nav-number">3.4.3.</span> <span class="nav-text">可视化改进版</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#训练最终模型"><span class="nav-number">3.5.</span> <span class="nav-text">训练最终模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keras/" rel="tag">Keras</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">62</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/keras/" rel="tag">keras</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">120</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyg2plot/" rel="tag">pyg2plot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">92</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sklearn/" rel="tag">sklearn</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tableau/" rel="tag">tableau</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">38</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B3%E8%81%94%E5%88%86%E6%9E%90/" rel="tag">关联分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%99%E4%BD%9C/" rel="tag">写作</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">119</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E5%BD%92/" rel="tag">回归</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E5%BD%92%E5%88%86%E6%9E%90/" rel="tag">回归分析</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E5%85%B8/" rel="tag">字典</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%80%E6%BA%90/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AA%E7%8E%AF/" rel="tag">循环</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">65</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag">数据处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">101</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" rel="tag">数据挖掘</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/" rel="tag">文本处理</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">93</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">51</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">监督学习</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1/" rel="tag">统计</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag">编程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB/" rel="tag">聚类</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">自动化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97/" rel="tag">随机森林</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/" rel="tag">集成学习</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%92%E6%98%A5/" rel="tag">青春</a><span class="tag-list-count">1</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共1019.2k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2022/04/02/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-%E6%88%BF%E4%BB%B7%E9%A2%84%E6%B5%8B.html';
+          this.page.identifier = '2022/04/02/深度学习实战-房价预测.html';
+          this.page.title = '深度学习实战-房价预测.md';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
