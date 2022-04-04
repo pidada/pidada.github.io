@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="机器学习,深度学习,keras," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="深度学习多分类案例：新闻文本多分类 如果每个数据点可以划分到多个类别、多个标签、多个分类下，这就是属于多分类问题了。 本文介绍一个基于深度学习的多分类实战案例：新闻文本分类">
+<meta name="keywords" content="机器学习,深度学习,keras">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习实战-新闻文本多分类">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2022&#x2F;04&#x2F;03&#x2F;%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-%E6%96%B0%E9%97%BB%E5%A4%9A%E5%88%86%E7%B1%BB.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="深度学习多分类案例：新闻文本多分类 如果每个数据点可以划分到多个类别、多个标签、多个分类下，这就是属于多分类问题了。 本文介绍一个基于深度学习的多分类实战案例：新闻文本分类">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h0uaimel9mj20hq08cq36.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h0t70a9nqrj21f607ijts.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h0uanifq91j21ka0sktf0.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h0uanuzty7j21jo0sojxp.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h0uaoehppnj20aq07qaa5.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h0uap7fzzsj20aq07qmx9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h0uapvatjhj21oc0tgdm7.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h0uaqub0hwj21ka0n8jwg.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h0uarifdhzj21ht0u00z8.jpg">
+<meta property="og:updated_time" content="2022-04-03T05:00:48.693Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h0uaimel9mj20hq08cq36.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2022/04/03/深度学习实战-新闻多分类.html"/>
+
+
+
+
+
+  <title>深度学习实战-新闻文本多分类 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2022/04/03/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-%E6%96%B0%E9%97%BB%E5%A4%9A%E5%88%86%E7%B1%BB.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深度学习实战-新闻文本多分类</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-04-03T23:27:53+08:00">
+                2022-4-3
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DL/" itemprop="url" rel="index">
+                    <span itemprop="name">DL</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DL/%E5%AE%9E%E6%88%98/" itemprop="url" rel="index">
+                    <span itemprop="name">实战</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2022/04/03/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-%E6%96%B0%E9%97%BB%E5%A4%9A%E5%88%86%E7%B1%BB.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2022/04/03/深度学习实战-新闻多分类.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.9k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  9
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="深度学习多分类案例：新闻文本多分类">深度学习多分类案例：新闻文本多分类</h2>
+<p>如果每个数据点可以划分到多个类别、多个标签、多个分类下，这就是属于多分类问题了。</p>
+<p>本文介绍一个基于深度学习的多分类实战案例：新闻文本分类</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h0uaimel9mj20hq08cq36.jpg" alt=""></p>
+<a id="more"></a>
+<h2 id="数据集">数据集</h2>
+<h3 id="路透社数据集">路透社数据集</h3>
+<p>广泛使用的文本分类数据集：46个不同的主题，即输出有46个类别。某些样本的主题更多，但是训练集中的每个主题至少有10个样本</p>
+<h3 id="加载数据集">加载数据集</h3>
+<p>也是内置的数据集</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h0t70a9nqrj21f607ijts.jpg" alt="img"></p>
+<p>In [1]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> keras.datasets <span class="keyword">import</span> reuters</span><br></pre></td></tr></table></figure>
+<p>In [2]:</p>
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr"># 限制前10000</span>个最常见的单词</span><br><span class="line"></span><br><span class="line"><span class="comment">(train_data, train_labels)</span>, <span class="comment">(test_data, test_labels)</span> = reuters.load_data<span class="comment">(num_words=10000)</span></span><br></pre></td></tr></table></figure>
+<p>In [3]:</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看数据</span></span><br><span class="line"><span class="built_in">len</span>(train_data)</span><br></pre></td></tr></table></figure>
+<p>Out[3]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">8982</span></span><br></pre></td></tr></table></figure>
+<p>In [4]:</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">len</span><span class="params">(test_data)</span></span></span><br></pre></td></tr></table></figure>
+<p>Out[4]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2246</span></span><br></pre></td></tr></table></figure>
+<p>In [5]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">train_data</span><span class="selector-class">.shape</span></span><br></pre></td></tr></table></figure>
+<p>Out[5]:</p>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">8982</span>,)</span><br></pre></td></tr></table></figure>
+<p>In [6]:</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span>(train_data)</span><br></pre></td></tr></table></figure>
+<p>Out[6]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">numpy</span><span class="selector-class">.ndarray</span></span><br></pre></td></tr></table></figure>
+<h3 id="索引解码为单词">索引解码为单词</h3>
+<p>In [7]:</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">word_index = reuters.get_word_index()</span><br><span class="line"></span><br><span class="line">reverse_word_index = dict([(<span class="keyword">value</span>,<span class="built_in"> key</span>) <span class="keyword">for</span> <span class="built_in">(key</span>, <span class="keyword">value</span>) <span class="keyword">in</span> word_index.items()])</span><br></pre></td></tr></table></figure>
+<p>In [8]:</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">decoded_newswire = <span class="string">' '</span>.join([reverse_word_index.get(<span class="selector-tag">i</span> - <span class="number">3</span>, <span class="string">'?'</span>) <span class="keyword">for</span> <span class="selector-tag">i</span> <span class="keyword">in</span> train_data[<span class="number">0</span>]])</span><br><span class="line">decoded_newswire</span><br></pre></td></tr></table></figure>
+<p>Out[8]:</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">'? ? ? said <span class="keyword">as</span> a <span class="literal">result</span> <span class="keyword">of</span> <span class="keyword">its</span> december acquisition <span class="keyword">of</span> <span class="literal">space</span> co <span class="keyword">it</span> expects earnings per share <span class="keyword">in</span> <span class="number">1987</span> <span class="keyword">of</span> <span class="number">1</span> <span class="number">15</span> <span class="keyword">to</span> <span class="number">1</span> <span class="number">30</span> dlrs per share up <span class="keyword">from</span> <span class="number">70</span> cts <span class="keyword">in</span> <span class="number">1986</span> <span class="keyword">the</span> company said pretax net should rise <span class="keyword">to</span> nine <span class="keyword">to</span> <span class="number">10</span> mln dlrs <span class="keyword">from</span> six mln dlrs <span class="keyword">in</span> <span class="number">1986</span> <span class="keyword">and</span> rental operation revenues <span class="keyword">to</span> <span class="number">19</span> <span class="keyword">to</span> <span class="number">22</span> mln dlrs <span class="keyword">from</span> <span class="number">12</span> <span class="number">5</span> mln dlrs <span class="keyword">it</span> said cash flow per share this <span class="built_in">year</span> should be <span class="number">2</span> <span class="number">50</span> <span class="keyword">to</span> three dlrs reuter <span class="number">3</span>'</span><br></pre></td></tr></table></figure>
+<p>索引减去3是因为：012分别是为“padding填充”，“start of sequence(序列开始)”，&quot;unknown（未知）&quot;分别保留的索引</p>
+<p>样本标签对应的是0-45范围内的整数：</p>
+<p>In [9]:</p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">train_labels<span class="string">[10]</span></span><br></pre></td></tr></table></figure>
+<p>Out[9]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">3</span></span><br></pre></td></tr></table></figure>
+<h3 id="数据向量化">数据向量化</h3>
+<p>In [10]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">vectorize_sequences</span><span class="params">(sequences, dimension=<span class="number">10000</span>)</span>:</span></span><br><span class="line">    results = np.zeros((len(sequences), dimension)) <span class="comment"># 创建全0矩阵</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i, sequence <span class="keyword">in</span> enumerate(sequences):</span><br><span class="line">        results[i, sequence] = <span class="number">1.</span>  <span class="comment"># 指定位置填充1</span></span><br><span class="line">    <span class="keyword">return</span> results</span><br><span class="line"></span><br><span class="line"><span class="comment"># 训练数据和测试数据向量化</span></span><br><span class="line">x_train = vectorize_sequences(train_data)</span><br><span class="line">x_test = vectorize_sequences(test_data)</span><br></pre></td></tr></table></figure>
+<h3 id="标签向量化-onehot">标签向量化-onehot</h3>
+<p>主要是有两种方法：</p>
+<ul>
+<li>将标签列表转成整数张量</li>
+<li>one-hot编码，分类编码的一种</li>
+</ul>
+<p>In [11]:</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import numpy as <span class="built_in">np</span></span><br><span class="line"></span><br><span class="line">def to_one_hot(<span class="built_in">labels</span>, <span class="built_in">dimension</span>=<span class="number">46</span>):</span><br><span class="line">    results = <span class="built_in">np</span>.zeros((len(<span class="built_in">labels</span>), <span class="built_in">dimension</span>)) # 创建全<span class="number">0</span>矩阵</span><br><span class="line">    <span class="keyword">for</span> i, <span class="built_in">label</span> <span class="keyword">in</span> enumerate(<span class="built_in">labels</span>):</span><br><span class="line">        results[i, <span class="built_in">label</span>] = <span class="number">1</span>.  # 指定位置填充<span class="number">1</span></span><br><span class="line">    <span class="built_in">return</span> results</span><br><span class="line"></span><br><span class="line"># 训练标签和测试标签向量化</span><br><span class="line">one_hot_train_label = to_one_hot(train_labels)</span><br><span class="line">one_hot_test_label = to_one_hot(test_labels)</span><br></pre></td></tr></table></figure>
+<p>In [12]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.zeros((<span class="number">4</span>,<span class="number">5</span>))</span><br></pre></td></tr></table></figure>
+<p>Out[12]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">array</span>([[<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">       [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">       [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">       [<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>]])</span><br></pre></td></tr></table></figure>
+<h3 id="Keras内置方法实现one-hot">Keras内置方法实现one-hot</h3>
+<p>In [13]:</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from keras.utils.np_utils import to_categorical</span><br><span class="line"></span><br><span class="line">one_hot_train_labels = <span class="keyword">to</span><span class="constructor">_categorical(<span class="params">train_labels</span>)</span></span><br><span class="line">one_hot_test_labels = <span class="keyword">to</span><span class="constructor">_categorical(<span class="params">test_labels</span>)</span></span><br></pre></td></tr></table></figure>
+<h2 id="建模">建模</h2>
+<h3 id="模型定义（修改）">模型定义（修改）</h3>
+<p>In [14]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">import tensorflow as tf  # add</span><br><span class="line"><span class="keyword">from</span> keras import models</span><br><span class="line"><span class="keyword">from</span> keras import layers</span><br><span class="line"></span><br><span class="line">model = models.Sequential()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 原文model.add(layers.Dense(16, activation="relu", input_shape=(10000, )))</span></span><br><span class="line"><span class="comment"># 统一修改3处内容：layers.Dense 变成 tf.keras.layers.Dense</span></span><br><span class="line">model.<span class="builtin-name">add</span>(tf.keras.layers.Dense(64,</span><br><span class="line">                       <span class="attribute">activation</span>=<span class="string">"relu"</span>,</span><br><span class="line">                       input_shape=(10000,)</span><br><span class="line">                      ))</span><br><span class="line">model.<span class="builtin-name">add</span>(tf.keras.layers.Dense(64,</span><br><span class="line">                       <span class="attribute">activation</span>=<span class="string">"relu"</span></span><br><span class="line">                      ))</span><br><span class="line">model.<span class="builtin-name">add</span>(tf.keras.layers.Dense(46,</span><br><span class="line">                      <span class="attribute">activation</span>=<span class="string">"softmax"</span></span><br><span class="line">                      ))</span><br></pre></td></tr></table></figure>
+<p>注意两点：</p>
+<ol>
+<li>网络的最后一层是大小为46的Dense层。意味着，对于每个输入样本，网络都会输出一个46维的向量，这个向量的每个元素代表不同的输出类型</li>
+<li>最后一个使用的是softmax激活：网络将输出在46个不同类别上的概率分布，output[i]是样本属于第i个类别的概率，46个概率的总和是1</li>
+</ol>
+<h3 id="模型编译">模型编译</h3>
+<p>多分类问题最好使用categorical_crossentropy作为损失函数。它用于衡量两个概率分布之间的距离：网络输出的概率分布和标签的真实概率分布</p>
+<p>目标：<strong>这两个概率分布的距离最小化</strong></p>
+<p>In [15]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">model.compile(<span class="attribute">optimizer</span>=<span class="string">"rmsprop"</span>,</span><br><span class="line">             <span class="attribute">loss</span>=<span class="string">"categorical_crossentropy"</span>,</span><br><span class="line">             metrics=[<span class="string">"accuracy"</span>])</span><br></pre></td></tr></table></figure>
+<h3 id="验证模型-提取验证集">验证模型-提取验证集</h3>
+<p>In [16]:</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 取出1000个样本作为验证集</span></span><br><span class="line"></span><br><span class="line"><span class="attr">x_val</span> = x_train[:<span class="number">1000</span>]</span><br><span class="line"><span class="attr">partial_x_train</span> = x_train[<span class="number">1000</span>:]</span><br><span class="line"></span><br><span class="line"><span class="attr">y_val</span> = <span class="literal">on</span>e_hot_train_labels[:<span class="number">1000</span>]</span><br><span class="line"><span class="attr">partial_y_train</span> = <span class="literal">on</span>e_hot_train_labels[<span class="number">1000</span>:]</span><br></pre></td></tr></table></figure>
+<h2 id="训练网络">训练网络</h2>
+<p>开始20个轮次epochs训练网络</p>
+<p>In [17]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">history</span> = model.fit<span class="params">(partial_x_train,</span></span><br><span class="line"><span class="params">                    partial_y_train,</span></span><br><span class="line"><span class="params">                    <span class="attr">epochs</span>=20,</span></span><br><span class="line"><span class="params">                    <span class="attr">batch_size</span>=512,</span></span><br><span class="line"><span class="params">                    <span class="attr">validation_data</span> =(x_val, y_val)</span></span><br><span class="line">                   )</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h0uanifq91j21ka0sktf0.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h0uanuzty7j21jo0sojxp.jpg" alt=""></p>
+<h2 id="绘图">绘图</h2>
+<h3 id="损失">损失</h3>
+<p>In [20]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 损失绘图</span></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">history_dict = history.history</span><br><span class="line">loss_values = history_dict[<span class="string">"loss"</span>]</span><br><span class="line">val_loss_values = history_dict[<span class="string">"val_loss"</span>]</span><br><span class="line"></span><br><span class="line">epochs = range(<span class="number">1</span>,len(loss_values) + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 训练</span></span><br><span class="line">plt.plot(epochs,  <span class="comment">#  横坐标</span></span><br><span class="line">         loss_values,  <span class="comment"># 纵坐标</span></span><br><span class="line">         <span class="string">"r"</span>,  <span class="comment"># 颜色和形状，默认是实线</span></span><br><span class="line">         label=<span class="string">"Training_Loss"</span>  <span class="comment"># 标签名</span></span><br><span class="line">        )</span><br><span class="line"><span class="comment"># 验证</span></span><br><span class="line">plt.plot(epochs,</span><br><span class="line">         val_loss_values,</span><br><span class="line">         <span class="string">"b"</span>,</span><br><span class="line">         label=<span class="string">"Validation_Loss"</span></span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">plt.title(<span class="string">"Training and Validation Loss"</span>)</span><br><span class="line">plt.xlabel(<span class="string">"Epochs"</span>)</span><br><span class="line">plt.ylabel(<span class="string">"Loss"</span>)</span><br><span class="line">plt.legend()</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h0uaoehppnj20aq07qaa5.jpg" alt=""></p>
+<h3 id="精度（修改）">精度（修改）</h3>
+<p>多分类问题中得到的是acc的全拼，而不是缩写</p>
+<p>In [19]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 精度绘图</span></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">history_dict = history.history</span><br><span class="line">acc_values = history_dict[<span class="string">"accuracy"</span>]  <span class="comment"># 修改：原文是acc ---&gt; accuracy</span></span><br><span class="line">val_acc_values = history_dict[<span class="string">"val_accuracy"</span>]   <span class="comment"># val_acc ---&gt; val_accuracy</span></span><br><span class="line"></span><br><span class="line">epochs = range(<span class="number">1</span>,len(loss_values) + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">plt.plot(epochs,</span><br><span class="line">         acc_values,</span><br><span class="line">         <span class="string">"r"</span>,</span><br><span class="line">         label=<span class="string">"Training_ACC"</span></span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">plt.plot(epochs,</span><br><span class="line">         val_acc_values,</span><br><span class="line">         <span class="string">"b"</span>,</span><br><span class="line">         label=<span class="string">"Validation_ACC"</span></span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">plt.title(<span class="string">"Training and Validation ACC"</span>)</span><br><span class="line">plt.xlabel(<span class="string">"Epochs"</span>)</span><br><span class="line">plt.ylabel(<span class="string">"acc"</span>)</span><br><span class="line">plt.legend()</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h0uap7fzzsj20aq07qmx9.jpg" alt=""></p>
+<h2 id="重新训练">重新训练</h2>
+<p>网路在训练9轮后开始过拟合，重新训练一个新网络：共9个轮次</p>
+<p>In [25]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf  <span class="comment"># add</span></span><br><span class="line"><span class="keyword">from</span> keras <span class="keyword">import</span> models</span><br><span class="line"><span class="keyword">from</span> keras <span class="keyword">import</span> layers</span><br><span class="line"></span><br><span class="line">model = models.Sequential()</span><br><span class="line">model.add(tf.keras.layers.Dense(<span class="number">64</span>,</span><br><span class="line">                                activation=<span class="string">"relu"</span>,</span><br><span class="line">                                input_shape=(<span class="number">10000</span>, )</span><br><span class="line">                               ))</span><br><span class="line"></span><br><span class="line">model.add(tf.keras.layers.Dense(<span class="number">64</span>,</span><br><span class="line">                               activation=<span class="string">"relu"</span>))</span><br><span class="line"></span><br><span class="line">model.add(tf.keras.layers.Dense(<span class="number">46</span>,</span><br><span class="line">                                activation=<span class="string">"softmax"</span></span><br><span class="line">                               ))</span><br><span class="line"></span><br><span class="line">model.compile(optimizer=<span class="string">"rmsprop"</span>,</span><br><span class="line">               loss=<span class="string">"categorical_crossentropy"</span>,</span><br><span class="line">               metrics=[<span class="string">"accuracy"</span>]</span><br><span class="line">              )</span><br><span class="line"></span><br><span class="line">model.fit(partial_x_train,</span><br><span class="line">          partial_y_train,</span><br><span class="line">          epochs=<span class="number">9</span>,</span><br><span class="line">          batch_size=<span class="number">512</span>,</span><br><span class="line">          validation_data=(x_val, y_val))</span><br><span class="line"></span><br><span class="line">results = model.evaluate(x_test, one_hot_test_labels)</span><br><span class="line">results</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h0uapvatjhj21oc0tgdm7.jpg" alt=""></p>
+<p>这个模型的精度到达了78.6%。如果是随机的基准是多少呢？</p>
+<p>In [26]:</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import <span class="built_in">copy</span></span><br><span class="line"></span><br><span class="line">test_labels_copy = <span class="built_in">copy</span>.<span class="built_in">copy</span>(test_labels)</span><br><span class="line"><span class="built_in">np</span>.<span class="built_in">random</span>.shuffle(test_labels_copy)</span><br></pre></td></tr></table></figure>
+<p>In [28]:</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hist_array = <span class="built_in">np</span>.<span class="built_in">array</span>(test_labels) == <span class="built_in">np</span>.<span class="built_in">array</span>(test_labels_copy)</span><br></pre></td></tr></table></figure>
+<p>In [29]:</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">hist_array</span>  <span class="comment"># T或者F的元素</span></span><br></pre></td></tr></table></figure>
+<p>Out[29]:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">array([False,</span> <span class="literal">False</span><span class="string">,</span> <span class="literal">False</span><span class="string">,</span> <span class="string">...,</span> <span class="literal">False</span><span class="string">,</span>  <span class="literal">True</span><span class="string">,</span> <span class="literal">False</span><span class="string">])</span></span><br></pre></td></tr></table></figure>
+<p>In [30]:</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">float(<span class="name">np</span>.sum(<span class="name">hist_array</span>)) / len(<span class="name">test_labels</span>)</span><br></pre></td></tr></table></figure>
+<p>Out[30]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0.18744434550311664</span></span><br></pre></td></tr></table></figure>
+<h2 id="测试集验证">测试集验证</h2>
+<p>使用的是predict函数</p>
+<p>In [31]:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">predictions = model.predict(x_test)</span><br><span class="line">predictions</span><br></pre></td></tr></table></figure>
+<p>Out[31]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">array([[<span class="number">1.35964816e-04</span>, <span class="number">5.63261092e-05</span>, <span class="number">1.82070780e-05</span>, ...,</span><br><span class="line">        <span class="number">1.30567923e-06</span>, <span class="number">1.98109021e-07</span>, <span class="number">6.60357784e-07</span>],</span><br><span class="line">       [<span class="number">4.93899640e-03</span>, <span class="number">4.66015842e-03</span>, <span class="number">1.14109996e-03</span>, ...,</span><br><span class="line">        <span class="number">1.06564505e-04</span>, <span class="number">3.91121466e-05</span>, <span class="number">9.38424782e-04</span>],</span><br><span class="line">       [<span class="number">1.59738748e-03</span>, <span class="number">7.79436469e-01</span>, <span class="number">1.73478038e-03</span>, ...,</span><br><span class="line">        <span class="number">1.25069331e-04</span>, <span class="number">1.86533769e-04</span>, <span class="number">1.70501284e-04</span>],</span><br><span class="line">       ...,</span><br><span class="line">       [<span class="number">6.38374695e-05</span>, <span class="number">1.36295348e-04</span>, <span class="number">4.94179221e-05</span>, ...,</span><br><span class="line">        <span class="number">2.28828794e-05</span>, <span class="number">2.12488590e-06</span>, <span class="number">5.73998386e-06</span>],</span><br><span class="line">       [<span class="number">3.28431278e-03</span>, <span class="number">6.02599606e-02</span>, <span class="number">3.11069656e-03</span>, ...,</span><br><span class="line">        <span class="number">6.78190409e-05</span>, <span class="number">8.90388037e-05</span>, <span class="number">2.43265240e-04</span>],</span><br><span class="line">       [<span class="number">1.19820972e-04</span>, <span class="number">6.49809241e-01</span>, <span class="number">1.08765960e-02</span>, ...,</span><br><span class="line">        <span class="number">7.17515213e-05</span>, <span class="number">3.85396503e-04</span>, <span class="number">3.51801835e-04</span>]], dtype=float32)</span><br></pre></td></tr></table></figure>
+<p>1、predictions中每个元素都是46维的向量：</p>
+<p>In [32]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 每个元素都是<span class="number">46</span>维的向量</span><br><span class="line"></span><br><span class="line">predictions[<span class="number">0</span>].shape</span><br></pre></td></tr></table></figure>
+<p>Out[32]:</p>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">46</span>,)</span><br></pre></td></tr></table></figure>
+<p>In [33]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">predictions</span><span class="selector-attr">[1]</span><span class="selector-class">.shape</span></span><br></pre></td></tr></table></figure>
+<p>Out[33]:</p>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">46</span>,)</span><br></pre></td></tr></table></figure>
+<p>In [34]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">predictions</span><span class="selector-attr">[50]</span><span class="selector-class">.shape</span></span><br></pre></td></tr></table></figure>
+<p>Out[34]:</p>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name">46</span>,)</span><br></pre></td></tr></table></figure>
+<p>2、所有元素的和为1：</p>
+<p>In [35]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 所有元素的和为<span class="number">1</span></span><br><span class="line">sum(predictions[<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+<p>Out[35]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.0000001240543241</span></span><br></pre></td></tr></table></figure>
+<p>3、最大元素就是预测的类别，也就是概率最大的类别：</p>
+<p>In [36]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">np</span><span class="selector-class">.argmax</span>(<span class="selector-tag">predictions</span><span class="selector-attr">[0]</span>)</span><br></pre></td></tr></table></figure>
+<p>Out[36]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p>In [37]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">np</span><span class="selector-class">.argmax</span>(<span class="selector-tag">predictions</span><span class="selector-attr">[4]</span>)</span><br></pre></td></tr></table></figure>
+<p>Out[37]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">13</span></span><br></pre></td></tr></table></figure>
+<h2 id="换种方式处理标签和损失">换种方式处理标签和损失</h2>
+<p>In [38]:</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 方式1：转换为整数张量</span></span><br><span class="line"></span><br><span class="line"><span class="attr">y_train</span> = np.array(train_labels)</span><br><span class="line"><span class="attr">y_test</span> = np.array(test_labels)</span><br></pre></td></tr></table></figure>
+<p>使用的损失函数categorical_crossentropy，标签遵循分类编码。</p>
+<p>如果是整数标签，使用sparse_categorical_crossentropy：</p>
+<p>In [39]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">model.compile(<span class="attribute">optimizer</span>=<span class="string">"rmsprop"</span>,</span><br><span class="line">               <span class="attribute">loss</span>=<span class="string">"sparse_categorical_crossentropy"</span>,  # 损失函数</span><br><span class="line">               metrics=[<span class="string">"accuracy"</span>]</span><br><span class="line">              )</span><br></pre></td></tr></table></figure>
+<h2 id="中间层维度足够大的重要性">中间层维度足够大的重要性</h2>
+<p>最终输出是46维的，因此中间层的隐藏单个数不应该比46小太多。如果小太多，将会造成信息的丢失：</p>
+<p>In [40]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">import tensorflow as tf</span><br><span class="line"><span class="keyword">from</span> keras import models</span><br><span class="line"><span class="keyword">from</span> keras import layers</span><br><span class="line"></span><br><span class="line">model = models.Sequential()</span><br><span class="line">model.<span class="builtin-name">add</span>(tf.keras.layers.Dense(64,</span><br><span class="line">                                <span class="attribute">activation</span>=<span class="string">"relu"</span>,</span><br><span class="line">                                input_shape=(10000, )</span><br><span class="line">                               ))</span><br><span class="line"></span><br><span class="line">model.<span class="builtin-name">add</span>(tf.keras.layers.Dense(4,  # 中间层从64----&gt;4</span><br><span class="line">                               <span class="attribute">activation</span>=<span class="string">"relu"</span>))</span><br><span class="line"></span><br><span class="line">model.<span class="builtin-name">add</span>(tf.keras.layers.Dense(46,</span><br><span class="line">                                <span class="attribute">activation</span>=<span class="string">"softmax"</span></span><br><span class="line">                               ))</span><br><span class="line"></span><br><span class="line">model.compile(<span class="attribute">optimizer</span>=<span class="string">"rmsprop"</span>,</span><br><span class="line">               <span class="attribute">loss</span>=<span class="string">"categorical_crossentropy"</span>,</span><br><span class="line">               metrics=[<span class="string">"accuracy"</span>]</span><br><span class="line">              )</span><br><span class="line"></span><br><span class="line">model.fit(partial_x_train,</span><br><span class="line">          partial_y_train,</span><br><span class="line">          <span class="attribute">epochs</span>=20,</span><br><span class="line">          <span class="attribute">batch_size</span>=512,</span><br><span class="line">          validation_data=(x_val, y_val))</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h0uaqub0hwj21ka0n8jwg.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h0uarifdhzj21ht0u00z8.jpg" alt=""></p>
+<p>我们发现最终上升到了69.2%</p>
+<h2 id="进一步实验">进一步实验</h2>
+<ol>
+<li>尝试使用更多或者更少的隐藏单元，比如32或者128等</li>
+<li>改变隐藏层个数，目前是2个；可以改成1个或者3个</li>
+</ol>
+<h2 id="小结">小结</h2>
+<ol>
+<li>如果是对N个类别进行分类，最后一层应该是大小为N的Dense层</li>
+<li>单标签多分类问题，网络的最后一层使用softmax激活，输出在N个输出类别上的概率分布</li>
+<li>损失函数几乎都是分类交叉熵categorical_crossentropy。它将网络输出的概率分布和目标真实分布之间的距离最小化</li>
+<li>避免使用太小的中间层，以免在网络中造成信息瓶颈。</li>
+<li>处理多分类的标签方法：
+<ul>
+<li>分类编码：one-hot编码，然后使用categorical_crossentropy</li>
+<li>将标签编码为整数，然后使用sparse_categorical_crossentropy</li>
+</ul>
+</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2022/04/03/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-%E6%96%B0%E9%97%BB%E5%A4%9A%E5%88%86%E7%B1%BB.html">深度学习实战-新闻文本多分类</a></p>
+  <p><span>发布时间:</span>2022年04月03日 - 23:04</p>
+  <p><span>原始链接:</span><a href="/2022/04/03/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-%E6%96%B0%E9%97%BB%E5%A4%9A%E5%88%86%E7%B1%BB.html" title="深度学习实战-新闻文本多分类">http://www.renpeter.cn/2022/04/03/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-%E6%96%B0%E9%97%BB%E5%A4%9A%E5%88%86%E7%B1%BB.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2022/04/03/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-%E6%96%B0%E9%97%BB%E5%A4%9A%E5%88%86%E7%B1%BB.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag"># 深度学习</a>
+          
+            <a href="/tags/keras/" rel="tag"># keras</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/04/03/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80.html" rel="next" title="python机器学习基础">
+                <i class="fa fa-chevron-left"></i> python机器学习基础
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/04/04/TensorFlow%E5%BC%A0%E9%87%8F%E7%9F%A5%E8%AF%86.html" rel="prev" title="TensorFlow张量知识">
+                TensorFlow张量知识 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">708</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">90</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">82</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#深度学习多分类案例：新闻文本多分类"><span class="nav-number">1.</span> <span class="nav-text">深度学习多分类案例：新闻文本多分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据集"><span class="nav-number">2.</span> <span class="nav-text">数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#路透社数据集"><span class="nav-number">2.1.</span> <span class="nav-text">路透社数据集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加载数据集"><span class="nav-number">2.2.</span> <span class="nav-text">加载数据集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引解码为单词"><span class="nav-number">2.3.</span> <span class="nav-text">索引解码为单词</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据向量化"><span class="nav-number">2.4.</span> <span class="nav-text">数据向量化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标签向量化-onehot"><span class="nav-number">2.5.</span> <span class="nav-text">标签向量化-onehot</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Keras内置方法实现one-hot"><span class="nav-number">2.6.</span> <span class="nav-text">Keras内置方法实现one-hot</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建模"><span class="nav-number">3.</span> <span class="nav-text">建模</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模型定义（修改）"><span class="nav-number">3.1.</span> <span class="nav-text">模型定义（修改）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型编译"><span class="nav-number">3.2.</span> <span class="nav-text">模型编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证模型-提取验证集"><span class="nav-number">3.3.</span> <span class="nav-text">验证模型-提取验证集</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#训练网络"><span class="nav-number">4.</span> <span class="nav-text">训练网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#绘图"><span class="nav-number">5.</span> <span class="nav-text">绘图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#损失"><span class="nav-number">5.1.</span> <span class="nav-text">损失</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#精度（修改）"><span class="nav-number">5.2.</span> <span class="nav-text">精度（修改）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重新训练"><span class="nav-number">6.</span> <span class="nav-text">重新训练</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试集验证"><span class="nav-number">7.</span> <span class="nav-text">测试集验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#换种方式处理标签和损失"><span class="nav-number">8.</span> <span class="nav-text">换种方式处理标签和损失</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#中间层维度足够大的重要性"><span class="nav-number">9.</span> <span class="nav-text">中间层维度足够大的重要性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进一步实验"><span class="nav-number">10.</span> <span class="nav-text">进一步实验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">11.</span> <span class="nav-text">小结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kats/" rel="tag">Kats</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">62</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/keras/" rel="tag">keras</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">120</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyg2plot/" rel="tag">pyg2plot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">92</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sklearn/" rel="tag">sklearn</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tableau/" rel="tag">tableau</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">38</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B3%E8%81%94%E5%88%86%E6%9E%90/" rel="tag">关联分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%99%E4%BD%9C/" rel="tag">写作</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">119</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E5%BD%92/" rel="tag">回归</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E5%BD%92%E5%88%86%E6%9E%90/" rel="tag">回归分析</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E5%85%B8/" rel="tag">字典</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%80%E6%BA%90/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AA%E7%8E%AF/" rel="tag">循环</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">65</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag">数据处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">101</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" rel="tag">数据挖掘</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/" rel="tag">文本处理</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E5%BA%8F%E5%88%86%E6%9E%90/" rel="tag">时序分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">96</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AD%A3%E5%88%99%E5%8C%96/" rel="tag">正则化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">51</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">监督学习</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1/" rel="tag">统计</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag">编程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB/" rel="tag">聚类</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">自动化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97/" rel="tag">随机森林</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/" rel="tag">集成学习</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%92%E6%98%A5/" rel="tag">青春</a><span class="tag-list-count">1</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共1026k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2022/04/03/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-%E6%96%B0%E9%97%BB%E5%A4%9A%E5%88%86%E7%B1%BB.html';
+          this.page.identifier = '2022/04/03/深度学习实战-新闻多分类.html';
+          this.page.title = '深度学习实战-新闻文本多分类';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
