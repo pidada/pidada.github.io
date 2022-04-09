@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="深度学习,卷积," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="深度学习实战：基于卷积神经网络的猫狗识别 本文记录了第一个基于卷积神经网络在图像识别领域的应用：猫狗图像识别。主要内容包含：  数据处理 神经网络模型搭建 数据增强实现  本文中使用的深度学习框架是Keras； 图像数据来自kaggle官网：https:&#x2F;&#x2F;www.kaggle.com&#x2F;c&#x2F;dogs-vs-cats&#x2F;data">
+<meta name="keywords" content="深度学习,卷积">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习实战-CNN猫狗识别">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2022&#x2F;04&#x2F;09&#x2F;%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-CNN%E7%8C%AB%E7%8B%97%E8%AF%86%E5%88%AB.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="深度学习实战：基于卷积神经网络的猫狗识别 本文记录了第一个基于卷积神经网络在图像识别领域的应用：猫狗图像识别。主要内容包含：  数据处理 神经网络模型搭建 数据增强实现  本文中使用的深度学习框架是Keras； 图像数据来自kaggle官网：https:&#x2F;&#x2F;www.kaggle.com&#x2F;c&#x2F;dogs-vs-cats&#x2F;data">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h13r8e4ptoj20p70akdgk.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h13rxefgy7j21rw0g8dkm.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h13rd3ies1j20ya0newgt.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h13ryer2f8j21090u0diz.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h13rfdnnggj20yq0muac1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h13rgc8157j21gw0k4tcq.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h13rh1z85mj21hg0n0q7p.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h13rhvfmllj20ac07cglp.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h13ri1dxjyj20ac07ct8t.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h13rj9o424j20pu0t8tb1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h13rjm57nrj20q00t0tb0.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h13rl0v1hyj211z0u00vz.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h13rm8bmkhj21gi0i8q6f.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h13rmrpeufj21hm0kedju.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h13rofqycsj20ai07cjrk.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h13rokmnb2j20ai07c74i.jpg">
+<meta property="og:updated_time" content="2022-04-09T13:28:17.306Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h13r8e4ptoj20p70akdgk.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2022/04/09/深度学习实战-CNN猫狗识别.html"/>
+
+
+
+
+
+  <title>深度学习实战-CNN猫狗识别 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2022/04/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-CNN%E7%8C%AB%E7%8B%97%E8%AF%86%E5%88%AB.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深度学习实战-CNN猫狗识别</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-04-09T21:27:15+08:00">
+                2022-4-9
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DL/" itemprop="url" rel="index">
+                    <span itemprop="name">DL</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DL/%E5%AE%9E%E6%88%98/" itemprop="url" rel="index">
+                    <span itemprop="name">实战</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2022/04/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-CNN%E7%8C%AB%E7%8B%97%E8%AF%86%E5%88%AB.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2022/04/09/深度学习实战-CNN猫狗识别.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  2.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  12
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="深度学习实战：基于卷积神经网络的猫狗识别">深度学习实战：基于卷积神经网络的猫狗识别</h2>
+<p>本文记录了第一个基于卷积神经网络在图像识别领域的应用：<strong>猫狗图像识别</strong>。主要内容包含：</p>
+<ul>
+<li>数据处理</li>
+<li>神经网络模型搭建</li>
+<li>数据增强实现</li>
+</ul>
+<p>本文中使用的深度学习框架是Keras；</p>
+<p>图像数据来自kaggle官网：<a href="https://www.kaggle.com/c/dogs-vs-cats/data" target="_blank" rel="noopener">https://www.kaggle.com/c/dogs-vs-cats/data</a></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h13r8e4ptoj20p70akdgk.jpg" alt=""></p>
+<a id="more"></a>
+<h2 id="数据处理">数据处理</h2>
+<h3 id="数据量">数据量</h3>
+<p>数据集包含25000张图片，猫和狗各有12500张；创建每个类别1000个样本的训练集、500个样本的验证集和500个样本的测试集</p>
+<p>注意：<strong>只取出部分的数据进行建模</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h13rxefgy7j21rw0g8dkm.jpg" alt=""></p>
+<h3 id="创建目录">创建目录</h3>
+<p>In [1]:</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os, shutil</span><br></pre></td></tr></table></figure>
+<p>In [2]:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">current_dir = !pwd  <span class="comment"># 当前目录</span></span><br><span class="line">current_dir[0]</span><br></pre></td></tr></table></figure>
+<p>Out[2]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'/Users/peter/Desktop/kaggle/kaggle_12_dogs&amp;cats/dogs-vs-cats'</span></span><br></pre></td></tr></table></figure>
+<p>创建新的目录来存储需要的数据集：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">base_dir = current_dir[<span class="number">0</span>] + <span class="string">'/cats_dogs_small'</span></span><br><span class="line">os.mkdir(base_dir)  <span class="comment"># 创建目录</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 分别创建训练集、验证集和测试集的目录</span></span><br><span class="line"></span><br><span class="line">train_dir = os.path.join(base_dir,<span class="string">"train"</span>)</span><br><span class="line">os.mkdir(train_dir)</span><br><span class="line">validation_dir = os.path.join(base_dir,<span class="string">"validation"</span>)</span><br><span class="line">os.mkdir(validation_dir)</span><br><span class="line">test_dir = os.path.join(base_dir,<span class="string">"test"</span>)</span><br><span class="line">os.mkdir(test_dir)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 猫、狗的训练、验证、测试图像目录</span></span><br><span class="line">train_cats_dir = os.path.join(train_dir, <span class="string">"cats"</span>)</span><br><span class="line">os.mkdir(train_cats_dir)</span><br><span class="line">train_dogs_dir = os.path.join(train_dir, <span class="string">"dogs"</span>)</span><br><span class="line">os.mkdir(train_dogs_dir)</span><br><span class="line"></span><br><span class="line">validation_cats_dir = os.path.join(validation_dir, <span class="string">"cats"</span>)</span><br><span class="line">os.mkdir(validation_cats_dir)</span><br><span class="line">validation_dogs_dir = os.path.join(validation_dir, <span class="string">"dogs"</span>)</span><br><span class="line">os.mkdir(validation_dogs_dir)</span><br><span class="line"></span><br><span class="line">test_cats_dir = os.path.join(test_dir, <span class="string">"cats"</span>)</span><br><span class="line">os.mkdir(test_cats_dir)</span><br><span class="line">test_dogs_dir = os.path.join(test_dir, <span class="string">"dogs"</span>)</span><br><span class="line">os.mkdir(test_dogs_dir)</span><br></pre></td></tr></table></figure>
+<h3 id="数据集复制">数据集复制</h3>
+<p>In [5]:</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># 1000张当做训练集train</span></span><br><span class="line"></span><br><span class="line">fnames = [<span class="string">'cat.&#123;&#125;.jpg'</span>.format(i) <span class="function"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="title">range</span>(<span class="params"><span class="number">1000</span></span>)]</span></span><br><span class="line"><span class="function"><span class="keyword">for</span> fname <span class="keyword">in</span> fnames:</span></span><br><span class="line"><span class="function">    # 源目录文件</span></span><br><span class="line"><span class="function">    src</span> = os.path.<span class="keyword">join</span>(current_dir[<span class="number">0</span>] + <span class="string">"/train"</span>, fname)</span><br><span class="line">    <span class="meta"># 目标目录</span></span><br><span class="line">    dst = os.path.<span class="keyword">join</span>(train_cats_dir, fname)</span><br><span class="line">    shutil.copyfile(src, dst)</span><br></pre></td></tr></table></figure>
+<p>In [6]:</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># <span class="number">500</span>张当做验证集valiation</span><br><span class="line"></span><br><span class="line">fnames = [<span class="string">'cat.&#123;&#125;.jpg'</span>.<span class="built_in">format</span>(i) <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>,<span class="number">1500</span>)]</span><br><span class="line"><span class="keyword">for</span> fname <span class="keyword">in</span> fnames:</span><br><span class="line">    src = <span class="built_in">os</span>.<span class="built_in">path</span>.join(current_dir[<span class="number">0</span>] + <span class="string">"/train"</span>, fname)</span><br><span class="line">    dst = <span class="built_in">os</span>.<span class="built_in">path</span>.join(validation_cats_dir, fname)</span><br><span class="line">    shutil.copyfile(src, dst)</span><br></pre></td></tr></table></figure>
+<p>In [7]:</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># <span class="number">500</span>张当做测试集test</span><br><span class="line"></span><br><span class="line">fnames = [<span class="string">'cat.&#123;&#125;.jpg'</span>.<span class="built_in">format</span>(i) <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1500</span>,<span class="number">2000</span>)]</span><br><span class="line"><span class="keyword">for</span> fname <span class="keyword">in</span> fnames:</span><br><span class="line">    src = <span class="built_in">os</span>.<span class="built_in">path</span>.join(current_dir[<span class="number">0</span>] + <span class="string">"/train"</span>, fname)</span><br><span class="line">    dst = <span class="built_in">os</span>.<span class="built_in">path</span>.join(test_cats_dir, fname)</span><br><span class="line">    shutil.copyfile(src, dst)</span><br></pre></td></tr></table></figure>
+<p>In [8]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 针对dog的3个同样操作</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 1、1000张当做训练集train</span></span><br><span class="line">fnames = [<span class="string">'dog.&#123;&#125;.jpg'</span>.format(i) <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>)]</span><br><span class="line"><span class="keyword">for</span> fname <span class="keyword">in</span> fnames:</span><br><span class="line">    src = os.path.join(current_dir[<span class="number">0</span>] + <span class="string">"/train"</span>, fname)</span><br><span class="line">    dst = os.path.join(train_dogs_dir, fname)</span><br><span class="line">    shutil.copyfile(src, dst)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2、500张当做验证集valiation</span></span><br><span class="line">fnames = [<span class="string">'dog.&#123;&#125;.jpg'</span>.format(i) <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>,<span class="number">1500</span>)]</span><br><span class="line"><span class="keyword">for</span> fname <span class="keyword">in</span> fnames:</span><br><span class="line">    src = os.path.join(current_dir[<span class="number">0</span>] + <span class="string">"/train"</span>, fname)</span><br><span class="line">    dst = os.path.join(validation_dogs_dir, fname)</span><br><span class="line">    shutil.copyfile(src, dst)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3、500张当做测试集test</span></span><br><span class="line">fnames = [<span class="string">'dog.&#123;&#125;.jpg'</span>.format(i) <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1500</span>,<span class="number">2000</span>)]</span><br><span class="line"><span class="keyword">for</span> fname <span class="keyword">in</span> fnames:</span><br><span class="line">    src = os.path.join(current_dir[<span class="number">0</span>] + <span class="string">"/train"</span>, fname)</span><br><span class="line">    dst = os.path.join(test_dogs_dir, fname)</span><br><span class="line">    shutil.copyfile(src, dst)</span><br></pre></td></tr></table></figure>
+<h3 id="检查数据">检查数据</h3>
+<p>针对猫狗两个类别中查看每个集（训练、验证、测试）中分别包含多少张图像：</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h13rd3ies1j20ya0newgt.jpg" alt=""></p>
+<h2 id="构建神经网络">构建神经网络</h2>
+<p>复习一下卷积神经网络的构成：<strong>Conv2D层（使用relu激活函数） + MaxPooling2D层 交替堆叠构成</strong>。</p>
+<p>当需要更大的图像和更复杂的问题，需要再添加一个 Conv2D层（使用relu激活函数） + MaxPooling2D层。</p>
+<p>这样做的好处：</p>
+<ul>
+<li>增大网络容量</li>
+<li>减少特征图的尺寸</li>
+</ul>
+<p>需要注意的是：猫狗分类是二分类问题，所以网络的最后一层是使用sigmoid激活的单一单元（大小为1的Dense层）</p>
+<p>在网络中特征图的深度在逐渐增大（从32到128），但是特征图的尺寸在逐渐减小（从150-150到7-7）</p>
+<ol>
+<li>深度增加：原始图像更复杂，需要更多的过滤器</li>
+<li>尺寸减小：更多的卷积和池化层对图像在不断地压缩和抽象</li>
+</ol>
+<h3 id="网络搭建">网络搭建</h3>
+<p>In [15]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">from</span> keras <span class="keyword">import</span> layers</span><br><span class="line"><span class="keyword">from</span> keras <span class="keyword">import</span> models</span><br><span class="line"></span><br><span class="line">model = models.Sequential()</span><br><span class="line">model.add(tf.keras.layers.Conv2D(<span class="number">32</span>,(<span class="number">3</span>,<span class="number">3</span>),activation=<span class="string">"relu"</span>,</span><br><span class="line">                               input_shape=(<span class="number">150</span>,<span class="number">150</span>,<span class="number">3</span>)))</span><br><span class="line">model.add(tf.keras.layers.MaxPooling2D((<span class="number">2</span>,<span class="number">2</span>)))</span><br><span class="line"></span><br><span class="line">model.add(tf.keras.layers.Conv2D(<span class="number">64</span>,(<span class="number">3</span>,<span class="number">3</span>),activation=<span class="string">"relu"</span>))</span><br><span class="line">model.add(tf.keras.layers.MaxPooling2D((<span class="number">2</span>,<span class="number">2</span>)))</span><br><span class="line"></span><br><span class="line">model.add(tf.keras.layers.Conv2D(<span class="number">128</span>,(<span class="number">3</span>,<span class="number">3</span>),activation=<span class="string">"relu"</span>))</span><br><span class="line">model.add(tf.keras.layers.MaxPooling2D((<span class="number">2</span>,<span class="number">2</span>)))</span><br><span class="line"></span><br><span class="line">model.add(tf.keras.layers.Conv2D(<span class="number">128</span>,(<span class="number">3</span>,<span class="number">3</span>),activation=<span class="string">"relu"</span>))</span><br><span class="line">model.add(tf.keras.layers.MaxPooling2D((<span class="number">2</span>,<span class="number">2</span>)))  <span class="comment">#</span></span><br><span class="line"></span><br><span class="line">model.add(tf.keras.layers.Flatten())</span><br><span class="line">model.add(tf.keras.layers.Dense(<span class="number">512</span>, activation=<span class="string">"relu"</span>))</span><br><span class="line">model.add(tf.keras.layers.Dense(<span class="number">1</span>, activation=<span class="string">"sigmoid"</span>))</span><br><span class="line"></span><br><span class="line">model.summary()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h13ryer2f8j21090u0diz.jpg" alt=""></p>
+<h3 id="模型编译（优化）">模型编译（优化）</h3>
+<p>网络最后一层是单一sigmoid单元，使用二元交叉熵作为损失函数</p>
+<p>In [16]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 原文：from keras import optimizers</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> tensorflow.keras <span class="keyword">import</span> optimizers</span><br><span class="line"></span><br><span class="line">model.compile(loss=<span class="string">"binary_crossentropy"</span>,</span><br><span class="line">             optimizer=optimizers.RMSprop(lr=<span class="number">1e-4</span>),</span><br><span class="line">             metrics=[<span class="string">"acc"</span>])</span><br></pre></td></tr></table></figure>
+<h3 id="数据预处理">数据预处理</h3>
+<p>数据输入到神经网络之前必须先转成<strong>浮点数张量</strong>。</p>
+<p>keras有个处理图像的模块：<strong>keras.preprocessing.image</strong>。</p>
+<p>它包含ImageDataGenerator类，可以快速创建Python生成器，将图形文件处理成张量批量</p>
+<p><strong>插播知识点：如何理解python中的生成器</strong>？</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h13rfdnnggj20yq0muac1.jpg" alt=""></p>
+<h4 id="数据预处理-v2">数据预处理</h4>
+<ol>
+<li>读取文件</li>
+<li>将文件JPEG文件转成RGB像素网络</li>
+<li>像素网格转成浮点数张量</li>
+</ol>
+<p>In [18]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> keras.preprocessing.image <span class="keyword">import</span> ImageDataGenerator</span><br><span class="line"></span><br><span class="line">train_datagen = ImageDataGenerator(rescale=<span class="number">1.</span>/<span class="number">255</span>)  <span class="comment"># 进行缩放</span></span><br><span class="line">test_datagen = ImageDataGenerator(rescale=<span class="number">1.</span>/<span class="number">255</span>)  <span class="comment"># 进行缩放</span></span><br><span class="line"></span><br><span class="line">train_generator = train_datagen.flow_from_directory(</span><br><span class="line">    train_dir,  <span class="comment"># 待处理的目录</span></span><br><span class="line">    target_size=(<span class="number">150</span>,<span class="number">150</span>),  <span class="comment"># 图像大小设置</span></span><br><span class="line">    batch_size=<span class="number">20</span>,</span><br><span class="line">    class_mode=<span class="string">"binary"</span>  <span class="comment"># 损失函数是binary_crossentropy 所以使用二进制标签</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">validation_generator = test_datagen.flow_from_directory(</span><br><span class="line">    validation_dir,  <span class="comment"># 待处理的目录</span></span><br><span class="line">    target_size=(<span class="number">150</span>,<span class="number">150</span>),  <span class="comment"># 图像大小设置</span></span><br><span class="line">    batch_size=<span class="number">20</span>,</span><br><span class="line">    class_mode=<span class="string">"binary"</span>  <span class="comment"># 损失函数是binary_crossentropy 所以使用二进制标签</span></span><br><span class="line">)</span><br><span class="line">Found <span class="number">2000</span> images belonging to <span class="number">2</span> classes.</span><br><span class="line">Found <span class="number">1000</span> images belonging to <span class="number">2</span> classes.</span><br></pre></td></tr></table></figure>
+<p>In [19]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> data_batch, labels_batch <span class="keyword">in</span> train_generator:</span><br><span class="line">    print(data_batch.shape)</span><br><span class="line">    print(labels_batch.shape)</span><br><span class="line">    <span class="keyword">break</span></span><br><span class="line">(<span class="number">20</span>, <span class="number">150</span>, <span class="number">150</span>, <span class="number">3</span>)</span><br><span class="line">(<span class="number">20</span>,)</span><br></pre></td></tr></table></figure>
+<p>生成器的输出是150-150的RGB图像和二进制标签，形状为(20,)组成的批量。每个批量包含20个样本（批量的大小）。</p>
+<p>生成器会不断地生成这些批量，不断地循环目标文件夹中的图像。</p>
+<p>keras模型使用fit_generator方法来拟合生成器的效果。模型有个参数steps_per_epoch参数：从生成器中抽取steps_per_epoch个批量后，拟合进入下一轮。</p>
+<p>本例中：<strong>总共是2000个样本，每个批量是20个样本，所以需要100个批量</strong></p>
+<h3 id="模型拟合">模型拟合</h3>
+<p>In [20]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">history = model.fit_generator(</span><br><span class="line">    train_generator,  <span class="comment"># 第一个参数必须是Python生成器</span></span><br><span class="line">    steps_per_epoch=<span class="number">100</span>,  <span class="comment"># 2000 / 20</span></span><br><span class="line">    epochs=<span class="number">30</span>,  <span class="comment"># 迭代次数</span></span><br><span class="line">    validation_data=validation_generator,  <span class="comment"># 待验证的数据集</span></span><br><span class="line">    validation_steps=<span class="number">50</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h13rgc8157j21gw0k4tcq.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h13rh1z85mj21hg0n0q7p.jpg" alt=""></p>
+<h3 id="保存模型">保存模型</h3>
+<p>In [21]:</p>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># 保存模型</span></span><br><span class="line"><span class="meta"># model.save("cats_and_dogs_small.h5")</span></span><br></pre></td></tr></table></figure>
+<h3 id="损失和精度曲线">损失和精度曲线</h3>
+<p>In [22]:</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">%matplotlib <span class="keyword">inline</span></span><br></pre></td></tr></table></figure>
+<p>In [23]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">history_dict = history.history  <span class="comment"># 字典形式</span></span><br><span class="line"><span class="keyword">for</span> key, _ <span class="keyword">in</span> history_dict.items():</span><br><span class="line">    print(key)</span><br><span class="line">loss</span><br><span class="line">acc</span><br><span class="line">val_loss</span><br><span class="line">val_acc</span><br></pre></td></tr></table></figure>
+<p>In [24]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">acc = history_dict[<span class="string">"acc"</span>]</span><br><span class="line">val_acc = history_dict[<span class="string">"val_acc"</span>]</span><br><span class="line"></span><br><span class="line">loss = history_dict[<span class="string">"loss"</span>]</span><br><span class="line">val_loss = history_dict[<span class="string">"val_loss"</span>]</span><br></pre></td></tr></table></figure>
+<p>In [25]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">epochs = range(<span class="number">1</span>, len(acc)+<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># acc</span></span><br><span class="line">plt.plot(epochs, acc, <span class="string">"bo"</span>, label=<span class="string">"Training acc"</span>)</span><br><span class="line">plt.plot(epochs, val_acc, <span class="string">"b"</span>, label=<span class="string">"Validation acc"</span>)</span><br><span class="line">plt.title(<span class="string">"Training and Validation acc"</span>)</span><br><span class="line">plt.legend()</span><br><span class="line"></span><br><span class="line">plt.figure()</span><br><span class="line"></span><br><span class="line"><span class="comment"># loss</span></span><br><span class="line">plt.plot(epochs, loss, <span class="string">"bo"</span>, label=<span class="string">"Training loss"</span>)</span><br><span class="line">plt.plot(epochs, val_loss, <span class="string">"b"</span>, label=<span class="string">"Validation loss"</span>)</span><br><span class="line">plt.title(<span class="string">"Training and Validation loss"</span>)</span><br><span class="line">plt.legend()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h13rhvfmllj20ac07cglp.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h13ri1dxjyj20ac07ct8t.jpg" alt=""></p>
+<p>小结：得到过拟合的结论</p>
+<ol>
+<li>随着时间的增加，训练精度在不断增加，接近100%，而验证精度则停留在70%</li>
+<li>验证的损失差不多在第6轮后达到最小值，后面一定轮数内保持不变，训练的损失一直下降，直接接近0</li>
+</ol>
+<h2 id="数据增强-data-augmentation">数据增强-data augmentation</h2>
+<h3 id="什么是数据增强">什么是数据增强</h3>
+<p>数据增强也是解决过拟合的一种方法，另外两种是：</p>
+<ol>
+<li>dropout</li>
+<li>权重衰减正则化</li>
+</ol>
+<p>什么是数据增强：从现有的训练样本中生成更多的训练数据，利用多种能够生成可信图像的随机变化来增加数据样本。</p>
+<p>模型在训练时候不会查看两个完全相同的图像</p>
+<h3 id="设置数据增强">设置数据增强</h3>
+<p>In [26]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">datagen = ImageDataGenerator(</span><br><span class="line">    rotation_range=<span class="number">40</span>,  <span class="comment"># 0-180的角度值</span></span><br><span class="line">    width_shift_range=<span class="number">0.2</span>,  <span class="comment"># 水平和垂直方向的范围；相对于总宽度或者高度的比例</span></span><br><span class="line">    height_shift_range=<span class="number">0.2</span>,</span><br><span class="line">    shear_range=<span class="number">0.2</span>,  <span class="comment"># 随机错切变换的角度</span></span><br><span class="line">    zoom_range=<span class="number">0.2</span>,  <span class="comment"># 图像随机缩放的角度</span></span><br><span class="line">    horizontal_flip=<span class="literal">True</span>,  <span class="comment"># 随机将一半图像进行水平翻转</span></span><br><span class="line">    fill_mode=<span class="string">"nearest"</span>  <span class="comment"># 用于填充新创建像素的方法</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="显示增强后图像">显示增强后图像</h3>
+<p>In [27]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> keras.preprocessing <span class="keyword">import</span> image</span><br><span class="line"></span><br><span class="line">fnames = [os.path.join(train_cats_dir,fname) <span class="keyword">for</span> fname <span class="keyword">in</span> os.listdir(train_cats_dir)]</span><br><span class="line">img_path = fnames[<span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+<p>In [28]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 读取图片并调整大小</span></span><br><span class="line">img = image.load_img(img_path, target_size=(<span class="number">150</span>,<span class="number">150</span>))</span><br><span class="line"><span class="comment"># 转成数组</span></span><br><span class="line">x = image.img_to_array(img)</span><br><span class="line"></span><br><span class="line"><span class="comment"># shape转成(1,150,150,3)</span></span><br><span class="line">x = x.reshape((<span class="number">1</span>,) + x.shape)</span><br><span class="line"></span><br><span class="line">i = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> batch <span class="keyword">in</span> datagen.flow(x, batch_size=<span class="number">1</span>):  <span class="comment"># 生成随机变换后的图像批量</span></span><br><span class="line">    plt.figure()</span><br><span class="line">    imgplot = plt.imshow(image.array_to_img(batch[<span class="number">0</span>]))</span><br><span class="line">    i += <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> i % <span class="number">4</span> == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">break</span>  <span class="comment"># 循环是无限，需要在某个时刻终止</span></span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h13rj9o424j20pu0t8tb1.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h13rjm57nrj20q00t0tb0.jpg" alt=""></p>
+<h3 id="包含Dropout层的新卷积神经网络">包含Dropout层的新卷积神经网络</h3>
+<p>数据增强来训练网络的话，网络不会看到两次相同的输入。但是输入仍是高度相关的，不能完全消除过拟合。</p>
+<p>可以考虑添加一个Dropout层，添加到密集分类连接器之前</p>
+<p>In [29]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">from</span> keras <span class="keyword">import</span> layers</span><br><span class="line"><span class="keyword">from</span> keras <span class="keyword">import</span> models</span><br><span class="line"></span><br><span class="line">model = models.Sequential()</span><br><span class="line">model.add(tf.keras.layers.Conv2D(<span class="number">32</span>,(<span class="number">3</span>,<span class="number">3</span>),activation=<span class="string">"relu"</span>,</span><br><span class="line">                               input_shape=(<span class="number">150</span>,<span class="number">150</span>,<span class="number">3</span>)))</span><br><span class="line">model.add(tf.keras.layers.MaxPooling2D((<span class="number">2</span>,<span class="number">2</span>)))</span><br><span class="line"></span><br><span class="line">model.add(tf.keras.layers.Conv2D(<span class="number">64</span>,(<span class="number">3</span>,<span class="number">3</span>),activation=<span class="string">"relu"</span>))</span><br><span class="line">model.add(tf.keras.layers.MaxPooling2D((<span class="number">2</span>,<span class="number">2</span>)))</span><br><span class="line"></span><br><span class="line">model.add(tf.keras.layers.Conv2D(<span class="number">128</span>,(<span class="number">3</span>,<span class="number">3</span>),activation=<span class="string">"relu"</span>))</span><br><span class="line">model.add(tf.keras.layers.MaxPooling2D((<span class="number">2</span>,<span class="number">2</span>)))</span><br><span class="line"></span><br><span class="line">model.add(tf.keras.layers.Conv2D(<span class="number">128</span>,(<span class="number">3</span>,<span class="number">3</span>),activation=<span class="string">"relu"</span>))</span><br><span class="line">model.add(tf.keras.layers.MaxPooling2D((<span class="number">2</span>,<span class="number">2</span>)))  <span class="comment">#</span></span><br><span class="line"></span><br><span class="line">model.add(tf.keras.layers.Flatten())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加内容</span></span><br><span class="line">model.add(tf.keras.layers.Dropout(<span class="number">0.5</span>))</span><br><span class="line"></span><br><span class="line">model.add(tf.keras.layers.Dense(<span class="number">512</span>, activation=<span class="string">"relu"</span>))</span><br><span class="line">model.add(tf.keras.layers.Dense(<span class="number">1</span>, activation=<span class="string">"sigmoid"</span>))</span><br><span class="line"></span><br><span class="line">model.compile(loss=<span class="string">"binary_crossentropy"</span>,</span><br><span class="line">             optimizer=optimizers.RMSprop(lr=<span class="number">1e-4</span>),</span><br><span class="line">             metrics=[<span class="string">"acc"</span>])</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h13rl0v1hyj211z0u00vz.jpg" alt=""></p>
+<h3 id="利用数据增强器来训练卷积神经网络（报错解决）">利用数据增强器来训练卷积神经网络（报错解决）</h3>
+<p>关于报错解决：我们训练图像有2000张，验证图像1000张，和1000张测试图像。</p>
+<ul>
+<li>steps_per_epoch=100，batch_size=32，如此数据应该是3200张，很明显输入训练数据不够。</li>
+<li>validation_steps=50，batch_size=32，如此数据应该是1600张，很明显验证数据不够。</li>
+</ul>
+<p>因此，改为steps_per_epoch=2000/32≈63，validation_steps=1000/32≈32。</p>
+<p>In [44]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 训练数据的增强</span></span><br><span class="line">train_datagen = ImageDataGenerator(</span><br><span class="line">    rescale=<span class="number">1.</span> / <span class="number">255</span>,</span><br><span class="line">    rotation_range=<span class="number">40</span>,</span><br><span class="line">    width_shift_range=<span class="number">0.2</span>,</span><br><span class="line">    height_shift_range=<span class="number">0.2</span>,</span><br><span class="line">    shear_range=<span class="number">0.2</span>,</span><br><span class="line">    zoom_range=<span class="number">0.2</span>,</span><br><span class="line">    horizontal_flip=<span class="literal">True</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 不能增强验证数据</span></span><br><span class="line">test_datagen = ImageDataGenerator(rescale=<span class="number">1.0</span> / <span class="number">255</span>)</span><br><span class="line"></span><br><span class="line">train_generator = train_datagen.flow_from_directory(</span><br><span class="line">    train_dir,  <span class="comment"># 目标目录</span></span><br><span class="line">    target_size=(<span class="number">150</span>,<span class="number">150</span>),  <span class="comment"># 大小调整</span></span><br><span class="line">    batch_size=<span class="number">32</span>,</span><br><span class="line">    class_mode=<span class="string">"binary"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">validation_generator = test_datagen.flow_from_directory(</span><br><span class="line">    validation_dir,</span><br><span class="line">    target_size=(<span class="number">150</span>,<span class="number">150</span>),</span><br><span class="line">    batch_size=<span class="number">32</span>,</span><br><span class="line">    class_mode=<span class="string">"binary"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 优化：报错有修改</span></span><br><span class="line">history = model.fit_generator(</span><br><span class="line">    train_generator,</span><br><span class="line">    <span class="comment"># 原文 steps_per_epoch=100,</span></span><br><span class="line">    steps_per_epoch=<span class="number">63</span>,  <span class="comment"># steps_per_epoch=2000/32≈63 取上限</span></span><br><span class="line">    epochs=<span class="number">100</span>,</span><br><span class="line">    validation_data=validation_generator,</span><br><span class="line">    <span class="comment"># 原文 validation_steps=50</span></span><br><span class="line">    validation_steps=<span class="number">32</span>  <span class="comment"># validation_steps=1000/32≈32</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h13rm8bmkhj21gi0i8q6f.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h13rmrpeufj21hm0kedju.jpg" alt=""></p>
+<p>模型的保存：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 保存模型</span></span><br><span class="line">model.save(<span class="string">"cats_and_dogs_small_2.h5"</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="损失和精度曲线-v2">损失和精度曲线</h3>
+<p>In [46]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">history_dict = history.history  <span class="comment"># 字典形式</span></span><br><span class="line"></span><br><span class="line">acc = history_dict[<span class="string">"acc"</span>]</span><br><span class="line">val_acc = history_dict[<span class="string">"val_acc"</span>]</span><br><span class="line">loss = history_dict[<span class="string">"loss"</span>]</span><br><span class="line">val_loss = history_dict[<span class="string">"val_loss"</span>]</span><br></pre></td></tr></table></figure>
+<p>具体的绘图代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">epochs = range(<span class="number">1</span>, len(acc)+<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># acc</span></span><br><span class="line">plt.plot(epochs, acc, <span class="string">"bo"</span>, label=<span class="string">"Training acc"</span>)</span><br><span class="line">plt.plot(epochs, val_acc, <span class="string">"b"</span>, label=<span class="string">"Validation acc"</span>)</span><br><span class="line">plt.title(<span class="string">"Training and Validation acc"</span>)</span><br><span class="line">plt.legend()</span><br><span class="line"></span><br><span class="line">plt.figure()</span><br><span class="line"></span><br><span class="line"><span class="comment"># loss</span></span><br><span class="line">plt.plot(epochs, loss, <span class="string">"bo"</span>, label=<span class="string">"Training loss"</span>)</span><br><span class="line">plt.plot(epochs, val_loss, <span class="string">"b"</span>, label=<span class="string">"Validation loss"</span>)</span><br><span class="line">plt.title(<span class="string">"Training and Validation loss"</span>)</span><br><span class="line">plt.legend()</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h13rofqycsj20ai07cjrk.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h13rokmnb2j20ai07c74i.jpg" alt=""></p>
+<p>结论：在使用了数据增强之后，模型不再拟合，训练集曲线紧跟着验证曲线；而且精度也变为81%，相比未正则之前得到了提高。</p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2022/04/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-CNN%E7%8C%AB%E7%8B%97%E8%AF%86%E5%88%AB.html">深度学习实战-CNN猫狗识别</a></p>
+  <p><span>发布时间:</span>2022年04月09日 - 21:04</p>
+  <p><span>原始链接:</span><a href="/2022/04/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-CNN%E7%8C%AB%E7%8B%97%E8%AF%86%E5%88%AB.html" title="深度学习实战-CNN猫狗识别">http://www.renpeter.cn/2022/04/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-CNN%E7%8C%AB%E7%8B%97%E8%AF%86%E5%88%AB.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2022/04/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-CNN%E7%8C%AB%E7%8B%97%E8%AF%86%E5%88%AB.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag"># 深度学习</a>
+          
+            <a href="/tags/%E5%8D%B7%E7%A7%AF/" rel="tag"># 卷积</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/04/08/10%E7%A7%8D%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95%E5%8F%8Apython%E5%AE%9E%E7%8E%B0.html" rel="next" title="10种聚类算法及python实现">
+                <i class="fa fa-chevron-left"></i> 10种聚类算法及python实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">711</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">90</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">85</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#深度学习实战：基于卷积神经网络的猫狗识别"><span class="nav-number">1.</span> <span class="nav-text">深度学习实战：基于卷积神经网络的猫狗识别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据处理"><span class="nav-number">2.</span> <span class="nav-text">数据处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据量"><span class="nav-number">2.1.</span> <span class="nav-text">数据量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建目录"><span class="nav-number">2.2.</span> <span class="nav-text">创建目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据集复制"><span class="nav-number">2.3.</span> <span class="nav-text">数据集复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#检查数据"><span class="nav-number">2.4.</span> <span class="nav-text">检查数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构建神经网络"><span class="nav-number">3.</span> <span class="nav-text">构建神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#网络搭建"><span class="nav-number">3.1.</span> <span class="nav-text">网络搭建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型编译（优化）"><span class="nav-number">3.2.</span> <span class="nav-text">模型编译（优化）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据预处理"><span class="nav-number">3.3.</span> <span class="nav-text">数据预处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据预处理-v2"><span class="nav-number">3.3.1.</span> <span class="nav-text">数据预处理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型拟合"><span class="nav-number">3.4.</span> <span class="nav-text">模型拟合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#保存模型"><span class="nav-number">3.5.</span> <span class="nav-text">保存模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#损失和精度曲线"><span class="nav-number">3.6.</span> <span class="nav-text">损失和精度曲线</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据增强-data-augmentation"><span class="nav-number">4.</span> <span class="nav-text">数据增强-data augmentation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是数据增强"><span class="nav-number">4.1.</span> <span class="nav-text">什么是数据增强</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置数据增强"><span class="nav-number">4.2.</span> <span class="nav-text">设置数据增强</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#显示增强后图像"><span class="nav-number">4.3.</span> <span class="nav-text">显示增强后图像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#包含Dropout层的新卷积神经网络"><span class="nav-number">4.4.</span> <span class="nav-text">包含Dropout层的新卷积神经网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用数据增强器来训练卷积神经网络（报错解决）"><span class="nav-number">4.5.</span> <span class="nav-text">利用数据增强器来训练卷积神经网络（报错解决）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#损失和精度曲线-v2"><span class="nav-number">4.6.</span> <span class="nav-text">损失和精度曲线</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kats/" rel="tag">Kats</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">62</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/keras/" rel="tag">keras</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">120</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyg2plot/" rel="tag">pyg2plot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">92</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sklearn/" rel="tag">sklearn</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tableau/" rel="tag">tableau</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">38</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B3%E8%81%94%E5%88%86%E6%9E%90/" rel="tag">关联分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%99%E4%BD%9C/" rel="tag">写作</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%B7%E7%A7%AF/" rel="tag">卷积</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">119</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E5%BD%92/" rel="tag">回归</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E5%BD%92%E5%88%86%E6%9E%90/" rel="tag">回归分析</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E5%85%B8/" rel="tag">字典</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%80%E6%BA%90/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AA%E7%8E%AF/" rel="tag">循环</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">65</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag">数据处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">101</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" rel="tag">数据挖掘</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/" rel="tag">文本处理</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3/" rel="tag">无监督</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E5%BA%8F%E5%88%86%E6%9E%90/" rel="tag">时序分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">98</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AD%A3%E5%88%99%E5%8C%96/" rel="tag">正则化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a><span class="tag-list-count">20</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/" rel="tag">激活函数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">51</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">监督学习</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1/" rel="tag">统计</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag">编程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB/" rel="tag">聚类</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">自动化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97/" rel="tag">随机森林</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/" rel="tag">集成学习</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%92%E6%98%A5/" rel="tag">青春</a><span class="tag-list-count">1</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共1036.7k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2022/04/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98-CNN%E7%8C%AB%E7%8B%97%E8%AF%86%E5%88%AB.html';
+          this.page.identifier = '2022/04/09/深度学习实战-CNN猫狗识别.html';
+          this.page.title = '深度学习实战-CNN猫狗识别';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
