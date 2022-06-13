@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="pandas,随机森林,特征工程,相关系数," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="4大方法进行特征选择 特征选择能剔除和目标变量不相关(irrelevant)或冗余(redundant )的特征，以此来减少特征个数，以此来达到提高模型精确度，减少运行时间的目的。 另一方面，筛选出真正相关的特征之后也能够简化模型，经常听到的这段话足以说明特征工程以及特征选择的重要性：  数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限而已  本文记录的是使用4种不同的方法来进行机器学">
+<meta name="keywords" content="pandas,随机森林,特征工程,相关系数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="特征工程-特征选择">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2022&#x2F;06&#x2F;13&#x2F;%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="4大方法进行特征选择 特征选择能剔除和目标变量不相关(irrelevant)或冗余(redundant )的特征，以此来减少特征个数，以此来达到提高模型精确度，减少运行时间的目的。 另一方面，筛选出真正相关的特征之后也能够简化模型，经常听到的这段话足以说明特征工程以及特征选择的重要性：  数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限而已  本文记录的是使用4种不同的方法来进行机器学">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h3454ltb2qj20qu0eodh3.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h34597cqptj21no0ngjw1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h345cdpn3jj20hj0fiq44.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h345f4ucw1j20ns0l778j.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h345h27eddj215008g3zx.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h345j3quzkj20ny0i4jsz.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h345km2svbj215g05qq3g.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h345m8a6goj20ri0xs41k.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h345nbjcyuj20oo0um778.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h345qvml3zj21i20u0wom.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h345pq33v3j20lc0notb2.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h345sbpmkoj20u00uydjj.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h345t8hfsdj210o0u0n1p.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h345uoqfsgj211q0u0do7.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h346runv3vj20l80cyaak.jpg">
+<meta property="og:updated_time" content="2022-06-13T05:17:16.204Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h3454ltb2qj20qu0eodh3.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2022/06/13/特征工程-特征选择.html"/>
+
+
+
+
+
+  <title>特征工程-特征选择 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2022/06/13/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">特征工程-特征选择</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-06-13T13:14:34+08:00">
+                2022-6-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">特征工程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2022/06/13/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2022/06/13/特征工程-特征选择.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="4大方法进行特征选择">4大方法进行特征选择</h2>
+<p>特征选择能剔除和目标变量不相关(irrelevant)或冗余(redundant )的特征，以此来减少特征个数，以此来达到<strong>提高模型精确度，减少运行时间</strong>的目的。</p>
+<p>另一方面，筛选出真正相关的特征之后也能够简化模型，经常听到的这段话足以说明<strong>特征工程</strong>以及<strong>特征选择</strong>的重要性：</p>
+<blockquote>
+<p>数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限而已</p>
+</blockquote>
+<p>本文记录的是使用4种不同的方法来进行机器学习中特征的重要性排序，从而比较不同特征对目标变量的影响。4种方法是：</p>
+<ul>
+<li>递归特征消除</li>
+<li>线性模型</li>
+<li>随机森林</li>
+<li>相关系数</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h3454ltb2qj20qu0eodh3.jpg" alt=""></p>
+<a id="more"></a>
+<p>参考一篇博文：<a href="http://blog.datadive.net/selecting-good-features-part-iv-stability-selection-rfe-and-everything-side-by-side/" target="_blank" rel="noopener">http://blog.datadive.net/selecting-good-features-part-iv-stability-selection-rfe-and-everything-side-by-side/</a></p>
+<h2 id="导入库">导入库</h2>
+<p>In [1]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line">%matplotlib inline</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.feature_selection <span class="keyword">import</span> RFE, f_regression</span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> (LinearRegression, Ridge, Lasso)</span><br><span class="line"><span class="comment">#                                   RandomizedLasso)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> MinMaxScaler</span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestRegressor</span><br></pre></td></tr></table></figure>
+<h2 id="导入数据">导入数据</h2>
+<p>In [2]:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">house = pd.read_csv(<span class="string">"kc_house_data.csv"</span>)</span><br><span class="line">house</span><br></pre></td></tr></table></figure>
+<p>Out[2]:</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h34597cqptj21no0ngjw1.jpg" alt=""></p>
+<h3 id="基本信息">基本信息</h3>
+<p>In [3]:</p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 数据<span class="built_in">shape</span></span><br><span class="line">house.<span class="built_in">shape</span></span><br></pre></td></tr></table></figure>
+<p>Out[3]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">21613</span>, <span class="number">21</span>)</span><br></pre></td></tr></table></figure>
+<p>In [4]:</p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># 字段缺失值</span></span><br><span class="line">house.isnull().<span class="keyword">sum</span>()</span><br></pre></td></tr></table></figure>
+<p>Out[4]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">id               <span class="number">0</span></span><br><span class="line">date             <span class="number">0</span></span><br><span class="line">price            <span class="number">0</span></span><br><span class="line">bedrooms         <span class="number">0</span></span><br><span class="line">bathrooms        <span class="number">0</span></span><br><span class="line">sqft_living      <span class="number">0</span></span><br><span class="line">sqft_lot         <span class="number">0</span></span><br><span class="line">floors           <span class="number">0</span></span><br><span class="line">waterfront       <span class="number">0</span></span><br><span class="line">view             <span class="number">0</span></span><br><span class="line">condition        <span class="number">0</span></span><br><span class="line">grade            <span class="number">0</span></span><br><span class="line">sqft_above       <span class="number">0</span></span><br><span class="line">sqft_basement    <span class="number">0</span></span><br><span class="line">yr_built         <span class="number">0</span></span><br><span class="line">yr_renovated     <span class="number">0</span></span><br><span class="line">zipcode          <span class="number">0</span></span><br><span class="line">lat              <span class="number">0</span></span><br><span class="line">long             <span class="number">0</span></span><br><span class="line">sqft_living15    <span class="number">0</span></span><br><span class="line">sqft_lot15       <span class="number">0</span></span><br><span class="line">dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<p>In [5]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">house</span><span class="selector-class">.isnull</span>()<span class="selector-class">.any</span>() # 每个字段都没有缺失值</span><br></pre></td></tr></table></figure>
+<p>In [6]:</p>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># 字段类型</span></span><br><span class="line">house.dtypes</span><br></pre></td></tr></table></figure>
+<p>Out[6]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">id                 int64</span><br><span class="line">date              object</span><br><span class="line">price            float64</span><br><span class="line">bedrooms           int64</span><br><span class="line">bathrooms        float64</span><br><span class="line">sqft_living        int64</span><br><span class="line">sqft_lot           int64</span><br><span class="line">floors           float64</span><br><span class="line">waterfront         int64</span><br><span class="line">view               int64</span><br><span class="line">condition          int64</span><br><span class="line">grade              int64</span><br><span class="line">sqft_above         int64</span><br><span class="line">sqft_basement      int64</span><br><span class="line">yr_built           int64</span><br><span class="line">yr_renovated       int64</span><br><span class="line">zipcode            int64</span><br><span class="line">lat              float64</span><br><span class="line">long             float64</span><br><span class="line">sqft_living15      int64</span><br><span class="line">sqft_lot15         int64</span><br><span class="line">dtype: object</span><br></pre></td></tr></table></figure>
+<h3 id="删除无用字段">删除无用字段</h3>
+<p>id和date两个字段直接删除掉：</p>
+<p>In [7]:</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">house</span> = house.drop([<span class="string">"id"</span>, <span class="string">"date"</span>],axis=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="Pairplot-Visualisation">Pairplot Visualisation</h2>
+<p>Pairplot中的plot就是成对、配对的意思，这种图形主要是显示<strong>变量两两</strong>之间的关系。</p>
+<p>线性、非线性或者没有明显的相关性，都能观察到。下面的例子教你如何查看不同特征之间的关系：</p>
+<p>In [8]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">fig = sns.pairplot(house[[<span class="string">'sqft_lot'</span>,<span class="string">'sqft_above'</span>,<span class="string">'price'</span>,<span class="string">'sqft_living'</span>,<span class="string">'bedrooms'</span>]],</span><br><span class="line">             hue=<span class="string">"bedrooms"</span>,</span><br><span class="line">             palette=<span class="string">"tab20"</span>,</span><br><span class="line">             size=<span class="number">2</span></span><br><span class="line">            )</span><br><span class="line"></span><br><span class="line">fig.set(xticklabels=[])</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h345cdpn3jj20hj0fiq44.jpg" alt=""></p>
+<h2 id="属性相关性热力图">属性相关性热力图</h2>
+<p>属性之间的相关性只是针对数值型的字段，在这里我们先排除字符串类型的属性。</p>
+<p>In [9]:</p>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># # 方法1：寻找字符类型的属性</span></span><br><span class="line"><span class="meta"># str_list = []</span></span><br><span class="line"></span><br><span class="line"><span class="meta"># for name, value in house.iteritems():</span></span><br><span class="line"><span class="meta">#     if type(value[1]) == str:</span></span><br><span class="line"><span class="meta">#         str_list.append(name)</span></span><br><span class="line"><span class="meta"># str_list</span></span><br></pre></td></tr></table></figure>
+<p>In [10]:</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># 方法2</span></span><br><span class="line"><span class="meta"># house.select_dtypes(<span class="meta-keyword">include</span>=<span class="string">"object"</span>)</span></span><br></pre></td></tr></table></figure>
+<p>在这里我们直接取出非字符类型的属性数据：</p>
+<p>In [11]:</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">house_num</span> = house.select_dtypes(exclude=<span class="string">"object"</span>)</span><br></pre></td></tr></table></figure>
+<p>计算相关性和热力图：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">corr = house_num.astype(float).corr()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 绘制热力图</span></span><br><span class="line"></span><br><span class="line">f, ax = plt.subplots(figsize=(<span class="number">16</span>,<span class="number">12</span>))</span><br><span class="line"></span><br><span class="line">plt.title(<span class="string">"Person Correlation of 19 Features"</span>)</span><br><span class="line"></span><br><span class="line">sns.heatmap(corr, <span class="comment"># 数据</span></span><br><span class="line">            linewidths=<span class="number">0.25</span>,  <span class="comment"># 线宽</span></span><br><span class="line">            vmax=<span class="number">1.0</span>,  <span class="comment"># 最大值</span></span><br><span class="line">            square=<span class="literal">True</span>,  <span class="comment"># 显示为方形</span></span><br><span class="line">            linecolor=<span class="string">"k"</span>,  <span class="comment"># 线条颜色</span></span><br><span class="line">            annot=<span class="literal">True</span>  <span class="comment"># 注解；显示数据</span></span><br><span class="line">           )</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h345f4ucw1j20ns0l778j.jpg" alt=""></p>
+<p>下面是用对其他3种方式进行特征的重要性进行探索，先实施数据的分割</p>
+<h2 id="数据分离">数据分离</h2>
+<p>In [14]:</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1、先提取目标变量</span></span><br><span class="line"><span class="attr">y</span> = house.price.values   <span class="comment"># 目标变量</span></span><br><span class="line"><span class="attr">X</span> = house.drop(<span class="string">"price"</span>, axis=<span class="number">1</span>)  <span class="comment"># 特征</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h345h27eddj215008g3zx.jpg" alt=""></p>
+<h2 id="计算特征的重要性">计算特征的重要性</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 2、定义</span></span><br><span class="line"></span><br><span class="line">ranks = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ranking</span><span class="params">(ranks, names, order=<span class="number">1</span>)</span>:</span></span><br><span class="line">    mm = MinMaxScaler()  <span class="comment"># 归一化实例</span></span><br><span class="line">    ranks = mm.fit_transform(order * np.array([ranks]).T).T[<span class="number">0</span>]</span><br><span class="line">    ranks = map(<span class="keyword">lambda</span> x: round(x,<span class="number">2</span>), ranks)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> dict(zip(names, ranks))</span><br></pre></td></tr></table></figure>
+<h2 id="基于RFE的特征排序">基于RFE的特征排序</h2>
+<p>RFE：Recursive Feature Elimination，递归特征消除；</p>
+<p>大致原理：通过反复地建立的线性回归或者SVM模型获得每个特征的coef_ 属性 或者 feature_importances_ 属性，并且对特征属性的重要性进行排序，从当前的特征集合中移除那些最不重要的特征，重复该过程。</p>
+<blockquote>
+<p>Recursive Feature Elimination or RFE uses a model ( eg. linear Regression or SVM) to select either the best or worst-performing feature, and then excludes this feature</p>
+</blockquote>
+<p>In [17]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">lr = LinearRegression(normalize=<span class="literal">True</span>)</span><br><span class="line">lr.fit(X,y)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用RFE的再次训练</span></span><br><span class="line">rfe = RFE(lr, n_features_to_select=<span class="number">1</span>,verbose=<span class="number">3</span>)</span><br><span class="line">rfe.fit(X,y)</span><br><span class="line"></span><br><span class="line">ranks[<span class="string">"RFE"</span>] = ranking(list(map(float, rfe.ranking_)),</span><br><span class="line">                       col_names,</span><br><span class="line">                       order=<span class="number">-1</span></span><br><span class="line">                      )</span><br><span class="line"></span><br><span class="line">ranks  <span class="comment"># 特征和得分</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h345j3quzkj20ny0i4jsz.jpg" alt=""></p>
+<p>上图显示的每个特征属性的得分；可以通过ranking_属性查看具体的排名：</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h345km2svbj215g05qq3g.jpg" alt=""></p>
+<h2 id="基于线性模型的特征排序">基于线性模型的特征排序</h2>
+<p>下面尝试使用3种线性模型来进行特征排序</p>
+<p>In [20]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1、线性回归</span></span><br><span class="line">lr = LinearRegression(normalize=<span class="literal">True</span>)</span><br><span class="line">lr.fit(X,y)</span><br><span class="line">ranks[<span class="string">"LinReg"</span>] = ranking(np.abs(lr.coef_), col_names)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2、岭回归</span></span><br><span class="line">ridge = Ridge(alpha=<span class="number">7</span>)</span><br><span class="line">ridge.fit(X,y)</span><br><span class="line">ranks[<span class="string">"Ridge"</span>] = ranking(np.abs(ridge.coef_), col_names)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3、Lasso回归</span></span><br><span class="line">lasso = Lasso(alpha=<span class="number">0.05</span>)</span><br><span class="line">lasso.fit(X,y)</span><br><span class="line">ranks[<span class="string">"Lasso"</span>] = ranking(np.abs(lasso.coef_), col_names)</span><br></pre></td></tr></table></figure>
+<p>ranks中新增的部分数据：</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h345m8a6goj20ri0xs41k.jpg" alt=""></p>
+<h2 id="基于随机森林RandomForest的特征排序">基于随机森林RandomForest的特征排序</h2>
+<p>随机森林主要是通过返回模型中的feature_importances属性来决定特征的重要性程度</p>
+<p>In [22]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">rf = RandomForestRegressor(n_jobs=<span class="number">-1</span>,</span><br><span class="line">                           n_estimators=<span class="number">50</span>,</span><br><span class="line">                           verbose=<span class="number">3</span></span><br><span class="line">                          )</span><br><span class="line"></span><br><span class="line">rf.fit(X,y)</span><br><span class="line"></span><br><span class="line">ranks[<span class="string">"RF"</span>] = ranking(rf.feature_importances_, col_names)</span><br></pre></td></tr></table></figure>
+<h2 id="构造特征排序矩阵">构造特征排序矩阵</h2>
+<p>将上面我们获取的每种方法的特征及其得分构造一个特征排序矩阵</p>
+<h3 id="生成特征矩阵">生成特征矩阵</h3>
+<p>In [23]:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ranks_df = pd.DataFrame(ranks)</span><br><span class="line">ranks_df</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h345nbjcyuj20oo0um778.jpg" alt=""></p>
+<p>最后把特征和目标变量的相关系数添加进来一起对比：</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h345qvml3zj21i20u0wom.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h345pq33v3j20lc0notb2.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h345sbpmkoj20u00uydjj.jpg" alt=""></p>
+<h3 id="求出均值">求出均值</h3>
+<p>求出所有方法下的均值：</p>
+<p>In [27]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ranks_df[<span class="string">"Mean"</span>] = ranks_df.mean(<span class="attribute">axis</span>=1)</span><br><span class="line">ranks_df</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h345t8hfsdj210o0u0n1p.jpg" alt=""></p>
+<h3 id="热力图显示">热力图显示</h3>
+<p>In [28]:</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import seaborn <span class="keyword">as</span> sns</span><br><span class="line"></span><br><span class="line">cm = sns.light<span class="constructor">_palette(<span class="string">"red"</span>, <span class="params">as_cmap</span>=True)</span></span><br><span class="line">s = ranks_df.style.background<span class="constructor">_gradient(<span class="params">cmap</span>=<span class="params">cm</span>)</span></span><br><span class="line">s</span><br></pre></td></tr></table></figure>
+<p>Out[28]:</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h345uoqfsgj211q0u0do7.jpg" alt=""></p>
+<h2 id="对比结果">对比结果</h2>
+<ol>
+<li>RFE的重要性分数取值整体是偏高的；前两位是waterfront、lat</li>
+<li>三种回归模型的得分比较接近，而且前两位和RFE是类型。可能原因是RFE选择的基模型是线性回归</li>
+<li>随机森林模型最终得到3个特征的分数是比较高的：grade、sqft_living、lat</li>
+<li>基于相关系数：得分排序的结果和随机森林接近</li>
+</ol>
+<p>最后看看Mean的排名：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">f = plt.figure(figsize=(<span class="number">12</span>,<span class="number">8</span>))</span><br><span class="line"></span><br><span class="line">sns.barplot(y=df1.index.tolist(),</span><br><span class="line">            x=df1[<span class="string">"Mean"</span>].tolist()</span><br><span class="line">           )</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h346runv3vj20l80cyaak.jpg" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2022/06/13/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9.html">特征工程-特征选择</a></p>
+  <p><span>发布时间:</span>2022年06月13日 - 13:06</p>
+  <p><span>原始链接:</span><a href="/2022/06/13/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9.html" title="特征工程-特征选择">http://www.renpeter.cn/2022/06/13/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2022/06/13/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pandas/" rel="tag"># pandas</a>
+          
+            <a href="/tags/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97/" rel="tag"># 随机森林</a>
+          
+            <a href="/tags/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/" rel="tag"># 特征工程</a>
+          
+            <a href="/tags/%E7%9B%B8%E5%85%B3%E7%B3%BB%E6%95%B0/" rel="tag"># 相关系数</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/06/11/%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A94%E5%A4%A7%E6%96%B9%E6%B3%95.html" rel="next" title="特征选择4大方法">
+                <i class="fa fa-chevron-left"></i> 特征选择4大方法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">742</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">99</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">111</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#4大方法进行特征选择"><span class="nav-number">1.</span> <span class="nav-text">4大方法进行特征选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导入库"><span class="nav-number">2.</span> <span class="nav-text">导入库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导入数据"><span class="nav-number">3.</span> <span class="nav-text">导入数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本信息"><span class="nav-number">3.1.</span> <span class="nav-text">基本信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除无用字段"><span class="nav-number">3.2.</span> <span class="nav-text">删除无用字段</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pairplot-Visualisation"><span class="nav-number">4.</span> <span class="nav-text">Pairplot Visualisation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#属性相关性热力图"><span class="nav-number">5.</span> <span class="nav-text">属性相关性热力图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据分离"><span class="nav-number">6.</span> <span class="nav-text">数据分离</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计算特征的重要性"><span class="nav-number">7.</span> <span class="nav-text">计算特征的重要性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于RFE的特征排序"><span class="nav-number">8.</span> <span class="nav-text">基于RFE的特征排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于线性模型的特征排序"><span class="nav-number">9.</span> <span class="nav-text">基于线性模型的特征排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于随机森林RandomForest的特征排序"><span class="nav-number">10.</span> <span class="nav-text">基于随机森林RandomForest的特征排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构造特征排序矩阵"><span class="nav-number">11.</span> <span class="nav-text">构造特征排序矩阵</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#生成特征矩阵"><span class="nav-number">11.1.</span> <span class="nav-text">生成特征矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#求出均值"><span class="nav-number">11.2.</span> <span class="nav-text">求出均值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#热力图显示"><span class="nav-number">11.3.</span> <span class="nav-text">热力图显示</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对比结果"><span class="nav-number">12.</span> <span class="nav-text">对比结果</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSV/" rel="tag">CSV</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kats/" rel="tag">Kats</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Keras/" rel="tag">Keras</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LaTeX/" rel="tag">LaTeX</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LaTex/" rel="tag">LaTex</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Leetcode/" rel="tag">Leetcode</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">63</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCA/" rel="tag">PCA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/keras/" rel="tag">keras</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">133</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyg2plot/" rel="tag">pyg2plot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">94</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/seaborn/" rel="tag">seaborn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sklearn/" rel="tag">sklearn</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tableau/" rel="tag">tableau</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/uci/" rel="tag">uci</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">38</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B3%E8%81%94%E5%88%86%E6%9E%90/" rel="tag">关联分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B3%E8%81%94%E8%A7%84%E5%88%99/" rel="tag">关联规则</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%99%E4%BD%9C/" rel="tag">写作</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%B1%BB/" rel="tag">分类</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%B7%E7%A7%AF/" rel="tag">卷积</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AC%E5%9B%9E%E7%8E%87/" rel="tag">召回率</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">122</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E5%BD%92/" rel="tag">回归</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E5%BD%92%E5%88%86%E6%9E%90/" rel="tag">回归分析</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/" rel="tag">图像处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E5%85%B8/" rel="tag">字典</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%B9%E5%99%A8/" rel="tag">容器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AF%BC%E6%95%B0/" rel="tag">导数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%80%E6%BA%90/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B/" rel="tag">异常检测</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AA%E7%8E%AF/" rel="tag">循环</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E5%AD%A6/" rel="tag">数学</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">77</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag">数据处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">102</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" rel="tag">数据挖掘</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/" rel="tag">文本处理</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3/" rel="tag">无监督</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">无监督学习</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E5%BA%8F%E5%88%86%E6%9E%90/" rel="tag">时序分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">111</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AD%A3%E5%88%99%E5%8C%96/" rel="tag">正则化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/" rel="tag">激活函数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/" rel="tag">特征工程</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">50</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">监督学习</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%B8%E5%85%B3%E7%B3%BB%E6%95%B0/" rel="tag">相关系数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%AF%E5%88%86/" rel="tag">积分</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B2%BE%E5%BA%A6/" rel="tag">精度</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B4%A2%E5%BC%95/" rel="tag">索引</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1/" rel="tag">统计</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag">编程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%BA%E5%A4%B1%E5%80%BC/" rel="tag">缺失值</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB/" rel="tag">聚类</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">自动化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/" rel="tag">逻辑回归</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8D%E5%A4%8D%E5%80%BC/" rel="tag">重复值</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%99%8D%E7%BB%B4/" rel="tag">降维</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97/" rel="tag">随机森林</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/" rel="tag">集成学习</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%92%E6%98%A5/" rel="tag">青春</a><span class="tag-list-count">1</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共1105.6k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2022/06/13/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9.html';
+          this.page.identifier = '2022/06/13/特征工程-特征选择.html';
+          this.page.title = '特征工程-特征选择';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
