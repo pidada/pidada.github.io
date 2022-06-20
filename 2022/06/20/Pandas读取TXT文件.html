@@ -88,16 +88,16 @@
 
 
 
-<meta name="description" content="Pandas读取TXT文件 本文记录的是如何使用Pandas来读取TXT，介绍部分常见参数的使用，">
+<meta name="description" content="Pandas读取TXT文件 本文记录的是如何使用Pandas来读取不同情况下的TXT文件，主要是介绍部分常见参数的使用。 文章中涉及到一定的正则表达式，有一定的正则基础食用更香，小编以后会专门写一篇Python正则表达式的文章。">
 <meta name="keywords" content="pandas,数据分析,机器学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Pandas读取TXT文件">
 <meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2022&#x2F;06&#x2F;20&#x2F;Pandas%E8%AF%BB%E5%8F%96TXT%E6%96%87%E4%BB%B6.html">
 <meta property="og:site_name" content="尤尔小屋">
-<meta property="og:description" content="Pandas读取TXT文件 本文记录的是如何使用Pandas来读取TXT，介绍部分常见参数的使用，">
+<meta property="og:description" content="Pandas读取TXT文件 本文记录的是如何使用Pandas来读取不同情况下的TXT文件，主要是介绍部分常见参数的使用。 文章中涉及到一定的正则表达式，有一定的正则基础食用更香，小编以后会专门写一篇Python正则表达式的文章。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg">
-<meta property="og:updated_time" content="2022-06-20T07:19:37.550Z">
+<meta property="og:updated_time" content="2022-06-20T12:59:02.147Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg">
 
@@ -392,7 +392,7 @@
                   <span class="post-meta-item-text">Words count in article&#58;</span>
                 
                 <span title="Words count in article">
-                  1.5k
+                  1.9k
                 </span>
               
 
@@ -408,7 +408,7 @@
                   <span class="post-meta-item-text">Reading time &asymp;</span>
                 
                 <span title="Reading time">
-                  8
+                  9
                 </span>
               
             </div>
@@ -430,15 +430,143 @@
 
       
         <h2 id="Pandas读取TXT文件">Pandas读取TXT文件</h2>
-<p>本文记录的是如何使用Pandas来读取TXT，介绍部分常见参数的使用，</p>
+<p>本文记录的是如何使用Pandas来读取不同情况下的TXT文件，主要是介绍部分常见参数的使用。</p>
+<p>文章中涉及到一定的<strong>正则表达式</strong>，有一定的正则基础食用更香，小编以后会专门写一篇Python正则表达式的文章。</p>
 <p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gpun2n0jfgj30lu08e3yq.jpg" alt=""></p>
 <a id="more"></a>
+<h2 id="正则基础">正则基础</h2>
+<p>下面的表格记录的是正则表达式中常用元字符及其含义：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">符号</th>
+<th style="text-align:left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">点.</td>
+<td style="text-align:left">匹配除换行符外的任意字符</td>
+</tr>
+<tr>
+<td style="text-align:left">星号*</td>
+<td style="text-align:left">匹配0个或者多个任意字符</td>
+</tr>
+<tr>
+<td style="text-align:left">问号？</td>
+<td style="text-align:left">匹配0个或者1个任意字符（非贪婪模式）</td>
+</tr>
+<tr>
+<td style="text-align:left">^</td>
+<td style="text-align:left">开始位置</td>
+</tr>
+<tr>
+<td style="text-align:left">$</td>
+<td style="text-align:left">结束位置</td>
+</tr>
+<tr>
+<td style="text-align:left">\s</td>
+<td style="text-align:left">匹配任意空白</td>
+</tr>
+<tr>
+<td style="text-align:left">\S</td>
+<td style="text-align:left">匹配任意非空白</td>
+</tr>
+<tr>
+<td style="text-align:left">\d</td>
+<td style="text-align:left">匹配一个数字</td>
+</tr>
+<tr>
+<td style="text-align:left">\D</td>
+<td style="text-align:left">匹配一个<code>非</code>数字</td>
+</tr>
+<tr>
+<td style="text-align:left">\w</td>
+<td style="text-align:left">匹配一个单词字符，包含数字和字母</td>
+</tr>
+<tr>
+<td style="text-align:left">\W</td>
+<td style="text-align:left">匹配一个<code>非</code>单词字符，包含数字和字母</td>
+</tr>
+<tr>
+<td style="text-align:left">[abcd]</td>
+<td style="text-align:left">匹配abcd中的一个任意字符</td>
+</tr>
+<tr>
+<td style="text-align:left">[^abcd]</td>
+<td style="text-align:left">匹配不含包abcd的任意字符，其中<code>^</code>表示非</td>
+</tr>
+<tr>
+<td style="text-align:left">+</td>
+<td style="text-align:left">匹配1次或者多次前面的内容</td>
+</tr>
+<tr>
+<td style="text-align:left">{n}</td>
+<td style="text-align:left">匹配n词（固定）</td>
+</tr>
+<tr>
+<td style="text-align:left">{n,}</td>
+<td style="text-align:left">匹配至少n次</td>
+</tr>
+<tr>
+<td style="text-align:left">{n,m}</td>
+<td style="text-align:left">匹配n到m次</td>
+</tr>
+<tr>
+<td style="text-align:left">x|y</td>
+<td style="text-align:left">匹配x或者y</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>()</code></td>
+<td style="text-align:left">匹配括号内的内容</td>
+</tr>
+</tbody>
+</table>
 <h2 id="参数">参数</h2>
 <p>详细的参数参考官网</p>
 <p><a href="https://pandas.pydata.org/docs/reference/api/pandas.read_table.html" target="_blank" rel="noopener">https://pandas.pydata.org/docs/reference/api/pandas.read_table.html</a></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">pandas.read_table(</span><br><span class="line">  filepath_or_buffer,</span><br><span class="line">  sep=NoDefault.no_default,</span><br><span class="line">  delimiter=<span class="literal">None</span>,</span><br><span class="line">  header=<span class="string">'infer'</span>,</span><br><span class="line">  names=NoDefault.no_default,</span><br><span class="line">  index_col=<span class="literal">None</span>,</span><br><span class="line">  usecols=<span class="literal">None</span>,</span><br><span class="line">  squeeze=<span class="literal">None</span>,</span><br><span class="line">  prefix=NoDefault.no_default,</span><br><span class="line">  mangle_dupe_cols=<span class="literal">True</span>,</span><br><span class="line">  dtype=<span class="literal">None</span>,</span><br><span class="line">  engine=<span class="literal">None</span>,</span><br><span class="line">  converters=<span class="literal">None</span>,</span><br><span class="line">  true_values=<span class="literal">None</span>,</span><br><span class="line">  false_values=<span class="literal">None</span>,</span><br><span class="line">  skipinitialspace=<span class="literal">False</span>,</span><br><span class="line">  skiprows=<span class="literal">None</span>,</span><br><span class="line">  skipfooter=<span class="number">0</span>,</span><br><span class="line">  nrows=<span class="literal">None</span>,</span><br><span class="line">  na_values=<span class="literal">None</span>,</span><br><span class="line">  keep_default_na=<span class="literal">True</span>,</span><br><span class="line">  na_filter=<span class="literal">True</span>,</span><br><span class="line">  verbose=<span class="literal">False</span>,</span><br><span class="line">  skip_blank_lines=<span class="literal">True</span>,</span><br><span class="line">  parse_dates=<span class="literal">False</span>,</span><br><span class="line">  infer_datetime_format=<span class="literal">False</span>,</span><br><span class="line">  keep_date_col=<span class="literal">False</span>,</span><br><span class="line">  date_parser=<span class="literal">None</span>,</span><br><span class="line">  dayfirst=<span class="literal">False</span>,</span><br><span class="line">  cache_dates=<span class="literal">True</span>,</span><br><span class="line">  iterator=<span class="literal">False</span>,</span><br><span class="line">  chunksize=<span class="literal">None</span>,</span><br><span class="line">  compression=<span class="string">'infer'</span>,</span><br><span class="line">  thousands=<span class="literal">None</span>,</span><br><span class="line">  decimal=<span class="string">'.'</span>,</span><br><span class="line">  lineterminator=<span class="literal">None</span>,</span><br><span class="line">  quotechar=<span class="string">'"'</span>,</span><br><span class="line">  quoting=<span class="number">0</span>,</span><br><span class="line">  doublequote=<span class="literal">True</span>,</span><br><span class="line">  escapechar=<span class="literal">None</span>,</span><br><span class="line">  comment=<span class="literal">None</span>,</span><br><span class="line">  encoding=<span class="literal">None</span>,</span><br><span class="line">  encoding_errors=<span class="string">'strict'</span>,</span><br><span class="line">  dialect=<span class="literal">None</span>,</span><br><span class="line">  error_bad_lines=<span class="literal">None</span>,</span><br><span class="line">  warn_bad_lines=<span class="literal">None</span>,</span><br><span class="line">  on_bad_lines=<span class="literal">None</span>,</span><br><span class="line">  delim_whitespace=<span class="literal">False</span>,</span><br><span class="line">  low_memory=<span class="literal">True</span>,</span><br><span class="line">  memory_map=<span class="literal">False</span>,</span><br><span class="line">  float_precision=<span class="literal">None</span>,</span><br><span class="line">  storage_options=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+<p>可以看到pandas.read_table()函数中的绝大部分的参数和pandas.read_csv是比较类似的，下面内容中介绍的用法也是类似的。可以参考学习。</p>
 <h2 id="模拟数据">模拟数据</h2>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br></pre></td></tr></table></figure>
+<p>模拟了6份不同场景下的数据：</p>
+<p>1、数据1特点：</p>
+<ul>
+<li>没有表头</li>
+<li>只有一个空格</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># txt_data1.txt</span></span><br><span class="line"><span class="number">18</span> xiaoming male</span><br><span class="line"><span class="number">20</span> xiaozhou female</span><br><span class="line"><span class="number">30</span> sunjun male</span><br><span class="line"><span class="number">19</span> zhouqiang male</span><br></pre></td></tr></table></figure>
+<p>2、数据2特点：</p>
+<ul>
+<li>有表头</li>
+<li>只有一个空格</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">age name sex</span><br><span class="line"><span class="number">18</span> xiaoming male</span><br><span class="line"><span class="number">20</span> xiaozhou female</span><br><span class="line"><span class="number">30</span> sunjun male</span><br><span class="line"><span class="number">19</span> zhouqiang male</span><br></pre></td></tr></table></figure>
+<p>3、数据3特点：</p>
+<ul>
+<li>有表头</li>
+<li>存在多个空格</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">age name   sex     <span class="comment"># 表头</span></span><br><span class="line"><span class="number">18</span>  xiaoming    male  <span class="comment"># 存在多个空格</span></span><br><span class="line"><span class="number">20</span> xiaozhou female</span><br><span class="line"><span class="number">30</span> sunjun male</span><br><span class="line"><span class="number">19</span> zhouqiang male</span><br></pre></td></tr></table></figure>
+<p>4、数据4特点：</p>
+<ul>
+<li>有表头</li>
+<li>连接符号不是空格，是<code>+</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">age+name+sex</span><br><span class="line"><span class="number">18</span>+xiaoming+male</span><br><span class="line"><span class="number">20</span>+xiaozhou+female</span><br><span class="line"><span class="number">30</span>+sunjun+male</span><br><span class="line"><span class="number">19</span>+zhouqiang+male</span><br></pre></td></tr></table></figure>
+<p>5、数据5特点</p>
+<ul>
+<li>没有表头</li>
+<li>没有固定连接符</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>female135guangzhou139</span><br><span class="line"><span class="number">1</span>male140shenzhen128</span><br><span class="line"><span class="number">2</span>male127xiamen145</span><br><span class="line"><span class="number">3</span>female129beijing150</span><br></pre></td></tr></table></figure>
+<p>6、数据6特点：</p>
+<ul>
+<li>有无效信息</li>
+<li>有空白行</li>
+<li>没有表头</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 数据：信息学院学生信息</span></span><br><span class="line"><span class="comment">## 学期：第一学期</span></span><br><span class="line"><span class="number">18</span> xiaoming male</span><br><span class="line"><span class="number">20</span> xiaozhou female</span><br><span class="line"><span class="number">30</span> sunjun male</span><br><span class="line"><span class="number">19</span> zhouqiang male</span><br><span class="line"></span><br><span class="line"><span class="comment">## 数据信息为模拟数据</span></span><br></pre></td></tr></table></figure>
 <h2 id="默认读取">默认读取</h2>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.read_table(<span class="string">"txt_data1.txt"</span>)</span><br></pre></td></tr></table></figure>
 <div>
@@ -562,8 +690,9 @@
   </tbody>
 </table>
 </div>
+<p>从默认读取的结果来看，pandas默认将第一行数据当做了表头，而且只有一列数据产生。</p>
 <h2 id="表头-header">表头-header</h2>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.read_table(<span class="string">"txt_data1.txt"</span>,header=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.read_table(<span class="string">"txt_data1.txt"</span>,header=<span class="literal">None</span>)  <span class="comment"># 表示使用自然数来做表头</span></span><br></pre></td></tr></table></figure>
 <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -605,7 +734,7 @@
   </tbody>
 </table>
 </div>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.read_table(<span class="string">"txt_data1.txt"</span>,header=[<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.read_table(<span class="string">"txt_data1.txt"</span>,header=[<span class="number">0</span>])  <span class="comment"># 表示将第一行当做表头</span></span><br></pre></td></tr></table></figure>
 <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -644,6 +773,7 @@
 </table>
 </div>
 <h2 id="指定分割符-sep">指定分割符-sep</h2>
+<p>指定空格为分隔符</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.read_table(<span class="string">"txt_data1.txt"</span>,sep=<span class="string">" "</span>)</span><br></pre></td></tr></table></figure>
 <div>
 <style scoped>
@@ -690,10 +820,8 @@
   </tbody>
 </table>
 </div>
+<p><code>\s</code>也可以看做是将空白当做分隔符</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.read_table(<span class="string">"txt_data1.txt"</span>,sep=<span class="string">"\s"</span>)  <span class="comment"># \s表示空行</span></span><br></pre></td></tr></table></figure>
-<pre><code>/Applications/downloads/anaconda/anaconda3/lib/python3.7/site-packages/pandas/util/_decorators.py:311: ParserWarning: Falling back to the 'python' engine because the 'c' engine does not support regex separators (separators &gt; 1 char and different from '\s+' are interpreted as regex); you can avoid this warning by specifying engine='python'.
-  return func(*args, **kwargs)
-</code></pre>
 <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -740,6 +868,7 @@
 </table>
 </div>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.read_table(<span class="string">"txt_data1.txt"</span>, sep=<span class="string">" "</span>, header=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+<p>sep 和 header参数的连用：</p>
 <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -791,6 +920,7 @@
   </tbody>
 </table>
 </div>
+<p>使用+作为分割符：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.read_table(<span class="string">"txt_data4.txt"</span>,sep=<span class="string">"+"</span>,header=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
 <div>
 <style scoped>
@@ -850,6 +980,7 @@
 </table>
 </div>
 <h2 id="其他分割符">其他分割符</h2>
+<p>+号表示匹配一个或者多个前面的元素：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># \s 匹配空白行  +匹配多个元素</span></span><br><span class="line"></span><br><span class="line">pd.read_table(<span class="string">"txt_data3.txt"</span>,sep=<span class="string">"\s+"</span>)</span><br></pre></td></tr></table></figure>
 <div>
 <style scoped>
@@ -903,7 +1034,7 @@
 </table>
 </div>
 <h2 id="自定义表头-names">自定义表头-names</h2>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pd.read_table(<span class="string">"txt_data1.txt"</span>,</span><br><span class="line">              sep=<span class="string">" "</span>,</span><br><span class="line">              names=[<span class="string">"age"</span>,<span class="string">"name"</span>,<span class="string">"sex"</span>])</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pd.read_table(<span class="string">"txt_data1.txt"</span>,</span><br><span class="line">              sep=<span class="string">" "</span>,</span><br><span class="line">              names=[<span class="string">"age"</span>,<span class="string">"name"</span>,<span class="string">"sex"</span>]  <span class="comment"># 自定义表头</span></span><br><span class="line">             )</span><br></pre></td></tr></table></figure>
 <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -956,6 +1087,7 @@
 </table>
 </div>
 <h2 id="指定索引-index-col">指定索引-index_col</h2>
+<p>指定作为索引的列：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pd.read_table(<span class="string">"txt_data1.txt"</span>,</span><br><span class="line">              sep=<span class="string">" "</span>,</span><br><span class="line">              names=[<span class="string">"age"</span>,<span class="string">"name"</span>,<span class="string">"sex"</span>],</span><br><span class="line">              index_col=[<span class="number">1</span>]  <span class="comment"># 将name作为索引</span></span><br><span class="line">             )</span><br></pre></td></tr></table></figure>
 <div>
 <style scoped>
@@ -1009,10 +1141,7 @@
 </table>
 </div>
 <h2 id="字母作为分隔符">字母作为分隔符</h2>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pd.read_table(<span class="string">"txt_data5.txt"</span>,</span><br><span class="line">              sep=<span class="string">"\D+"</span>,</span><br><span class="line">              names=[<span class="string">"id"</span>,<span class="string">"col1"</span>,<span class="string">"col2"</span>])</span><br></pre></td></tr></table></figure>
-<pre><code>/Applications/downloads/anaconda/anaconda3/lib/python3.7/site-packages/pandas/util/_decorators.py:311: ParserWarning: Falling back to the 'python' engine because the 'c' engine does not support regex separators (separators &gt; 1 char and different from '\s+' are interpreted as regex); you can avoid this warning by specifying engine='python'.
-  return func(*args, **kwargs)
-</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pd.read_table(<span class="string">"txt_data5.txt"</span>,</span><br><span class="line">              sep=<span class="string">"\D+"</span>,  <span class="comment"># 使用非数字作为分割符</span></span><br><span class="line">              names=[<span class="string">"id"</span>,<span class="string">"col1"</span>,<span class="string">"col2"</span>])</span><br></pre></td></tr></table></figure>
 <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -1066,9 +1195,6 @@
 </div>
 <h2 id="指定数据类型-dtype">指定数据类型-dtype</h2>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">df = pd.read_table(<span class="string">"txt_data5.txt"</span>,</span><br><span class="line">              sep=<span class="string">"\D+"</span>,</span><br><span class="line">              names=[<span class="string">"id"</span>,<span class="string">"col1"</span>,<span class="string">"col2"</span>])</span><br><span class="line">df</span><br></pre></td></tr></table></figure>
-<pre><code>/Applications/downloads/anaconda/anaconda3/lib/python3.7/site-packages/pandas/util/_decorators.py:311: ParserWarning: Falling back to the 'python' engine because the 'c' engine does not support regex separators (separators &gt; 1 char and different from '\s+' are interpreted as regex); you can avoid this warning by specifying engine='python'.
-  return func(*args, **kwargs)
-</code></pre>
 <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -1127,14 +1253,7 @@ col2    int64
 dtype: object
 </code></pre>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">df = pd.read_table(<span class="string">"txt_data5.txt"</span>,</span><br><span class="line">              sep=<span class="string">"\D+"</span>,  <span class="comment"># 以非数字作为分隔符</span></span><br><span class="line">              names=[<span class="string">"id"</span>,<span class="string">"col1"</span>,<span class="string">"col2"</span>],</span><br><span class="line">              dtype=&#123;<span class="string">"id"</span>:<span class="string">'int32'</span>,<span class="string">"col1"</span>:<span class="string">'int32'</span>,<span class="string">"col2"</span>:<span class="string">"float64"</span>&#125;)</span><br><span class="line"></span><br><span class="line">df.dtypes  <span class="comment"># 指定类型</span></span><br></pre></td></tr></table></figure>
-<pre><code>/Applications/downloads/anaconda/anaconda3/lib/python3.7/site-packages/pandas/util/_decorators.py:311: ParserWarning: Falling back to the 'python' engine because the 'c' engine does not support regex separators (separators &gt; 1 char and different from '\s+' are interpreted as regex); you can avoid this warning by specifying engine='python'.
-  return func(*args, **kwargs)
-
-
-
-
-
-id        int32
+<pre><code>id        int32
 col1      int32
 col2    float64
 dtype: object
@@ -1193,7 +1312,7 @@ dtype: object
 </table>
 </div>
 <h2 id="跳过指定行-skiprows">跳过指定行-skiprows</h2>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pd.read_table(<span class="string">"txt_data6.txt"</span>,</span><br><span class="line">              sep=<span class="string">"\s+"</span>,</span><br><span class="line">              names=[<span class="string">"age"</span>, <span class="string">"name"</span>, <span class="string">"sex"</span>],</span><br><span class="line">              skiprows=[<span class="number">0</span>,<span class="number">1</span>,<span class="number">7</span>]  <span class="comment"># 索引从0开始</span></span><br><span class="line">             )</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pd.read_table(<span class="string">"txt_data6.txt"</span>,</span><br><span class="line">              sep=<span class="string">"\s+"</span>,</span><br><span class="line">              names=[<span class="string">"age"</span>, <span class="string">"name"</span>, <span class="string">"sex"</span>],</span><br><span class="line">              skiprows=[<span class="number">0</span>,<span class="number">1</span>,<span class="number">7</span>]  <span class="comment"># 索引从0开始；跳过指定行</span></span><br><span class="line">             )</span><br></pre></td></tr></table></figure>
 <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -1626,7 +1745,7 @@ dtype: object
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Pandas读取TXT文件"><span class="nav-number">1.</span> <span class="nav-text">Pandas读取TXT文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数"><span class="nav-number">2.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模拟数据"><span class="nav-number">3.</span> <span class="nav-text">模拟数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#默认读取"><span class="nav-number">4.</span> <span class="nav-text">默认读取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#表头-header"><span class="nav-number">5.</span> <span class="nav-text">表头-header</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指定分割符-sep"><span class="nav-number">6.</span> <span class="nav-text">指定分割符-sep</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他分割符"><span class="nav-number">7.</span> <span class="nav-text">其他分割符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义表头-names"><span class="nav-number">8.</span> <span class="nav-text">自定义表头-names</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指定索引-index-col"><span class="nav-number">9.</span> <span class="nav-text">指定索引-index_col</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字母作为分隔符"><span class="nav-number">10.</span> <span class="nav-text">字母作为分隔符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指定数据类型-dtype"><span class="nav-number">11.</span> <span class="nav-text">指定数据类型-dtype</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字段转换-converters"><span class="nav-number">12.</span> <span class="nav-text">字段转换-converters</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跳过指定行-skiprows"><span class="nav-number">13.</span> <span class="nav-text">跳过指定行-skiprows</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跳过空白行-skip-blank-lines"><span class="nav-number">14.</span> <span class="nav-text">跳过空白行-skip_blank_lines</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Pandas读取TXT文件"><span class="nav-number">1.</span> <span class="nav-text">Pandas读取TXT文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正则基础"><span class="nav-number">2.</span> <span class="nav-text">正则基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参数"><span class="nav-number">3.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模拟数据"><span class="nav-number">4.</span> <span class="nav-text">模拟数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#默认读取"><span class="nav-number">5.</span> <span class="nav-text">默认读取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#表头-header"><span class="nav-number">6.</span> <span class="nav-text">表头-header</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指定分割符-sep"><span class="nav-number">7.</span> <span class="nav-text">指定分割符-sep</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他分割符"><span class="nav-number">8.</span> <span class="nav-text">其他分割符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义表头-names"><span class="nav-number">9.</span> <span class="nav-text">自定义表头-names</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指定索引-index-col"><span class="nav-number">10.</span> <span class="nav-text">指定索引-index_col</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字母作为分隔符"><span class="nav-number">11.</span> <span class="nav-text">字母作为分隔符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指定数据类型-dtype"><span class="nav-number">12.</span> <span class="nav-text">指定数据类型-dtype</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字段转换-converters"><span class="nav-number">13.</span> <span class="nav-text">字段转换-converters</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跳过指定行-skiprows"><span class="nav-number">14.</span> <span class="nav-text">跳过指定行-skiprows</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跳过空白行-skip-blank-lines"><span class="nav-number">15.</span> <span class="nav-text">跳过空白行-skip_blank_lines</span></a></li></ol></div>
             
 
           </div>
@@ -1685,7 +1804,7 @@ dtype: object
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共1109.7k字</span>
+  <span class="post-count">博客全站共1110.2k字</span>
 </div>
 
         
