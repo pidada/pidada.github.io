@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="机器学习,分类,kaggle,召回率," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="kaggle实战-信用卡客户流失预警 带来一篇关于kaggle客户流失预测的数据分析与建模的文章，主要内容：  数据基本信息 数据EDA分析 特征工程和编码 基于3大分类模型的建模和预测、评分 基于随机搜索和网格搜索调参优化">
+<meta name="keywords" content="机器学习,分类,kaggle,召回率">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kaggle实战-银行用户流失预测">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2022&#x2F;08&#x2F;26&#x2F;kaggle%E5%AE%9E%E6%88%98-%E9%93%B6%E8%A1%8C%E7%94%A8%E6%88%B7%E6%B5%81%E5%A4%B1%E9%A2%84%E6%B5%8B.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="kaggle实战-信用卡客户流失预警 带来一篇关于kaggle客户流失预测的数据分析与建模的文章，主要内容：  数据基本信息 数据EDA分析 特征工程和编码 基于3大分类模型的建模和预测、评分 基于随机搜索和网格搜索调参优化">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h5h5pht6kkj20ob0c2mxn.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h5h5vx3fh7j21mw0hkju6.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h5hly7qaimj20os0os408.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h5ht7wqkvmj21oe0hodkw.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h5i4igtmazj21k00fcn2i.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h5i4nfxj3jj21800jcmzs.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h5htaht5wcj21po0iyag0.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h5htb5vvtqj21bw0bcq4k.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h5htbn7fvoj20wj0ac0w5.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h5hvoi76vrj21ig0qmwmh.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;Library&#x2F;Application%20Support&#x2F;typora-user-images&#x2F;image-20220824171232559.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h5i4rabn3bj21kq0quwh9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h5i4rmfhegj21le0s4gw9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h5hvpu4q6sj21gm0m8jyn.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h5hvqojji4j21800bgq4o.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h5hvrai0saj21ju0qe775.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h5iatsyxv5j21k00peq4x.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h5hvsmxxlqj21ju0smq52.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h5hvtdhc43j20wa0b7myb.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h5i574rhkjj20io0duq46.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h5hvvku6tkj20wa0b70tg.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h5iayw8wdxj21g00puq4z.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h5hvvylao0j20a206fjra.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h5hvynxd7uj213q0km769.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h5hvzic82jj21cy0b40u6.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h5hw0fvx7sj20c909o74i.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h5hw0xn4bqj20qo0ds40h.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24egy1h5hw1id95bj20rp09mgn7.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h5h5syfkrvj211d0aaq3m.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h5h5s4lqjdj208v07aglk.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h5h5spnpcjj208v07aglk.jpg">
+<meta property="og:updated_time" content="2022-08-26T01:32:10.229Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;e6c9d24ely1h5h5pht6kkj20ob0c2mxn.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2022/08/26/kaggle实战-银行用户流失预测.html"/>
+
+
+
+
+
+  <title>kaggle实战-银行用户流失预测 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2022/08/26/kaggle%E5%AE%9E%E6%88%98-%E9%93%B6%E8%A1%8C%E7%94%A8%E6%88%B7%E6%B5%81%E5%A4%B1%E9%A2%84%E6%B5%8B.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">kaggle实战-银行用户流失预测</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-08-26T09:29:53+08:00">
+                2022-8-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/kaggle/" itemprop="url" rel="index">
+                    <span itemprop="name">kaggle</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2022/08/26/kaggle%E5%AE%9E%E6%88%98-%E9%93%B6%E8%A1%8C%E7%94%A8%E6%88%B7%E6%B5%81%E5%A4%B1%E9%A2%84%E6%B5%8B.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2022/08/26/kaggle实战-银行用户流失预测.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  4.1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  20
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="kaggle实战-信用卡客户流失预警">kaggle实战-信用卡客户流失预警</h2>
+<p>带来一篇关于kaggle客户流失预测的数据分析与建模的文章，主要内容：</p>
+<ul>
+<li>数据基本信息</li>
+<li>数据EDA分析</li>
+<li>特征工程和编码</li>
+<li>基于3大分类模型的建模和预测、评分</li>
+<li>基于随机搜索和网格搜索调参优化</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h5h5pht6kkj20ob0c2mxn.jpg" alt=""></p>
+<a id="more"></a>
+<h2 id="背景">背景</h2>
+<p>近年来，不论是传统行业还是互联网行业，都面临着用户流失问题。一般在银行、电话服务公司、互联网公司、保险等公司，经常使用客户流失分析和客户流失率作为他们的关键性业务指标之一。</p>
+<p>一般情况下，留住现有客户的成本是远低于获得新客户的成本。因此在这些公司都有自己的客户服务部门来挽回现有即将流失的客户，因为现有客户对公司来说比新客户更具有价值。</p>
+<p>记住一点：<strong>获客成本高，用户留存很重要</strong></p>
+<h2 id="导入库">导入库</h2>
+<p>In [1]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> plotly <span class="keyword">as</span> py</span><br><span class="line"><span class="keyword">import</span> plotly_express <span class="keyword">as</span> px</span><br><span class="line"><span class="keyword">import</span> plotly.graph_objects <span class="keyword">as</span> go</span><br><span class="line"><span class="keyword">from</span> plotly.subplots <span class="keyword">import</span> make_subplots</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line">%matplotlib inline</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.decomposition <span class="keyword">import</span> PCA</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split,cross_val_score</span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier,AdaBoostClassifier</span><br><span class="line"><span class="keyword">from</span> sklearn.svm <span class="keyword">import</span> SVC</span><br><span class="line"><span class="keyword">from</span> sklearn.pipeline <span class="keyword">import</span> Pipeline</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> f1_score <span class="keyword">as</span> f1</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> confusion_matrix</span><br><span class="line"><span class="keyword">import</span> scikitplot <span class="keyword">as</span> skplt</span><br></pre></td></tr></table></figure>
+<p>In [2]:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df = pd.read_csv(<span class="string">"BankChurners.csv"</span>)</span><br><span class="line">df.head()</span><br></pre></td></tr></table></figure>
+<p>Out[2]:</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h5h5vx3fh7j21mw0hkju6.jpg" alt=""></p>
+<h2 id="数据基本信息">数据基本信息</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">df.shape</span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果</span></span><br><span class="line">(<span class="number">10127</span>, <span class="number">23</span>)</span><br></pre></td></tr></table></figure>
+<p>结果显示总共是10127行数据，23个字段</p>
+<p>In [3]:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 全部字段</span></span><br><span class="line">columns = df.columns</span><br><span class="line">columns</span><br></pre></td></tr></table></figure>
+<p>Out[3]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Index([<span class="string">'CLIENTNUM'</span>, <span class="string">'Attrition_Flag'</span>, <span class="string">'Customer_Age'</span>, <span class="string">'Gender'</span>,</span><br><span class="line">       <span class="string">'Dependent_count'</span>, <span class="string">'Education_Level'</span>, <span class="string">'Marital_Status'</span>,</span><br><span class="line">       <span class="string">'Income_Category'</span>, <span class="string">'Card_Category'</span>, <span class="string">'Months_on_book'</span>,</span><br><span class="line">       <span class="string">'Total_Relationship_Count'</span>, <span class="string">'Months_Inactive_12_mon'</span>,</span><br><span class="line">       <span class="string">'Contacts_Count_12_mon'</span>, <span class="string">'Credit_Limit'</span>, <span class="string">'Total_Revolving_Bal'</span>,</span><br><span class="line">       <span class="string">'Avg_Open_To_Buy'</span>, <span class="string">'Total_Amt_Chng_Q4_Q1'</span>, <span class="string">'Total_Trans_Amt'</span>,</span><br><span class="line">       <span class="string">'Total_Trans_Ct'</span>, <span class="string">'Total_Ct_Chng_Q4_Q1'</span>, <span class="string">'Avg_Utilization_Ratio'</span>,</span><br><span class="line">       <span class="string">'Naive_Bayes_Classifier_Attrition_Flag_Card_Category_Contacts_Count_12_mon_Dependent_count_Education_Level_Months_Inactive_12_mon_1'</span>,</span><br><span class="line">       <span class="string">'Naive_Bayes_Classifier_Attrition_Flag_Card_Category_Contacts_Count_12_mon_Dependent_count_Education_Level_Months_Inactive_12_mon_2'</span>],</span><br><span class="line">      dtype=<span class="string">'object'</span>)</span><br></pre></td></tr></table></figure>
+<p>字段解释为：</p>
+<ul>
+<li>CLIENTNUM：Client number - Unique identifier for the customer holding the account</li>
+<li>Attrition_Flag：Flag indicative of account closure in next 6 months (between Jan to Jun 2013)</li>
+<li>Customer_Age：Age of the account holder</li>
+<li>Gender：Gender of the account holder</li>
+<li>Dependent_count：Number of people financially dependent on the account holder</li>
+<li>Education_Level：Educational qualification of account holder (ex - high school, college grad etc.)</li>
+<li>Marital_Status：Marital status of account holder (Single, Married, Divorced, Unknown)</li>
+<li>Income_Category：Annual income category of the account holder</li>
+<li>Card_Category：Card type depicting the variants of the cards by value proposition (Blue, Silver and Platinum)</li>
+<li>Months_on_book：Number of months since the account holder opened an an account with the lender</li>
+<li>Total_Relationship_Count：Total number of products held by the customer. Total number of relationships the account holder has with the bank (example - retail bank, mortgage, wealth management etc.)</li>
+<li>Months_Inactive_12_mon：Total number of months inactive in last 12 months</li>
+<li>Contacts_Count_12_mon：Number of Contacts in the last 12 months. No. of times the account holder called to the call center in the past 12 months</li>
+<li>Credit_Limit：Credit limit</li>
+<li>Total_Revolving_Bal：Total amount as revolving balance</li>
+<li>Avg_Open_To_Buy：Open to Buy Credit Line (Average of last 12 months)</li>
+<li>Total_Amt_Chng_Q4_Q1：Change in Transaction Amount (Q4 over Q1)</li>
+<li>Total_Trans_Amt：Total Transaction Amount (Last 12 months)</li>
+<li>Total_Trans_Ct：Total Transaction Count (Last 12 months)</li>
+<li>Total_Ct_Chng_Q4_Q1：Change in Transaction Count (Q4 over Q1)</li>
+<li>Avg_Utilization_Ratio：Average Card Utilization Ratio</li>
+<li>Naive_Bayes_Classifier_Attrition_Flag_Card_Category_Contacts_Count_12_mon_Dependent_count_Education_Level_Months_Inactive_12_mon_1</li>
+<li>Naive_Bayes_Classifier_Attrition_Flag_Card_Category_Contacts_Count_12_mon_Dependent_count_Education_Level_Months_Inactive_12_mon_2</li>
+</ul>
+<p>In [4]:</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.dtypes   <span class="meta"># 字段类型; 部分截图</span></span><br></pre></td></tr></table></figure>
+<p>Out[4]:</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h5hly7qaimj20os0os408.jpg" alt=""></p>
+<p>通过下面的代码能够统计不同类型下的字段数量：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 不同字段类型的统计</span></span><br><span class="line"></span><br><span class="line">pd.value_counts(df.dtypes)</span><br><span class="line"></span><br><span class="line">int64      <span class="number">10</span></span><br><span class="line">float64     <span class="number">7</span></span><br><span class="line">object      <span class="number">6</span></span><br><span class="line">dtype: int64</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.describe().style.background_gradient(cmap=<span class="string">"ocean_r"</span>)  <span class="comment"># 表格美化输出</span></span><br></pre></td></tr></table></figure>
+<p>df数据的描述统计信息美化输出（部分字段）</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h5ht7wqkvmj21oe0hodkw.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h5i4igtmazj21k00fcn2i.jpg" alt=""></p>
+<h2 id="缺失值">缺失值</h2>
+<p>In [7]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 每个字段的缺失值统计</span></span><br><span class="line">df.isnull().sum()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 缺失值比例：数据中没有缺失值</span></span><br><span class="line">total = df.isnull().sum().sort_values(ascending=<span class="literal">False</span>)</span><br><span class="line">Percentage = total / len(df)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h5i4nfxj3jj21800jcmzs.jpg" alt=""></p>
+<p>根据值的降序排列，第一个是0，结果表明数据本身是没有缺失值的**</p>
+<h2 id="删除无关字段">删除无关字段</h2>
+<p>In [9]:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">no_use = np.arange(21, df.shape[1])  <span class="comment"># 最后两个字段</span></span><br><span class="line">no_use</span><br></pre></td></tr></table></figure>
+<p>Out[9]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">array</span>([<span class="number">21</span>, <span class="number">22</span>])</span><br></pre></td></tr></table></figure>
+<p>In [10]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1、删除多个字段</span></span><br><span class="line">df.drop(df.columns[no_use], <span class="attribute">axis</span>=1, <span class="attribute">inplace</span>=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p>In [11]:</p>
+<p>CLIENTNUM表示的客户编号的信息，对建模无用直接删除：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 2、删除单个字段</span></span><br><span class="line">df.drop(<span class="string">"CLIENTNUM"</span>, <span class="attribute">axis</span>=1, <span class="attribute">inplace</span>=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p>新生成的df的字段（删除了无效字段之后）：</p>
+<p>In [12]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">df</span><span class="selector-class">.columns</span></span><br></pre></td></tr></table></figure>
+<p>Out[12]:</p>
+<figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Index</span>([<span class="string">'Attrition_Flag'</span>, <span class="string">'Customer_Age'</span>, <span class="string">'Gender'</span>, <span class="string">'Dependent_count'</span>,</span><br><span class="line">       <span class="string">'Education_Level'</span>, <span class="string">'Marital_Status'</span>, <span class="string">'Income_Category'</span>, <span class="string">'Card_Category'</span>,</span><br><span class="line">       <span class="string">'Months_on_book'</span>, <span class="string">'Total_Relationship_Count'</span>, <span class="string">'Months_Inactive_12_mon'</span>,</span><br><span class="line">       <span class="string">'Contacts_Count_12_mon'</span>, <span class="string">'Credit_Limit'</span>, <span class="string">'Total_Revolving_Bal'</span>,</span><br><span class="line">       <span class="string">'Avg_Open_To_Buy'</span>, <span class="string">'Total_Amt_Chng_Q4_Q1'</span>, <span class="string">'Total_Trans_Amt'</span>,</span><br><span class="line">       <span class="string">'Total_Trans_Ct'</span>, <span class="string">'Total_Ct_Chng_Q4_Q1'</span>, <span class="string">'Avg_Utilization_Ratio'</span>],</span><br><span class="line">      dtype=<span class="string">'object'</span>)</span><br></pre></td></tr></table></figure>
+<p>In [13]:</p>
+<p>再次查看数据的描述统计信息：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.describe()<span class="selector-class">.style</span><span class="selector-class">.background_gradient</span>(cmap=<span class="string">"ocean_r"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h5htaht5wcj21po0iyag0.jpg" alt=""></p>
+<h2 id="EDA-Exploratory-Data-Analysis">EDA-Exploratory Data Analysis</h2>
+<h3 id="基于使用频率和数值特征">基于使用频率和数值特征</h3>
+<p>In [14]:</p>
+<p>取出和用户的数值型字段信息：</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># df_frequency = df[[<span class="string">"Customer_Age"</span>,<span class="string">"Total_Trans_Ct"</span>,<span class="string">"Total_Trans_Amt"</span>,<span class="string">"Months_Inactive_12_mon"</span>,<span class="string">"Credit_Limit"</span>,<span class="string">"Attrition_Flag"</span>]]  效果同下</span><br><span class="line"></span><br><span class="line">df_frequency = pd.concat([df[<span class="string">'Customer_Age'</span>],</span><br><span class="line">                        df[<span class="string">'Total_Trans_Ct'</span>],</span><br><span class="line">                        df[<span class="string">'Total_Trans_Amt'</span>],</span><br><span class="line">                        df[<span class="string">'Months_Inactive_12_mon'</span>],</span><br><span class="line">                        df[<span class="string">'Credit_Limit'</span>],</span><br><span class="line">                        df[<span class="string">'Attrition_Flag'</span>]],</span><br><span class="line">                       axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">df_frequency.head()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h5htb5vvtqj21bw0bcq4k.jpg" alt=""></p>
+<p>探索在不同的Attrition_Flag下，两两字段之间的关系：</p>
+<p>In [15]:</p>
+<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"Attrition_Flag"</span>].<span class="keyword">value</span><span class="number">_</span>counts()</span><br></pre></td></tr></table></figure>
+<p>Out[15]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Existing<span class="built_in"> Customer </span>   8500  # 现有顾客</span><br><span class="line">Attrited<span class="built_in"> Customer </span>   1627  # 流失顾客</span><br><span class="line">Name: Attrition_Flag, dtype: int64</span><br></pre></td></tr></table></figure>
+<p>结果表明：现有顾客为8500，流失客户为1627</p>
+<p>In [16]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义画布大小</span></span><br><span class="line"></span><br><span class="line">fig, ax = plt.subplots(ncols=<span class="number">4</span>, figsize=(<span class="number">20</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">sns.scatterplot(data=df_frequency,</span><br><span class="line">                x=<span class="string">"Total_Trans_Amt"</span>,</span><br><span class="line">                y=<span class="string">"Total_Trans_Ct"</span>,</span><br><span class="line">                hue=<span class="string">"Attrition_Flag"</span>,</span><br><span class="line">                ax=ax[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line">sns.scatterplot(data=df_frequency,</span><br><span class="line">                x=<span class="string">"Months_Inactive_12_mon"</span>,</span><br><span class="line">                y=<span class="string">"Total_Trans_Ct"</span>,</span><br><span class="line">                hue=<span class="string">"Attrition_Flag"</span>,</span><br><span class="line">                ax=ax[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">sns.scatterplot(data=df_frequency,</span><br><span class="line">                x=<span class="string">"Credit_Limit"</span>,</span><br><span class="line">                y=<span class="string">"Total_Trans_Ct"</span>,</span><br><span class="line">                hue=<span class="string">"Attrition_Flag"</span>,</span><br><span class="line">                ax=ax[<span class="number">2</span>])</span><br><span class="line"></span><br><span class="line">sns.scatterplot(data=df_frequency,</span><br><span class="line">              x=<span class="string">"Customer_Age"</span>,</span><br><span class="line">              y=<span class="string">"Total_Trans_Ct"</span>,</span><br><span class="line">              hue=<span class="string">"Attrition_Flag"</span>,</span><br><span class="line">              ax=ax[<span class="number">3</span>])</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h5htbn7fvoj20wj0ac0w5.jpg" alt=""></p>
+<p>基于plotly的实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> col <span class="keyword">in</span> [<span class="string">"Customer_Age"</span>,<span class="string">"Total_Trans_Amt"</span>,<span class="string">"Months_Inactive_12_mon"</span>,<span class="string">"Credit_Limit"</span>]:</span><br><span class="line">    fig = px.scatter(df_frequency,</span><br><span class="line">                     x=col,</span><br><span class="line">                     y=<span class="string">"Total_Trans_Ct"</span>,</span><br><span class="line">                     color=<span class="string">"Attrition_Flag"</span>)</span><br><span class="line">    fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h5hvoi76vrj21ig0qmwmh.jpg" alt=""></p>
+<p><img src="../../../Library/Application%20Support/typora-user-images/image-20220824171232559.png" alt="image-20220824171232559"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h5i4rabn3bj21kq0quwh9.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h5i4rmfhegj21le0s4gw9.jpg" alt=""></p>
+<p>上main展示的一个字段和Total_Trans_Ct的关系。下面是基于go.Scatter实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 生成一个副本</span></span><br><span class="line"></span><br><span class="line">df_frequency_copy = df_frequency.copy()</span><br><span class="line">df_frequency_copy[<span class="string">"Attrition_Flag_number"</span>] = df_frequency_copy[<span class="string">"Attrition_Flag"</span>].apply(<span class="keyword">lambda</span> x: <span class="number">1</span> <span class="keyword">if</span> x == <span class="string">"Existing Customer"</span> <span class="keyword">else</span> <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 两个基本参数：设置行、列</span></span><br><span class="line"></span><br><span class="line">four_columns = [<span class="string">"Total_Trans_Amt"</span>,<span class="string">"Months_Inactive_12_mon"</span>,<span class="string">"Credit_Limit"</span>,<span class="string">"Customer_Age"</span>]</span><br><span class="line"></span><br><span class="line">fig = make_subplots(rows=<span class="number">1</span>,</span><br><span class="line">                    cols=<span class="number">4</span>,</span><br><span class="line">                    start_cell=<span class="string">"top-left"</span>,</span><br><span class="line">                    shared_yaxes=<span class="literal">True</span>,</span><br><span class="line">                    subplot_titles=four_columns  <span class="comment"># 子图</span></span><br><span class="line">                   )</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i, v <span class="keyword">in</span> enumerate(four_columns):</span><br><span class="line">    r = i // <span class="number">4</span> + <span class="number">1</span>  <span class="comment"># 行</span></span><br><span class="line">    c = (i + <span class="number">1</span>) % <span class="number">4</span>  <span class="comment"># 列-余数</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> c == <span class="number">0</span>:</span><br><span class="line">        fig.add_trace(go.Scatter(x=df_frequency_copy[v].tolist(),</span><br><span class="line">                             y=df_frequency_copy[<span class="string">"Total_Trans_Ct"</span>].tolist(),</span><br><span class="line">                             mode=<span class="string">'markers'</span>,</span><br><span class="line">                             marker=dict(color=df_frequency_copy.Attrition_Flag_number)),</span><br><span class="line">                 row=r, col=<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        fig.add_trace(go.Scatter(x=df_frequency_copy[v].tolist(),</span><br><span class="line">                             y=df_frequency_copy[<span class="string">"Total_Trans_Ct"</span>].tolist(),</span><br><span class="line">                             mode=<span class="string">'markers'</span>,</span><br><span class="line">                             marker=dict(color=df_frequency_copy.Attrition_Flag_number)),</span><br><span class="line"></span><br><span class="line">                 row=r, col=c)</span><br><span class="line"></span><br><span class="line">fig.update_layout(width=<span class="number">1000</span>, height=<span class="number">450</span>, showlegend=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h5hvpu4q6sj21gm0m8jyn.jpg" alt=""></p>
+<p><strong>蓝色：现有客户；黄色：流失客户</strong></p>
+<p>我们得到如下的几点结论：</p>
+<ol>
+<li>图1：用户每年花费的金额越高，越可能留下来（非流失）</li>
+<li>2-3个月不进行互动，用户流失的可能性较高</li>
+<li>用户的信用额度越高，留下来的可能性越大</li>
+<li>从图3中观察到：流失客户的信用卡使用次数大部分低于100次</li>
+<li>从第4个图中观察到，用户年龄分布不是重要因素</li>
+</ol>
+<h3 id="基于用户人口统计信息">基于用户人口统计信息</h3>
+<p>用户的人口统计信息主要是包含：<strong>用户年龄、性别、受教育程度、状态（单身、已婚等）、收入水平</strong>等信息</p>
+<p>In [21]:</p>
+<p>取出相关的字段进行分析：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">df_demographic=df[[<span class="string">'Customer_Age'</span>,</span><br><span class="line">                   <span class="string">'Gender'</span>,</span><br><span class="line">                   <span class="string">'Education_Level'</span>,</span><br><span class="line">                   <span class="string">'Marital_Status'</span>,</span><br><span class="line">                   <span class="string">'Income_Category'</span>,</span><br><span class="line">                   <span class="string">'Attrition_Flag'</span>]]</span><br><span class="line"></span><br><span class="line">df_demographic.head()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h5hvqojji4j21800bgq4o.jpg" alt=""></p>
+<h4 id="不同类型顾客的年龄分布">不同类型顾客的年龄分布</h4>
+<p>In [22]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">px.violin(df_demographic,</span><br><span class="line">          <span class="attribute">y</span>=<span class="string">"Customer_Age"</span>,</span><br><span class="line">          <span class="attribute">color</span>=<span class="string">"Attrition_Flag"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h5hvrai0saj21ju0qe775.jpg" alt=""></p>
+<p>从上面的小提琴图看出来，不同类型的用户在年龄上的分布是类似的。</p>
+<p>结论：<strong>年龄并不是用户是否流失的关键因素</strong></p>
+<h3 id="年龄分布">年龄分布</h3>
+<p>查看整体数据中用户的年龄分布情况：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">fig = make_subplots(rows=<span class="number">2</span>, cols=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">trace1=go.Box(x=df[<span class="string">'Customer_Age'</span>],name=<span class="string">'Age With Box Plot'</span>,boxmean=<span class="literal">True</span>)</span><br><span class="line">trace2=go.Histogram(x=df[<span class="string">'Customer_Age'</span>],name=<span class="string">'Age With Histogram'</span>)</span><br><span class="line"></span><br><span class="line">fig.add_trace(trace1, row=<span class="number">1</span>,col=<span class="number">1</span>)</span><br><span class="line">fig.add_trace(trace2, row=<span class="number">2</span>,col=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">fig.update_layout(height=<span class="number">500</span>, width=<span class="number">1000</span>, title_text=<span class="string">"用户年龄分布"</span>)</span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h5iatsyxv5j21k00peq4x.jpg" alt=""></p>
+<p>可以看到年龄基本上是呈现正态分布的，大多数集中在40-55之间。</p>
+<h4 id="不同类型下不同性别顾客统计">不同类型下不同性别顾客统计</h4>
+<p>In [23]:</p>
+<figure class="highlight sas"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">flag_gender = df.groupby([<span class="string">"Attrition_Flag"</span>,<span class="string">"Gender"</span>]).size().<span class="meta">reset</span><span class="meta">_index(</span>).<span class="meta">rename</span>(columns=&#123;0:<span class="string">"number"</span>&#125;)</span><br><span class="line">flag_gender</span><br></pre></td></tr></table></figure>
+<p>Out[23]:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right"></th>
+<th style="text-align:right">Attrition_Flag</th>
+<th style="text-align:right">Gender</th>
+<th style="text-align:right">number</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">0</td>
+<td style="text-align:right">Attrited Customer</td>
+<td style="text-align:right">F</td>
+<td style="text-align:right">930</td>
+</tr>
+<tr>
+<td style="text-align:right">1</td>
+<td style="text-align:right">Attrited Customer</td>
+<td style="text-align:right">M</td>
+<td style="text-align:right">697</td>
+</tr>
+<tr>
+<td style="text-align:right">2</td>
+<td style="text-align:right">Existing Customer</td>
+<td style="text-align:right">F</td>
+<td style="text-align:right">4428</td>
+</tr>
+<tr>
+<td style="text-align:right">3</td>
+<td style="text-align:right">Existing Customer</td>
+<td style="text-align:right">M</td>
+<td style="text-align:right">4072</td>
+</tr>
+</tbody>
+</table>
+<p>In [24]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">fig = px.bar(flag_gender,</span><br><span class="line">             <span class="attribute">x</span>=<span class="string">"Attrition_Flag"</span>,</span><br><span class="line">             <span class="attribute">y</span>=<span class="string">"number"</span>,</span><br><span class="line">             <span class="attribute">color</span>=<span class="string">"Gender"</span>,</span><br><span class="line">             <span class="attribute">barmode</span>=<span class="string">"group"</span>,</span><br><span class="line">             <span class="attribute">text</span>=<span class="string">"number"</span>)</span><br><span class="line"></span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h5hvsmxxlqj21ju0smq52.jpg" alt=""></p>
+<p>从上面的柱状图中看出来：</p>
+<ol>
+<li>女性在本次数据中高于男性；在两种不同类型的客户中女性也是高于男性</li>
+<li>数据不平衡：现有客户和流失客户是不平衡的，大约是8400:1600</li>
+</ol>
+<h3 id="交叉表统计分析">交叉表统计分析</h3>
+<p>基于pandas中交叉表的数据统计分析。解释交叉表很好的文章：<a href="https://pbpython.com/pandas-crosstab.html" target="_blank" rel="noopener">https://pbpython.com/pandas-crosstab.html</a></p>
+<p>In [25]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">fig, (ax1,ax2,ax3,ax4) = plt.subplots(ncols=<span class="number">4</span>, figsize=(<span class="number">20</span>,<span class="number">5</span>))</span><br><span class="line"></span><br><span class="line">pd.crosstab(df[<span class="string">"Attrition_Flag"</span>],df[<span class="string">"Gender"</span>]).plot(kind=<span class="string">"bar"</span>, ax=ax1, ylim=[<span class="number">0</span>,<span class="number">5000</span>])</span><br><span class="line">pd.crosstab(df[<span class="string">"Attrition_Flag"</span>],df[<span class="string">"Education_Level"</span>]).plot(kind=<span class="string">"bar"</span>, ax=ax2, ylim=[<span class="number">0</span>,<span class="number">5000</span>])</span><br><span class="line">pd.crosstab(df[<span class="string">"Attrition_Flag"</span>],df[<span class="string">"Marital_Status"</span>]).plot(kind=<span class="string">"bar"</span>, ax=ax3, ylim=[<span class="number">0</span>,<span class="number">5000</span>])</span><br><span class="line">pd.crosstab(df[<span class="string">"Attrition_Flag"</span>],df[<span class="string">"Income_Category"</span>]).plot(kind=<span class="string">"bar"</span>, ax=ax4, ylim=[<span class="number">0</span>,<span class="number">5000</span>])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">fig, (ax1,ax2,ax3) = plt.subplots(ncols=<span class="number">3</span>, figsize=(<span class="number">20</span>,<span class="number">5</span>))</span><br><span class="line">pd.crosstab(df[<span class="string">'Attrition_Flag'</span>],df[<span class="string">'Dependent_count'</span>]).plot(kind=<span class="string">'bar'</span>,ax=ax1, ylim=[<span class="number">0</span>,<span class="number">5000</span>])</span><br><span class="line">pd.crosstab(df[<span class="string">'Attrition_Flag'</span>],df[<span class="string">'Card_Category'</span>]).plot(kind=<span class="string">'bar'</span>,ax=ax2, ylim=[<span class="number">0</span>,<span class="number">10000</span>])</span><br><span class="line"></span><br><span class="line">_box = sns.boxplot(data=df_demographic,x=<span class="string">'Attrition_Flag'</span>,y=<span class="string">'Customer_Age'</span>, ax=ax3)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h5hvtdhc43j20wa0b7myb.jpg" alt=""></p>
+<p>我们放大再看：</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h5i574rhkjj20io0duq46.jpg" alt=""></p>
+<p>可以观察到：在两种客户中，不同的教育水平和个人状态的分布是类似的。这个结论也验证了：<strong>年龄并不是影响现有或者流失客户的因素</strong>。</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h5hvvku6tkj20wa0b70tg.jpg" alt=""></p>
+<h3 id="受教育程度">受教育程度</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fig = px.pie(df,names=<span class="string">'Education_Level'</span>,title=<span class="string">'Propotion Of Education Levels'</span>)</span><br><span class="line">fig.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h5iayw8wdxj21g00puq4z.jpg" alt=""></p>
+<h3 id="对比两种客户数量">对比两种客户数量</h3>
+<p>In [26]:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">churn = df[<span class="string">"Attrition_Flag"</span>].value_counts()</span><br><span class="line">churn</span><br></pre></td></tr></table></figure>
+<p>Out[26]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Existing<span class="built_in"> Customer </span>   8500</span><br><span class="line">Attrited<span class="built_in"> Customer </span>   1627</span><br><span class="line">Name: Attrition_Flag, dtype: int64</span><br></pre></td></tr></table></figure>
+<p>In [27]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">churn</span><span class="selector-class">.keys</span>()</span><br></pre></td></tr></table></figure>
+<p>Out[27]:</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">Index</span><span class="params">([<span class="string">'Existing Customer'</span>, <span class="string">'Attrited Customer'</span>], dtype=<span class="string">'object'</span>)</span></span></span><br></pre></td></tr></table></figure>
+<p>In [28]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">plt.pie(<span class="attribute">x</span>=churn, <span class="attribute">labels</span>=churn.keys(),autopct="%.1f%%")</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h5hvvylao0j20a206fjra.jpg" alt=""></p>
+<p>上面的饼图表明：</p>
+<ul>
+<li>现有客户还是占据了绝大部分</li>
+<li>后面将通过采样的方式使得两种类型的客户数量保持平衡。</li>
+</ul>
+<h3 id="相关性">相关性</h3>
+<p>现有数据中的字段涉及到分类型和数值型，采取不同的分析和编码方式</p>
+<ul>
+<li>数值型变量：使用相关系数Pearson</li>
+<li>分类型变量：使用Cramer’s V ；克莱姆相关系数，常用于分析双变量之间的关系</li>
+</ul>
+<p>参考内容：<a href="https://blog.csdn.net/deecheanW/article/details/120474864" target="_blank" rel="noopener">https://blog.csdn.net/deecheanW/article/details/120474864</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 字符型字段</span></span><br><span class="line"><span class="comment"># 相同效果：df.select_dtypes(include="O")</span></span><br><span class="line">df_categorical=df.loc[:,df.dtypes==np.object]</span><br><span class="line">df_categorical.head()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 数值型字段</span></span><br><span class="line">df_number = df.select_dtypes(exclude=<span class="string">"O"</span>)</span><br><span class="line">df_number.head()</span><br></pre></td></tr></table></figure>
+<p>对Attrition_Flag字段执行独热码编码操作：</p>
+<p>In [31]:</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 先保留原信息</span><br><span class="line">df_number[<span class="string">"Attrition_Flag"</span>] = df.loc[:, <span class="string">"Attrition_Flag"</span>]</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h5hvynxd7uj213q0km769.jpg" alt=""></p>
+<h3 id="类型编码">类型编码</h3>
+<p>In [34]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> preprocessing</span><br><span class="line"></span><br><span class="line">label = preprocessing.LabelEncoder()</span><br><span class="line">df_categorical_encoded = pd.DataFrame()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 对分类型的字段进行类型编码</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> df_categorical.columns:</span><br><span class="line">    df_categorical_encoded[i] = label.fit_transform(df_categorical[i])</span><br></pre></td></tr></table></figure>
+<h3 id="计算克莱姆系数-cramers-V">计算克莱姆系数-cramers_V</h3>
+<p>In [35]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> scipy.stats <span class="keyword">import</span> chi2_contingency</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义计算克莱姆系数的函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cal_cramers_v</span><span class="params">(v1,v2)</span>:</span></span><br><span class="line">    crosstab = np.array(pd.crosstab(v1,v2,rownames=<span class="literal">None</span>,colnames=<span class="literal">None</span>))</span><br><span class="line">    stat = chi2_contingency(crosstab)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    obs = np.sum(crosstab)</span><br><span class="line">    mini = min(crosstab.shape) - <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> stat / (obs * mini)</span><br></pre></td></tr></table></figure>
+<p>In [36]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">rows = []</span><br><span class="line"><span class="keyword">for</span> v1 <span class="keyword">in</span> df_categorical_encoded:</span><br><span class="line">    col = []</span><br><span class="line">    <span class="keyword">for</span> v2 <span class="keyword">in</span> df_categorical_encoded:</span><br><span class="line">        <span class="comment"># 计算克莱姆系数</span></span><br><span class="line">        cramers = cal_cramers_v(df_categorical_encoded[v1],df_categorical_encoded[v2])</span><br><span class="line">        col.append(round(cramers, <span class="number">2</span>))</span><br><span class="line">    rows.append(col)</span><br></pre></td></tr></table></figure>
+<p>In [37]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 克莱姆系数下的热力图</span></span><br><span class="line"></span><br><span class="line">cramers_results = np.array(rows)</span><br><span class="line"></span><br><span class="line">cramerv_matrix = pd.DataFrame(cramers_results,</span><br><span class="line">                              columns=df_categorical_encoded.columns,</span><br><span class="line">                              index=df_categorical_encoded.columns)</span><br><span class="line">cramerv_matrix.head()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h5hvzic82jj21cy0b40u6.jpg" alt=""></p>
+<p>绘制相关的热力图：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mask = np.triu(np.ones_like(cramerv_matrix, dtype=np.bool))</span><br><span class="line">cat_heatmap = sns.heatmap(cramerv_matrix, <span class="comment"># 系数矩阵</span></span><br><span class="line">                          mask=mask,</span><br><span class="line">                          vmin=<span class="number">-1</span>,</span><br><span class="line">                          vmax=<span class="number">1</span>,</span><br><span class="line">                          annot=<span class="literal">True</span>,</span><br><span class="line">                          cmap=<span class="string">"BrBG"</span>)</span><br><span class="line"></span><br><span class="line">cat_heatmap.set_title(<span class="string">"Heatmap of Correlation(Categorical)"</span>, fontdict=&#123;<span class="string">"fontsize"</span>: <span class="number">14</span>&#125;, pad=<span class="number">12</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h5hw0fvx7sj20c909o74i.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 基于数值型字段的相关系数</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> scipy <span class="keyword">import</span> stats</span><br><span class="line"></span><br><span class="line">num_corr = df_number.corr()  <span class="comment"># 相关系数</span></span><br><span class="line">plt.figure(figsize = (<span class="number">16</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">mask = np.triu(np.ones_like(num_corr, dtype=np.bool))</span><br><span class="line">heatmap_number = sns.heatmap(num_corr, mask=mask,</span><br><span class="line">                             vmin=<span class="number">-1</span>, vmax=<span class="number">1</span>,</span><br><span class="line">                             annot=<span class="literal">True</span>, cmap=<span class="string">"RdYlBu"</span>)</span><br><span class="line"></span><br><span class="line">heatmap_number.set_title(<span class="string">"Heatmap of Correlation(Number)"</span>, fontdict=&#123;<span class="string">"fontsize"</span>: <span class="number">14</span>&#125;, pad=<span class="number">12</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h5hw0xn4bqj20qo0ds40h.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">fig, ax = plt.subplots(ncols=<span class="number">2</span>, figsize=(<span class="number">15</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line">heatmap = sns.heatmap(num_corr[[<span class="string">"Existing Customer"</span>]].sort_values(by=<span class="string">"Existing Customer"</span>, ascending=<span class="literal">False</span>),</span><br><span class="line">                     ax=ax[<span class="number">0</span>],</span><br><span class="line">                     vmin=<span class="number">-1</span>,</span><br><span class="line">                     vmax=<span class="number">1</span>,</span><br><span class="line">                     annot=<span class="literal">True</span>,</span><br><span class="line">                     cmap=<span class="string">"coolwarm_r"</span>)</span><br><span class="line">heatmap.set_title(<span class="string">"Features Correlating with Existing Customers"</span>,fontdict=&#123;<span class="string">"fontsize"</span>:<span class="number">18</span>&#125;, pad=<span class="number">16</span>);</span><br><span class="line"></span><br><span class="line">heatmap = sns.heatmap(num_corr[[<span class="string">"Attrited Customer"</span>]].sort_values(by=<span class="string">"Attrited Customer"</span>, ascending=<span class="literal">False</span>),</span><br><span class="line">                     ax=ax[<span class="number">1</span>],</span><br><span class="line">                     vmin=<span class="number">-1</span>,</span><br><span class="line">                     vmax=<span class="number">1</span>,</span><br><span class="line">                     annot=<span class="literal">True</span>,</span><br><span class="line">                     cmap=<span class="string">"coolwarm_r"</span>)</span><br><span class="line">heatmap.set_title(<span class="string">"Features Correlating with Attrited Customers"</span>,fontdict=&#123;<span class="string">"fontsize"</span>:<span class="number">18</span>&#125;, pad=<span class="number">16</span>);</span><br><span class="line"></span><br><span class="line">fig.tight_layout(pad=<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h5hw1id95bj20rp09mgn7.jpg" alt=""></p>
+<p>小结：从上面右侧的热力图中能看到下面的字段和流失类型客户是无相关的。相关系数的值在正负0.1之间（右图）</p>
+<ul>
+<li>Credit Limit</li>
+<li>Average Open To Buy</li>
+<li>Months On Book</li>
+<li>Age</li>
+<li>Dependent Count</li>
+</ul>
+<p>现在我们考虑将上面的字段进行删除：</p>
+<p>In [41]:</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">df_model</span> = df.copy()</span><br><span class="line"></span><br><span class="line"><span class="attr">df_model</span> = df_model.drop([<span class="string">'Credit_Limit'</span>,<span class="string">'Customer_Age'</span>,<span class="string">'Avg_Open_To_Buy'</span>,<span class="string">'Months_on_book'</span>,<span class="string">'Dependent_count'</span>],axis=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="用户标识编码">用户标识编码</h3>
+<p>In [42]:</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df_model[<span class="string">'Attrition_Flag'</span>] = df_model[<span class="string">'Attrition_Flag'</span>].map(&#123;<span class="string">'Existing Customer'</span>: <span class="number">1</span>, <span class="string">'Attrited Customer'</span>: <span class="number">0</span>&#125;)</span><br></pre></td></tr></table></figure>
+<p>剩余字段的独热码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df_model=pd.get_dummies(df_model)</span><br></pre></td></tr></table></figure>
+<h2 id="建模">建模</h2>
+<h3 id="切分数据">切分数据</h3>
+<p>在之前已经验证过现有客户和流失客户的数量是不均衡的，我们使用SMOTE(Synthetic Minority Oversampling Technique，通过上采样合成少量的数据)采样来平衡数据。</p>
+<p>In [50]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">from</span> imblearn.over_sampling <span class="keyword">import</span> SMOTE</span><br></pre></td></tr></table></figure>
+<p>In [51]:</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 特征和目标变量</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># X = df_model.drop("Attrition_Flag", axis=1, inplace=True)</span></span><br><span class="line"><span class="attr">X</span> = df_model.loc[:, df_model.columns != <span class="string">"Attrition_Flag"</span>]</span><br><span class="line"><span class="attr">y</span> = df_model[<span class="string">"Attrition_Flag"</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 分割数据</span></span><br><span class="line">X_train, X_test, y_train, <span class="attr">y_test</span> = train_test_split(X, y, <span class="attr">test_size=0.33,</span> <span class="attr">random_state=42)</span></span><br></pre></td></tr></table></figure>
+<h3 id="SMOTE采样">SMOTE采样</h3>
+<p>In [52]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sm = SMOTE(<span class="attribute">sampling_strategy</span>=<span class="string">"minority"</span>, <span class="attribute">k_neighbors</span>=20, <span class="attribute">random_state</span>=42)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 实施采样过程</span></span><br><span class="line">X_train_res, y_train_res = sm.fit_resample(X_train, y_train)</span><br></pre></td></tr></table></figure>
+<h3 id="3种模型">3种模型</h3>
+<p>In [53]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># <span class="number">1</span>、随机森林</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier</span><br><span class="line"></span><br><span class="line">rf = RandomForestClassifier()</span><br><span class="line">rf.fit(X_train_res, y_train_res)</span><br></pre></td></tr></table></figure>
+<p>Out[53]:</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">RandomForestClassifier</span><span class="params">()</span></span></span><br></pre></td></tr></table></figure>
+<p>一般在使用树模型建模的时候数据不需要归一化。但是在使用支持向量机的时候需要：</p>
+<p>In [54]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 2、支持向量机</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.pipeline <span class="keyword">import</span> make_pipeline</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line"><span class="keyword">from</span> sklearn.svm <span class="keyword">import</span> SVC</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用支持向量机数据需要归一化</span></span><br><span class="line"></span><br><span class="line">svm = make_pipeline(StandardScaler(), SVC(gamma=<span class="string">'auto'</span>))</span><br><span class="line">svm.fit(X_train_res, y_train_res)</span><br></pre></td></tr></table></figure>
+<p>Out[54]:</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Pipeline(<span class="name">steps=</span>[('standardscaler', StandardScaler()),</span><br><span class="line">                ('svc', SVC(<span class="name">gamma=</span>'auto'))])</span><br></pre></td></tr></table></figure>
+<p>In [55]:</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 3、提升树</span></span><br><span class="line"></span><br><span class="line">from sklearn.ensemble <span class="built_in">import</span> GradientBoostingClassifier</span><br><span class="line"></span><br><span class="line"><span class="attr">gb</span> = GradientBoostingClassifier(<span class="attr">n_estimators=100,</span>  <span class="comment"># tree的个数</span></span><br><span class="line">                                <span class="attr">learning_rate=1.0,</span>  <span class="comment"># 学习率</span></span><br><span class="line">                                <span class="attr">max_depth=1,</span>   <span class="comment"># 叶子的最大深度</span></span><br><span class="line">                                <span class="attr">random_state=42)</span></span><br><span class="line"></span><br><span class="line">gb.fit(X_train_res, y_train_res)</span><br></pre></td></tr></table></figure>
+<p>Out[55]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GradientBoostingClassifier(<span class="attribute">learning_rate</span>=1.0, <span class="attribute">max_depth</span>=1, <span class="attribute">random_state</span>=42)</span><br></pre></td></tr></table></figure>
+<h3 id="模型预测">模型预测</h3>
+<p>In [56]:</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">y_rf</span> = rf.predict(X_test)</span><br><span class="line"><span class="attr">y_svm</span> = svm.predict(X_test)</span><br><span class="line"><span class="attr">y_gb</span> = gb.predict(X_test)</span><br></pre></td></tr></table></figure>
+<h3 id="混淆矩阵">混淆矩阵</h3>
+<p>In [57]:</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">from sklearn<span class="selector-class">.metrics</span> import plot_confusion_matrix</span><br><span class="line"></span><br><span class="line">fig,ax=plt.subplots(ncols=<span class="number">3</span>, figsize=(<span class="number">20</span>,<span class="number">6</span>))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">plot_confusion_matrix</span><span class="params">(rf, X_test, y_test, ax=ax[<span class="number">0</span>])</span></span></span><br><span class="line">ax[<span class="number">0</span>]<span class="selector-class">.title</span><span class="selector-class">.set_text</span>(<span class="string">'RF'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">plot_confusion_matrix</span><span class="params">(svm, X_test, y_test, ax=ax[<span class="number">1</span>])</span></span></span><br><span class="line">ax[<span class="number">1</span>]<span class="selector-class">.title</span><span class="selector-class">.set_text</span>(<span class="string">'SVM'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">plot_confusion_matrix</span><span class="params">(gb, X_test, y_test, ax=ax[<span class="number">2</span>])</span></span></span><br><span class="line">ax[<span class="number">2</span>]<span class="selector-class">.title</span><span class="selector-class">.set_text</span>(<span class="string">'GB'</span>)</span><br><span class="line">fig.tight_layout(pad=<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h5h5syfkrvj211d0aaq3m.jpg" alt=""></p>
+<h3 id="分类模型得分">分类模型得分</h3>
+<p>In [58]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># classification_report, recall_score, precision_score, f1_score</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> classification_report, recall_score, precision_score, f1_score</span><br><span class="line"></span><br><span class="line">print(<span class="string">'Random Forest Classifier'</span>)</span><br><span class="line">print(classification_report(y_test, y_rf))</span><br><span class="line"></span><br><span class="line">print(<span class="string">'------------------------'</span>)</span><br><span class="line">print(<span class="string">'Support Vector Machine'</span>)</span><br><span class="line">print(classification_report(y_test, y_svm))</span><br><span class="line"></span><br><span class="line">print(<span class="string">'------------------------'</span>)</span><br><span class="line">print(<span class="string">'Gradient Boosting'</span>)</span><br><span class="line">print(classification_report(y_test, y_gb))</span><br><span class="line">Random Forest Classifier</span><br><span class="line">              precision    recall  f1-score   support</span><br><span class="line"></span><br><span class="line">           <span class="number">0</span>       <span class="number">0.85</span>      <span class="number">0.83</span>      <span class="number">0.84</span>       <span class="number">541</span></span><br><span class="line">           <span class="number">1</span>       <span class="number">0.97</span>      <span class="number">0.97</span>      <span class="number">0.97</span>      <span class="number">2801</span></span><br><span class="line"></span><br><span class="line">    accuracy                           <span class="number">0.95</span>      <span class="number">3342</span></span><br><span class="line">   macro avg       <span class="number">0.91</span>      <span class="number">0.90</span>      <span class="number">0.90</span>      <span class="number">3342</span></span><br><span class="line">weighted avg       <span class="number">0.95</span>      <span class="number">0.95</span>      <span class="number">0.95</span>      <span class="number">3342</span></span><br><span class="line"></span><br><span class="line">------------------------</span><br><span class="line">Support Vector Machine</span><br><span class="line">              precision    recall  f1-score   support</span><br><span class="line"></span><br><span class="line">           <span class="number">0</span>       <span class="number">0.81</span>      <span class="number">0.55</span>      <span class="number">0.66</span>       <span class="number">541</span></span><br><span class="line">           <span class="number">1</span>       <span class="number">0.92</span>      <span class="number">0.98</span>      <span class="number">0.95</span>      <span class="number">2801</span></span><br><span class="line"></span><br><span class="line">    accuracy                           <span class="number">0.91</span>      <span class="number">3342</span></span><br><span class="line">   macro avg       <span class="number">0.87</span>      <span class="number">0.76</span>      <span class="number">0.80</span>      <span class="number">3342</span></span><br><span class="line">weighted avg       <span class="number">0.90</span>      <span class="number">0.91</span>      <span class="number">0.90</span>      <span class="number">3342</span></span><br><span class="line"></span><br><span class="line">------------------------</span><br><span class="line">Gradient Boosting</span><br><span class="line">              precision    recall  f1-score   support</span><br><span class="line"></span><br><span class="line">           <span class="number">0</span>       <span class="number">0.83</span>      <span class="number">0.84</span>      <span class="number">0.84</span>       <span class="number">541</span></span><br><span class="line">           <span class="number">1</span>       <span class="number">0.97</span>      <span class="number">0.97</span>      <span class="number">0.97</span>      <span class="number">2801</span></span><br><span class="line"></span><br><span class="line">    accuracy                           <span class="number">0.95</span>      <span class="number">3342</span></span><br><span class="line">   macro avg       <span class="number">0.90</span>      <span class="number">0.90</span>      <span class="number">0.90</span>      <span class="number">3342</span></span><br><span class="line">weighted avg       <span class="number">0.95</span>      <span class="number">0.95</span>      <span class="number">0.95</span>      <span class="number">3342</span></span><br></pre></td></tr></table></figure>
+<p>从3种模型的混淆矩阵和分类模型的相关评价指标来看：<strong>可以看到随机森林和提升树的结果都是优于支持向量机的</strong></p>
+<h2 id="模型调参优化">模型调参优化</h2>
+<p>针对随机森林和提升树模型采用两种不同的调参优化方法：</p>
+<ul>
+<li>随机森林：随机搜索调参</li>
+<li>梯度提升树：网格搜索调参</li>
+</ul>
+<h3 id="随机搜索调参-随机森林模型">随机搜索调参-随机森林模型</h3>
+<p>In [59]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> RandomizedSearchCV</span><br></pre></td></tr></table></figure>
+<p>设置不同待调参数的取值：</p>
+<p>In [60]:</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">n_estimators = [int(x) <span class="keyword">for</span> x <span class="keyword">in</span> np.linspace(<span class="built_in">start</span> = <span class="number">200</span>, <span class="built_in">stop</span> = <span class="number">2000</span>, <span class="built_in">num</span> = <span class="number">10</span>)]</span><br><span class="line"><span class="comment"># n_estimators  # 随机森林中树的个数</span></span><br><span class="line"></span><br><span class="line">max_features = [<span class="string">'auto'</span>, <span class="string">'sqrt'</span>]</span><br></pre></td></tr></table></figure>
+<p>In [61]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 每个tree的最大叶子数</span><br><span class="line">max_depth = [<span class="built_in">int</span>(x) <span class="keyword">for</span> x <span class="keyword">in</span> np.linspace(<span class="number">10</span>, <span class="number">110</span>, num = <span class="number">11</span>)]</span><br><span class="line">max_depth.append(None)</span><br><span class="line"></span><br><span class="line">max_depth</span><br></pre></td></tr></table></figure>
+<p>Out[61]:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>, <span class="number">60</span>, <span class="number">70</span>, <span class="number">80</span>, <span class="number">90</span>, <span class="number">100</span>, <span class="number">110</span>, None]</span><br></pre></td></tr></table></figure>
+<p>In [62]:</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">min_samples_split</span> = [<span class="number">2</span>, <span class="number">5</span>, <span class="number">10</span>]</span><br><span class="line"><span class="attr">min_samples_leaf</span> = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>]</span><br><span class="line"><span class="attr">bootstrap</span> = [<span class="literal">True</span>, <span class="literal">False</span>]</span><br></pre></td></tr></table></figure>
+<h4 id="随机搜索参数">随机搜索参数</h4>
+<p>In [64]:</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">random_grid = &#123;'n_estimators': n_estimators,</span><br><span class="line">               'max_features': max_features,</span><br><span class="line">               'max_depth': max_depth,</span><br><span class="line">               'min_samples_split': min_samples_split,</span><br><span class="line">               'min_samples_leaf': min_samples_leaf,</span><br><span class="line">               'bootstrap': bootstrap&#125;</span><br></pre></td></tr></table></figure>
+<p>搜索结果如下：</p>
+<p>In [65]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">rf_random = RandomizedSearchCV(</span><br><span class="line">    estimator = rf,  <span class="comment"># rf模型</span></span><br><span class="line">    param_distributions=random_grid, <span class="comment"># 搜索参数</span></span><br><span class="line">    n_iter=<span class="number">30</span>,</span><br><span class="line">    cv=<span class="number">3</span>,</span><br><span class="line">    verbose=<span class="number">2</span>,</span><br><span class="line">    random_state=<span class="number">42</span>,</span><br><span class="line">    n_jobs=<span class="number">-1</span>)</span><br><span class="line"></span><br><span class="line">rf_random.fit(X_train_res, y_train_res)</span><br><span class="line">print(rf_random.best_params_)</span><br><span class="line">Fitting <span class="number">3</span> folds <span class="keyword">for</span> each of <span class="number">30</span> candidates, totalling <span class="number">90</span> fits</span><br><span class="line"><span class="comment"># 结果</span></span><br><span class="line">&#123;<span class="string">'n_estimators'</span>: <span class="number">1400</span>,</span><br><span class="line"><span class="string">'min_samples_split'</span>: <span class="number">2</span>,</span><br><span class="line"><span class="string">'min_samples_leaf'</span>: <span class="number">1</span>,</span><br><span class="line"><span class="string">'max_features'</span>: <span class="string">'auto'</span>,</span><br><span class="line"><span class="string">'max_depth'</span>: <span class="number">110</span>,</span><br><span class="line"><span class="string">'bootstrap'</span>: <span class="literal">True</span>&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="使用搜索参数建模">使用搜索参数建模</h4>
+<p>使用上面搜索之后的参数再次建模：</p>
+<p>In [67]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">rf_clf_search= RandomForestClassifier(n_estimators=<span class="number">1400</span>,</span><br><span class="line">                                   min_samples_split=<span class="number">2</span>,</span><br><span class="line">                                   min_samples_leaf=<span class="number">1</span>,</span><br><span class="line">                                   max_features=<span class="string">'auto'</span>,</span><br><span class="line">                                   max_depth=<span class="number">110</span>,</span><br><span class="line">                                   bootstrap=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">rf_clf_search.fit(X_train_res,y_train_res)</span><br><span class="line">y_rf_opt=rf_clf_search.predict(X_test)</span><br><span class="line"></span><br><span class="line">print(<span class="string">'Random Forest Classifier (Optimized)'</span>)</span><br><span class="line"></span><br><span class="line">print(classification_report(y_test, y_rf_opt))</span><br><span class="line"></span><br><span class="line">_rf_opt=plot_confusion_matrix(rf_clf_search, X_test, y_test)</span><br><span class="line">Random Forest Classifier (Optimized)</span><br><span class="line">              precision    recall  f1-score   support</span><br><span class="line"></span><br><span class="line">           <span class="number">0</span>       <span class="number">0.86</span>      <span class="number">0.84</span>      <span class="number">0.85</span>       <span class="number">541</span></span><br><span class="line">           <span class="number">1</span>       <span class="number">0.97</span>      <span class="number">0.97</span>      <span class="number">0.97</span>      <span class="number">2801</span></span><br><span class="line"></span><br><span class="line">    accuracy                           <span class="number">0.95</span>      <span class="number">3342</span></span><br><span class="line">   macro avg       <span class="number">0.91</span>      <span class="number">0.90</span>      <span class="number">0.91</span>      <span class="number">3342</span></span><br><span class="line">weighted avg       <span class="number">0.95</span>      <span class="number">0.95</span>      <span class="number">0.95</span>      <span class="number">3342</span></span><br></pre></td></tr></table></figure>
+<p>调参后的混淆矩阵：左上角的449变成452，说明分类的更加准确了</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h5h5s4lqjdj208v07aglk.jpg" alt=""></p>
+<h3 id="网格搜索调参-提升树模型">网格搜索调参-提升树模型</h3>
+<h4 id="网格搜索参数">网格搜索参数</h4>
+<p>In [68]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> GridSearchCV</span><br><span class="line"></span><br><span class="line">param_test1 = &#123;<span class="string">'n_estimators'</span>:range(<span class="number">20</span>,<span class="number">100</span>,<span class="number">10</span>)&#125;</span><br><span class="line">param_test1</span><br></pre></td></tr></table></figure>
+<p>Out[68]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">'n_estimators'</span>: range(<span class="number">20</span>, <span class="number">100</span>, <span class="number">10</span>)&#125;</span><br></pre></td></tr></table></figure>
+<p>In [69]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 实施搜索</span></span><br><span class="line"></span><br><span class="line">grid_search1 = GridSearchCV(estimator = GradientBoostingClassifier(<span class="attribute">learning_rate</span>=1.0,  # 待搜索模型</span><br><span class="line">                                                               <span class="attribute">min_samples_split</span>=500,</span><br><span class="line">                                                               <span class="attribute">min_samples_leaf</span>=50,</span><br><span class="line">                                                               <span class="attribute">max_depth</span>=8,</span><br><span class="line">                                                               <span class="attribute">max_features</span>=<span class="string">'sqrt'</span>,</span><br><span class="line">                                                               <span class="attribute">subsample</span>=0.8,</span><br><span class="line">                                                               <span class="attribute">random_state</span>=10),</span><br><span class="line">                        param_grid = param_test1, # 搜索参数</span><br><span class="line">                        <span class="attribute">scoring</span>=<span class="string">'roc_auc'</span>,</span><br><span class="line">                        <span class="attribute">n_jobs</span>=4,</span><br><span class="line">                        <span class="attribute">cv</span>=5)</span><br><span class="line"></span><br><span class="line">grid_search1.fit(X_train_res,y_train_res)</span><br><span class="line"></span><br><span class="line">grid_search1.best_params_</span><br></pre></td></tr></table></figure>
+<p>Out[69]:</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;'n_estimators': <span class="number">90</span>&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="使用搜索参数建模-v2">使用搜索参数建模</h4>
+<p>In [71]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">gb_clf_opt=GradientBoostingClassifier(n_estimators=<span class="number">90</span>,  <span class="comment"># 搜索到的参数90</span></span><br><span class="line">                                      learning_rate=<span class="number">1.0</span>,</span><br><span class="line">                                      min_samples_split=<span class="number">500</span>,</span><br><span class="line">                                      min_samples_leaf=<span class="number">50</span>,</span><br><span class="line">                                      max_depth=<span class="number">8</span>,</span><br><span class="line">                                      max_features=<span class="string">'sqrt'</span>,</span><br><span class="line">                                      subsample=<span class="number">0.8</span>,</span><br><span class="line">                                      random_state=<span class="number">10</span>)</span><br><span class="line"><span class="comment"># 再次拟合</span></span><br><span class="line">gb_clf_opt.fit(X_train_res,y_train_res)</span><br><span class="line"></span><br><span class="line">y_gb_opt=gb_clf_opt.predict(X_test)</span><br><span class="line">print(<span class="string">'Gradient Boosting (Optimized)'</span>)</span><br><span class="line">print(classification_report(y_test, y_gb_opt))</span><br><span class="line"></span><br><span class="line">print(recall_score(y_test,y_gb_opt,pos_label=<span class="number">0</span>))</span><br><span class="line">_gbopt=plot_confusion_matrix(gb_clf_opt, X_test, y_test)</span><br><span class="line">_gbopt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果</span></span><br><span class="line">Gradient Boosting (Optimized)</span><br><span class="line">              precision    recall  f1-score   support</span><br><span class="line"></span><br><span class="line">           <span class="number">0</span>       <span class="number">0.85</span>      <span class="number">0.84</span>      <span class="number">0.85</span>       <span class="number">541</span></span><br><span class="line">           <span class="number">1</span>       <span class="number">0.97</span>      <span class="number">0.97</span>      <span class="number">0.97</span>      <span class="number">2801</span></span><br><span class="line"></span><br><span class="line">    accuracy                           <span class="number">0.95</span>      <span class="number">3342</span></span><br><span class="line">   macro avg       <span class="number">0.91</span>      <span class="number">0.91</span>      <span class="number">0.91</span>      <span class="number">3342</span></span><br><span class="line">weighted avg       <span class="number">0.95</span>      <span class="number">0.95</span>      <span class="number">0.95</span>      <span class="number">3342</span></span><br><span class="line"></span><br><span class="line"><span class="number">0.8428835489833642</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h5h5spnpcjj208v07aglk.jpg" alt=""></p>
+<p>左上角的分类数目从454提升到456，也有一定的提升，但是效果并不是很明显</p>
+<h2 id="总结">总结</h2>
+<p>本文从一份用户相关的数据出发，从数据预处理、特征工程和编码，到建模分析和调参优化，完成了整个用户流失预警的全流程分析。整体模型的结果准确率达到了95%，召回率也达到了84.2%。肯定还有提升的空间，欢迎一起讨论~</p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2022/08/26/kaggle%E5%AE%9E%E6%88%98-%E9%93%B6%E8%A1%8C%E7%94%A8%E6%88%B7%E6%B5%81%E5%A4%B1%E9%A2%84%E6%B5%8B.html">kaggle实战-银行用户流失预测</a></p>
+  <p><span>发布时间:</span>2022年08月26日 - 09:08</p>
+  <p><span>原始链接:</span><a href="/2022/08/26/kaggle%E5%AE%9E%E6%88%98-%E9%93%B6%E8%A1%8C%E7%94%A8%E6%88%B7%E6%B5%81%E5%A4%B1%E9%A2%84%E6%B5%8B.html" title="kaggle实战-银行用户流失预测">http://www.renpeter.cn/2022/08/26/kaggle%E5%AE%9E%E6%88%98-%E9%93%B6%E8%A1%8C%E7%94%A8%E6%88%B7%E6%B5%81%E5%A4%B1%E9%A2%84%E6%B5%8B.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2022/08/26/kaggle%E5%AE%9E%E6%88%98-%E9%93%B6%E8%A1%8C%E7%94%A8%E6%88%B7%E6%B5%81%E5%A4%B1%E9%A2%84%E6%B5%8B.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/%E5%88%86%E7%B1%BB/" rel="tag"># 分类</a>
+          
+            <a href="/tags/kaggle/" rel="tag"># kaggle</a>
+          
+            <a href="/tags/%E5%8F%AC%E5%9B%9E%E7%8E%87/" rel="tag"># 召回率</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/08/25/SQL%E9%9D%A2%E8%AF%95-%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0.html" rel="next" title="SQL面试-窗口函数">
+                <i class="fa fa-chevron-left"></i> SQL面试-窗口函数
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">774</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">101</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">119</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#kaggle实战-信用卡客户流失预警"><span class="nav-number">1.</span> <span class="nav-text">kaggle实战-信用卡客户流失预警</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">2.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导入库"><span class="nav-number">3.</span> <span class="nav-text">导入库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据基本信息"><span class="nav-number">4.</span> <span class="nav-text">数据基本信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缺失值"><span class="nav-number">5.</span> <span class="nav-text">缺失值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除无关字段"><span class="nav-number">6.</span> <span class="nav-text">删除无关字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EDA-Exploratory-Data-Analysis"><span class="nav-number">7.</span> <span class="nav-text">EDA-Exploratory Data Analysis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基于使用频率和数值特征"><span class="nav-number">7.1.</span> <span class="nav-text">基于使用频率和数值特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于用户人口统计信息"><span class="nav-number">7.2.</span> <span class="nav-text">基于用户人口统计信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#不同类型顾客的年龄分布"><span class="nav-number">7.2.1.</span> <span class="nav-text">不同类型顾客的年龄分布</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#年龄分布"><span class="nav-number">7.3.</span> <span class="nav-text">年龄分布</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#不同类型下不同性别顾客统计"><span class="nav-number">7.3.1.</span> <span class="nav-text">不同类型下不同性别顾客统计</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#交叉表统计分析"><span class="nav-number">7.4.</span> <span class="nav-text">交叉表统计分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#受教育程度"><span class="nav-number">7.5.</span> <span class="nav-text">受教育程度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对比两种客户数量"><span class="nav-number">7.6.</span> <span class="nav-text">对比两种客户数量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#相关性"><span class="nav-number">7.7.</span> <span class="nav-text">相关性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类型编码"><span class="nav-number">7.8.</span> <span class="nav-text">类型编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#计算克莱姆系数-cramers-V"><span class="nav-number">7.9.</span> <span class="nav-text">计算克莱姆系数-cramers_V</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户标识编码"><span class="nav-number">7.10.</span> <span class="nav-text">用户标识编码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建模"><span class="nav-number">8.</span> <span class="nav-text">建模</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#切分数据"><span class="nav-number">8.1.</span> <span class="nav-text">切分数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SMOTE采样"><span class="nav-number">8.2.</span> <span class="nav-text">SMOTE采样</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3种模型"><span class="nav-number">8.3.</span> <span class="nav-text">3种模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型预测"><span class="nav-number">8.4.</span> <span class="nav-text">模型预测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#混淆矩阵"><span class="nav-number">8.5.</span> <span class="nav-text">混淆矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分类模型得分"><span class="nav-number">8.6.</span> <span class="nav-text">分类模型得分</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型调参优化"><span class="nav-number">9.</span> <span class="nav-text">模型调参优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#随机搜索调参-随机森林模型"><span class="nav-number">9.1.</span> <span class="nav-text">随机搜索调参-随机森林模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#随机搜索参数"><span class="nav-number">9.1.1.</span> <span class="nav-text">随机搜索参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用搜索参数建模"><span class="nav-number">9.1.2.</span> <span class="nav-text">使用搜索参数建模</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网格搜索调参-提升树模型"><span class="nav-number">9.2.</span> <span class="nav-text">网格搜索调参-提升树模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#网格搜索参数"><span class="nav-number">9.2.1.</span> <span class="nav-text">网格搜索参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用搜索参数建模-v2"><span class="nav-number">9.2.2.</span> <span class="nav-text">使用搜索参数建模</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">10.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSV/" rel="tag">CSV</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KDE/" rel="tag">KDE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kats/" rel="tag">Kats</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LaTex/" rel="tag">LaTex</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">67</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCA/" rel="tag">PCA</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVM/" rel="tag">SVM</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jupyter/" rel="tag">jupyter</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/keras/" rel="tag">keras</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/markdown/" rel="tag">markdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/matplotlib/" rel="tag">matplotlib</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">141</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyg2plot/" rel="tag">pyg2plot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">95</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/seaborn/" rel="tag">seaborn</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sklearn/" rel="tag">sklearn</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tableau/" rel="tag">tableau</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/uci/" rel="tag">uci</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E5%88%86%E7%B1%BB/" rel="tag">二分类</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">38</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%AC%E4%BC%97%E5%8F%B7/" rel="tag">公众号</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B3%E8%81%94%E5%88%86%E6%9E%90/" rel="tag">关联分析</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%99%E4%BD%9C/" rel="tag">写作</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%B1%BB/" rel="tag">分类</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%B7%E7%A7%AF/" rel="tag">卷积</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AC%E5%9B%9E%E7%8E%87/" rel="tag">召回率</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">125</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E5%BD%92/" rel="tag">回归</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E5%BD%92%E5%88%86%E6%9E%90/" rel="tag">回归分析</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/" rel="tag">图像处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A9%E6%B1%A0/" rel="tag">天池</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E5%85%B8/" rel="tag">字典</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%B9%E5%99%A8/" rel="tag">容器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AF%BC%E6%95%B0/" rel="tag">导数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%80%E6%BA%90/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B/" rel="tag">异常检测</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AA%E7%8E%AF/" rel="tag">循环</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E5%AD%A6/" rel="tag">数学</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">81</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag">数据处理</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">104</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" rel="tag">数据挖掘</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/" rel="tag">文本处理</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">无监督学习</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E5%BA%8F%E5%88%86%E6%9E%90/" rel="tag">时序分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">121</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9D%8E%E6%B2%90/" rel="tag">李沐</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AD%A3%E5%88%99%E5%8C%96/" rel="tag">正则化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/" rel="tag">激活函数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/" rel="tag">特征工程</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">50</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">监督学习</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%B8%E5%85%B3%E7%B3%BB%E6%95%B0/" rel="tag">相关系数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag">神经网络</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A6%BB%E6%95%A3%E5%8C%96/" rel="tag">离散化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%AF%E5%88%86/" rel="tag">积分</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0/" rel="tag">窗口函数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AB%9E%E8%B5%9B/" rel="tag">竞赛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B2%BE%E5%BA%A6/" rel="tag">精度</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B4%A2%E5%BC%95/" rel="tag">索引</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1/" rel="tag">统计</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag">编程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB/" rel="tag">聚类</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">自动化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/" rel="tag">逻辑回归</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%99%8D%E7%BB%B4/" rel="tag">降维</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97/" rel="tag">随机森林</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/" rel="tag">集成学习</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%92%E6%98%A5/" rel="tag">青春</a><span class="tag-list-count">1</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共1168.7k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2022/08/26/kaggle%E5%AE%9E%E6%88%98-%E9%93%B6%E8%A1%8C%E7%94%A8%E6%88%B7%E6%B5%81%E5%A4%B1%E9%A2%84%E6%B5%8B.html';
+          this.page.identifier = '2022/08/26/kaggle实战-银行用户流失预测.html';
+          this.page.title = 'kaggle实战-银行用户流失预测';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
