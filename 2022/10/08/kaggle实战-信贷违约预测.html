@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="机器学习,逻辑回归,欠采样," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="kaggle实战-信贷违约预测 本文是基于一份Lendingclub上面的信贷数据，根据贷款人的历史数据和贷款信息，建立一个模型来预测借款人是否会偿还他们的贷款。">
+<meta name="keywords" content="机器学习,逻辑回归,欠采样">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kaggle实战-信贷违约预测">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2022&#x2F;10&#x2F;08&#x2F;kaggle%E5%AE%9E%E6%88%98-%E4%BF%A1%E8%B4%B7%E8%BF%9D%E7%BA%A6%E9%A2%84%E6%B5%8B.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="kaggle实战-信贷违约预测 本文是基于一份Lendingclub上面的信贷数据，根据贷款人的历史数据和贷款信息，建立一个模型来预测借款人是否会偿还他们的贷款。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006y8mN6ly1h6y6aqm8i4j30u00zrq5z.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006y8mN6ly1h6y4u1nktnj31na0kkjuf.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006y8mN6ly1h6y4uv1f80j310e0u0tc1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006y8mN6ly1h6y4vuiskdj31km0mu127.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006y8mN6ly1h6y4ydxmrpj31ic0moald.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006y8mN6ly1h6y51dvhq5j31jy0oswgl.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006y8mN6ly1h6y53wk35rj31hs0oegn9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006y8mN6ly1h6y54ve5a6j31hm0le423.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006y8mN6ly1h6y55tmnudj30yn0u0n00.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006y8mN6ly1h6y6s3ckegj31mu0m2n1l.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006y8mN6ly1h6y5eq0qbdj31nk0k079t.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006y8mN6ly1h6y5j8h5edj31na0i0go9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006y8mN6ly1h6y5kdt3obj30kh0anq35.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006y8mN6ly1h6y5mbip2hj31ht0u043w.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006y8mN6ly1h6y5n0puh2j31aq0bqmyx.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006y8mN6ly1h6y6g7yi0lj31mo0hidhr.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006y8mN6ly1h6y5rek240j31na0jq0wm.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006y8mN6ly1h6y5t6h9rrj30hx0cxaa3.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006y8mN6ly1h6y5tzr8kqj30gu0gpaaf.jpg">
+<meta property="og:updated_time" content="2022-10-08T14:14:58.246Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;006y8mN6ly1h6y6aqm8i4j30u00zrq5z.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2022/10/08/kaggle实战-信贷违约预测.html"/>
+
+
+
+
+
+  <title>kaggle实战-信贷违约预测 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2022/10/08/kaggle%E5%AE%9E%E6%88%98-%E4%BF%A1%E8%B4%B7%E8%BF%9D%E7%BA%A6%E9%A2%84%E6%B5%8B.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">kaggle实战-信贷违约预测</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-10-08T22:13:20+08:00">
+                2022-10-8
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/kaggle/" itemprop="url" rel="index">
+                    <span itemprop="name">kaggle</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2022/10/08/kaggle%E5%AE%9E%E6%88%98-%E4%BF%A1%E8%B4%B7%E8%BF%9D%E7%BA%A6%E9%A2%84%E6%B5%8B.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2022/10/08/kaggle实战-信贷违约预测.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  3.8k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  17
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="kaggle实战-信贷违约预测">kaggle实战-信贷违约预测</h2>
+<p>本文是基于一份<a href="https://www.lendingclub.com/investing/peer-to-peer" target="_blank" rel="noopener">Lendingclub</a>上面的信贷数据，根据贷款人的历史数据和贷款信息，建立一个模型来预测借款人是否会偿还他们的贷款。</p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1h6y6aqm8i4j30u00zrq5z.jpg" alt=""></p>
+<a id="more"></a>
+<h2 id="导入库">导入库</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> missingno <span class="keyword">as</span> ms</span><br><span class="line"><span class="keyword">import</span> plotly.express <span class="keyword">as</span> px</span><br><span class="line"><span class="keyword">import</span> plotly.graph_objs <span class="keyword">as</span> go</span><br><span class="line"><span class="keyword">import</span> plotly.figure_factory <span class="keyword">as</span> ff</span><br><span class="line"><span class="keyword">from</span> plotly.subplots <span class="keyword">import</span> make_subplots</span><br><span class="line"><span class="keyword">import</span> plotly.offline <span class="keyword">as</span> pyo</span><br><span class="line">pyo.init_notebook_mode()</span><br><span class="line">sns.set_style(<span class="string">'darkgrid'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.decomposition <span class="keyword">import</span> PCA</span><br><span class="line"><span class="keyword">from</span> imblearn.over_sampling <span class="keyword">import</span> SMOTE</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split,cross_val_score</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier,AdaBoostClassifier</span><br><span class="line"><span class="keyword">from</span> sklearn.svm <span class="keyword">import</span> SVC</span><br><span class="line"><span class="keyword">from</span> sklearn.pipeline <span class="keyword">import</span> Pipeline</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> f1_score <span class="keyword">as</span> f1</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> confusion_matrix</span><br><span class="line"></span><br><span class="line">plt.rc(<span class="string">'figure'</span>,figsize=(<span class="number">18</span>,<span class="number">9</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> warnings</span><br><span class="line">warnings.filterwarnings(<span class="string">"ignore"</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="数据基本信息">数据基本信息</h2>
+<p>数据来自 LendingClub，它是美国一家个人对个人贷款公司，总部位于加利福尼亚州旧金山，号称是全球最大的个人对个人(p2p)借贷平台。</p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1h6y4u1nktnj31na0kkjuf.jpg" alt=""></p>
+<p>查看数据量、字段类型等：</p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1h6y4uv1f80j310e0u0tc1.jpg" alt=""></p>
+<h2 id="缺失值处理">缺失值处理</h2>
+<p>缺失值处理是本次数据处理的一项重要工作。由于存在字符型和数值型的变量，而且这两种类型下的数据都存在缺失值，所以在分开处理。</p>
+<h3 id="缺失值可视化">缺失值可视化</h3>
+<p>In [6]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 4、缺失值情况</span></span><br><span class="line"></span><br><span class="line">df.isnull<span class="params">()</span><span class="string">.sum</span><span class="params">()</span><span class="string">.sort_values</span><span class="params">(<span class="attr">ascending</span>=False)</span></span><br></pre></td></tr></table></figure>
+<p>Out[6]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">id                     <span class="number">105451</span></span><br><span class="line">hardship_start_date    <span class="number">105451</span></span><br><span class="line">member_id              <span class="number">105451</span></span><br><span class="line">hardship_type          <span class="number">105451</span></span><br><span class="line">hardship_reason        <span class="number">105451</span></span><br><span class="line">                        ...</span><br><span class="line">open_acc_6m                 <span class="number">0</span></span><br><span class="line">tot_cur_bal                 <span class="number">0</span></span><br><span class="line">tot_coll_amt                <span class="number">0</span></span><br><span class="line">acc_now_delinq              <span class="number">0</span></span><br><span class="line">max_bal_bc                  <span class="number">0</span></span><br><span class="line">Length: <span class="number">137</span>, dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<p>In [7]:</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">ms</span><span class="selector-class">.bar</span>(df,color=<span class="string">"blue"</span>)</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.show</span>()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1h6y4vuiskdj31km0mu127.jpg" alt=""></p>
+<p>如果取值是1，说明是完整的字段，没有缺失值；可以看到还是存在很多字段有缺失值。</p>
+<h3 id="删除全部缺失字段">删除全部缺失字段</h3>
+<p>1、部分字段是全部缺失的，将它们进行删除：</p>
+<p>In [8]:</p>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># 方法1：使用dropna的how参数</span></span><br><span class="line"></span><br><span class="line"><span class="meta"># data.dropna(axis=1, how='all')</span></span><br></pre></td></tr></table></figure>
+<p>In [9]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在这里我们使用下面的【方法2】</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 1、查看每个字段的缺失值比例</span></span><br><span class="line"></span><br><span class="line">isnull_col_percent = df.isnull<span class="params">()</span><span class="string">.sum</span><span class="params">(<span class="attr">axis</span>=0)</span><span class="string">.sort_values</span><span class="params">(<span class="attr">ascending</span>=False)</span> / float<span class="params">(len(df)</span>)</span><br><span class="line">isnull_col_percent</span><br></pre></td></tr></table></figure>
+<p>Out[9]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">id                     <span class="number">1.0</span></span><br><span class="line">hardship_start_date    <span class="number">1.0</span></span><br><span class="line">member_id              <span class="number">1.0</span></span><br><span class="line">hardship_type          <span class="number">1.0</span></span><br><span class="line">hardship_reason        <span class="number">1.0</span></span><br><span class="line">                      ...</span><br><span class="line">open_acc_6m            <span class="number">0.0</span></span><br><span class="line">tot_cur_bal            <span class="number">0.0</span></span><br><span class="line">tot_coll_amt           <span class="number">0.0</span></span><br><span class="line">acc_now_delinq         <span class="number">0.0</span></span><br><span class="line">max_bal_bc             <span class="number">0.0</span></span><br><span class="line">Length: <span class="number">137</span>, dtype: <span class="built_in">float</span>64</span><br></pre></td></tr></table></figure>
+<p>In [10]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">isnull_col_percent[:<span class="number">20</span>]  # 前<span class="number">20</span>个</span><br></pre></td></tr></table></figure>
+<p>Out[10]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">id                                            <span class="number">1.000000</span></span><br><span class="line">hardship_start_date                           <span class="number">1.000000</span></span><br><span class="line">member_id                                     <span class="number">1.000000</span></span><br><span class="line">hardship_type                                 <span class="number">1.000000</span></span><br><span class="line">hardship_reason                               <span class="number">1.000000</span></span><br><span class="line">hardship_status                               <span class="number">1.000000</span></span><br><span class="line">deferral_term                                 <span class="number">1.000000</span></span><br><span class="line">hardship_amount                               <span class="number">1.000000</span></span><br><span class="line">hardship_end_date                             <span class="number">1.000000</span></span><br><span class="line">url                                           <span class="number">1.000000</span></span><br><span class="line">payment_plan_start_date                       <span class="number">1.000000</span></span><br><span class="line">hardship_length                               <span class="number">1.000000</span></span><br><span class="line">hardship_dpd                                  <span class="number">1.000000</span></span><br><span class="line">hardship_loan_status                          <span class="number">1.000000</span></span><br><span class="line">orig_projected_additional_accrued_interest    <span class="number">1.000000</span></span><br><span class="line">hardship_payoff_balance_amount                <span class="number">1.000000</span></span><br><span class="line">desc                                          <span class="number">1.000000</span></span><br><span class="line">hardship_last_payment_amount                  <span class="number">1.000000</span></span><br><span class="line">sec_app_mths_since_last_major_derog           <span class="number">0.977866</span></span><br><span class="line">sec_app_revol_util                            <span class="number">0.936188</span></span><br><span class="line">dtype: <span class="built_in">float</span>64</span><br></pre></td></tr></table></figure>
+<p>在上面的结果中，比例为1的字段就是<strong>全部缺失</strong>的（前面18个字段），对于建模无用，我们将其删除：</p>
+<p>In [11]:</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">no_use_col = df.<span class="keyword">columns</span>[df.<span class="keyword">isnull</span>().<span class="keyword">all</span>()].tolist()</span><br><span class="line">no_use_col</span><br></pre></td></tr></table></figure>
+<p>Out[11]:</p>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[<span class="symbol">'id</span>',</span><br><span class="line"> <span class="symbol">'member_id</span>',</span><br><span class="line"> <span class="symbol">'url</span>',</span><br><span class="line"> <span class="symbol">'desc</span>',</span><br><span class="line"> <span class="symbol">'hardship_type</span>',</span><br><span class="line"> <span class="symbol">'hardship_reason</span>',</span><br><span class="line"> <span class="symbol">'hardship_status</span>',</span><br><span class="line"> <span class="symbol">'deferral_term</span>',</span><br><span class="line"> <span class="symbol">'hardship_amount</span>',</span><br><span class="line"> <span class="symbol">'hardship_start_date</span>',</span><br><span class="line"> <span class="symbol">'hardship_end_date</span>',</span><br><span class="line"> <span class="symbol">'payment_plan_start_date</span>',</span><br><span class="line"> <span class="symbol">'hardship_length</span>',</span><br><span class="line"> <span class="symbol">'hardship_dpd</span>',</span><br><span class="line"> <span class="symbol">'hardship_loan_status</span>',</span><br><span class="line"> <span class="symbol">'orig_projected_additional_accrued_interest</span>',</span><br><span class="line"> <span class="symbol">'hardship_payoff_balance_amount</span>',</span><br><span class="line"> <span class="symbol">'hardship_last_payment_amount</span>']</span><br></pre></td></tr></table></figure>
+<p>In [12]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.drop<span class="params">(no_use_col,<span class="attr">axis</span>=1,<span class="attr">inplace</span>=True)</span></span><br></pre></td></tr></table></figure>
+<p>In [13]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.shape  # <span class="number">137</span><span class="number">-18</span> = <span class="number">119</span>，成功删除<span class="number">18</span>个属性</span><br></pre></td></tr></table></figure>
+<p>Out[13]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">105451</span>, <span class="number">119</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="删除缺失值在30-以上的字段">删除缺失值在30%以上的字段</h3>
+<p>2、有些字段是部分缺失值；缺失量过大也会对建模造成影响。</p>
+<p>在这里我们设置删除缺失值在30%（可以设定其他值）以上的字段（按照列的方向来统计）</p>
+<p>In [14]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 最大的缺失值比例高达97.78%</span></span><br><span class="line"></span><br><span class="line">df.isnull<span class="params">()</span><span class="string">.sum</span><span class="params">(<span class="attr">axis</span>=0)</span><span class="string">.sort_values</span><span class="params">(<span class="attr">ascending</span>=False)</span> / float<span class="params">(len(df)</span>)</span><br></pre></td></tr></table></figure>
+<p>Out[14]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">sec_app_mths_since_last_major_derog    <span class="number">0.977866</span></span><br><span class="line">sec_app_revol_util                     <span class="number">0.936188</span></span><br><span class="line">revol_bal_joint                        <span class="number">0.935458</span></span><br><span class="line">sec_app_earliest_cr_line               <span class="number">0.935458</span></span><br><span class="line">sec_app_inq_last_6mths                 <span class="number">0.935458</span></span><br><span class="line">                                         ...</span><br><span class="line">total_rec_int                          <span class="number">0.000000</span></span><br><span class="line">total_rec_prncp                        <span class="number">0.000000</span></span><br><span class="line">total_pymnt_inv                        <span class="number">0.000000</span></span><br><span class="line">total_pymnt                            <span class="number">0.000000</span></span><br><span class="line">hardship_flag                          <span class="number">0.000000</span></span><br><span class="line">Length: <span class="number">119</span>, dtype: <span class="built_in">float</span>64</span><br></pre></td></tr></table></figure>
+<p>In [15]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">thresh = len(df)<span class="number">*0</span>.3 # 阀值（缺失值数量）</span><br><span class="line"></span><br><span class="line"><span class="comment"># 某列数据缺失的数量超过阀值就被删除</span></span><br><span class="line">df.dropna(<span class="attribute">thresh</span>=thresh, <span class="attribute">axis</span>=1, <span class="attribute">inplace</span>=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p>In [16]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">df</span><span class="selector-class">.shape</span></span><br></pre></td></tr></table></figure>
+<p>Out[16]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">105451</span>, <span class="number">102</span>)</span><br></pre></td></tr></table></figure>
+<p>In [17]:</p>
+<figure class="highlight isbl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">df.isnull</span>().sum(<span class="variable">axis</span>=<span class="number">0</span>).sort_values(<span class="variable">ascending</span>=<span class="variable"><span class="literal">False</span></span>) / <span class="function"><span class="title">float</span>(<span class="title">len</span>(<span class="variable">df</span>))</span></span><br></pre></td></tr></table></figure>
+<p>Out[17]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mths_since_recent_revol_delinq    <span class="number">0.648405</span></span><br><span class="line">mths_since_last_delinq            <span class="number">0.484765</span></span><br><span class="line">il_util                           <span class="number">0.126884</span></span><br><span class="line">mths_since_recent_inq             <span class="number">0.113313</span></span><br><span class="line">emp_title                         <span class="number">0.064314</span></span><br><span class="line">                                    ...</span><br><span class="line">total_pymnt_inv                   <span class="number">0.000000</span></span><br><span class="line">total_pymnt                       <span class="number">0.000000</span></span><br><span class="line">out_prncp_inv                     <span class="number">0.000000</span></span><br><span class="line">out_prncp                         <span class="number">0.000000</span></span><br><span class="line">hardship_flag                     <span class="number">0.000000</span></span><br><span class="line">Length: <span class="number">102</span>, dtype: <span class="built_in">float</span>64</span><br></pre></td></tr></table></figure>
+<h3 id="新数据（删除缺失值）">新数据（删除缺失值）</h3>
+<h4 id="新数据缺失值可视化">新数据缺失值可视化</h4>
+<p>In [18]:</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">ms</span><span class="selector-class">.bar</span>(df,color=<span class="string">"blue"</span>)</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.show</span>()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1h6y4ydxmrpj31ic0moald.jpg" alt=""></p>
+<p>和之前的对比，发现缺失值的字段少了很多</p>
+<p>处理后的数据量：只剩下102个字段</p>
+<p>In [19]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">df</span><span class="selector-class">.shape</span></span><br></pre></td></tr></table></figure>
+<p>Out[19]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">105451</span>, <span class="number">102</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="字段类型统计">字段类型统计</h4>
+<p>In [20]:</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df<span class="selector-class">.dtypes</span><span class="selector-class">.value_counts</span>()</span><br></pre></td></tr></table></figure>
+<p>Out[20]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span>64      <span class="number">54</span></span><br><span class="line"><span class="built_in">float</span>64    <span class="number">25</span></span><br><span class="line">object     <span class="number">23</span></span><br><span class="line">dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<h4 id="唯一值字段">唯一值字段</h4>
+<p>3、某些字段的取值是唯一的，比如全部是0，这样的字段对于建模也是无用的，我们要将这些字段进行删除。</p>
+<p>首先找出这些字段：使用Pandas中的nunique函数来确定取值是否唯一。</p>
+<p>In [21]:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nunique_data = df.apply(pd.Series.nunique) != 1   <span class="comment">#  不唯一的字段</span></span><br><span class="line">nunique_data</span><br></pre></td></tr></table></figure>
+<p>Out[21]:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">loan_amnt</span>                      <span class="literal">True</span></span><br><span class="line"><span class="string">funded_amnt</span>                    <span class="literal">True</span></span><br><span class="line"><span class="string">funded_amnt_inv</span>                <span class="literal">True</span></span><br><span class="line"><span class="string">term</span>                           <span class="literal">True</span></span><br><span class="line"><span class="string">int_rate</span>                       <span class="literal">True</span></span><br><span class="line">                              <span class="string">...</span></span><br><span class="line"><span class="string">tot_hi_cred_lim</span>                <span class="literal">True</span></span><br><span class="line"><span class="string">total_bal_ex_mort</span>              <span class="literal">True</span></span><br><span class="line"><span class="string">total_bc_limit</span>                 <span class="literal">True</span></span><br><span class="line"><span class="string">total_il_high_credit_limit</span>     <span class="literal">True</span></span><br><span class="line"><span class="string">hardship_flag</span>                 <span class="literal">False</span></span><br><span class="line"><span class="attr">Length:</span> <span class="number">102</span><span class="string">,</span> <span class="attr">dtype:</span> <span class="string">bool</span></span><br></pre></td></tr></table></figure>
+<p>In [22]:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># df1：删除唯一值字段后的数据</span></span><br><span class="line"></span><br><span class="line">df1 = df.loc[:, nunique_data]</span><br><span class="line">df1.shape</span><br></pre></td></tr></table></figure>
+<p>Out[22]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">105451</span>, <span class="number">97</span>)</span><br></pre></td></tr></table></figure>
+<p>字段从102变成了97，说明还是存在<strong>5个取值唯一</strong>的字段</p>
+<p>In [23]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 再次查看字段类型</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">df1</span><span class="selector-class">.dtypes</span><span class="selector-class">.value_counts</span>()</span><br></pre></td></tr></table></figure>
+<p>Out[23]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span>64      <span class="number">51</span></span><br><span class="line"><span class="built_in">float</span>64    <span class="number">25</span></span><br><span class="line">object     <span class="number">21</span></span><br><span class="line">dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<h3 id="缺失值处理-分类型变量">缺失值处理-分类型变量</h3>
+<p>针对分类型变量（取值为字符串类型）的缺失值处理，一般是采用类型编码、独热码、因子化等操作</p>
+<p>In [24]:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">object_df = df1.select_dtypes(<span class="keyword">include</span>=<span class="string">"object"</span>)</span><br><span class="line">object_df.columns</span><br></pre></td></tr></table></figure>
+<p>Out[24]:</p>
+<figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Index</span>([<span class="string">'term'</span>, <span class="string">'int_rate'</span>, <span class="string">'grade'</span>, <span class="string">'sub_grade'</span>, <span class="string">'emp_title'</span>, <span class="string">'emp_length'</span>,</span><br><span class="line">       <span class="string">'home_ownership'</span>, <span class="string">'verification_status'</span>, <span class="string">'issue_d'</span>, <span class="string">'loan_status'</span>,</span><br><span class="line">       <span class="string">'purpose'</span>, <span class="string">'title'</span>, <span class="string">'zip_code'</span>, <span class="string">'addr_state'</span>, <span class="string">'earliest_cr_line'</span>,</span><br><span class="line">       <span class="string">'revol_util'</span>, <span class="string">'initial_list_status'</span>, <span class="string">'last_pymnt_d'</span>, <span class="string">'next_pymnt_d'</span>,</span><br><span class="line">       <span class="string">'last_credit_pull_d'</span>, <span class="string">'application_type'</span>],</span><br><span class="line">      dtype=<span class="string">'object'</span>)</span><br></pre></td></tr></table></figure>
+<p>比如字段grade的取值是真实的Object类型：</p>
+<p>In [25]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># grade</span></span><br><span class="line"></span><br><span class="line">df1[<span class="string">"grade"</span>]<span class="string">.value_counts</span><span class="params">()</span></span><br></pre></td></tr></table></figure>
+<p>Out[25]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">C    <span class="number">36880</span></span><br><span class="line">B    <span class="number">31301</span></span><br><span class="line">A    <span class="number">17898</span></span><br><span class="line">D    <span class="number">12015</span></span><br><span class="line">E     <span class="number">4847</span></span><br><span class="line">F     <span class="number">1725</span></span><br><span class="line">G      <span class="number">785</span></span><br><span class="line">Name: grade, dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<p>下面出现的字段虽然是object类型，但是实际上行它们的取值仍存在一定的大小关系</p>
+<p>In [26]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># int_rate</span></span><br><span class="line"></span><br><span class="line">df1[<span class="string">"int_rate"</span>]<span class="string">.value_counts</span><span class="params">()</span></span><br></pre></td></tr></table></figure>
+<p>Out[26]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">16.02</span>%    <span class="number">4956</span></span><br><span class="line"><span class="number">5.32</span>%     <span class="number">4365</span></span><br><span class="line"><span class="number">15.05</span>%    <span class="number">4195</span></span><br><span class="line"><span class="number">14.08</span>%    <span class="number">4168</span></span><br><span class="line"><span class="number">12.74</span>%    <span class="number">4155</span></span><br><span class="line">          ...</span><br><span class="line"><span class="number">30.75</span>%     <span class="number">119</span></span><br><span class="line"><span class="number">30.49</span>%     <span class="number">113</span></span><br><span class="line"><span class="number">30.74</span>%      <span class="number">98</span></span><br><span class="line"><span class="number">21.49</span>%      <span class="number">89</span></span><br><span class="line"><span class="number">6.00</span>%        <span class="number">4</span></span><br><span class="line">Name: <span class="built_in">int</span>_rate, Length: <span class="number">65</span>, dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<p>In [27]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># revol_util</span></span><br><span class="line"></span><br><span class="line">df1[<span class="string">"revol_util"</span>]<span class="string">.value_counts</span><span class="params">()</span></span><br></pre></td></tr></table></figure>
+<p>Out[27]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>%         <span class="number">468</span></span><br><span class="line"><span class="number">60</span>%        <span class="number">244</span></span><br><span class="line"><span class="number">64</span>%        <span class="number">230</span></span><br><span class="line"><span class="number">50</span>%        <span class="number">227</span></span><br><span class="line"><span class="number">53</span>%        <span class="number">220</span></span><br><span class="line">          ...</span><br><span class="line"><span class="number">116.20</span>%      <span class="number">1</span></span><br><span class="line"><span class="number">110.10</span>%      <span class="number">1</span></span><br><span class="line"><span class="number">106.10</span>%      <span class="number">1</span></span><br><span class="line"><span class="number">125</span>%         <span class="number">1</span></span><br><span class="line"><span class="number">113</span>%         <span class="number">1</span></span><br><span class="line">Name: revol_util, Length: <span class="number">1076</span>, dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<h4 id="分类型变量转成数值">分类型变量转成数值</h4>
+<ol>
+<li>将百分比的数据转成浮点型：</li>
+</ol>
+<p>In [28]:</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 将右侧的<span class="comment">%去掉，同时强制转成float类型</span></span><br><span class="line"></span><br><span class="line">df1[<span class="string">"int_rate"</span>] = df1[<span class="string">"int_rate"</span>].str.rstrip(<span class="string">"%"</span>).astype(<span class="string">"float"</span>)</span><br><span class="line">df1[<span class="string">"revol_util"</span>] = df1[<span class="string">"revol_util"</span>].str.rstrip(<span class="string">"%"</span>).astype(<span class="string">"float"</span>)</span><br></pre></td></tr></table></figure>
+<ol>
+<li>关于年份的处理：转成数值，并且10+直接用10代替，&lt;1的部分直接用0代替：</li>
+</ol>
+<p>In [29]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># emp_length</span></span><br><span class="line"></span><br><span class="line">df1[<span class="string">"emp_length"</span>]<span class="string">.value_counts</span><span class="params">()</span></span><br></pre></td></tr></table></figure>
+<p>Out[29]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">10</span>+ years    <span class="number">35438</span></span><br><span class="line"><span class="number">2</span> years       <span class="number">9914</span></span><br><span class="line">&lt; <span class="number">1</span> year      <span class="number">9542</span></span><br><span class="line"><span class="number">3</span> years       <span class="number">8495</span></span><br><span class="line"><span class="number">1</span> year        <span class="number">7034</span></span><br><span class="line"><span class="number">4</span> years       <span class="number">6453</span></span><br><span class="line"><span class="number">5</span> years       <span class="number">6382</span></span><br><span class="line"><span class="number">6</span> years       <span class="number">4526</span></span><br><span class="line"><span class="number">7</span> years       <span class="number">3847</span></span><br><span class="line"><span class="number">9</span> years       <span class="number">3828</span></span><br><span class="line"><span class="number">8</span> years       <span class="number">3295</span></span><br><span class="line">Name: emp_length, dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<p>In [30]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df1[<span class="string">"emp_length"</span>]<span class="string">.isnull</span><span class="params">()</span><span class="string">.sum</span><span class="params">()</span>  <span class="comment"># 存在缺失值</span></span><br></pre></td></tr></table></figure>
+<p>Out[30]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">6697</span></span><br></pre></td></tr></table></figure>
+<p>现将缺失值填充为<code>&lt;1 year</code>：</p>
+<p>In [31]:</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df1[<span class="string">"emp_length"</span>] = df1[<span class="string">"emp_length"</span>].fillna(<span class="string">"&lt; 1 year"</span>)</span><br></pre></td></tr></table></figure>
+<p>In [32]:</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># <span class="number">1</span>、先将year或years去掉</span><br><span class="line"></span><br><span class="line">df1[<span class="string">"emp_length"</span>] = df1[<span class="string">"emp_length"</span>].<span class="built_in">apply</span>(<span class="built_in">lambda</span> x: x.<span class="built_in">split</span>(<span class="string">"y"</span>)[<span class="number">0</span>].rstrip(<span class="string">" "</span>))</span><br></pre></td></tr></table></figure>
+<p>In [33]:</p>
+<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df<span class="number">1</span>[<span class="string">"emp_length"</span>].<span class="keyword">value</span><span class="number">_</span>counts()</span><br></pre></td></tr></table></figure>
+<p>Out[33]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">10</span>+    <span class="number">35438</span></span><br><span class="line">&lt; <span class="number">1</span>    <span class="number">16239</span></span><br><span class="line"><span class="number">2</span>       <span class="number">9914</span></span><br><span class="line"><span class="number">3</span>       <span class="number">8495</span></span><br><span class="line"><span class="number">1</span>       <span class="number">7034</span></span><br><span class="line"><span class="number">4</span>       <span class="number">6453</span></span><br><span class="line"><span class="number">5</span>       <span class="number">6382</span></span><br><span class="line"><span class="number">6</span>       <span class="number">4526</span></span><br><span class="line"><span class="number">7</span>       <span class="number">3847</span></span><br><span class="line"><span class="number">9</span>       <span class="number">3828</span></span><br><span class="line"><span class="number">8</span>       <span class="number">3295</span></span><br><span class="line">Name: emp_length, dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<p>In [34]:</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># <span class="number">2</span>、转成数值型</span><br><span class="line"></span><br><span class="line">df1[<span class="string">"emp_length"</span>] = df1[<span class="string">"emp_length"</span>].apply(lambda x: <span class="string">"10"</span> if x == <span class="string">"10+"</span> else x)</span><br><span class="line">df1[<span class="string">"emp_length"</span>] = df1[<span class="string">"emp_length"</span>].str.replace(<span class="string">"&lt; 1"</span>,<span class="string">"0"</span>)</span><br><span class="line"></span><br><span class="line">df1[<span class="string">"emp_length"</span>] = df1[<span class="string">"emp_length"</span>].astype(<span class="string">"float"</span>)</span><br></pre></td></tr></table></figure>
+<p>In [35]:</p>
+<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df<span class="number">1</span>[<span class="string">"emp_length"</span>].<span class="keyword">value</span><span class="number">_</span>counts()</span><br></pre></td></tr></table></figure>
+<p>Out[35]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">10.0</span>    <span class="number">35438</span></span><br><span class="line"><span class="number">0.0</span>     <span class="number">16239</span></span><br><span class="line"><span class="number">2.0</span>      <span class="number">9914</span></span><br><span class="line"><span class="number">3.0</span>      <span class="number">8495</span></span><br><span class="line"><span class="number">1.0</span>      <span class="number">7034</span></span><br><span class="line"><span class="number">4.0</span>      <span class="number">6453</span></span><br><span class="line"><span class="number">5.0</span>      <span class="number">6382</span></span><br><span class="line"><span class="number">6.0</span>      <span class="number">4526</span></span><br><span class="line"><span class="number">7.0</span>      <span class="number">3847</span></span><br><span class="line"><span class="number">9.0</span>      <span class="number">3828</span></span><br><span class="line"><span class="number">8.0</span>      <span class="number">3295</span></span><br><span class="line">Name: emp_length, dtype: int64</span><br></pre></td></tr></table></figure>
+<h4 id="分类型变量可视化">分类型变量可视化</h4>
+<p>In [36]:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">object_df = df1.select_dtypes(<span class="keyword">include</span>=<span class="string">"object"</span>)</span><br><span class="line">object_df.columns</span><br></pre></td></tr></table></figure>
+<p>Out[36]:</p>
+<figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Index</span>([<span class="string">'term'</span>, <span class="string">'grade'</span>, <span class="string">'sub_grade'</span>, <span class="string">'emp_title'</span>, <span class="string">'home_ownership'</span>,</span><br><span class="line">       <span class="string">'verification_status'</span>, <span class="string">'issue_d'</span>, <span class="string">'loan_status'</span>, <span class="string">'purpose'</span>, <span class="string">'title'</span>,</span><br><span class="line">       <span class="string">'zip_code'</span>, <span class="string">'addr_state'</span>, <span class="string">'earliest_cr_line'</span>, <span class="string">'initial_list_status'</span>,</span><br><span class="line">       <span class="string">'last_pymnt_d'</span>, <span class="string">'next_pymnt_d'</span>, <span class="string">'last_credit_pull_d'</span>,</span><br><span class="line">       <span class="string">'application_type'</span>],</span><br><span class="line">      dtype=<span class="string">'object'</span>)</span><br></pre></td></tr></table></figure>
+<p>In [37]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">ms</span><span class="selector-class">.matrix</span>(<span class="selector-tag">object_df</span>)</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.show</span>()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1h6y51dvhq5j31jy0oswgl.jpg" alt=""></p>
+<p>主要是两个字段缺失值：emp_title、next_pymnt_d</p>
+<h4 id="缺失值填充">缺失值填充</h4>
+<p>In [38]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">object_df</span><span class="selector-class">.isnull</span>()<span class="selector-class">.sum</span>()</span><br></pre></td></tr></table></figure>
+<p>Out[38]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">term                      <span class="number">0</span></span><br><span class="line">grade                     <span class="number">0</span></span><br><span class="line">sub_grade                 <span class="number">0</span></span><br><span class="line">emp_title              <span class="number">6782</span></span><br><span class="line">home_ownership            <span class="number">0</span></span><br><span class="line">verification_status       <span class="number">0</span></span><br><span class="line">issue_d                   <span class="number">0</span></span><br><span class="line">loan_status               <span class="number">0</span></span><br><span class="line">purpose                   <span class="number">0</span></span><br><span class="line">title                     <span class="number">0</span></span><br><span class="line">zip_code                  <span class="number">0</span></span><br><span class="line">addr_state                <span class="number">0</span></span><br><span class="line">earliest_cr_line          <span class="number">0</span></span><br><span class="line">initial_list_status       <span class="number">0</span></span><br><span class="line">last_pymnt_d            <span class="number">145</span></span><br><span class="line">next_pymnt_d           <span class="number">3921</span></span><br><span class="line">last_credit_pull_d        <span class="number">3</span></span><br><span class="line">application_type          <span class="number">0</span></span><br><span class="line">dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<p>在这里我们直接填充为“Unknown”：</p>
+<p>In [39]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">object_df.fillna(<span class="string">"Unknown"</span>,<span class="attribute">inplace</span>=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p>再次查看发现已经没有缺失值：</p>
+<p>In [40]:</p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1h6y53wk35rj31hs0oegn9.jpg" alt=""></p>
+<h3 id="缺失值处理——数值型变量">缺失值处理——数值型变量</h3>
+<p>In [41]:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">number_df = df1.select_dtypes(exclude=<span class="string">"object"</span>)</span><br><span class="line">number_df.columns</span><br></pre></td></tr></table></figure>
+<p>Out[41]:</p>
+<figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Index</span>([<span class="string">'loan_amnt'</span>, <span class="string">'funded_amnt'</span>, <span class="string">'funded_amnt_inv'</span>, <span class="string">'int_rate'</span>,</span><br><span class="line">       <span class="string">'installment'</span>, <span class="string">'emp_length'</span>, <span class="string">'annual_inc'</span>, <span class="string">'dti'</span>, <span class="string">'delinq_2yrs'</span>,</span><br><span class="line">       <span class="string">'inq_last_6mths'</span>, <span class="string">'mths_since_last_delinq'</span>, <span class="string">'open_acc'</span>, <span class="string">'pub_rec'</span>,</span><br><span class="line">       <span class="string">'revol_bal'</span>, <span class="string">'revol_util'</span>, <span class="string">'total_acc'</span>, <span class="string">'out_prncp'</span>, <span class="string">'out_prncp_inv'</span>,</span><br><span class="line">       <span class="string">'total_pymnt'</span>, <span class="string">'total_pymnt_inv'</span>, <span class="string">'total_rec_prncp'</span>, <span class="string">'total_rec_int'</span>,</span><br><span class="line">       <span class="string">'total_rec_late_fee'</span>, <span class="string">'last_pymnt_amnt'</span>, <span class="string">'collections_12_mths_ex_med'</span>,</span><br><span class="line">       <span class="string">'acc_now_delinq'</span>, <span class="string">'tot_coll_amt'</span>, <span class="string">'tot_cur_bal'</span>, <span class="string">'open_acc_6m'</span>,</span><br><span class="line">       <span class="string">'open_il_6m'</span>, <span class="string">'open_il_12m'</span>, <span class="string">'open_il_24m'</span>, <span class="string">'mths_since_rcnt_il'</span>,</span><br><span class="line">       <span class="string">'total_bal_il'</span>, <span class="string">'il_util'</span>, <span class="string">'open_rv_12m'</span>, <span class="string">'open_rv_24m'</span>, <span class="string">'max_bal_bc'</span>,</span><br><span class="line">       <span class="string">'all_util'</span>, <span class="string">'total_rev_hi_lim'</span>, <span class="string">'inq_fi'</span>, <span class="string">'total_cu_tl'</span>, <span class="string">'inq_last_12m'</span>,</span><br><span class="line">       <span class="string">'acc_open_past_24mths'</span>, <span class="string">'avg_cur_bal'</span>, <span class="string">'bc_open_to_buy'</span>, <span class="string">'bc_util'</span>,</span><br><span class="line">       <span class="string">'chargeoff_within_12_mths'</span>, <span class="string">'delinq_amnt'</span>, <span class="string">'mo_sin_old_il_acct'</span>,</span><br><span class="line">       <span class="string">'mo_sin_old_rev_tl_op'</span>, <span class="string">'mo_sin_rcnt_rev_tl_op'</span>, <span class="string">'mo_sin_rcnt_tl'</span>,</span><br><span class="line">       <span class="string">'mort_acc'</span>, <span class="string">'mths_since_recent_bc'</span>, <span class="string">'mths_since_recent_inq'</span>,</span><br><span class="line">       <span class="string">'mths_since_recent_revol_delinq'</span>, <span class="string">'num_accts_ever_120_pd'</span>,</span><br><span class="line">       <span class="string">'num_actv_bc_tl'</span>, <span class="string">'num_actv_rev_tl'</span>, <span class="string">'num_bc_sats'</span>, <span class="string">'num_bc_tl'</span>,</span><br><span class="line">       <span class="string">'num_il_tl'</span>, <span class="string">'num_op_rev_tl'</span>, <span class="string">'num_rev_accts'</span>, <span class="string">'num_rev_tl_bal_gt_0'</span>,</span><br><span class="line">       <span class="string">'num_sats'</span>, <span class="string">'num_tl_120dpd_2m'</span>, <span class="string">'num_tl_30dpd'</span>, <span class="string">'num_tl_90g_dpd_24m'</span>,</span><br><span class="line">       <span class="string">'num_tl_op_past_12m'</span>, <span class="string">'pct_tl_nvr_dlq'</span>, <span class="string">'percent_bc_gt_75'</span>,</span><br><span class="line">       <span class="string">'pub_rec_bankruptcies'</span>, <span class="string">'tax_liens'</span>, <span class="string">'tot_hi_cred_lim'</span>,</span><br><span class="line">       <span class="string">'total_bal_ex_mort'</span>, <span class="string">'total_bc_limit'</span>, <span class="string">'total_il_high_credit_limit'</span>],</span><br><span class="line">      dtype=<span class="string">'object'</span>)</span><br></pre></td></tr></table></figure>
+<p>In [42]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">number_df</span><span class="selector-class">.shape</span></span><br></pre></td></tr></table></figure>
+<p>Out[42]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">105451</span>, <span class="number">79</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="缺失值可视化-v2">缺失值可视化</h4>
+<p>In [43]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">ms</span><span class="selector-class">.matrix</span>(<span class="selector-tag">number_df</span>)</span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.show</span>()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1h6y54ve5a6j31hm0le423.jpg" alt=""></p>
+<h3 id="如何判断某行是否全部为空">如何判断某行是否全部为空</h3>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1h6y55tmnudj30yn0u0n00.jpg" alt=""></p>
+<h4 id="查看缺失值情况">查看缺失值情况</h4>
+<p>In [48]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">number_df.isnull<span class="params">()</span><span class="string">.sum</span><span class="params">()</span><span class="string">.sort_values</span><span class="params">(<span class="attr">ascending</span>=False)</span></span><br></pre></td></tr></table></figure>
+<p>Out[48]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mths_since_recent_revol_delinq    <span class="number">68375</span></span><br><span class="line">mths_since_last_delinq            <span class="number">51119</span></span><br><span class="line">il_util                           <span class="number">13380</span></span><br><span class="line">mths_since_recent_inq             <span class="number">11949</span></span><br><span class="line">num_tl_120dpd_2m                   <span class="number">5278</span></span><br><span class="line">                                  ...</span><br><span class="line">tot_cur_bal                           <span class="number">0</span></span><br><span class="line">tot_coll_amt                          <span class="number">0</span></span><br><span class="line">acc_now_delinq                        <span class="number">0</span></span><br><span class="line">collections_12_mths_ex_med            <span class="number">0</span></span><br><span class="line">total_il_high_credit_limit            <span class="number">0</span></span><br><span class="line">Length: <span class="number">79</span>, dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<h4 id="找出存在缺失值的字段">找出存在缺失值的字段</h4>
+<p>In [49]:</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 存在缺失值的为<span class="keyword">True</span>，否则为<span class="keyword">False</span></span><br><span class="line"></span><br><span class="line">number_df.<span class="keyword">isnull</span>().sum() &gt; <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>Out[49]:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">loan_amnt</span>                     <span class="literal">False</span></span><br><span class="line"><span class="string">funded_amnt</span>                   <span class="literal">False</span></span><br><span class="line"><span class="string">funded_amnt_inv</span>               <span class="literal">False</span></span><br><span class="line"><span class="string">int_rate</span>                      <span class="literal">False</span></span><br><span class="line"><span class="string">installment</span>                   <span class="literal">False</span></span><br><span class="line">                              <span class="string">...</span></span><br><span class="line"><span class="string">tax_liens</span>                     <span class="literal">False</span></span><br><span class="line"><span class="string">tot_hi_cred_lim</span>               <span class="literal">False</span></span><br><span class="line"><span class="string">total_bal_ex_mort</span>             <span class="literal">False</span></span><br><span class="line"><span class="string">total_bc_limit</span>                <span class="literal">False</span></span><br><span class="line"><span class="string">total_il_high_credit_limit</span>    <span class="literal">False</span></span><br><span class="line"><span class="attr">Length:</span> <span class="number">79</span><span class="string">,</span> <span class="attr">dtype:</span> <span class="string">bool</span></span><br></pre></td></tr></table></figure>
+<p>In [50]:</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">number_df.<span class="keyword">columns</span>[number_df.<span class="keyword">isnull</span>().sum() &gt; <span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+<p>Out[50]:</p>
+<figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Index</span>([<span class="string">'dti'</span>, <span class="string">'mths_since_last_delinq'</span>, <span class="string">'revol_util'</span>, <span class="string">'mths_since_rcnt_il'</span>,</span><br><span class="line">       <span class="string">'il_util'</span>, <span class="string">'all_util'</span>, <span class="string">'avg_cur_bal'</span>, <span class="string">'bc_open_to_buy'</span>, <span class="string">'bc_util'</span>,</span><br><span class="line">       <span class="string">'mo_sin_old_il_acct'</span>, <span class="string">'mths_since_recent_bc'</span>, <span class="string">'mths_since_recent_inq'</span>,</span><br><span class="line">       <span class="string">'mths_since_recent_revol_delinq'</span>, <span class="string">'num_tl_120dpd_2m'</span>,</span><br><span class="line">       <span class="string">'percent_bc_gt_75'</span>],</span><br><span class="line">      dtype=<span class="string">'object'</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="缺失值填充-v2">缺失值填充</h4>
+<p>对于数值型变量的缺失值，我们采用每列的均值来填充</p>
+<p>In [51]:</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 方法<span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> <span class="built_in">col</span> <span class="keyword">in</span> number_df.<span class="built_in">columns</span>[number_df.isnull().<span class="built_in">sum</span>() &gt; <span class="number">0</span>]:</span><br><span class="line">    mean_val = number_df[<span class="built_in">col</span>].<span class="built_in">mean</span>()  # 每列的均值</span><br><span class="line">    number_df[<span class="built_in">col</span>].fillna(mean_val, inplace=True)  # 均值填充</span><br></pre></td></tr></table></figure>
+<p>In [52]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 方法2</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 老版本报错</span></span><br><span class="line"><span class="comment"># from sklearn.preprocessing import Imputer</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用新版本</span></span><br><span class="line"><span class="keyword">from</span> sklearn.impute import SimpleImputer</span><br><span class="line">imputer = SimpleImputer(<span class="attribute">missing_values</span>=np.nan, <span class="attribute">strategy</span>=<span class="string">'mean'</span>)</span><br></pre></td></tr></table></figure>
+<p>In [53]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">number_df.isnull<span class="params">()</span><span class="string">.sum</span><span class="params">()</span><span class="string">.sort_values</span><span class="params">(<span class="attr">ascending</span>=False)</span></span><br></pre></td></tr></table></figure>
+<p>Out[53]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">loan_amnt                         <span class="number">0</span></span><br><span class="line">mo_sin_old_rev_tl_op              <span class="number">0</span></span><br><span class="line">num_accts_ever_120_pd             <span class="number">0</span></span><br><span class="line">mths_since_recent_revol_delinq    <span class="number">0</span></span><br><span class="line">mths_since_recent_inq             <span class="number">0</span></span><br><span class="line">                                 ..</span><br><span class="line">acc_now_delinq                    <span class="number">0</span></span><br><span class="line">collections_12_mths_ex_med        <span class="number">0</span></span><br><span class="line">last_pymnt_amnt                   <span class="number">0</span></span><br><span class="line">total_rec_late_fee                <span class="number">0</span></span><br><span class="line">total_il_high_credit_limit        <span class="number">0</span></span><br><span class="line">Length: <span class="number">79</span>, dtype: int64</span><br></pre></td></tr></table></figure>
+<h2 id="新建模数据new-data">新建模数据new_data</h2>
+<h3 id="手动过滤字段">手动过滤字段</h3>
+<p>有些字段对建模是无用的，即存在冗余的字段信息，我们需要手动删除。</p>
+<p>In [54]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">object_df</span><span class="selector-class">.isnull</span>()<span class="selector-class">.sum</span>()</span><br></pre></td></tr></table></figure>
+<p>Out[54]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">term                   <span class="number">0</span></span><br><span class="line">grade                  <span class="number">0</span></span><br><span class="line">sub_grade              <span class="number">0</span></span><br><span class="line">emp_title              <span class="number">0</span></span><br><span class="line">home_ownership         <span class="number">0</span></span><br><span class="line">verification_status    <span class="number">0</span></span><br><span class="line">issue_d                <span class="number">0</span></span><br><span class="line">loan_status            <span class="number">0</span></span><br><span class="line">purpose                <span class="number">0</span></span><br><span class="line">title                  <span class="number">0</span></span><br><span class="line">zip_code               <span class="number">0</span></span><br><span class="line">addr_state             <span class="number">0</span></span><br><span class="line">earliest_cr_line       <span class="number">0</span></span><br><span class="line">initial_list_status    <span class="number">0</span></span><br><span class="line">last_pymnt_d           <span class="number">0</span></span><br><span class="line">next_pymnt_d           <span class="number">0</span></span><br><span class="line">last_credit_pull_d     <span class="number">0</span></span><br><span class="line">application_type       <span class="number">0</span></span><br><span class="line">dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<p>In [55]:</p>
+<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">object</span><span class="number">_</span>df[<span class="string">"application_type"</span>].<span class="keyword">value</span><span class="number">_</span>counts()</span><br></pre></td></tr></table></figure>
+<p>Out[55]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">INDIVIDUAL    <span class="number">98619</span></span><br><span class="line">JOINT          <span class="number">6813</span></span><br><span class="line">DIRECT_PAY       <span class="number">19</span></span><br><span class="line">Name: application_type, dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<ul>
+<li>term：申请人的贷款偿还期数，通常是36或者60，对于建模没有指导意义，保留（1）</li>
+<li>grade和sub_grade：存在重复信息，选择删除字段sub_gracde，保留grade(12)</li>
+<li>emp_title：不能反映借款人的收入或者资产情况，可删除</li>
+<li>home_ownership：房屋所在状态，保留(3)</li>
+<li>verification_status：收入是否被LC验证、未验证或收入来源是否被验证，保留(4)</li>
+<li>issue_d：贷款发行时间，对于是否违规预测也没有指导意义，可删除</li>
+<li>loan_status：贷款的当前状态，保留（5）</li>
+<li>purpose：贷款目的，保留（6）</li>
+<li>title：和purpose重复，可删除</li>
+<li>zip_code：地址邮编，对于建模无效</li>
+<li>addr_state：申请人的地址所在州，建模无效</li>
+<li>earliest_cr_line：借款人最早公布的信用额度开通的月份，对于是否违规模型搭建无意义，考虑删除</li>
+<li>initial_list_status：贷款的初始上市状态，可谓W或者F，保留（7）</li>
+<li>last_pymnt_d、next_pymnt_d、last_credit_pull_d：贷款后的信息，对于是否违规预测为意义，可删除</li>
+<li>application_type：指示贷款是单独申请还是与两个共同借款人的联合申请，保留（8）</li>
+</ul>
+<p>最终留下8个有用的字段信息：</p>
+<p>In [56]:</p>
+<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">object</span><span class="number">_</span>df = <span class="keyword">object</span><span class="number">_</span>df[[<span class="string">"term"</span>,<span class="string">"grade"</span>,<span class="string">"home_ownership"</span>,<span class="string">"verification_status"</span>,<span class="string">"loan_status"</span>,</span><br><span class="line">                       <span class="string">"purpose"</span>,<span class="string">"initial_list_status"</span>,<span class="string">"application_type"</span>]]</span><br><span class="line"></span><br><span class="line"><span class="keyword">object</span><span class="number">_</span>df</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1h6y6s3ckegj31mu0m2n1l.jpg" alt=""></p>
+<h3 id="数据合并">数据合并</h3>
+<p>将两个数据合并起来：</p>
+<p>In [57]:</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span><span class="type">_data</span> = pd.concat([object_df,number_df],axis=<span class="number">1</span>)</span><br><span class="line"><span class="keyword">new</span><span class="type">_data</span>.head()</span><br></pre></td></tr></table></figure>
+<h3 id="基本信息">基本信息</h3>
+<p>In [58]:</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span><span class="type">_data</span>.dtypes</span><br></pre></td></tr></table></figure>
+<p>Out[58]:</p>
+<figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">term                          <span class="keyword">object</span></span><br><span class="line">grade                         <span class="keyword">object</span></span><br><span class="line">home_ownership                <span class="keyword">object</span></span><br><span class="line">verification_status           <span class="keyword">object</span></span><br><span class="line">loan_status                   <span class="keyword">object</span></span><br><span class="line">                               ...</span><br><span class="line">tax_liens                      <span class="built_in">int64</span></span><br><span class="line">tot_hi_cred_lim                <span class="built_in">int64</span></span><br><span class="line">total_bal_ex_mort              <span class="built_in">int64</span></span><br><span class="line">total_bc_limit                 <span class="built_in">int64</span></span><br><span class="line">total_il_high_credit_limit     <span class="built_in">int64</span></span><br><span class="line"><span class="type">Length</span>: <span class="number">87</span>, dtype: <span class="keyword">object</span></span><br></pre></td></tr></table></figure>
+<p>In [59]:</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span><span class="type">_data</span>.shape</span><br></pre></td></tr></table></figure>
+<p>Out[59]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">105451</span>, <span class="number">87</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="描述统计信息">描述统计信息</h3>
+<p>针对数值型字段的描述统计信息，查看最值，四分位数等：</p>
+<p>In [60]:</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span><span class="type">_data</span>.describe()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1h6y5eq0qbdj31nk0k079t.jpg" alt=""></p>
+<h2 id="特征工程">特征工程</h2>
+<h3 id="特征衍生">特征衍生</h3>
+<p>In [61]:</p>
+<p>installment / (annual_inc / 12)：表示每个月的还款金额占据月收入的比例，数值越大，还款压力越大</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># installment：每月的还款金额</span></span><br><span class="line"><span class="comment"># annual_inc：申请人年度总收入</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 新特征</span></span><br><span class="line">new_data[<span class="string">"installment_percent"</span>] = new_data[[<span class="string">"installment"</span>,<span class="string">"annual_inc"</span>]].apply(<span class="keyword">lambda</span> x: x.installment / (x.annual_inc / <span class="number">12</span>), axis=<span class="number">1</span>).replace([np.inf,<span class="number">0</span>])</span><br><span class="line">new_data.head()</span><br></pre></td></tr></table></figure>
+<p>Out[61]:</p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1h6y5j8h5edj31na0i0go9.jpg" alt=""></p>
+<h3 id="贷款状态编码与可视化">贷款状态编码与可视化</h3>
+<h4 id="编码">编码</h4>
+<p>In [62]:</p>
+<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span><span class="number">_</span>data[<span class="string">"loan_status"</span>].<span class="keyword">value</span><span class="number">_</span>counts()</span><br></pre></td></tr></table></figure>
+<p>Out[62]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Current               <span class="number">99850</span></span><br><span class="line">Fully Paid             <span class="number">3896</span></span><br><span class="line">In Grace Period         <span class="number">932</span></span><br><span class="line">Late (<span class="number">31</span><span class="number">-120</span> days)      <span class="number">436</span></span><br><span class="line">Late (<span class="number">16</span><span class="number">-30</span> days)       <span class="number">312</span></span><br><span class="line">Charged Off              <span class="number">25</span></span><br><span class="line">Name: loan_status, dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<p>In [63]:</p>
+<figure class="highlight gml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 违约=<span class="number">1</span>, 正常=<span class="number">0</span></span><br><span class="line">new_data[<span class="string">"loan_status"</span>] = new_data[<span class="string">"loan_status"</span>].apply(lambda <span class="symbol">x</span>: <span class="number">0</span> <span class="keywords">if</span> (<span class="symbol">x</span> == <span class="string">"Fully Paid"</span> <span class="keywords">or</span> <span class="symbol">x</span> == <span class="string">"Current"</span>) <span class="keywords">else</span> <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>In [64]:</p>
+<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span><span class="number">_</span>data[<span class="string">"loan_status"</span>].<span class="keyword">value</span><span class="number">_</span>counts()</span><br></pre></td></tr></table></figure>
+<p>Out[64]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>    <span class="number">103746</span></span><br><span class="line"><span class="number">1</span>      <span class="number">1705</span></span><br><span class="line">Name: loan_status, dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<h4 id="可视化">可视化</h4>
+<p>In [65]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 贷款状态柱状图统计</span></span><br><span class="line">fig, axs = plt.subplots(<span class="number">1</span>,<span class="number">2</span>,figsize=(<span class="number">12</span>,<span class="number">6</span>))</span><br><span class="line">sns.countplot(x=<span class="string">'loan_status'</span>,</span><br><span class="line">              data=new_data,</span><br><span class="line">              ax=axs[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line">axs[<span class="number">0</span>].set_title(<span class="string">"Frequency of each Loan Status(Bar)"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 饼图：统计每个类型的占比</span></span><br><span class="line">new_data[<span class="string">'loan_status'</span>].value_counts().plot(x=<span class="literal">None</span>,</span><br><span class="line">                                            y=<span class="literal">None</span>,</span><br><span class="line">                                            kind=<span class="string">'pie'</span>,</span><br><span class="line">                                            ax=axs[<span class="number">1</span>],</span><br><span class="line">                                            autopct=<span class="string">'%1.2f%%'</span>)</span><br><span class="line">axs[<span class="number">1</span>].set_title(<span class="string">"Percentage of each Loan status(Pie)"</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1h6y5kdt3obj30kh0anq35.jpg" alt=""></p>
+<p>可以看到违规和没有违规的比例差别是很大的，后面会通过采样的方法来解决。</p>
+<h3 id="有序变量编码">有序变量编码</h3>
+<p>部分字段的取值是存在一定的顺序关系。比如服装的尺码大小，“XS”、“S”、“M”、&quot;L&quot;等，它们的取值本身是有大小关系的。</p>
+<p>在这里我们实施硬编码：</p>
+<p>In [66]:</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span><span class="type">_data</span>.select_dtypes(<span class="string">"object"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1h6y5mbip2hj31ht0u043w.jpg" alt=""></p>
+<h3 id="无序特征编码">无序特征编码</h3>
+<p>采用的独热码，通过get_dummies函数来实现</p>
+<p>In [68]:</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">df1 = <span class="keyword">new</span><span class="type">_data</span>.select_dtypes(<span class="string">"object"</span>)  <span class="meta"># 字符型</span></span><br><span class="line">df2 = <span class="keyword">new</span><span class="type">_data</span>.select_dtypes(exclude=[<span class="string">"object"</span>])   <span class="meta"># 非字符型</span></span><br><span class="line">df1.head()</span><br></pre></td></tr></table></figure>
+<p>Out[68]:</p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1h6y5n0puh2j31aq0bqmyx.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1h6y6g7yi0lj31mo0hidhr.jpg" alt=""></p>
+<h3 id="特征缩放：标准化">特征缩放：标准化</h3>
+<p>针对数值型特征(数据df2)的特征缩放，将数据规范到一定范围内，便于后期加快算法的收敛速度</p>
+<p>In [70]:</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 目标变量load_status</span><br><span class="line"></span><br><span class="line">Y = df2<span class="string">[["loan_status"]]</span></span><br><span class="line">Y.head()</span><br></pre></td></tr></table></figure>
+<p>Out[70]:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right"></th>
+<th style="text-align:right">loan_status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td style="text-align:right">1</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td style="text-align:right">2</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td style="text-align:right">3</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td style="text-align:right">4</td>
+<td style="text-align:right">0</td>
+</tr>
+</tbody>
+</table>
+<p>In [71]:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># df2中剩余的数值型变量构成df3</span></span><br><span class="line"></span><br><span class="line">df3 = df2.drop(<span class="string">"loan_status"</span>,axis=1)</span><br><span class="line">df3.head()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 对df3实施标准化处理</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line">ss = StandardScaler()</span><br><span class="line">ss_data = ss.fit_transform(df3)</span><br><span class="line"></span><br><span class="line">df4 = pd.DataFrame(ss_data, columns=df3.columns)</span><br><span class="line">df4.head()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1h6y5rek240j31na0jq0wm.jpg" alt=""></p>
+<h3 id="span-class-burk-SMOTE采样（重点）-span"><span class="burk">SMOTE采样（重点）</span></h3>
+<p>可以看到违规和没有违规的比例差别是很大的，也就是说样本及其不均衡，常用的处理方式有两种：</p>
+<ul>
+<li>过采样（oversampling），增加正样本使得正、负样本数目接近，然后再进行学习</li>
+<li>欠采样（undersampling），去除一些负样本使得正、负样本数目接近，然后再进行学习。</li>
+</ul>
+<p>下面通过<strong>欠采样</strong>方法来处理：</p>
+<p>In [75]:</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">positive_data = <span class="keyword">new</span><span class="type">_df</span>[<span class="keyword">new</span><span class="type">_df</span>[<span class="string">"loan_status"</span>] == <span class="number">1</span>]  <span class="meta"># 违约</span></span><br><span class="line">negetive_data = <span class="keyword">new</span><span class="type">_df</span>[<span class="keyword">new</span><span class="type">_df</span>[<span class="string">"loan_status"</span>] == <span class="number">0</span>]  <span class="meta"># 未违约</span></span><br></pre></td></tr></table></figure>
+<p>In [76]:</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">print(<span class="string">"length of positive_data: "</span>,<span class="built_in">len</span>(positive_data))</span><br><span class="line">print(<span class="string">"length of negetive_data: "</span>,<span class="built_in">len</span>(negetive_data))</span><br><span class="line"><span class="built_in">length</span> <span class="keyword">of</span> positive_data:  <span class="number">1705</span></span><br><span class="line"><span class="built_in">length</span> <span class="keyword">of</span> negetive_data:  <span class="number">103746</span></span><br></pre></td></tr></table></figure>
+<p>In [77]:</p>
+<figure class="highlight isbl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">selected_data</span> = <span class="variable">negetive_data.sample</span>(<span class="function"><span class="title">len</span>(<span class="variable">positive_data</span>))</span></span><br><span class="line"></span><br><span class="line"><span class="variable">selected_data.shape</span></span><br></pre></td></tr></table></figure>
+<p>Out[77]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">1705</span>, <span class="number">104</span>)</span><br></pre></td></tr></table></figure>
+<p>下面生成的new_data就是最终用于建模的数据：</p>
+<p>In [78]:</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span><span class="type">_data</span> = pd.concat([positive_data,selected_data],axis=<span class="number">0</span>)</span><br><span class="line"><span class="keyword">new</span><span class="type">_data</span></span><br></pre></td></tr></table></figure>
+<h2 id="建模">建模</h2>
+<h3 id="特征和目标分离">特征和目标分离</h3>
+<p>In [79]:</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">y = <span class="keyword">new</span><span class="type">_data</span>[[<span class="string">"loan_status"</span>]]</span><br><span class="line">X = <span class="keyword">new</span><span class="type">_data</span>.drop(<span class="string">"loan_status"</span>, axis=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="训练集和测试集切分">训练集和测试集切分</h3>
+<p>In [80]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.model_selection import train_test_split</span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y, <span class="attribute">test_size</span>=0.2, <span class="attribute">random_state</span>=4)</span><br></pre></td></tr></table></figure>
+<h3 id="逻辑回归分类器">逻辑回归分类器</h3>
+<p>基于逻辑回归的分类器</p>
+<p>In [81]:</p>
+<figure class="highlight capnproto"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LogisticRegression</span><br><span class="line">clf = LogisticRegression() <span class="comment"># 构建逻辑回归分类器</span></span><br><span class="line"></span><br><span class="line">clf.fit(X_train, y_train)</span><br></pre></td></tr></table></figure>
+<p>Out[81]:</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">LogisticRegression</span><span class="params">()</span></span></span><br></pre></td></tr></table></figure>
+<p>In [82]:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进行预测</span></span><br><span class="line"></span><br><span class="line">predict = clf.predict(X_test)</span><br><span class="line"><span class="section">predict[:5]</span></span><br></pre></td></tr></table></figure>
+<p>Out[82]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">array</span>([<span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<h3 id="预测准确率">预测准确率</h3>
+<p>查看预测的准确率：</p>
+<p>In [83]:</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from sklearn<span class="selector-class">.metrics</span> import accuracy_score</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">accuracy_score</span><span class="params">(predict, y_test)</span></span></span><br></pre></td></tr></table></figure>
+<p>Out[83]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0.7067448680351907</span></span><br></pre></td></tr></table></figure>
+<p>混淆矩阵的信息：</p>
+<p>In [84]:</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.metrics import confusion_matrix</span><br><span class="line">m = confusion<span class="constructor">_matrix(<span class="params">y_test</span>, <span class="params">predict</span>)</span></span><br><span class="line">m</span><br></pre></td></tr></table></figure>
+<p>Out[84]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">array</span>([[<span class="number">262</span>,  <span class="number">87</span>],</span><br><span class="line">       [<span class="number">113</span>, <span class="number">220</span>]])</span><br></pre></td></tr></table></figure>
+<p>In [85]:</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 混淆矩阵可视化</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.figure</span>(figsize=(<span class="number">12</span>,<span class="number">8</span>))</span><br><span class="line"><span class="selector-tag">sns</span><span class="selector-class">.heatmap</span>(m)</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">plt</span><span class="selector-class">.show</span>()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1h6y5t6h9rrj30hx0cxaa3.jpg" alt=""></p>
+<p>上面可视化的结果表示：颜色越深代表的人数越多，也就是真阳性的人数是最多的；而假阳性是最少的</p>
+<h3 id="roc曲线">roc曲线</h3>
+<p>In [86]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> roc_curve, auc</span><br><span class="line"><span class="literal">false</span>_positive_rate, <span class="literal">true</span>_positive_rate,thresholds = roc_curve(y_test, predict)</span><br><span class="line"></span><br><span class="line">roc_auc = auc(<span class="literal">false</span>_positive_rate,<span class="literal">true</span>_positive_rate)</span><br><span class="line">roc_auc</span><br></pre></td></tr></table></figure>
+<p>Out[86]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0.7056884965194421</span></span><br></pre></td></tr></table></figure>
+<p>In [87]:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">plt.figure(figsize=(10,10))</span><br><span class="line">plt.title(<span class="string">"ROC"</span>)  # Receiver Operating Characteristic</span><br><span class="line">plt.plot(false_positive_rate,</span><br><span class="line">         true_positive_rate,</span><br><span class="line">         <span class="attribute">color</span>=<span class="string">"red"</span>,</span><br><span class="line">         <span class="attribute">label</span>=<span class="string">"AUC = %0.2f"</span>%roc_auc</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">plt.legend(<span class="attribute">loc</span>=<span class="string">"lower right"</span>)</span><br><span class="line">plt.plot([0,1],[0,1],<span class="attribute">linestyle</span>=<span class="string">"--"</span>)</span><br><span class="line">plt.axis(<span class="string">"tight"</span>)</span><br><span class="line"><span class="comment"># 真阳性：预测类别为1的positive；预测正确True</span></span><br><span class="line">plt.ylabel(<span class="string">"True Positive Rate"</span>)</span><br><span class="line"><span class="comment"># 假阳性：预测类别为1的positive；预测错误False</span></span><br><span class="line">plt.xlabel(<span class="string">"False Positive Rate"</span>)</span><br></pre></td></tr></table></figure>
+<p>Out[87]:</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">Text</span><span class="params">(<span class="number">0.5</span>, <span class="number">0</span>, <span class="string">'False Positive Rate'</span>)</span></span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1h6y5tzr8kqj30gu0gpaaf.jpg" alt=""></p>
+<h2 id="总结">总结</h2>
+<p>整体方案的ROC值达到了71%，还是有一定的提升空间。后续可以优化的点：</p>
+<ol>
+<li>特征属性过多：可以考虑降维或者特征的多重线性检验，找出更具有价值的特征</li>
+<li>离散型变量的编码：目前是统一的标准化处理，没有编码工作；后续可以考虑加入编码工作，比如：因子化、特征分箱等</li>
+<li>建模优化：尝试使用不同的分类模型，以及模型融合方法</li>
+<li>参数调优：可以考虑做一个参数的调优，比如网格搜索、随机搜索等等</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2022/10/08/kaggle%E5%AE%9E%E6%88%98-%E4%BF%A1%E8%B4%B7%E8%BF%9D%E7%BA%A6%E9%A2%84%E6%B5%8B.html">kaggle实战-信贷违约预测</a></p>
+  <p><span>发布时间:</span>2022年10月08日 - 22:10</p>
+  <p><span>原始链接:</span><a href="/2022/10/08/kaggle%E5%AE%9E%E6%88%98-%E4%BF%A1%E8%B4%B7%E8%BF%9D%E7%BA%A6%E9%A2%84%E6%B5%8B.html" title="kaggle实战-信贷违约预测">http://www.renpeter.cn/2022/10/08/kaggle%E5%AE%9E%E6%88%98-%E4%BF%A1%E8%B4%B7%E8%BF%9D%E7%BA%A6%E9%A2%84%E6%B5%8B.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2022/10/08/kaggle%E5%AE%9E%E6%88%98-%E4%BF%A1%E8%B4%B7%E8%BF%9D%E7%BA%A6%E9%A2%84%E6%B5%8B.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/" rel="tag"># 逻辑回归</a>
+          
+            <a href="/tags/%E6%AC%A0%E9%87%87%E6%A0%B7/" rel="tag"># 欠采样</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/10/04/Python%E7%88%AC%E8%99%AB%E6%97%85%E6%B8%B8-%E9%9D%92%E5%B2%9B%E7%AB%99.html" rel="next" title="Python爬虫旅游-青岛站">
+                <i class="fa fa-chevron-left"></i> Python爬虫旅游-青岛站
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">785</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">102</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">127</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#kaggle实战-信贷违约预测"><span class="nav-number">1.</span> <span class="nav-text">kaggle实战-信贷违约预测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导入库"><span class="nav-number">2.</span> <span class="nav-text">导入库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据基本信息"><span class="nav-number">3.</span> <span class="nav-text">数据基本信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缺失值处理"><span class="nav-number">4.</span> <span class="nav-text">缺失值处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#缺失值可视化"><span class="nav-number">4.1.</span> <span class="nav-text">缺失值可视化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除全部缺失字段"><span class="nav-number">4.2.</span> <span class="nav-text">删除全部缺失字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除缺失值在30-以上的字段"><span class="nav-number">4.3.</span> <span class="nav-text">删除缺失值在30%以上的字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新数据（删除缺失值）"><span class="nav-number">4.4.</span> <span class="nav-text">新数据（删除缺失值）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#新数据缺失值可视化"><span class="nav-number">4.4.1.</span> <span class="nav-text">新数据缺失值可视化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#字段类型统计"><span class="nav-number">4.4.2.</span> <span class="nav-text">字段类型统计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#唯一值字段"><span class="nav-number">4.4.3.</span> <span class="nav-text">唯一值字段</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺失值处理-分类型变量"><span class="nav-number">4.5.</span> <span class="nav-text">缺失值处理-分类型变量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分类型变量转成数值"><span class="nav-number">4.5.1.</span> <span class="nav-text">分类型变量转成数值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分类型变量可视化"><span class="nav-number">4.5.2.</span> <span class="nav-text">分类型变量可视化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#缺失值填充"><span class="nav-number">4.5.3.</span> <span class="nav-text">缺失值填充</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺失值处理——数值型变量"><span class="nav-number">4.6.</span> <span class="nav-text">缺失值处理——数值型变量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#缺失值可视化-v2"><span class="nav-number">4.6.1.</span> <span class="nav-text">缺失值可视化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何判断某行是否全部为空"><span class="nav-number">4.7.</span> <span class="nav-text">如何判断某行是否全部为空</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#查看缺失值情况"><span class="nav-number">4.7.1.</span> <span class="nav-text">查看缺失值情况</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#找出存在缺失值的字段"><span class="nav-number">4.7.2.</span> <span class="nav-text">找出存在缺失值的字段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#缺失值填充-v2"><span class="nav-number">4.7.3.</span> <span class="nav-text">缺失值填充</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新建模数据new-data"><span class="nav-number">5.</span> <span class="nav-text">新建模数据new_data</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#手动过滤字段"><span class="nav-number">5.1.</span> <span class="nav-text">手动过滤字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据合并"><span class="nav-number">5.2.</span> <span class="nav-text">数据合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本信息"><span class="nav-number">5.3.</span> <span class="nav-text">基本信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#描述统计信息"><span class="nav-number">5.4.</span> <span class="nav-text">描述统计信息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特征工程"><span class="nav-number">6.</span> <span class="nav-text">特征工程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特征衍生"><span class="nav-number">6.1.</span> <span class="nav-text">特征衍生</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#贷款状态编码与可视化"><span class="nav-number">6.2.</span> <span class="nav-text">贷款状态编码与可视化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#编码"><span class="nav-number">6.2.1.</span> <span class="nav-text">编码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可视化"><span class="nav-number">6.2.2.</span> <span class="nav-text">可视化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有序变量编码"><span class="nav-number">6.3.</span> <span class="nav-text">有序变量编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无序特征编码"><span class="nav-number">6.4.</span> <span class="nav-text">无序特征编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特征缩放：标准化"><span class="nav-number">6.5.</span> <span class="nav-text">特征缩放：标准化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#span-class-burk-SMOTE采样（重点）-span"><span class="nav-number">6.6.</span> <span class="nav-text">SMOTE采样（重点）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建模"><span class="nav-number">7.</span> <span class="nav-text">建模</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特征和目标分离"><span class="nav-number">7.1.</span> <span class="nav-text">特征和目标分离</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#训练集和测试集切分"><span class="nav-number">7.2.</span> <span class="nav-text">训练集和测试集切分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#逻辑回归分类器"><span class="nav-number">7.3.</span> <span class="nav-text">逻辑回归分类器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预测准确率"><span class="nav-number">7.4.</span> <span class="nav-text">预测准确率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#roc曲线"><span class="nav-number">7.5.</span> <span class="nav-text">roc曲线</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSV/" rel="tag">CSV</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jieba/" rel="tag">Jieba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KDE/" rel="tag">KDE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kats/" rel="tag">Kats</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LaTex/" rel="tag">LaTex</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">67</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCA/" rel="tag">PCA</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVM/" rel="tag">SVM</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jupyter/" rel="tag">jupyter</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">20</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/keras/" rel="tag">keras</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/markdown/" rel="tag">markdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/matplotlib/" rel="tag">matplotlib</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">147</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyg2plot/" rel="tag">pyg2plot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">97</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/seaborn/" rel="tag">seaborn</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sklearn/" rel="tag">sklearn</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tableau/" rel="tag">tableau</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/uci/" rel="tag">uci</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E5%88%86%E7%B1%BB/" rel="tag">二分类</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">38</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%AC%E4%BC%97%E5%8F%B7/" rel="tag">公众号</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B3%E8%81%94%E5%88%86%E6%9E%90/" rel="tag">关联分析</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%99%E4%BD%9C/" rel="tag">写作</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%B1%BB/" rel="tag">分类</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%B7%E7%A7%AF/" rel="tag">卷积</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AC%E5%9B%9E%E7%8E%87/" rel="tag">召回率</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">125</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E5%BD%92/" rel="tag">回归</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E5%BD%92%E5%88%86%E6%9E%90/" rel="tag">回归分析</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/" rel="tag">图像处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A9%E6%B1%A0/" rel="tag">天池</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E5%85%B8/" rel="tag">字典</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%B9%E5%99%A8/" rel="tag">容器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AF%BC%E6%95%B0/" rel="tag">导数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%80%E6%BA%90/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B/" rel="tag">异常检测</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BD%92%E4%B8%80%E5%8C%96/" rel="tag">归一化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AA%E7%8E%AF/" rel="tag">循环</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E5%AD%A6/" rel="tag">数学</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">86</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag">数据处理</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">104</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" rel="tag">数据挖掘</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/" rel="tag">文本处理</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">无监督学习</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E5%BA%8F%E5%88%86%E6%9E%90/" rel="tag">时序分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">129</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9D%8E%E6%B2%90/" rel="tag">李沐</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AC%A0%E9%87%87%E6%A0%B7/" rel="tag">欠采样</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AD%A3%E5%88%99%E5%8C%96/" rel="tag">正则化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/" rel="tag">激活函数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2/" rel="tag">牛客</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/" rel="tag">特征工程</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%B9%E5%BE%81%E7%BC%96%E7%A0%81/" rel="tag">特征编码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%8B%AC%E7%83%AD%E7%A0%81/" rel="tag">独热码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">50</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">监督学习</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%B8%E5%85%B3%E6%80%A7/" rel="tag">相关性</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%B8%E5%85%B3%E7%B3%BB%E6%95%B0/" rel="tag">相关系数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag">神经网络</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A6%BB%E6%95%A3%E5%8C%96/" rel="tag">离散化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%AF%E5%88%86/" rel="tag">积分</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0/" rel="tag">窗口函数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AB%9E%E8%B5%9B/" rel="tag">竞赛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B2%BE%E5%BA%A6/" rel="tag">精度</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B4%A2%E5%BC%95/" rel="tag">索引</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1/" rel="tag">统计</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag">编程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB/" rel="tag">聚类</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">自动化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%8D%E4%BA%91%E5%9B%BE/" rel="tag">词云图</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/" rel="tag">逻辑回归</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%99%8D%E7%BB%B4/" rel="tag">降维</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97/" rel="tag">随机森林</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/" rel="tag">集成学习</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%92%E6%98%A5/" rel="tag">青春</a><span class="tag-list-count">1</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共1185.3k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2022/10/08/kaggle%E5%AE%9E%E6%88%98-%E4%BF%A1%E8%B4%B7%E8%BF%9D%E7%BA%A6%E9%A2%84%E6%B5%8B.html';
+          this.page.identifier = '2022/10/08/kaggle实战-信贷违约预测.html';
+          this.page.title = 'kaggle实战-信贷违约预测';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
