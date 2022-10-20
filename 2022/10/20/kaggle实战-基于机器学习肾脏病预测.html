@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="机器学习,随机森林,树模型,shap,可解释性," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="kaggle实战：机器学习建模预测肾脏疾病 本文是针对kaggle上面一份肾脏疾病数据的建模，包含：  数据预处理 特征工程 缺失值填充 分类模型的建立 模型结果对比 shap模型可解释性">
+<meta name="keywords" content="机器学习,随机森林,树模型,shap,可解释性">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kaggle实战-基于机器学习肾脏病预测">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2022&#x2F;10&#x2F;20&#x2F;kaggle%E5%AE%9E%E6%88%98-%E5%9F%BA%E4%BA%8E%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%82%BE%E8%84%8F%E7%97%85%E9%A2%84%E6%B5%8B.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="kaggle实战：机器学习建模预测肾脏疾病 本文是针对kaggle上面一份肾脏疾病数据的建模，包含：  数据预处理 特征工程 缺失值填充 分类模型的建立 模型结果对比 shap模型可解释性">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7bjqcak6xj315o0qomy9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c3jt0zjej31im0t4dji.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c2or85z2j31mk0dun0n.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c2stvf5yj31ie0fkteu.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c2vxmf48j31hs0pm776.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c2wnf29gj30is0k43z1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c2xn177rj30mc0ysdhb.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c2yqnbflj30l20ik74s.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c325ovgyj311k0u0aby.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c31t4ffgj311k0u0wfv.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c32w5mt7j31ds0quwga.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c33gg0kwj30pp0bs0t8.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c33yz969j31j60sm40t.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c347gp02j31g00mo766.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c34iqqd2j31hq0semz8.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c34uhao2j31g00nkwgm.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c35cqk68j31jm0tgn0m.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c35tbmkkj31gs0n4q4z.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c36nh8u9j31ii0t40w1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c370k36rj31j00t8q5x.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c37um1uxj31iy0ts40v.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c38fjummj31nq0u0tcg.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c38ufpf2j31om0sstbt.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c39dst4ej31nu0u0q6a.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c4eha6t2j30pj0cxtb9.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c3hwtmlsj30cm0haq3n.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c3ie05d0j30dq0hi0tf.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c3jt0zjej31im0t4dji.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c58xwj85j30z20u040d.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c5besa45j30ew0fomxc.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c5hmk2eaj31n80demz8.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7c5i2b4h3j31oc0s0tdp.jpg">
+<meta property="og:updated_time" content="2022-10-20T15:10:11.415Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;tva1.sinaimg.cn&#x2F;large&#x2F;008vxvgGly1h7bjqcak6xj315o0qomy9.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2022/10/20/kaggle实战-基于机器学习肾脏病预测.html"/>
+
+
+
+
+
+  <title>kaggle实战-基于机器学习肾脏病预测 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2022/10/20/kaggle%E5%AE%9E%E6%88%98-%E5%9F%BA%E4%BA%8E%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%82%BE%E8%84%8F%E7%97%85%E9%A2%84%E6%B5%8B.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">kaggle实战-基于机器学习肾脏病预测</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-10-20T23:09:04+08:00">
+                2022-10-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/kaggle/" itemprop="url" rel="index">
+                    <span itemprop="name">kaggle</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2022/10/20/kaggle%E5%AE%9E%E6%88%98-%E5%9F%BA%E4%BA%8E%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%82%BE%E8%84%8F%E7%97%85%E9%A2%84%E6%B5%8B.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2022/10/20/kaggle实战-基于机器学习肾脏病预测.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  4.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  22
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="kaggle实战：机器学习建模预测肾脏疾病">kaggle实战：机器学习建模预测肾脏疾病</h2>
+<p>本文是针对kaggle上面一份<strong>肾脏疾病</strong>数据的建模，包含：</p>
+<ul>
+<li>数据预处理</li>
+<li>特征工程</li>
+<li>缺失值填充</li>
+<li>分类模型的建立</li>
+<li>模型结果对比</li>
+<li>shap模型可解释性</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7bjqcak6xj315o0qomy9.jpg" alt=""></p>
+<a id="more"></a>
+<p>原数据集地址：</p>
+<p><a href="https://www.kaggle.com/datasets/mansoordaku/ckdisease?datasetId=1111&amp;sortBy=voteCount" target="_blank" rel="noopener">https://www.kaggle.com/datasets/mansoordaku/ckdisease?datasetId=1111&amp;sortBy=voteCount</a></p>
+<!--MORE-->
+<h2 id="结果">结果</h2>
+<p>先看看最终的结果对比：</p>
+<ul>
+<li>KNN是分数最低的；LGBM第一。一般在kaggle，分类问题LGBM高频使用，且效果一般都比较好</li>
+<li>树模型中，以决策树为基础，效果都有所提升。</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c3jt0zjej31im0t4dji.jpg" alt=""></p>
+<h2 id="导入库">导入库</h2>
+<p>笔记1📒：一般在建模中，导入库包含：</p>
+<ul>
+<li>数据处理pandas为主</li>
+<li>可视化库：笔者一般用的Plotly结合seaborn；偶尔用原生的matplotlib和pyecharts</li>
+<li>各种回归和分类模型 + 评价指标</li>
+<li>其他：切分数据、降维、采样、标准化等</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> missingno <span class="keyword">as</span> ms</span><br><span class="line"><span class="keyword">import</span> plotly.express <span class="keyword">as</span> px</span><br><span class="line"><span class="keyword">import</span> plotly.graph_objs <span class="keyword">as</span> go</span><br><span class="line"><span class="keyword">import</span> plotly.figure_factory <span class="keyword">as</span> ff</span><br><span class="line"><span class="keyword">from</span> plotly.subplots <span class="keyword">import</span> make_subplots</span><br><span class="line"><span class="keyword">import</span> plotly.offline <span class="keyword">as</span> pyo</span><br><span class="line">pyo.init_notebook_mode()</span><br><span class="line">sns.set_style(<span class="string">'darkgrid'</span>)</span><br><span class="line"></span><br><span class="line">plt.style.use(<span class="string">'fivethirtyeight'</span>)</span><br><span class="line">%matplotlib inline</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.decomposition <span class="keyword">import</span> PCA</span><br><span class="line"><span class="keyword">from</span> imblearn.over_sampling <span class="keyword">import</span> SMOTE</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split,cross_val_score</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier,AdaBoostClassifier</span><br><span class="line"><span class="keyword">from</span> sklearn.neighbors <span class="keyword">import</span> KNeighborsClassifier</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> accuracy_score, confusion_matrix, classification_report</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.svm <span class="keyword">import</span> SVC</span><br><span class="line"><span class="keyword">from</span> sklearn.pipeline <span class="keyword">import</span> Pipeline</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> f1_score <span class="keyword">as</span> f1</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> confusion_matrix</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> eli5</span><br><span class="line"><span class="keyword">from</span> eli5.sklearn <span class="keyword">import</span> PermutationImportance</span><br><span class="line"><span class="keyword">import</span> shap</span><br><span class="line"><span class="keyword">from</span> pdpbox <span class="keyword">import</span> pdp, info_plots</span><br><span class="line"></span><br><span class="line">plt.rc(<span class="string">'figure'</span>,figsize=(<span class="number">18</span>,<span class="number">9</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> warnings</span><br><span class="line">warnings.filterwarnings(<span class="string">"ignore"</span>)</span><br><span class="line"></span><br><span class="line">pd.set_option(<span class="string">'display.max_columns'</span>, <span class="number">26</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="数据基本信息">数据基本信息</h2>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c2or85z2j31mk0dun0n.jpg" alt=""></p>
+<p>很明显：上面数据中id字段是对建模无用的，直接drop函数删除：</p>
+<p>In [3]:</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.<span class="keyword">drop</span>("id",axis=<span class="number">1</span>,inplace=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<p>查看数据量大小：行数和字段属性数量</p>
+<p>In [4]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">df</span><span class="selector-class">.shape</span></span><br></pre></td></tr></table></figure>
+<p>Out[4]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">400</span>, <span class="number">25</span>)</span><br></pre></td></tr></table></figure>
+<p>总共是400条数据，25个字段</p>
+<p>不同的字段类型统计：</p>
+<p>In [5]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">df</span><span class="selector-class">.dtypes</span></span><br></pre></td></tr></table></figure>
+<p>Out[5]:</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">age               float64</span><br><span class="line">bp                float64</span><br><span class="line">sg                float64</span><br><span class="line">al                float64</span><br><span class="line">su                float64</span><br><span class="line">rbc                <span class="class"><span class="keyword">object</span></span></span><br><span class="line"><span class="class"><span class="title">pc</span>                 <span class="title">object</span></span></span><br><span class="line"><span class="class"><span class="title">pcc</span>                <span class="title">object</span></span></span><br><span class="line"><span class="class"><span class="title">ba</span>                 <span class="title">object</span></span></span><br><span class="line"><span class="class"><span class="title">bgr</span>               <span class="title">float64</span></span></span><br><span class="line"><span class="class"><span class="title">bu</span>                <span class="title">float64</span></span></span><br><span class="line"><span class="class"><span class="title">sc</span>                <span class="title">float64</span></span></span><br><span class="line"><span class="class"><span class="title">sod</span>               <span class="title">float64</span></span></span><br><span class="line"><span class="class"><span class="title">pot</span>               <span class="title">float64</span></span></span><br><span class="line"><span class="class"><span class="title">hemo</span>              <span class="title">float64</span></span></span><br><span class="line"><span class="class"><span class="title">pcv</span>                <span class="title">object</span></span></span><br><span class="line"><span class="class"><span class="title">wc</span>                 <span class="title">object</span></span></span><br><span class="line"><span class="class"><span class="title">rc</span>                 <span class="title">object</span></span></span><br><span class="line"><span class="class"><span class="title">htn</span>                <span class="title">object</span></span></span><br><span class="line"><span class="class"><span class="title">dm</span>                 <span class="title">object</span></span></span><br><span class="line"><span class="class"><span class="title">cad</span>                <span class="title">object</span></span></span><br><span class="line"><span class="class"><span class="title">appet</span>              <span class="title">object</span></span></span><br><span class="line"><span class="class"><span class="title">pe</span>                 <span class="title">object</span></span></span><br><span class="line"><span class="class"><span class="title">ane</span>                <span class="title">object</span></span></span><br><span class="line"><span class="class"><span class="title">classification</span>     <span class="title">object</span></span></span><br><span class="line"><span class="class"><span class="title">dtype</span></span>: <span class="class"><span class="keyword">object</span></span></span><br></pre></td></tr></table></figure>
+<p>In [6]:</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pd.value<span class="constructor">_counts(<span class="params">df</span>.<span class="params">dtypes</span>)</span></span><br></pre></td></tr></table></figure>
+<p>Out[6]:</p>
+<p>只包含两个类型的字段</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">object     <span class="number">14</span></span><br><span class="line"><span class="built_in">float</span>64    <span class="number">11</span></span><br><span class="line">dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<p>查看缺失值情况：</p>
+<p>In [7]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.isnull<span class="params">()</span><span class="string">.sum</span><span class="params">()</span><span class="string">.sort_values</span><span class="params">(<span class="attr">ascending</span>=False)</span></span><br></pre></td></tr></table></figure>
+<p>Out[7]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">rbc               <span class="number">152</span></span><br><span class="line">rc                <span class="number">130</span></span><br><span class="line">wc                <span class="number">105</span></span><br><span class="line">pot                <span class="number">88</span></span><br><span class="line">sod                <span class="number">87</span></span><br><span class="line">pcv                <span class="number">70</span></span><br><span class="line">pc                 <span class="number">65</span></span><br><span class="line">hemo               <span class="number">52</span></span><br><span class="line">su                 <span class="number">49</span></span><br><span class="line">sg                 <span class="number">47</span></span><br><span class="line">al                 <span class="number">46</span></span><br><span class="line">bgr                <span class="number">44</span></span><br><span class="line">bu                 <span class="number">19</span></span><br><span class="line">sc                 <span class="number">17</span></span><br><span class="line">bp                 <span class="number">12</span></span><br><span class="line">age                 <span class="number">9</span></span><br><span class="line">ba                  <span class="number">4</span></span><br><span class="line">pcc                 <span class="number">4</span></span><br><span class="line">htn                 <span class="number">2</span></span><br><span class="line">dm                  <span class="number">2</span></span><br><span class="line">cad                 <span class="number">2</span></span><br><span class="line">appet               <span class="number">1</span></span><br><span class="line">pe                  <span class="number">1</span></span><br><span class="line">ane                 <span class="number">1</span></span><br><span class="line">classification      <span class="number">0</span></span><br><span class="line">dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<p>数值型字段的描述统计信息，通常是查看这些字段的统计值信息：总统计量、最值、四分位数等：</p>
+<p>In [8]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.describe<span class="params">()</span><span class="string">.style.background_gradient</span><span class="params">(<span class="attr">cmap</span>="ocean_r")</span>  <span class="comment"># 描述统计信息</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c2stvf5yj31ie0fkteu.jpg" alt=""></p>
+<p>数据基本信息：</p>
+<p>In [9]:</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">df.info()</span><br><span class="line">&lt;<span class="class"><span class="keyword">class</span> '<span class="title">pandas</span>.<span class="title">core</span>.<span class="title">frame</span>.<span class="title">DataFrame</span>'<span class="title">&gt;</span></span></span><br><span class="line"><span class="class"><span class="title">RangeIndex</span></span>: <span class="number">400</span> entries, <span class="number">0</span> to <span class="number">399</span></span><br><span class="line"><span class="type">Data</span> columns (total <span class="number">25</span> columns):</span><br><span class="line"> #   <span class="type">Column</span>          <span class="type">Non</span>-<span class="type">Null</span> <span class="type">Count</span>  <span class="type">Dtype</span></span><br><span class="line">---  ------          --------------  -----</span><br><span class="line"> <span class="number">0</span>   age             <span class="number">391</span> non-<span class="literal">null</span>    float64</span><br><span class="line"> <span class="number">1</span>   bp              <span class="number">388</span> non-<span class="literal">null</span>    float64</span><br><span class="line"> <span class="number">2</span>   sg              <span class="number">353</span> non-<span class="literal">null</span>    float64</span><br><span class="line"> <span class="number">3</span>   al              <span class="number">354</span> non-<span class="literal">null</span>    float64</span><br><span class="line"> <span class="number">4</span>   su              <span class="number">351</span> non-<span class="literal">null</span>    float64</span><br><span class="line"> <span class="number">5</span>   rbc             <span class="number">248</span> non-<span class="literal">null</span>    <span class="class"><span class="keyword">object</span></span></span><br><span class="line"><span class="class"> 6   <span class="title">pc</span>              335 <span class="title">non-null</span>    <span class="title">object</span></span></span><br><span class="line"><span class="class"> 7   <span class="title">pcc</span>             396 <span class="title">non-null</span>    <span class="title">object</span></span></span><br><span class="line"><span class="class"> 8   <span class="title">ba</span>              396 <span class="title">non-null</span>    <span class="title">object</span></span></span><br><span class="line"><span class="class"> 9   <span class="title">bgr</span>             356 <span class="title">non-null</span>    <span class="title">float64</span></span></span><br><span class="line"><span class="class"> 10  <span class="title">bu</span>              381 <span class="title">non-null</span>    <span class="title">float64</span></span></span><br><span class="line"><span class="class"> 11  <span class="title">sc</span>              383 <span class="title">non-null</span>    <span class="title">float64</span></span></span><br><span class="line"><span class="class"> 12  <span class="title">sod</span>             313 <span class="title">non-null</span>    <span class="title">float64</span></span></span><br><span class="line"><span class="class"> 13  <span class="title">pot</span>             312 <span class="title">non-null</span>    <span class="title">float64</span></span></span><br><span class="line"><span class="class"> 14  <span class="title">hemo</span>            348 <span class="title">non-null</span>    <span class="title">float64</span></span></span><br><span class="line"><span class="class"> 15  <span class="title">pcv</span>             330 <span class="title">non-null</span>    <span class="title">object</span></span></span><br><span class="line"><span class="class"> 16  <span class="title">wc</span>              295 <span class="title">non-null</span>    <span class="title">object</span></span></span><br><span class="line"><span class="class"> 17  <span class="title">rc</span>              270 <span class="title">non-null</span>    <span class="title">object</span></span></span><br><span class="line"><span class="class"> 18  <span class="title">htn</span>             398 <span class="title">non-null</span>    <span class="title">object</span></span></span><br><span class="line"><span class="class"> 19  <span class="title">dm</span>              398 <span class="title">non-null</span>    <span class="title">object</span></span></span><br><span class="line"><span class="class"> 20  <span class="title">cad</span>             398 <span class="title">non-null</span>    <span class="title">object</span></span></span><br><span class="line"><span class="class"> 21  <span class="title">appet</span>           399 <span class="title">non-null</span>    <span class="title">object</span></span></span><br><span class="line"><span class="class"> 22  <span class="title">pe</span>              399 <span class="title">non-null</span>    <span class="title">object</span></span></span><br><span class="line"><span class="class"> 23  <span class="title">ane</span>             399 <span class="title">non-null</span>    <span class="title">object</span></span></span><br><span class="line"><span class="class"> 24  <span class="title">classification</span>  400 <span class="title">non-null</span>    <span class="title">object</span></span></span><br><span class="line"><span class="class"><span class="title">dtypes</span></span>: float64(<span class="number">11</span>), <span class="class"><span class="keyword">object</span>(<span class="params">14</span>)</span></span><br><span class="line"><span class="class"><span class="title">memory</span> <span class="title">usage</span></span>: <span class="number">78.2</span>+ <span class="type">KB</span></span><br></pre></td></tr></table></figure>
+<h2 id="字段解释">字段解释</h2>
+<p>针对每个字段的中文含义解释：</p>
+<p>In [10]:</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">columns</span> = df.<span class="built_in">columns</span></span><br><span class="line"><span class="built_in">columns</span></span><br></pre></td></tr></table></figure>
+<p>Out[10]:</p>
+<figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Index</span>([<span class="string">'age'</span>, <span class="string">'bp'</span>, <span class="string">'sg'</span>, <span class="string">'al'</span>, <span class="string">'su'</span>, <span class="string">'rbc'</span>, <span class="string">'pc'</span>, <span class="string">'pcc'</span>, <span class="string">'ba'</span>, <span class="string">'bgr'</span>, <span class="string">'bu'</span>,</span><br><span class="line">       <span class="string">'sc'</span>, <span class="string">'sod'</span>, <span class="string">'pot'</span>, <span class="string">'hemo'</span>, <span class="string">'pcv'</span>, <span class="string">'wc'</span>, <span class="string">'rc'</span>, <span class="string">'htn'</span>, <span class="string">'dm'</span>, <span class="string">'cad'</span>,</span><br><span class="line">       <span class="string">'appet'</span>, <span class="string">'pe'</span>, <span class="string">'ane'</span>, <span class="string">'classification'</span>],</span><br><span class="line">      dtype=<span class="string">'object'</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>age：年龄</li>
+<li>bp：blood_pressure，血压</li>
+<li>sg：specific_gravity，比重值；肾脏疾病通常是检测<strong>尿比重</strong></li>
+<li>al：albumin，白蛋白</li>
+<li>su：sugar，葡萄糖</li>
+<li>rbc：red_blood_cells，【红血细胞】是否正常？</li>
+<li>pc：pus_cell，【脓细胞】含量是否正常？</li>
+<li>pcc：pus_cell_clumps，【脓细胞群】是否正常</li>
+<li>ba：bacteria，是否【细菌】感染？</li>
+<li>bgr：blood_glucose_random，随机血糖量</li>
+<li>bu：blood_urea，血尿素</li>
+<li>sc：serum_creatinine，血清肌酐</li>
+<li>sod：sodium，钠</li>
+<li>pot：potassium，钾</li>
+<li>hemo：haemoglobin，血红蛋白</li>
+<li>pcv：packed_cell_volume（PCV），血细胞压积，红细胞在血液中所占容积比</li>
+<li>wc：white_blood_cell_count，白血细胞计数</li>
+<li>rc：red_blood_cell_count，红血细胞计数</li>
+<li>htn：hypertension，是否有【高血压】？</li>
+<li>dm：diabetes_mellitus，是否有【糖尿病】？</li>
+<li>cad：coronary_artery_disease，是否有【冠状动脉疾病】？</li>
+<li>appet：appetite，是否有【食欲】？</li>
+<li>pe：peda_edema，足部是否【水肿】？</li>
+<li>ane：aanemia，是否【贫血】？</li>
+<li>classification：<strong>分类结果，是否患病</strong></li>
+</ul>
+<h2 id="字段预处理">字段预处理</h2>
+<p>下面我们对部分字段进行处理</p>
+<h3 id="字段classification">字段classification</h3>
+<p>最终分类结果的处理</p>
+<p>In [11]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"classification"</span>]<span class="string">.value_counts</span><span class="params">()</span>  <span class="comment"># 修改前</span></span><br></pre></td></tr></table></figure>
+<p>Out[11]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ckd       <span class="number">248</span></span><br><span class="line">notckd    <span class="number">150</span></span><br><span class="line">ckd\t       <span class="number">2</span></span><br><span class="line">Name: classification, dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<p>可以看到有<strong>2个记录是异常</strong>的，这种情况就是属于数据异常，需要手动定位发现统一改成ckd：</p>
+<p>In [12]:</p>
+<figure class="highlight gml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"classification"</span>] = df[<span class="string">"classification"</span>].apply(lambda <span class="symbol">x</span>: <span class="symbol">x</span> <span class="keywords">if</span> <span class="symbol">x</span> == <span class="string">"notckd"</span> <span class="keywords">else</span> <span class="string">"ckd"</span>)</span><br></pre></td></tr></table></figure>
+<p>In [13]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"classification"</span>]<span class="string">.value_counts</span><span class="params">()</span>  <span class="comment"># 修改后</span></span><br></pre></td></tr></table></figure>
+<p>Out[13]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ckd       <span class="number">250</span></span><br><span class="line">notckd    <span class="number">150</span></span><br><span class="line">Name: classification, dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<h3 id="年龄age">年龄age</h3>
+<p>In [14]:</p>
+<figure class="highlight gml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">px.violin(df,<span class="symbol">y</span>=<span class="string">"age"</span>,color=<span class="string">"classification"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c2vxmf48j31hs0pm776.jpg" alt=""></p>
+<h3 id="pcv：packed-cell-volume（PCV）">pcv：packed_cell_volume（PCV）</h3>
+<p>PCV-血细胞压积，红细胞在血液中所占容积比</p>
+<p>In [15]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"pcv"</span>]<span class="string">.value_counts</span><span class="params">()</span>  <span class="comment"># 修改前</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c2wnf29gj30is0k43z1.jpg" alt="部分截图"></p>
+<p>可以看到这个字段存在不规范的记录，也需要处理：</p>
+<p>In [16]:</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df<span class="literal">["<span class="identifier">pcv</span>"]</span> = pd.<span class="keyword">to</span><span class="constructor">_numeric(<span class="params">df</span>[<span class="string">"pcv"</span>], <span class="params">errors</span>=<span class="string">"coerce"</span>)</span></span><br></pre></td></tr></table></figure>
+<p>In [17]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"pcv"</span>]<span class="string">.value_counts</span><span class="params">()</span>  <span class="comment"># 修改后</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c2xn177rj30mc0ysdhb.jpg" alt=""></p>
+<h3 id="wc：white-blood-cell-count">wc：white_blood_cell_count</h3>
+<p>白血细胞计数</p>
+<p>In [18]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"wc"</span>]<span class="string">.value_counts</span><span class="params">()</span>  <span class="comment"># 修改后</span></span><br></pre></td></tr></table></figure>
+<p>Out[18]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">9800</span>     <span class="number">11</span></span><br><span class="line"><span class="number">6700</span>     <span class="number">10</span></span><br><span class="line"><span class="number">9200</span>      <span class="number">9</span></span><br><span class="line"><span class="number">9600</span>      <span class="number">9</span></span><br><span class="line"><span class="number">7200</span>      <span class="number">9</span></span><br><span class="line">         ..</span><br><span class="line"><span class="number">19100</span>     <span class="number">1</span></span><br><span class="line">\t?       <span class="number">1</span></span><br><span class="line"><span class="number">12300</span>     <span class="number">1</span></span><br><span class="line"><span class="number">14900</span>     <span class="number">1</span></span><br><span class="line"><span class="number">12700</span>     <span class="number">1</span></span><br><span class="line">Name: wc, Length: <span class="number">92</span>, dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<p>In [19]:</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df<span class="literal">["<span class="identifier">wc</span>"]</span> = pd.<span class="keyword">to</span><span class="constructor">_numeric(<span class="params">df</span>[<span class="string">"wc"</span>], <span class="params">errors</span>=<span class="string">"coerce"</span>)</span></span><br></pre></td></tr></table></figure>
+<h3 id="rc：red-blood-cell-count">rc：red_blood_cell_count</h3>
+<p>红血细胞计数</p>
+<p>In [20]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"rc"</span>]<span class="string">.value_counts</span><span class="params">()</span>  <span class="comment"># 修改前</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c2yqnbflj30l20ik74s.jpg" alt=""></p>
+<p>也需要进行转化：</p>
+<p>In [21]:</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df<span class="literal">["<span class="identifier">rc</span>"]</span> = pd.<span class="keyword">to</span><span class="constructor">_numeric(<span class="params">df</span>[<span class="string">"rc"</span>], <span class="params">errors</span>=<span class="string">"coerce"</span>)</span></span><br></pre></td></tr></table></figure>
+<p>In [22]:</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 不同字段类型统计</span><br><span class="line"></span><br><span class="line">pd.value<span class="constructor">_counts(<span class="params">df</span>.<span class="params">dtypes</span>)</span></span><br></pre></td></tr></table></figure>
+<p>Out[22]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">float</span>64    <span class="number">14</span></span><br><span class="line">object     <span class="number">11</span></span><br><span class="line">dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<h3 id="dm：diabetes-mellitus">dm：diabetes_mellitus</h3>
+<p>是否有【糖尿病】？</p>
+<p>In [23]:</p>
+<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"dm"</span>].<span class="keyword">value</span><span class="number">_</span>counts()</span><br></pre></td></tr></table></figure>
+<p>Out[23]:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">no</span>       <span class="number">258</span></span><br><span class="line"><span class="literal">yes</span>      <span class="number">134</span></span><br><span class="line"><span class="string">\tno</span>       <span class="number">3</span></span><br><span class="line"><span class="string">\tyes</span>      <span class="number">2</span></span><br><span class="line"> <span class="literal">yes</span>       <span class="number">1</span></span><br><span class="line"><span class="attr">Name:</span> <span class="string">dm,</span> <span class="attr">dtype:</span> <span class="string">int64</span></span><br></pre></td></tr></table></figure>
+<p>dm字段存在异常，一般是空格和换行符引起的；我们将取值统一成no和yes</p>
+<p>In [24]:</p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"dm"</span>] = df[<span class="string">"dm"</span>].<span class="keyword">str</span>.strip()  <span class="meta"># 去除空格</span></span><br></pre></td></tr></table></figure>
+<p>In [25]:</p>
+<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"dm"</span>].<span class="keyword">value</span><span class="number">_</span>counts()</span><br></pre></td></tr></table></figure>
+<p>Out[25]:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">no</span>     <span class="number">261</span></span><br><span class="line"><span class="literal">yes</span>    <span class="number">137</span></span><br><span class="line"><span class="attr">Name:</span> <span class="string">dm,</span> <span class="attr">dtype:</span> <span class="string">int64</span></span><br></pre></td></tr></table></figure>
+<h3 id="cad：coronary-artery-disease">cad：coronary_artery_disease</h3>
+<p>是否有【冠状动脉疾病】？</p>
+<p>In [26]:</p>
+<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"cad"</span>].<span class="keyword">value</span><span class="number">_</span>counts()</span><br></pre></td></tr></table></figure>
+<p>Out[26]:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">no</span>      <span class="number">362</span></span><br><span class="line"><span class="literal">yes</span>      <span class="number">34</span></span><br><span class="line"><span class="string">\tno</span>      <span class="number">2</span></span><br><span class="line"><span class="attr">Name:</span> <span class="string">cad,</span> <span class="attr">dtype:</span> <span class="string">int64</span></span><br></pre></td></tr></table></figure>
+<p>In [27]:</p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"cad"</span>] = df[<span class="string">"cad"</span>].<span class="keyword">str</span>.strip()  <span class="meta"># 去除空格</span></span><br></pre></td></tr></table></figure>
+<p>查看处理后df的信息：</p>
+<p>In [28]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">df.info()</span><br><span class="line">&lt;<span class="class"><span class="keyword">class</span> '<span class="title">pandas</span>.<span class="title">core</span>.<span class="title">frame</span>.<span class="title">DataFrame</span>'&gt;</span></span><br><span class="line"><span class="class"><span class="title">RangeIndex</span>:</span> <span class="number">400</span> entries, <span class="number">0</span> to <span class="number">399</span></span><br><span class="line">Data columns (total <span class="number">25</span> columns):</span><br><span class="line"> <span class="comment">#   Column          Non-Null Count  Dtype</span></span><br><span class="line">---  ------          --------------  -----</span><br><span class="line"> <span class="number">0</span>   age             <span class="number">391</span> non-null    float64</span><br><span class="line"> <span class="number">1</span>   bp              <span class="number">388</span> non-null    float64</span><br><span class="line"> <span class="number">2</span>   sg              <span class="number">353</span> non-null    float64</span><br><span class="line"> <span class="number">3</span>   al              <span class="number">354</span> non-null    float64</span><br><span class="line"> <span class="number">4</span>   su              <span class="number">351</span> non-null    float64</span><br><span class="line"> <span class="number">5</span>   rbc             <span class="number">248</span> non-null    object</span><br><span class="line"> <span class="number">6</span>   pc              <span class="number">335</span> non-null    object</span><br><span class="line"> <span class="number">7</span>   pcc             <span class="number">396</span> non-null    object</span><br><span class="line"> <span class="number">8</span>   ba              <span class="number">396</span> non-null    object</span><br><span class="line"> <span class="number">9</span>   bgr             <span class="number">356</span> non-null    float64</span><br><span class="line"> <span class="number">10</span>  bu              <span class="number">381</span> non-null    float64</span><br><span class="line"> <span class="number">11</span>  sc              <span class="number">383</span> non-null    float64</span><br><span class="line"> <span class="number">12</span>  sod             <span class="number">313</span> non-null    float64</span><br><span class="line"> <span class="number">13</span>  pot             <span class="number">312</span> non-null    float64</span><br><span class="line"> <span class="number">14</span>  hemo            <span class="number">348</span> non-null    float64</span><br><span class="line"> <span class="number">15</span>  pcv             <span class="number">329</span> non-null    float64</span><br><span class="line"> <span class="number">16</span>  wc              <span class="number">294</span> non-null    float64</span><br><span class="line"> <span class="number">17</span>  rc              <span class="number">269</span> non-null    float64</span><br><span class="line"> <span class="number">18</span>  htn             <span class="number">398</span> non-null    object</span><br><span class="line"> <span class="number">19</span>  dm              <span class="number">398</span> non-null    object</span><br><span class="line"> <span class="number">20</span>  cad             <span class="number">398</span> non-null    object</span><br><span class="line"> <span class="number">21</span>  appet           <span class="number">399</span> non-null    object</span><br><span class="line"> <span class="number">22</span>  pe              <span class="number">399</span> non-null    object</span><br><span class="line"> <span class="number">23</span>  ane             <span class="number">399</span> non-null    object</span><br><span class="line"> <span class="number">24</span>  classification  <span class="number">400</span> non-null    object</span><br><span class="line">dtypes: float64(<span class="number">14</span>), object(<span class="number">11</span>)</span><br><span class="line">memory usage: <span class="number">78.2</span>+ KB</span><br></pre></td></tr></table></figure>
+<h2 id="不同特征分布">不同特征分布</h2>
+<p>In [29]:</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 分类型</span><br><span class="line">cat_cols = [<span class="built_in">col</span> <span class="keyword">for</span> <span class="built_in">col</span> <span class="keyword">in</span> df.<span class="built_in">columns</span> <span class="keyword">if</span> df[<span class="built_in">col</span>].dtype == <span class="string">"object"</span>]</span><br><span class="line">#  连续型</span><br><span class="line">num_cols = [<span class="built_in">col</span> <span class="keyword">for</span> <span class="built_in">col</span> <span class="keyword">in</span> df.<span class="built_in">columns</span> <span class="keyword">if</span> df[<span class="built_in">col</span>].dtype != <span class="string">"object"</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="分类型变量取值">分类型变量取值</h3>
+<p>下面查看分类型变量的不同取值情况：</p>
+<p>In [30]:</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">for col in cat<span class="emphasis">_cols:</span></span><br><span class="line"><span class="emphasis">    print("变量:", col)</span></span><br><span class="line"><span class="emphasis">    print(df[col].value_</span>counts())</span><br><span class="line"><span class="code">    print("-"* 10)</span></span><br><span class="line">变量: rbc</span><br><span class="line">normal      201</span><br><span class="line">abnormal     47</span><br><span class="line">Name: rbc, dtype: int64</span><br><span class="line">----------</span><br><span class="line">变量: pc</span><br><span class="line">normal      259</span><br><span class="line">abnormal     76</span><br><span class="line">Name: pc, dtype: int64</span><br><span class="line">----------</span><br><span class="line">变量: pcc</span><br><span class="line">notpresent    354</span><br><span class="line">present        42</span><br><span class="line">Name: pcc, dtype: int64</span><br><span class="line">----------</span><br><span class="line">变量: ba</span><br><span class="line">notpresent    374</span><br><span class="line">present        22</span><br><span class="line">Name: ba, dtype: int64</span><br><span class="line">----------</span><br><span class="line">变量: htn</span><br><span class="line">no     251</span><br><span class="line">yes    147</span><br><span class="line">Name: htn, dtype: int64</span><br><span class="line">----------</span><br><span class="line">变量: dm</span><br><span class="line">no     261</span><br><span class="line">yes    137</span><br><span class="line">Name: dm, dtype: int64</span><br><span class="line">----------</span><br><span class="line">变量: cad</span><br><span class="line">no     364</span><br><span class="line">yes     34</span><br><span class="line">Name: cad, dtype: int64</span><br><span class="line">----------</span><br><span class="line">变量: appet</span><br><span class="line">good    317</span><br><span class="line">poor     82</span><br><span class="line">Name: appet, dtype: int64</span><br><span class="line">----------</span><br><span class="line">变量: pe</span><br><span class="line">no     323</span><br><span class="line">yes     76</span><br><span class="line">Name: pe, dtype: int64</span><br><span class="line">----------</span><br><span class="line">变量: ane</span><br><span class="line">no     339</span><br><span class="line">yes     60</span><br><span class="line">Name: ane, dtype: int64</span><br><span class="line">----------</span><br><span class="line">变量: classification</span><br><span class="line">ckd       250</span><br><span class="line">notckd    150</span><br><span class="line">Name: classification, dtype: int64</span><br><span class="line">----------</span><br></pre></td></tr></table></figure>
+<p>In [31]:</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 分类型变量统计</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">len</span>(cat_cols)</span><br></pre></td></tr></table></figure>
+<p>Out[31]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">11</span></span><br></pre></td></tr></table></figure>
+<p>In [32]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize = (<span class="number">20</span>, <span class="number">16</span>))</span><br><span class="line">sub_plotnumber = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> col <span class="keyword">in</span> cat_cols:</span><br><span class="line">    <span class="keyword">if</span>  sub_plotnumber &lt;= <span class="number">12</span>:</span><br><span class="line">        ax = plt.subplot(<span class="number">4</span>, <span class="number">3</span>, sub_plotnumber)  # <span class="number">4</span>行<span class="number">3</span>列的画布；plotnumber表示子图位置</span><br><span class="line">        sns.countplot(df[col], palette = <span class="string">"gist_earth"</span>) # 绘图</span><br><span class="line">        plt.xlabel(col)  # x轴标签</span><br><span class="line"></span><br><span class="line">    sub_plotnumber += <span class="number">1</span>  # 自加<span class="number">1</span></span><br><span class="line"></span><br><span class="line">plt.tight_layout()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c325ovgyj311k0u0aby.jpg" alt=""></p>
+<h3 id="连续型变量分布">连续型变量分布</h3>
+<p>In [33]:</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">len</span>(num_cols)  <span class="comment"># 总共是14个连续型数值变量</span></span><br></pre></td></tr></table></figure>
+<p>Out[33]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">14</span></span><br></pre></td></tr></table></figure>
+<p>In [34]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize = (<span class="number">20</span>, <span class="number">16</span>))</span><br><span class="line">sub_plotnumber = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> col <span class="keyword">in</span> num_cols:</span><br><span class="line">    <span class="keyword">if</span>  sub_plotnumber &lt;= <span class="number">14</span>:</span><br><span class="line">        ax = plt.subplot(<span class="number">4</span>, <span class="number">4</span>, sub_plotnumber)  # <span class="number">3</span>行<span class="number">5</span>列的画布；plotnumber表示子图位置</span><br><span class="line">        sns.distplot(df[col])  # 绘图</span><br><span class="line">        plt.xlabel(col)  # x轴标签</span><br><span class="line"></span><br><span class="line">    sub_plotnumber += <span class="number">1</span>  # 自加<span class="number">1</span></span><br><span class="line"></span><br><span class="line">plt.tight_layout()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c31t4ffgj311k0u0wfv.jpg" alt=""></p>
+<p>小结：可以看到多个特征的分布存在一定的偏度skewness（更多的是左偏）</p>
+<h3 id="不同特征分布-v2">不同特征分布</h3>
+<p>定义3个不同绘图函数</p>
+<p>In [35]:</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1、小提琴图：查看数据分布情况</span></span><br><span class="line"><span class="attr">def</span> <span class="string">violin(col):</span></span><br><span class="line">    <span class="attr">fig</span> = <span class="string">px.violin(df,</span></span><br><span class="line">                    <span class="attr">y</span>=<span class="string">col,</span></span><br><span class="line">                    <span class="attr">x</span>=<span class="string">"classification",</span></span><br><span class="line">                    <span class="attr">color</span>=<span class="string">"classification",</span></span><br><span class="line">                    <span class="attr">box</span>=<span class="string">True,</span></span><br><span class="line">                    <span class="attr">template</span> = <span class="string">'plotly_dark')</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">return</span> <span class="string">fig.show()</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2、kde密度图：是否有正态分布</span></span><br><span class="line"><span class="attr">def</span> <span class="string">kde(col):</span></span><br><span class="line">    <span class="attr">grid</span> = <span class="string">sns.FacetGrid(df,</span></span><br><span class="line">                         <span class="attr">hue</span>=<span class="string">"classification",</span></span><br><span class="line">                         <span class="attr">height</span> = <span class="string">6,</span></span><br><span class="line">                         <span class="attr">aspect</span>=<span class="string">2)</span></span><br><span class="line">    <span class="meta">grid.map(sns.kdeplot,</span> <span class="string">col)</span></span><br><span class="line">    <span class="attr">grid.add_legend()</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 3、散点图：两个变量之间的关系</span></span><br><span class="line"><span class="attr">def</span> <span class="string">scatter(col1, col2):</span></span><br><span class="line">    <span class="attr">fig</span> = <span class="string">px.scatter(df,</span></span><br><span class="line">                     <span class="attr">x</span>=<span class="string">col1,</span></span><br><span class="line">                     <span class="attr">y</span>=<span class="string">col2,</span></span><br><span class="line">                     <span class="attr">color</span>=<span class="string">"classification",</span></span><br><span class="line">                     <span class="attr">template</span> = <span class="string">'plotly_dark')</span></span><br><span class="line">    <span class="attr">return</span> <span class="string">fig.show()</span></span><br></pre></td></tr></table></figure>
+<p>In [36]:</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">violin</span><span class="params">(<span class="string">"rc"</span>)</span></span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c32w5mt7j31ds0quwga.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kde(<span class="string">"rc"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c33gg0kwj30pp0bs0t8.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c33yz969j31j60sm40t.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c347gp02j31g00mo766.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c34iqqd2j31hq0semz8.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c34uhao2j31g00nkwgm.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c35cqk68j31jm0tgn0m.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c35tbmkkj31gs0n4q4z.jpg" alt=""></p>
+<h3 id="两两变量关系">两两变量关系</h3>
+<p>两个连续型变量之间的关系</p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c36nh8u9j31ii0t40w1.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c370k36rj31j00t8q5x.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c37um1uxj31iy0ts40v.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c38fjummj31nq0u0tcg.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c38ufpf2j31om0sstbt.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c39dst4ej31nu0u0q6a.jpg" alt=""></p>
+<h2 id="缺失值处理">缺失值处理</h2>
+<h3 id="整体缺失情况">整体缺失情况</h3>
+<p>In [56]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 全部字段的缺失值情况</span></span><br><span class="line"></span><br><span class="line">df.isnull<span class="params">()</span><span class="string">.sum</span><span class="params">()</span><span class="string">.sort_values</span><span class="params">(<span class="attr">ascending</span> = False)</span></span><br></pre></td></tr></table></figure>
+<p>Out[56]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">rbc               <span class="number">152</span></span><br><span class="line">rc                <span class="number">131</span></span><br><span class="line">wc                <span class="number">106</span></span><br><span class="line">pot                <span class="number">88</span></span><br><span class="line">sod                <span class="number">87</span></span><br><span class="line">pcv                <span class="number">71</span></span><br><span class="line">pc                 <span class="number">65</span></span><br><span class="line">hemo               <span class="number">52</span></span><br><span class="line">su                 <span class="number">49</span></span><br><span class="line">sg                 <span class="number">47</span></span><br><span class="line">al                 <span class="number">46</span></span><br><span class="line">bgr                <span class="number">44</span></span><br><span class="line">bu                 <span class="number">19</span></span><br><span class="line">sc                 <span class="number">17</span></span><br><span class="line">bp                 <span class="number">12</span></span><br><span class="line">age                 <span class="number">9</span></span><br><span class="line">ba                  <span class="number">4</span></span><br><span class="line">pcc                 <span class="number">4</span></span><br><span class="line">htn                 <span class="number">2</span></span><br><span class="line">dm                  <span class="number">2</span></span><br><span class="line">cad                 <span class="number">2</span></span><br><span class="line">appet               <span class="number">1</span></span><br><span class="line">pe                  <span class="number">1</span></span><br><span class="line">ane                 <span class="number">1</span></span><br><span class="line">classification      <span class="number">0</span></span><br><span class="line">dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<p>In [57]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 连续型变量缺失</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">df</span><span class="selector-attr">[num_cols]</span><span class="selector-class">.isnull</span>()<span class="selector-class">.sum</span>()</span><br></pre></td></tr></table></figure>
+<p>Out[57]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">age       <span class="number">9</span></span><br><span class="line">bp       <span class="number">12</span></span><br><span class="line">sg       <span class="number">47</span></span><br><span class="line">al       <span class="number">46</span></span><br><span class="line">su       <span class="number">49</span></span><br><span class="line">bgr      <span class="number">44</span></span><br><span class="line">bu       <span class="number">19</span></span><br><span class="line">sc       <span class="number">17</span></span><br><span class="line">sod      <span class="number">87</span></span><br><span class="line">pot      <span class="number">88</span></span><br><span class="line">hemo     <span class="number">52</span></span><br><span class="line">pcv      <span class="number">71</span></span><br><span class="line">wc      <span class="number">106</span></span><br><span class="line">rc      <span class="number">131</span></span><br><span class="line">dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<p>In [58]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 分类型变量缺失</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">df</span><span class="selector-attr">[cat_cols]</span><span class="selector-class">.isnull</span>()<span class="selector-class">.sum</span>()</span><br></pre></td></tr></table></figure>
+<p>Out[58]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">rbc               <span class="number">152</span></span><br><span class="line">pc                 <span class="number">65</span></span><br><span class="line">pcc                 <span class="number">4</span></span><br><span class="line">ba                  <span class="number">4</span></span><br><span class="line">htn                 <span class="number">2</span></span><br><span class="line">dm                  <span class="number">2</span></span><br><span class="line">cad                 <span class="number">2</span></span><br><span class="line">appet               <span class="number">1</span></span><br><span class="line">pe                  <span class="number">1</span></span><br><span class="line">ane                 <span class="number">1</span></span><br><span class="line">classification      <span class="number">0</span></span><br><span class="line">dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<h3 id="两种填充方式">两种填充方式</h3>
+<ol>
+<li>随机采样填充：在字段现有值的数据中随机采样进行填充，<strong>针对的缺失值较多的字段</strong></li>
+<li>均值或众数填充：<strong>针对缺失值较少的字段</strong>，用该字段现有数据的均值或者众数填充</li>
+</ol>
+<p>In [59]:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"rbc"</span>]<span class="string">.isna</span><span class="params">()</span><span class="string">.sum</span><span class="params">()</span> <span class="comment"># 表示某个字段的缺失量</span></span><br></pre></td></tr></table></figure>
+<p>Out[59]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">152</span></span><br></pre></td></tr></table></figure>
+<p>In [60]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">df</span><span class="selector-attr">["dm"]</span><span class="selector-class">.mode</span>()<span class="selector-attr">[0]</span>   # 某个字段的众数</span><br></pre></td></tr></table></figure>
+<p>Out[60]:</p>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">'no</span>'</span><br></pre></td></tr></table></figure>
+<p>In [61]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">random_value_imputate</span><span class="params">(col)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    函数：随机填充方法（缺失值较多的字段）</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 1、确定填充的数量；在取出缺失值随机选择缺失值数量的样本</span></span><br><span class="line">    random_sample = df[col].dropna().sample(df[col].isna().sum())</span><br><span class="line">    <span class="comment"># 2、索引号就是原缺失值记录的索引号</span></span><br><span class="line">    random_sample.index = df[df[col].isnull()].index</span><br><span class="line">    <span class="comment"># 3、通过loc函数定位填充</span></span><br><span class="line">    df.loc[df[col].isnull(), col] = random_sample</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mode_impute</span><span class="params">(col)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    函数：众数填充缺失值</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="comment"># 1、确定众数</span></span><br><span class="line">    mode = df[col].mode()[<span class="number">0</span>]</span><br><span class="line">    <span class="comment"># 2、fillna函数填充众数</span></span><br><span class="line">    df[col] = df[col].fillna(mode)</span><br></pre></td></tr></table></figure>
+<p>1、连续型变量使用随机填充方法：</p>
+<p>In [62]:</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> <span class="built_in">col</span> <span class="keyword">in</span> num_cols:</span><br><span class="line">    random_value_imputate(<span class="built_in">col</span>)</span><br></pre></td></tr></table></figure>
+<p>2、分类型变量，针对字段不同方法不同：</p>
+<p>In [63]:</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 随机填充</span><br><span class="line"><span class="selector-tag">random_value_imputate</span>(<span class="string">'rbc'</span>)</span><br><span class="line"><span class="selector-tag">random_value_imputate</span>(<span class="string">'pc'</span>)</span><br></pre></td></tr></table></figure>
+<p>In [64]:</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 其他字段是众数填充</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> <span class="built_in">col</span> <span class="keyword">in</span> cat_cols:</span><br><span class="line">    mode_impute(<span class="built_in">col</span>)</span><br></pre></td></tr></table></figure>
+<p>填充完成后数据就没有缺失值：</p>
+<p>In [65]:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">df</span><span class="selector-class">.isnull</span>()<span class="selector-class">.sum</span>()</span><br></pre></td></tr></table></figure>
+<p>Out[65]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">age               <span class="number">0</span></span><br><span class="line">bp                <span class="number">0</span></span><br><span class="line">sg                <span class="number">0</span></span><br><span class="line">al                <span class="number">0</span></span><br><span class="line">su                <span class="number">0</span></span><br><span class="line">rbc               <span class="number">0</span></span><br><span class="line">pc                <span class="number">0</span></span><br><span class="line">pcc               <span class="number">0</span></span><br><span class="line">ba                <span class="number">0</span></span><br><span class="line">bgr               <span class="number">0</span></span><br><span class="line">bu                <span class="number">0</span></span><br><span class="line">sc                <span class="number">0</span></span><br><span class="line">sod               <span class="number">0</span></span><br><span class="line">pot               <span class="number">0</span></span><br><span class="line">hemo              <span class="number">0</span></span><br><span class="line">pcv               <span class="number">0</span></span><br><span class="line">wc                <span class="number">0</span></span><br><span class="line">rc                <span class="number">0</span></span><br><span class="line">htn               <span class="number">0</span></span><br><span class="line">dm                <span class="number">0</span></span><br><span class="line">cad               <span class="number">0</span></span><br><span class="line">appet             <span class="number">0</span></span><br><span class="line">pe                <span class="number">0</span></span><br><span class="line">ane               <span class="number">0</span></span><br><span class="line">classification    <span class="number">0</span></span><br><span class="line">dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<h2 id="相关性分析">相关性分析</h2>
+<p>In [67]:</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"classification"</span>] = df[<span class="string">"classification"</span>].<span class="built_in">map</span>(&#123;<span class="string">"ckd"</span>:<span class="number">0</span>, <span class="string">"notckd"</span>:<span class="number">1</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="attr">corr</span> = df.corr()  <span class="comment"># 仅针对数值连续变量</span></span><br><span class="line"></span><br><span class="line">plt.figure(<span class="attr">figsize</span> = (<span class="number">15</span>, <span class="number">8</span>))</span><br><span class="line"></span><br><span class="line">sns.heatmap(corr,</span><br><span class="line">            <span class="attr">annot</span> = True,</span><br><span class="line">            <span class="attr">linewidths</span> = <span class="number">2</span>,</span><br><span class="line">            <span class="attr">linecolor</span> = 'lightgrey')</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c4eha6t2j30pj0cxtb9.jpg" alt=""></p>
+<p>可以看到和classification强相关的特征主要是：sg（尿比重）、hemo（血红蛋白）、pcv（血细胞压积，红细胞在血液中所占容积比）、rc（红细胞数量）</p>
+<h2 id="特征编码">特征编码</h2>
+<p>针对分类型变量编码：</p>
+<p>In [68]:</p>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> col <span class="keyword">in</span> cat_cols:</span><br><span class="line">    <span class="built_in">print</span>(f<span class="string">"Categories of &#123;col&#125;: &#123;df[col].nunique()&#125; "</span>)</span><br><span class="line">Categories <span class="keyword">of</span> rbc: <span class="number">2</span></span><br><span class="line">Categories <span class="keyword">of</span> pc: <span class="number">2</span></span><br><span class="line">Categories <span class="keyword">of</span> pcc: <span class="number">2</span></span><br><span class="line">Categories <span class="keyword">of</span> ba: <span class="number">2</span></span><br><span class="line">Categories <span class="keyword">of</span> htn: <span class="number">2</span></span><br><span class="line">Categories <span class="keyword">of</span> dm: <span class="number">2</span></span><br><span class="line">Categories <span class="keyword">of</span> cad: <span class="number">2</span></span><br><span class="line">Categories <span class="keyword">of</span> appet: <span class="number">2</span></span><br><span class="line">Categories <span class="keyword">of</span> pe: <span class="number">2</span></span><br><span class="line">Categories <span class="keyword">of</span> ane: <span class="number">2</span></span><br><span class="line">Categories <span class="keyword">of</span> classification: <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>所有的分类型变量都是两种取值情况，我们直接使用类型编码，变成0-1即可：</p>
+<p>In [69]:</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.preprocessing import LabelEncoder</span><br><span class="line"></span><br><span class="line">led = LabelEncoder()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> <span class="built_in">col</span> <span class="keyword">in</span> cat_cols:</span><br><span class="line">    df[<span class="built_in">col</span>] = led.fit_transform(df[<span class="built_in">col</span>])</span><br></pre></td></tr></table></figure>
+<p>为了分析的方便，也对classification字段进行编码：</p>
+<p>In [70]:</p>
+<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">"classification"</span>].<span class="keyword">value</span><span class="number">_</span>counts()</span><br></pre></td></tr></table></figure>
+<p>Out[70]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>    <span class="number">250</span></span><br><span class="line"><span class="number">1</span>    <span class="number">150</span></span><br><span class="line">Name: classification, dtype: <span class="built_in">int</span>64</span><br></pre></td></tr></table></figure>
+<h2 id="建模">建模</h2>
+<h3 id="特征和目标">特征和目标</h3>
+<p>In [71]:</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">X</span> = df.drop(<span class="string">"classification"</span>,axis=<span class="number">1</span>)</span><br><span class="line"><span class="attr">y</span> = df[<span class="string">"classification"</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="训练集和测试集">训练集和测试集</h3>
+<p>In [72]:</p>
+<figure class="highlight capnproto"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 随机打乱数据</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.utils <span class="keyword">import</span> shuffle</span><br><span class="line">df = shuffle(df)</span><br></pre></td></tr></table></figure>
+<p>In [73]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># <span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"></span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = <span class="number">0.20</span>, random_state = <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="定义建模函数">定义建模函数</h3>
+<p>In [75]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_model</span><span class="params">(model)</span>:</span></span><br><span class="line">    <span class="comment"># 模型训练</span></span><br><span class="line">    model.fit(X_train, y_train)</span><br><span class="line">    <span class="comment"># 模型预测</span></span><br><span class="line">    y_pred = model.predict(X_test)</span><br><span class="line">    <span class="comment"># 准确率acc</span></span><br><span class="line">    acc = accuracy_score(y_test, y_pred)</span><br><span class="line">    <span class="comment"># 混淆矩阵</span></span><br><span class="line">    cm = confusion_matrix(y_test, y_pred)</span><br><span class="line">    <span class="comment"># 分类报告</span></span><br><span class="line">    cr = classification_report(y_test,y_pred)</span><br><span class="line"></span><br><span class="line">    print(<span class="string">f"Test Accuracy of <span class="subst">&#123;model&#125;</span> : <span class="subst">&#123;acc&#125;</span>"</span>)</span><br><span class="line">    print(<span class="string">f"Confusion Matrix of <span class="subst">&#123;model&#125;</span>: \n<span class="subst">&#123;cm&#125;</span>"</span>)</span><br><span class="line">    print(<span class="string">f"Classification Report of <span class="subst">&#123;model&#125;</span> : \n <span class="subst">&#123;cr&#125;</span>"</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="8种模型">8种模型</h2>
+<h3 id="KNN">KNN</h3>
+<p>In [76]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.neighbors <span class="keyword">import</span> KNeighborsClassifier</span><br><span class="line"></span><br><span class="line">knn = KNeighborsClassifier()</span><br><span class="line">create_model(knn)</span><br><span class="line">Test Accuracy of KNeighborsClassifier() : <span class="number">0.7375</span></span><br><span class="line">Confusion Matrix of KNeighborsClassifier():</span><br><span class="line">[[<span class="number">35</span> <span class="number">17</span>]</span><br><span class="line"> [ <span class="number">8</span> <span class="number">20</span>]]</span><br><span class="line">Classification Report of KNeighborsClassifier() :</span><br><span class="line">               precision    recall  f1-score   support</span><br><span class="line"></span><br><span class="line">           <span class="number">0</span>       <span class="number">0.81</span>      <span class="number">0.67</span>      <span class="number">0.74</span>        <span class="number">52</span></span><br><span class="line">           <span class="number">1</span>       <span class="number">0.54</span>      <span class="number">0.71</span>      <span class="number">0.62</span>        <span class="number">28</span></span><br><span class="line"></span><br><span class="line">    accuracy                           <span class="number">0.69</span>        <span class="number">80</span></span><br><span class="line">   macro avg       <span class="number">0.68</span>      <span class="number">0.69</span>      <span class="number">0.68</span>        <span class="number">80</span></span><br><span class="line">weighted avg       <span class="number">0.72</span>      <span class="number">0.69</span>      <span class="number">0.69</span>        <span class="number">80</span></span><br></pre></td></tr></table></figure>
+<h3 id="决策树">决策树</h3>
+<p>In [77]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.tree <span class="keyword">import</span> DecisionTreeClassifier</span><br><span class="line"></span><br><span class="line">dt = DecisionTreeClassifier()</span><br><span class="line">create_model(dt)</span><br><span class="line">Test Accuracy of DecisionTreeClassifier() : <span class="number">0.9375</span></span><br><span class="line">Confusion Matrix of DecisionTreeClassifier():</span><br><span class="line">[[<span class="number">50</span>  <span class="number">2</span>]</span><br><span class="line"> [ <span class="number">3</span> <span class="number">25</span>]]</span><br><span class="line">Classification Report of DecisionTreeClassifier() :</span><br><span class="line">               precision    recall  f1-score   support</span><br><span class="line"></span><br><span class="line">           <span class="number">0</span>       <span class="number">0.94</span>      <span class="number">0.96</span>      <span class="number">0.95</span>        <span class="number">52</span></span><br><span class="line">           <span class="number">1</span>       <span class="number">0.93</span>      <span class="number">0.89</span>      <span class="number">0.91</span>        <span class="number">28</span></span><br><span class="line"></span><br><span class="line">    accuracy                           <span class="number">0.94</span>        <span class="number">80</span></span><br><span class="line">   macro avg       <span class="number">0.93</span>      <span class="number">0.93</span>      <span class="number">0.93</span>        <span class="number">80</span></span><br><span class="line">weighted avg       <span class="number">0.94</span>      <span class="number">0.94</span>      <span class="number">0.94</span>        <span class="number">80</span></span><br></pre></td></tr></table></figure>
+<h3 id="随机森林Random-Forest-Classifier">随机森林Random Forest Classifier</h3>
+<p>In [78]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier</span><br><span class="line"></span><br><span class="line">rd_clf = RandomForestClassifier(criterion = <span class="string">'entropy'</span>,</span><br><span class="line">                                max_depth = <span class="number">11</span>,</span><br><span class="line">                                max_features = <span class="string">'auto'</span>,</span><br><span class="line">                                min_samples_leaf = <span class="number">2</span>, min_samples_split = <span class="number">3</span>, n_estimators = <span class="number">130</span>)</span><br><span class="line">create_model(rd_clf)</span><br><span class="line">Test Accuracy of RandomForestClassifier(criterion=<span class="string">'entropy'</span>, max_depth=<span class="number">11</span>, min_samples_leaf=<span class="number">2</span>,</span><br><span class="line">                       min_samples_split=<span class="number">3</span>, n_estimators=<span class="number">130</span>) : <span class="number">0.95</span></span><br><span class="line">Confusion Matrix of RandomForestClassifier(criterion=<span class="string">'entropy'</span>, max_depth=<span class="number">11</span>, min_samples_leaf=<span class="number">2</span>,</span><br><span class="line">                       min_samples_split=<span class="number">3</span>, n_estimators=<span class="number">130</span>):</span><br><span class="line">[[<span class="number">52</span>  <span class="number">0</span>]</span><br><span class="line"> [ <span class="number">4</span> <span class="number">24</span>]]</span><br><span class="line">Classification Report of RandomForestClassifier(criterion=<span class="string">'entropy'</span>, max_depth=<span class="number">11</span>, min_samples_leaf=<span class="number">2</span>,</span><br><span class="line">                       min_samples_split=<span class="number">3</span>, n_estimators=<span class="number">130</span>) :</span><br><span class="line">               precision    recall  f1-score   support</span><br><span class="line"></span><br><span class="line">           <span class="number">0</span>       <span class="number">0.93</span>      <span class="number">1.00</span>      <span class="number">0.96</span>        <span class="number">52</span></span><br><span class="line">           <span class="number">1</span>       <span class="number">1.00</span>      <span class="number">0.86</span>      <span class="number">0.92</span>        <span class="number">28</span></span><br><span class="line"></span><br><span class="line">    accuracy                           <span class="number">0.95</span>        <span class="number">80</span></span><br><span class="line">   macro avg       <span class="number">0.96</span>      <span class="number">0.93</span>      <span class="number">0.94</span>        <span class="number">80</span></span><br><span class="line">weighted avg       <span class="number">0.95</span>      <span class="number">0.95</span>      <span class="number">0.95</span>        <span class="number">80</span></span><br></pre></td></tr></table></figure>
+<h3 id="Ada-Boost-Classifier">Ada Boost Classifier</h3>
+<p>In [80]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> AdaBoostClassifier</span><br><span class="line"></span><br><span class="line">ada = AdaBoostClassifier(base_estimator = dt)</span><br><span class="line">create_model(ada)</span><br><span class="line">Test Accuracy of AdaBoostClassifier(base_estimator=DecisionTreeClassifier()) : <span class="number">0.95</span></span><br><span class="line">Confusion Matrix of AdaBoostClassifier(base_estimator=DecisionTreeClassifier()):</span><br><span class="line">[[<span class="number">51</span>  <span class="number">1</span>]</span><br><span class="line"> [ <span class="number">3</span> <span class="number">25</span>]]</span><br><span class="line">Classification Report of AdaBoostClassifier(base_estimator=DecisionTreeClassifier()) :</span><br><span class="line">               precision    recall  f1-score   support</span><br><span class="line"></span><br><span class="line">           <span class="number">0</span>       <span class="number">0.94</span>      <span class="number">0.98</span>      <span class="number">0.96</span>        <span class="number">52</span></span><br><span class="line">           <span class="number">1</span>       <span class="number">0.96</span>      <span class="number">0.89</span>      <span class="number">0.93</span>        <span class="number">28</span></span><br><span class="line"></span><br><span class="line">    accuracy                           <span class="number">0.95</span>        <span class="number">80</span></span><br><span class="line">   macro avg       <span class="number">0.95</span>      <span class="number">0.94</span>      <span class="number">0.94</span>        <span class="number">80</span></span><br><span class="line">weighted avg       <span class="number">0.95</span>      <span class="number">0.95</span>      <span class="number">0.95</span>        <span class="number">80</span></span><br></pre></td></tr></table></figure>
+<h3 id="Gradient-Boosting-Classifier">Gradient Boosting Classifier</h3>
+<p>In [81]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> GradientBoostingClassifier</span><br><span class="line"></span><br><span class="line">gb = GradientBoostingClassifier()</span><br><span class="line">create_model(gb)</span><br><span class="line">Test Accuracy of GradientBoostingClassifier() : <span class="number">0.9625</span></span><br><span class="line">Confusion Matrix of GradientBoostingClassifier():</span><br><span class="line">[[<span class="number">51</span>  <span class="number">1</span>]</span><br><span class="line"> [ <span class="number">3</span> <span class="number">25</span>]]</span><br><span class="line">Classification Report of GradientBoostingClassifier() :</span><br><span class="line">               precision    recall  f1-score   support</span><br><span class="line"></span><br><span class="line">           <span class="number">0</span>       <span class="number">0.94</span>      <span class="number">0.98</span>      <span class="number">0.96</span>        <span class="number">52</span></span><br><span class="line">           <span class="number">1</span>       <span class="number">0.96</span>      <span class="number">0.89</span>      <span class="number">0.93</span>        <span class="number">28</span></span><br><span class="line"></span><br><span class="line">    accuracy                           <span class="number">0.95</span>        <span class="number">80</span></span><br><span class="line">   macro avg       <span class="number">0.95</span>      <span class="number">0.94</span>      <span class="number">0.94</span>        <span class="number">80</span></span><br><span class="line">weighted avg       <span class="number">0.95</span>      <span class="number">0.95</span>      <span class="number">0.95</span>        <span class="number">80</span></span><br></pre></td></tr></table></figure>
+<h3 id="XgBoost">XgBoost</h3>
+<p>In [82]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> xgboost <span class="keyword">import</span> XGBClassifier</span><br><span class="line"></span><br><span class="line">xgb = XGBClassifier(objective = <span class="string">'binary:logistic'</span>,</span><br><span class="line">                    learning_rate = <span class="number">0.5</span>,</span><br><span class="line">                    max_depth = <span class="number">5</span>,</span><br><span class="line">                    n_estimators = <span class="number">150</span>)</span><br><span class="line"></span><br><span class="line">create_model(xgb)</span><br><span class="line">Test Accuracy of XGBClassifier(base_score=<span class="number">0.5</span>, booster=<span class="string">'gbtree'</span>, colsample_bylevel=<span class="number">1</span>,</span><br><span class="line">              colsample_bynode=<span class="number">1</span>, colsample_bytree=<span class="number">1</span>, gamma=<span class="number">0</span>, gpu_id=<span class="number">-1</span>,</span><br><span class="line">              importance_type=<span class="string">'gain'</span>, <span class="built_in">int</span>eraction_constraints=<span class="string">''</span>,</span><br><span class="line">              learning_rate=<span class="number">0.5</span>, max_delta_step=<span class="number">0</span>, max_depth=<span class="number">5</span>,</span><br><span class="line">              min_child_weight=<span class="number">1</span>, missing=nan, monotone_constraints=<span class="string">'()'</span>,</span><br><span class="line">              n_estimators=<span class="number">150</span>, n_jobs=<span class="number">0</span>, num_parallel_tree=<span class="number">1</span>, random_state=<span class="number">0</span>,</span><br><span class="line">              reg_alpha=<span class="number">0</span>, reg_lambda=<span class="number">1</span>, scale_pos_weight=<span class="number">1</span>, subsample=<span class="number">1</span>,</span><br><span class="line">              tree_method=<span class="string">'exact'</span>, validate_parameters=<span class="number">1</span>, verbosity=None) : <span class="number">0.9625</span></span><br><span class="line">Confusion Matrix of XGBClassifier(base_score=<span class="number">0.5</span>, booster=<span class="string">'gbtree'</span>, colsample_bylevel=<span class="number">1</span>,</span><br><span class="line">              colsample_bynode=<span class="number">1</span>, colsample_bytree=<span class="number">1</span>, gamma=<span class="number">0</span>, gpu_id=<span class="number">-1</span>,</span><br><span class="line">              importance_type=<span class="string">'gain'</span>, <span class="built_in">int</span>eraction_constraints=<span class="string">''</span>,</span><br><span class="line">              learning_rate=<span class="number">0.5</span>, max_delta_step=<span class="number">0</span>, max_depth=<span class="number">5</span>,</span><br><span class="line">              min_child_weight=<span class="number">1</span>, missing=nan, monotone_constraints=<span class="string">'()'</span>,</span><br><span class="line">              n_estimators=<span class="number">150</span>, n_jobs=<span class="number">0</span>, num_parallel_tree=<span class="number">1</span>, random_state=<span class="number">0</span>,</span><br><span class="line">              reg_alpha=<span class="number">0</span>, reg_lambda=<span class="number">1</span>, scale_pos_weight=<span class="number">1</span>, subsample=<span class="number">1</span>,</span><br><span class="line">              tree_method=<span class="string">'exact'</span>, validate_parameters=<span class="number">1</span>, verbosity=None):</span><br><span class="line">[[<span class="number">52</span>  <span class="number">0</span>]</span><br><span class="line"> [ <span class="number">3</span> <span class="number">25</span>]]</span><br><span class="line">Classification Report of XGBClassifier(base_score=<span class="number">0.5</span>, booster=<span class="string">'gbtree'</span>, colsample_bylevel=<span class="number">1</span>,</span><br><span class="line">              colsample_bynode=<span class="number">1</span>, colsample_bytree=<span class="number">1</span>, gamma=<span class="number">0</span>, gpu_id=<span class="number">-1</span>,</span><br><span class="line">              importance_type=<span class="string">'gain'</span>, <span class="built_in">int</span>eraction_constraints=<span class="string">''</span>,</span><br><span class="line">              learning_rate=<span class="number">0.5</span>, max_delta_step=<span class="number">0</span>, max_depth=<span class="number">5</span>,</span><br><span class="line">              min_child_weight=<span class="number">1</span>, missing=nan, monotone_constraints=<span class="string">'()'</span>,</span><br><span class="line">              n_estimators=<span class="number">150</span>, n_jobs=<span class="number">0</span>, num_parallel_tree=<span class="number">1</span>, random_state=<span class="number">0</span>,</span><br><span class="line">              reg_alpha=<span class="number">0</span>, reg_lambda=<span class="number">1</span>, scale_pos_weight=<span class="number">1</span>, subsample=<span class="number">1</span>,</span><br><span class="line">              tree_method=<span class="string">'exact'</span>, validate_parameters=<span class="number">1</span>, verbosity=None) :</span><br><span class="line">               precision    recall  f1-score   support</span><br><span class="line"></span><br><span class="line">           <span class="number">0</span>       <span class="number">0.95</span>      <span class="number">1.00</span>      <span class="number">0.97</span>        <span class="number">52</span></span><br><span class="line">           <span class="number">1</span>       <span class="number">1.00</span>      <span class="number">0.89</span>      <span class="number">0.94</span>        <span class="number">28</span></span><br><span class="line"></span><br><span class="line">    accuracy                           <span class="number">0.96</span>        <span class="number">80</span></span><br><span class="line">   macro avg       <span class="number">0.97</span>      <span class="number">0.95</span>      <span class="number">0.96</span>        <span class="number">80</span></span><br><span class="line">weighted avg       <span class="number">0.96</span>      <span class="number">0.96</span>      <span class="number">0.96</span>        <span class="number">80</span></span><br></pre></td></tr></table></figure>
+<h3 id="Cat-Boost-Classifier">Cat Boost Classifier</h3>
+<p>In [83]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> catboost <span class="keyword">import</span> CatBoostClassifier</span><br><span class="line"></span><br><span class="line">cab = CatBoostClassifier(iterations=<span class="number">10</span>)</span><br><span class="line">create_model(cab)</span><br><span class="line">Learning rate <span class="keyword">set</span> to <span class="number">0.432149</span></span><br><span class="line"><span class="number">0</span>:	learn: <span class="number">0.2531464</span>	total: <span class="number">62.5</span>ms	remaining: <span class="number">562</span>ms</span><br><span class="line"><span class="number">1</span>:	learn: <span class="number">0.1524287</span>	total: <span class="number">63.9</span>ms	remaining: <span class="number">256</span>ms</span><br><span class="line"><span class="number">2</span>:	learn: <span class="number">0.0906595</span>	total: <span class="number">65.3</span>ms	remaining: <span class="number">152</span>ms</span><br><span class="line"><span class="number">3</span>:	learn: <span class="number">0.0578563</span>	total: <span class="number">66.8</span>ms	remaining: <span class="number">100</span>ms</span><br><span class="line"><span class="number">4</span>:	learn: <span class="number">0.0460263</span>	total: <span class="number">68.2</span>ms	remaining: <span class="number">68.2</span>ms</span><br><span class="line"><span class="number">5</span>:	learn: <span class="number">0.0356541</span>	total: <span class="number">69.6</span>ms	remaining: <span class="number">46.4</span>ms</span><br><span class="line"><span class="number">6</span>:	learn: <span class="number">0.0268575</span>	total: <span class="number">70.9</span>ms	remaining: <span class="number">30.4</span>ms</span><br><span class="line"><span class="number">7</span>:	learn: <span class="number">0.0206936</span>	total: <span class="number">72.2</span>ms	remaining: <span class="number">18</span>ms</span><br><span class="line"><span class="number">8</span>:	learn: <span class="number">0.0186242</span>	total: <span class="number">73.6</span>ms	remaining: <span class="number">8.17</span>ms</span><br><span class="line"><span class="number">9</span>:	learn: <span class="number">0.0162996</span>	total: <span class="number">75</span>ms	remaining: <span class="number">0</span>us</span><br><span class="line">Test Accuracy of &lt;catboost.core.CatBoostClassifier object at <span class="number">0x1296bfe50</span>&gt; : <span class="number">0.9750</span></span><br><span class="line">Confusion Matrix of &lt;catboost.core.CatBoostClassifier object at <span class="number">0x1296bfe50</span>&gt;:</span><br><span class="line">[[<span class="number">51</span>  <span class="number">1</span>]</span><br><span class="line"> [ <span class="number">3</span> <span class="number">25</span>]]</span><br><span class="line">Classification Report of &lt;catboost.core.CatBoostClassifier object at <span class="number">0x1296bfe50</span>&gt; :</span><br><span class="line">               precision    recall  f1-score   support</span><br><span class="line"></span><br><span class="line">           <span class="number">0</span>       <span class="number">0.94</span>      <span class="number">0.98</span>      <span class="number">0.96</span>        <span class="number">52</span></span><br><span class="line">           <span class="number">1</span>       <span class="number">0.96</span>      <span class="number">0.89</span>      <span class="number">0.93</span>        <span class="number">28</span></span><br><span class="line"></span><br><span class="line">    accuracy                           <span class="number">0.95</span>        <span class="number">80</span></span><br><span class="line">   macro avg       <span class="number">0.95</span>      <span class="number">0.94</span>      <span class="number">0.94</span>        <span class="number">80</span></span><br><span class="line">weighted avg       <span class="number">0.95</span>      <span class="number">0.95</span>      <span class="number">0.95</span>        <span class="number">80</span></span><br></pre></td></tr></table></figure>
+<h3 id="Extra-Trees-Classifier">Extra Trees Classifier</h3>
+<p>In [84]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> ExtraTreesClassifier</span><br><span class="line"></span><br><span class="line">etc = ExtraTreesClassifier()</span><br><span class="line">create_model(etc)</span><br><span class="line">Test Accuracy of ExtraTreesClassifier() : <span class="number">0.9625</span></span><br><span class="line">Confusion Matrix of ExtraTreesClassifier():</span><br><span class="line">[[<span class="number">52</span>  <span class="number">0</span>]</span><br><span class="line"> [ <span class="number">3</span> <span class="number">25</span>]]</span><br><span class="line">Classification Report of ExtraTreesClassifier() :</span><br><span class="line">               precision    recall  f1-score   support</span><br><span class="line"></span><br><span class="line">           <span class="number">0</span>       <span class="number">0.95</span>      <span class="number">1.00</span>      <span class="number">0.97</span>        <span class="number">52</span></span><br><span class="line">           <span class="number">1</span>       <span class="number">1.00</span>      <span class="number">0.89</span>      <span class="number">0.94</span>        <span class="number">28</span></span><br><span class="line"></span><br><span class="line">    accuracy                           <span class="number">0.96</span>        <span class="number">80</span></span><br><span class="line">   macro avg       <span class="number">0.97</span>      <span class="number">0.95</span>      <span class="number">0.96</span>        <span class="number">80</span></span><br><span class="line">weighted avg       <span class="number">0.96</span>      <span class="number">0.96</span>      <span class="number">0.96</span>        <span class="number">80</span></span><br></pre></td></tr></table></figure>
+<h3 id="LGBM">LGBM</h3>
+<p>In [85]:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lightgbm <span class="keyword">import</span> LGBMClassifier</span><br><span class="line"></span><br><span class="line">lgbm = LGBMClassifier(learning_rate = <span class="number">0.1</span>)</span><br><span class="line">create_model(lgbm)</span><br><span class="line">Test Accuracy of LGBMClassifier() : <span class="number">0.9625</span></span><br><span class="line">Confusion Matrix of LGBMClassifier():</span><br><span class="line">[[<span class="number">51</span>  <span class="number">1</span>]</span><br><span class="line"> [ <span class="number">2</span> <span class="number">26</span>]]</span><br><span class="line">Classification Report of LGBMClassifier() :</span><br><span class="line">               precision    recall  f1-score   support</span><br><span class="line"></span><br><span class="line">           <span class="number">0</span>       <span class="number">0.96</span>      <span class="number">0.98</span>      <span class="number">0.97</span>        <span class="number">52</span></span><br><span class="line">           <span class="number">1</span>       <span class="number">0.96</span>      <span class="number">0.93</span>      <span class="number">0.95</span>        <span class="number">28</span></span><br><span class="line"></span><br><span class="line">    accuracy                           <span class="number">0.96</span>        <span class="number">80</span></span><br><span class="line">   macro avg       <span class="number">0.96</span>      <span class="number">0.95</span>      <span class="number">0.96</span>        <span class="number">80</span></span><br><span class="line">weighted avg       <span class="number">0.96</span>      <span class="number">0.96</span>      <span class="number">0.96</span>        <span class="number">80</span></span><br></pre></td></tr></table></figure>
+<h2 id="模型对比">模型对比</h2>
+<p>In [86]:</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">models</span> = pd.DataFrame(&#123;<span class="string">"model"</span>:[<span class="string">"KNN"</span>,<span class="string">"Decision Tree"</span>,<span class="string">"Random Forest"</span>,<span class="string">"Ada Boost "</span>,</span><br><span class="line">                                <span class="string">"Gradient Boosting"</span>,<span class="string">"Xgboost"</span>,<span class="string">"Cat Boost"</span>,<span class="string">"Extra Trees"</span>,<span class="string">"LGBM"</span>],</span><br><span class="line">                      <span class="string">"acc"</span>:[<span class="number">0.6875</span>,<span class="number">0.9375</span>,<span class="number">0.95</span>,<span class="number">0.95</span>,<span class="number">0.95</span>,<span class="number">0.9625</span>,<span class="number">0.95</span>,<span class="number">0.9625</span>,<span class="number">0.9625</span>]&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">models</span></span><br></pre></td></tr></table></figure>
+<p>Out[86]:</p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c3hwtmlsj30cm0haq3n.jpg" alt=""></p>
+<p>In [87]:</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">models</span> = <span class="keyword">models</span>.sort_values(<span class="string">"acc"</span>,ascending=True)  # 升序排列</span><br><span class="line"><span class="keyword">models</span></span><br></pre></td></tr></table></figure>
+<p>Out[87]:</p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c3ie05d0j30dq0hi0tf.jpg" alt=""></p>
+<p>In [88]:</p>
+<figure class="highlight xl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">px.bar(models,</span><br><span class="line">       x=<span class="string">"acc"</span>,</span><br><span class="line">       y=<span class="string">"model"</span>,</span><br><span class="line">       <span class="keyword">text</span>=<span class="string">"acc"</span>,</span><br><span class="line">       <span class="built_in">color</span> = <span class="string">'acc'</span>,</span><br><span class="line">       template = <span class="string">'plotly_dark'</span>,</span><br><span class="line">       <span class="built_in">title</span> = <span class="string">'Nine Models Comparison'</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c3jt0zjej31im0t4dji.jpg" alt=""></p>
+<h2 id="模型可解释性">模型可解释性</h2>
+<p>我们在这里选择随机森林模型（rd_clf）同时使用shap库来进行解释</p>
+<h3 id="shap值计算">shap值计算</h3>
+<p>In [89]:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">explainer = shap.TreeExplainer(rd_clf)</span><br><span class="line"><span class="comment"># 在explainer中传入特征值的数据，计算shap值</span></span><br><span class="line">shap_values = explainer.shap_values(X_test)</span><br><span class="line">shap_values</span><br></pre></td></tr></table></figure>
+<p>Out[89]:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">[array([[ <span class="number">0.00082722</span>, <span class="number">-0.00174422</span>,  <span class="number">0.08114011</span>, ..., <span class="number">-0.00147523</span>,</span><br><span class="line">          <span class="number">0.01219736</span>,  <span class="number">0.00090329</span>],</span><br><span class="line">        [ <span class="number">0.00241676</span>, <span class="number">-0.00674329</span>, <span class="number">-0.10784976</span>, ..., <span class="number">-0.00708956</span>,</span><br><span class="line">         <span class="number">-0.00392391</span>, <span class="number">-0.00032504</span>],</span><br><span class="line">        [ <span class="number">0.00211145</span>, <span class="number">-0.00874862</span>, <span class="number">-0.12467772</span>, ..., <span class="number">-0.00752903</span>,</span><br><span class="line">         <span class="number">-0.00413827</span>, <span class="number">-0.00035173</span>],</span><br><span class="line">        ...,</span><br><span class="line">        [<span class="number">-0.00775482</span>, <span class="number">-0.00930411</span>, <span class="number">-0.12662254</span>, ..., <span class="number">-0.00807709</span>,</span><br><span class="line">         <span class="number">-0.00414294</span>, <span class="number">-0.00035052</span>],</span><br><span class="line">        [<span class="number">-0.00719232</span>, <span class="number">-0.00715492</span>, <span class="number">-0.11854169</span>, ..., <span class="number">-0.00821187</span>,</span><br><span class="line">         <span class="number">-0.00448367</span>, <span class="number">-0.00035973</span>],</span><br><span class="line">        [<span class="number">-0.00499459</span>, <span class="number">-0.00897095</span>, <span class="number">-0.12441733</span>, ..., <span class="number">-0.0081471</span> ,</span><br><span class="line">         <span class="number">-0.00434574</span>, <span class="number">-0.00035173</span>]]),</span><br><span class="line"> array([[<span class="number">-0.00082722</span>,  <span class="number">0.00174422</span>, <span class="number">-0.08114011</span>, ...,  <span class="number">0.00147523</span>,</span><br><span class="line">         <span class="number">-0.01219736</span>, <span class="number">-0.00090329</span>],</span><br><span class="line">        [<span class="number">-0.00241676</span>,  <span class="number">0.00674329</span>,  <span class="number">0.10784976</span>, ...,  <span class="number">0.00708956</span>,</span><br><span class="line">          <span class="number">0.00392391</span>,  <span class="number">0.00032504</span>],</span><br><span class="line">        [<span class="number">-0.00211145</span>,  <span class="number">0.00874862</span>,  <span class="number">0.12467772</span>, ...,  <span class="number">0.00752903</span>,</span><br><span class="line">          <span class="number">0.00413827</span>,  <span class="number">0.00035173</span>],</span><br><span class="line">        ...,</span><br><span class="line">        [ <span class="number">0.00775482</span>,  <span class="number">0.00930411</span>,  <span class="number">0.12662254</span>, ...,  <span class="number">0.00807709</span>,</span><br><span class="line">          <span class="number">0.00414294</span>,  <span class="number">0.00035052</span>],</span><br><span class="line">        [ <span class="number">0.00719232</span>,  <span class="number">0.00715492</span>,  <span class="number">0.11854169</span>, ...,  <span class="number">0.00821187</span>,</span><br><span class="line">          <span class="number">0.00448367</span>,  <span class="number">0.00035973</span>],</span><br><span class="line">        [ <span class="number">0.00499459</span>,  <span class="number">0.00897095</span>,  <span class="number">0.12441733</span>, ...,  <span class="number">0.0081471</span> ,</span><br><span class="line">          <span class="number">0.00434574</span>,  <span class="number">0.00035173</span>]])]</span><br></pre></td></tr></table></figure>
+<h3 id="Feature-Importance">Feature Importance</h3>
+<p>In [90]:</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shap.summary<span class="constructor">_plot(<span class="params">shap_values</span>[1], X_test, <span class="params">plot_type</span>=<span class="string">"bar"</span>)</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c58xwj85j30z20u040d.jpg" alt=""></p>
+<p>从结果来看，sg（尿比重）、sc（血清肌酐）、hemo（血红蛋白）是重点影响特征。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shap.summary_plot(shap_values[<span class="number">1</span>], X_test)</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c5besa45j30ew0fomxc.jpg" alt=""></p>
+<p><code>summary plot</code> 为每个样本绘制其每个特征的SHAP值；一个点代表一个样本，颜色表示特征值的高低(红色高，蓝色低)</p>
+<h3 id="个体差异">个体差异</h3>
+<p>查看单个病人的不同特征属性对其结果的影响：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c5hmk2eaj31n80demz8.jpg" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008vxvgGly1h7c5i2b4h3j31oc0s0tdp.jpg" alt=""></p>
+<p>从选择3个病人的结果来看，即使同样是患病者shap值的个体差异仍然很大。</p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2022/10/20/kaggle%E5%AE%9E%E6%88%98-%E5%9F%BA%E4%BA%8E%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%82%BE%E8%84%8F%E7%97%85%E9%A2%84%E6%B5%8B.html">kaggle实战-基于机器学习肾脏病预测</a></p>
+  <p><span>发布时间:</span>2022年10月20日 - 23:10</p>
+  <p><span>原始链接:</span><a href="/2022/10/20/kaggle%E5%AE%9E%E6%88%98-%E5%9F%BA%E4%BA%8E%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%82%BE%E8%84%8F%E7%97%85%E9%A2%84%E6%B5%8B.html" title="kaggle实战-基于机器学习肾脏病预测">http://www.renpeter.cn/2022/10/20/kaggle%E5%AE%9E%E6%88%98-%E5%9F%BA%E4%BA%8E%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%82%BE%E8%84%8F%E7%97%85%E9%A2%84%E6%B5%8B.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2022/10/20/kaggle%E5%AE%9E%E6%88%98-%E5%9F%BA%E4%BA%8E%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%82%BE%E8%84%8F%E7%97%85%E9%A2%84%E6%B5%8B.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97/" rel="tag"># 随机森林</a>
+          
+            <a href="/tags/%E6%A0%91%E6%A8%A1%E5%9E%8B/" rel="tag"># 树模型</a>
+          
+            <a href="/tags/shap/" rel="tag"># shap</a>
+          
+            <a href="/tags/%E5%8F%AF%E8%A7%A3%E9%87%8A%E6%80%A7/" rel="tag"># 可解释性</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/10/19/7%E4%B8%AA%E7%BD%95%E8%A7%81%E7%9A%84Numpy%E5%87%BD%E6%95%B0.html" rel="next" title="7个罕见的Numpy函数">
+                <i class="fa fa-chevron-left"></i> 7个罕见的Numpy函数
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">792</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">104</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">135</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#kaggle实战：机器学习建模预测肾脏疾病"><span class="nav-number">1.</span> <span class="nav-text">kaggle实战：机器学习建模预测肾脏疾病</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结果"><span class="nav-number">2.</span> <span class="nav-text">结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导入库"><span class="nav-number">3.</span> <span class="nav-text">导入库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据基本信息"><span class="nav-number">4.</span> <span class="nav-text">数据基本信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字段解释"><span class="nav-number">5.</span> <span class="nav-text">字段解释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字段预处理"><span class="nav-number">6.</span> <span class="nav-text">字段预处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字段classification"><span class="nav-number">6.1.</span> <span class="nav-text">字段classification</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#年龄age"><span class="nav-number">6.2.</span> <span class="nav-text">年龄age</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pcv：packed-cell-volume（PCV）"><span class="nav-number">6.3.</span> <span class="nav-text">pcv：packed_cell_volume（PCV）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wc：white-blood-cell-count"><span class="nav-number">6.4.</span> <span class="nav-text">wc：white_blood_cell_count</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rc：red-blood-cell-count"><span class="nav-number">6.5.</span> <span class="nav-text">rc：red_blood_cell_count</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dm：diabetes-mellitus"><span class="nav-number">6.6.</span> <span class="nav-text">dm：diabetes_mellitus</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cad：coronary-artery-disease"><span class="nav-number">6.7.</span> <span class="nav-text">cad：coronary_artery_disease</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不同特征分布"><span class="nav-number">7.</span> <span class="nav-text">不同特征分布</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分类型变量取值"><span class="nav-number">7.1.</span> <span class="nav-text">分类型变量取值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连续型变量分布"><span class="nav-number">7.2.</span> <span class="nav-text">连续型变量分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不同特征分布-v2"><span class="nav-number">7.3.</span> <span class="nav-text">不同特征分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两两变量关系"><span class="nav-number">7.4.</span> <span class="nav-text">两两变量关系</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缺失值处理"><span class="nav-number">8.</span> <span class="nav-text">缺失值处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#整体缺失情况"><span class="nav-number">8.1.</span> <span class="nav-text">整体缺失情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两种填充方式"><span class="nav-number">8.2.</span> <span class="nav-text">两种填充方式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关性分析"><span class="nav-number">9.</span> <span class="nav-text">相关性分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特征编码"><span class="nav-number">10.</span> <span class="nav-text">特征编码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建模"><span class="nav-number">11.</span> <span class="nav-text">建模</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特征和目标"><span class="nav-number">11.1.</span> <span class="nav-text">特征和目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#训练集和测试集"><span class="nav-number">11.2.</span> <span class="nav-text">训练集和测试集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定义建模函数"><span class="nav-number">11.3.</span> <span class="nav-text">定义建模函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8种模型"><span class="nav-number">12.</span> <span class="nav-text">8种模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#KNN"><span class="nav-number">12.1.</span> <span class="nav-text">KNN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#决策树"><span class="nav-number">12.2.</span> <span class="nav-text">决策树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#随机森林Random-Forest-Classifier"><span class="nav-number">12.3.</span> <span class="nav-text">随机森林Random Forest Classifier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ada-Boost-Classifier"><span class="nav-number">12.4.</span> <span class="nav-text">Ada Boost Classifier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gradient-Boosting-Classifier"><span class="nav-number">12.5.</span> <span class="nav-text">Gradient Boosting Classifier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XgBoost"><span class="nav-number">12.6.</span> <span class="nav-text">XgBoost</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cat-Boost-Classifier"><span class="nav-number">12.7.</span> <span class="nav-text">Cat Boost Classifier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Extra-Trees-Classifier"><span class="nav-number">12.8.</span> <span class="nav-text">Extra Trees Classifier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LGBM"><span class="nav-number">12.9.</span> <span class="nav-text">LGBM</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型对比"><span class="nav-number">13.</span> <span class="nav-text">模型对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型可解释性"><span class="nav-number">14.</span> <span class="nav-text">模型可解释性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#shap值计算"><span class="nav-number">14.1.</span> <span class="nav-text">shap值计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Feature-Importance"><span class="nav-number">14.2.</span> <span class="nav-text">Feature Importance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#个体差异"><span class="nav-number">14.3.</span> <span class="nav-text">个体差异</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSV/" rel="tag">CSV</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jieba/" rel="tag">Jieba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KDE/" rel="tag">KDE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kats/" rel="tag">Kats</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LaTex/" rel="tag">LaTex</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">67</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCA/" rel="tag">PCA</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVM/" rel="tag">SVM</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/group/" rel="tag">group</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jupyter/" rel="tag">jupyter</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">20</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/keras/" rel="tag">keras</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/markdown/" rel="tag">markdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/matplotlib/" rel="tag">matplotlib</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">150</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyg2plot/" rel="tag">pyg2plot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">97</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/seaborn/" rel="tag">seaborn</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shap/" rel="tag">shap</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sklearn/" rel="tag">sklearn</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tableau/" rel="tag">tableau</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/uci/" rel="tag">uci</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E5%88%86%E7%B1%BB/" rel="tag">二分类</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">38</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%AC%E4%BC%97%E5%8F%B7/" rel="tag">公众号</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B3%E8%81%94%E5%88%86%E6%9E%90/" rel="tag">关联分析</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%99%E4%BD%9C/" rel="tag">写作</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%B1%BB/" rel="tag">分类</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%B7%E7%A7%AF/" rel="tag">卷积</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AC%E5%9B%9E%E7%8E%87/" rel="tag">召回率</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">125</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%A3%E9%87%8A%E6%80%A7/" rel="tag">可解释性</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E5%BD%92/" rel="tag">回归</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E5%BD%92%E5%88%86%E6%9E%90/" rel="tag">回归分析</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/" rel="tag">图像处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A9%E6%B1%A0/" rel="tag">天池</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E5%85%B8/" rel="tag">字典</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%B9%E5%99%A8/" rel="tag">容器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AF%BC%E6%95%B0/" rel="tag">导数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%80%E6%BA%90/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B/" rel="tag">异常检测</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%A0%E9%87%8F/" rel="tag">张量</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BD%92%E4%B8%80%E5%8C%96/" rel="tag">归一化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AA%E7%8E%AF/" rel="tag">循环</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E5%AD%A6/" rel="tag">数学</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">88</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag">数据处理</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">104</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" rel="tag">数据挖掘</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/" rel="tag">文本处理</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">无监督学习</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E5%BA%8F%E5%88%86%E6%9E%90/" rel="tag">时序分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">133</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9D%8E%E6%B2%90/" rel="tag">李沐</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A0%91%E6%A8%A1%E5%9E%8B/" rel="tag">树模型</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AC%A0%E9%87%87%E6%A0%B7/" rel="tag">欠采样</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AD%A3%E5%88%99%E5%8C%96/" rel="tag">正则化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/" rel="tag">激活函数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2/" rel="tag">牛客</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/" rel="tag">特征工程</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%B9%E5%BE%81%E7%BC%96%E7%A0%81/" rel="tag">特征编码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%8B%AC%E7%83%AD%E7%A0%81/" rel="tag">独热码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">50</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">监督学习</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%B8%E5%85%B3%E6%80%A7/" rel="tag">相关性</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%B8%E5%85%B3%E7%B3%BB%E6%95%B0/" rel="tag">相关系数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9F%A9%E9%98%B5%E8%BF%90%E7%AE%97/" rel="tag">矩阵运算</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A5%9E%E7%BB%8F%E5%85%83/" rel="tag">神经元</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag">神经网络</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A6%BB%E6%95%A3%E5%8C%96/" rel="tag">离散化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%AF%E5%88%86/" rel="tag">积分</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0/" rel="tag">窗口函数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AB%9E%E8%B5%9B/" rel="tag">竞赛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B2%BE%E5%BA%A6/" rel="tag">精度</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B4%A2%E5%BC%95/" rel="tag">索引</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1/" rel="tag">统计</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag">编程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB/" rel="tag">聚类</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">自动化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%8D%E4%BA%91%E5%9B%BE/" rel="tag">词云图</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/" rel="tag">逻辑回归</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%99%8D%E7%BB%B4/" rel="tag">降维</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97/" rel="tag">随机森林</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%90%E8%97%8F%E5%B1%82/" rel="tag">隐藏层</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/" rel="tag">集成学习</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%92%E6%98%A5/" rel="tag">青春</a><span class="tag-list-count">1</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共1197.2k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2022/10/20/kaggle%E5%AE%9E%E6%88%98-%E5%9F%BA%E4%BA%8E%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%82%BE%E8%84%8F%E7%97%85%E9%A2%84%E6%B5%8B.html';
+          this.page.identifier = '2022/10/20/kaggle实战-基于机器学习肾脏病预测.html';
+          this.page.title = 'kaggle实战-基于机器学习肾脏病预测';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
