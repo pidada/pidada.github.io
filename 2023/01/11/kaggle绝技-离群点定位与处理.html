@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="数据分析,kaggle,特征工程,数据挖掘,异常检测," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="kaggle离群点分析 本文是针对kaggle上面一份关于数据离群点的分析，主要是介绍如何从数据中快速确定离群点outlier 原文地址：https:&#x2F;&#x2F;www.kaggle.com&#x2F;code&#x2F;nareshbhat&#x2F;outlier-the-silent-killer 原文标题：Outlier!!! The Silent Killer">
+<meta name="keywords" content="数据分析,kaggle,特征工程,数据挖掘,异常检测">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kaggle绝技-离群点定位与处理">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2023&#x2F;01&#x2F;11&#x2F;kaggle%E7%BB%9D%E6%8A%80-%E7%A6%BB%E7%BE%A4%E7%82%B9%E5%AE%9A%E4%BD%8D%E4%B8%8E%E5%A4%84%E7%90%86.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="kaggle离群点分析 本文是针对kaggle上面一份关于数据离群点的分析，主要是介绍如何从数据中快速确定离群点outlier 原文地址：https:&#x2F;&#x2F;www.kaggle.com&#x2F;code&#x2F;nareshbhat&#x2F;outlier-the-silent-killer 原文标题：Outlier!!! The Silent Killer">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;oiw9qk.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;8et1to.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;wl34hq.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;3p9kwa.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;q7zu2f.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;obqqou.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;jsmvz5.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;e7beoi.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;f00qsh.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;05kbbz.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;oa743c.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;nt4br1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;gpl9da.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;5vb61y.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;ollu79.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;pr5xmb.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;x9pbz4.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;lpp95b.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;3auqhm.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;herydx.jpg">
+<meta property="og:updated_time" content="2023-01-11T13:43:01.197Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;oiw9qk.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2023/01/11/kaggle绝技-离群点定位与处理.html"/>
+
+
+
+
+
+  <title>kaggle绝技-离群点定位与处理 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2023/01/11/kaggle%E7%BB%9D%E6%8A%80-%E7%A6%BB%E7%BE%A4%E7%82%B9%E5%AE%9A%E4%BD%8D%E4%B8%8E%E5%A4%84%E7%90%86.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">kaggle绝技-离群点定位与处理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2023-01-11T21:40:48+08:00">
+                2023-1-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/" itemprop="url" rel="index">
+                    <span itemprop="name">Machine learning</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-learning/kaggle/" itemprop="url" rel="index">
+                    <span itemprop="name">kaggle</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2023/01/11/kaggle%E7%BB%9D%E6%8A%80-%E7%A6%BB%E7%BE%A4%E7%82%B9%E5%AE%9A%E4%BD%8D%E4%B8%8E%E5%A4%84%E7%90%86.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2023/01/11/kaggle绝技-离群点定位与处理.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  2.9k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  14
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="kaggle离群点分析">kaggle离群点分析</h2>
+<p>本文是针对kaggle上面一份关于数据离群点的分析，主要是介绍如何从数据中快速确定离群点outlier</p>
+<p>原文地址：<a href="https://www.kaggle.com/code/nareshbhat/outlier-the-silent-killer" target="_blank" rel="noopener">https://www.kaggle.com/code/nareshbhat/outlier-the-silent-killer</a></p>
+<p>原文标题：<code>Outlier!!! The Silent Killer</code></p>
+<p><img src="https://p.ipic.vip/oiw9qk.jpg" alt=""></p>
+<a id="more"></a>
+<h2 id="什么是离群点">什么是离群点</h2>
+<blockquote>
+<p>Outlier is an observation that is numerically distant from the rest of the data or in a simple word it is the value which is out of the range.let’s take an example to check what happens to a data set with and data set without outliers.</p>
+</blockquote>
+<p>简答地说：离群值就是和<code>正常</code>值相差甚远的值。</p>
+<p>看一个例子：在下面例子的数据中400就是一个离群点。</p>
+<p><img src="https://p.ipic.vip/8et1to.png" alt="图片"></p>
+<blockquote>
+<p>Outlier is a commonly used terminology by analysts and data scientists as it needs close attention else it can result in wildly wrong estimations. Simply speaking, Outlier is an observation that appears far away and diverges from an overall pattern in a sample.</p>
+</blockquote>
+<p>离群值是分析师和数据科学家常用术语，因为它需要密切关注，否则可能会导致严重错误的估计。简单来说，离群值是一种观察结果，它看起来很远并且偏离了样本中的整体模式。</p>
+<h2 id="离群值如何产生？">离群值如何产生？</h2>
+<ul>
+<li>Data Entry Errors:- Human errors such as errors caused during data collection, recording, or entry can cause outliers in data.</li>
+<li>Measurement Error:- It is the most common source of outliers. This is caused when the measurement instrument used turns out to be faulty.</li>
+<li>Natural Outlier:- When an outlier is not artificial (due to error), it is a natural outlier. Most of real world data belong to this category.</li>
+</ul>
+<ol>
+<li>数据输入错误：- 人为错误，例如在数据收集、记录或输入过程中造成的错误，可能会导致数据出现异常值。</li>
+<li>测量误差：- 这是异常值的最常见来源。这是由于使用的测量仪器出现故障造成的。</li>
+<li>自然异常值：- 当异常值不是人为的（由于错误）时，它就是自然异常值。大多数现实世界的数据都属于这一类。</li>
+</ol>
+<h2 id="离群点类型">离群点类型</h2>
+<p>有两种类型：<strong>基于单变量和多变量的类型</strong>。上面的例子就是基于单变量，当我们查看单个变量的分布时，可以找到这些异常值。多变量异常值是 n 维空间中的异常值。</p>
+<h2 id="确定离群点方法">确定离群点方法</h2>
+<ol>
+<li>Hypothesis Testing - 假设检验</li>
+<li>Z-score method-Z-score法</li>
+<li>Robust Z-score-稳健Z分数</li>
+<li>I.Q.R method-I.Q.R方法</li>
+<li>Winsorization method(Percentile Capping)-Winsorization方法</li>
+<li>DBSCAN Clustering-DBSCAN聚类</li>
+<li>Isolation Forest-孤立森林</li>
+<li>Visualizing the data-可视化数据</li>
+</ol>
+<h3 id="假设检验-格鲁布斯检验方法">假设检验-格鲁布斯检验方法</h3>
+<p>基于格鲁布斯检验法：</p>
+<p>资料1：<a href="https://zhuanlan.zhihu.com/p/482006257" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/482006257</a></p>
+<p>资料2：<a href="https://blog.csdn.net/sunshihua12829/article/details/49047087" target="_blank" rel="noopener">https://blog.csdn.net/sunshihua12829/article/details/49047087</a></p>
+<p><img src="https://p.ipic.vip/wl34hq.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 忽略警告</span></span><br><span class="line"><span class="keyword">import</span> warnings</span><br><span class="line">warnings.filterwarnings(<span class="string">"ignore"</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> scipy.stats <span class="keyword">as</span> stats</span><br><span class="line">x = np.array([<span class="number">12</span>,<span class="number">13</span>,<span class="number">14</span>,<span class="number">19</span>,<span class="number">21</span>,<span class="number">23</span>])</span><br><span class="line">y = np.array([<span class="number">12</span>,<span class="number">13</span>,<span class="number">14</span>,<span class="number">19</span>,<span class="number">21</span>,<span class="number">23</span>,<span class="number">45</span>])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">grubbs_test</span><span class="params">(x)</span>:</span></span><br><span class="line">    n = len(x)</span><br><span class="line">    mean_x = np.mean(x)  <span class="comment"># 均值</span></span><br><span class="line">    sd_x = np.std(x)  <span class="comment"># 标准差</span></span><br><span class="line">    numerator = max(abs(x-mean_x))  <span class="comment"># 最大绝对误差</span></span><br><span class="line">    g_calculated = numerator/sd_x  <span class="comment"># 计算格鲁布斯值</span></span><br><span class="line">    print(<span class="string">"Grubbs Calculated Value:"</span>,g_calculated)</span><br><span class="line">    t_value = stats.t.ppf(<span class="number">1</span> - <span class="number">0.05</span> / (<span class="number">2</span> * n), n - <span class="number">2</span>)</span><br><span class="line">    g_critical = ((n - <span class="number">1</span>) * np.sqrt(np.square(t_value))) / (np.sqrt(n) * np.sqrt(n - <span class="number">2</span> + np.square(t_value)))</span><br><span class="line">    print(<span class="string">"Grubbs Critical Value:"</span>,g_critical)</span><br><span class="line">    <span class="keyword">if</span> g_critical &gt; g_calculated:</span><br><span class="line">        print(<span class="string">"无离群点"</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">"存在离群点"</span>)</span><br><span class="line"></span><br><span class="line">grubbs_test(x)</span><br><span class="line">grubbs_test(y)</span><br></pre></td></tr></table></figure>
+<pre><code>Grubbs Calculated Value: 1.4274928542926593
+Grubbs Critical Value: 1.887145117792422
+无离群点
+Grubbs Calculated Value: 2.2765147221587774
+Grubbs Critical Value: 2.019968507680656
+存在离群点
+</code></pre>
+<h3 id="Z-SCORE-METHOD">Z-SCORE METHOD</h3>
+<p>参考1：<a href="https://zhuanlan.zhihu.com/p/69074703" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/69074703</a></p>
+<p><img src="https://p.ipic.vip/3p9kwa.jpg" alt=""></p>
+<p>Z-score值的计算：</p>
+<p><img src="https://p.ipic.vip/q7zu2f.jpg" alt=""></p>
+<p>$$Z_{score} = \frac{X-Mean} {StandarDeviation}$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用的数据df</span></span><br><span class="line">train = pd.read_csv(<span class="string">'House.csv'</span>)</span><br><span class="line"></span><br><span class="line">out=[]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Zscore_outlier</span><span class="params">(df)</span>:</span></span><br><span class="line">    m = np.mean(df)  <span class="comment"># 均值</span></span><br><span class="line">    sd = np.std(df)  <span class="comment"># 标准差</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> df:</span><br><span class="line">        z = (i-m)/sd</span><br><span class="line">        <span class="keyword">if</span> np.abs(z) &gt; <span class="number">3</span>:</span><br><span class="line">            out.append(i)</span><br><span class="line">    print(<span class="string">"Outliers:"</span>,out)</span><br><span class="line">Zscore_outlier(train[<span class="string">'LotArea'</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>Outliers: [50271, 159000, 215245, 164660, 53107, 70761, 53227, 46589, 115149, 53504, 45600, 63887, 57200]
+</code></pre>
+<h3 id="ROBUST-Z-SCORE">ROBUST Z-SCORE</h3>
+<blockquote>
+<p>It is also called as Median absolute deviation method. It is similar to Z-score method with some changes in parameters. Since mean and standard deviations are heavily influenced by outliers, alter to this parameters we use median and absolute deviation from median.</p>
+</blockquote>
+<p>它也被称为中值绝对偏差法。它类似于 Z-score 方法，只是参数有所变化。由于均值和标准差受异常值的影响很大，因此我们使用中位数和中位数的绝对偏差来更改此参数。</p>
+<p><img src="https://p.ipic.vip/obqqou.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">train = pd.read_csv(<span class="string">'House.csv'</span>)</span><br><span class="line"></span><br><span class="line">out=[]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ZRscore_outlier</span><span class="params">(df)</span>:</span></span><br><span class="line">    med = np.median(df)</span><br><span class="line">    ma = stats.median_absolute_deviation(df)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> df:</span><br><span class="line">        z = (<span class="number">0.6745</span>*(i-med))/ (np.median(ma))</span><br><span class="line">        <span class="keyword">if</span> np.abs(z) &gt; <span class="number">3</span>:</span><br><span class="line">            out.append(i)</span><br><span class="line">    print(<span class="string">"Outliers:"</span>,out)</span><br><span class="line">ZRscore_outlier(train[<span class="string">'LotArea'</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>Outliers: [50271, 31770, 22950, 25419, 159000, 39104, 215245, 164660, 53107, 34650, 70761, 53227, 40094, 32668, 25095, 46589, 26178, 115149, 53504, 28698, 45600, 25286, 27650, 24090, 25000, 29959, 23257, 35760, 35133, 32463, 24682, 23595, 36500, 63887, 25339, 57200, 26142]
+</code></pre>
+<h3 id="IQR-METHOD">IQR METHOD</h3>
+<p>在这种使用四分位数间距 (IQR) 的方法中，我们检测异常值。 IQR 告诉我们数据集中的变化。任何超出 -1.5 x IQR 到 1.5 x IQR 范围的值都被视为异常值。</p>
+<p><img src="https://p.ipic.vip/jsmvz5.jpg" alt=""></p>
+<ul>
+<li>Q1 表示数据的第一个四分位数/第 25 个百分位数。</li>
+<li>Q2 表示数据的第二个四分位数/中位数/第 50 个百分位数。</li>
+<li>Q3 表示数据的第 3 个四分位数/第 75 个百分位数。</li>
+<li>(Q1–1.5<em>IQR) 代表数据集中的最小值，(Q3+1.5</em>IQR) 代表数据集中的最大值。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">train = pd.read_csv(<span class="string">'House.csv'</span>)</span><br><span class="line"></span><br><span class="line">out=[]</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">iqr_outliers</span><span class="params">(df)</span>:</span></span><br><span class="line">    q1 = df.quantile(<span class="number">0.25</span>)</span><br><span class="line">    q3 = df.quantile(<span class="number">0.75</span>)</span><br><span class="line">    iqr = q3-q1</span><br><span class="line">    Lower_tail = q1 - <span class="number">1.5</span> * iqr</span><br><span class="line">    Upper_tail = q3 + <span class="number">1.5</span> * iqr</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> df:</span><br><span class="line">        <span class="keyword">if</span> i &gt; Upper_tail <span class="keyword">or</span> i &lt; Lower_tail:</span><br><span class="line">            out.append(i)</span><br><span class="line">    print(<span class="string">"Outliers:"</span>,out)</span><br><span class="line">iqr_outliers(train[<span class="string">'LotArea'</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>Outliers: [50271, 19900, 21000, 21453, 19378, 31770, 22950, 25419, 159000, 19296, 39104, 19138, 18386, 215245, 164660, 20431, 18800, 53107, 34650, 22420, 21750, 70761, 53227, 40094, 32668, 21872, 21780, 25095, 46589, 20896, 18450, 21535, 26178, 115149, 21695, 53504, 21384, 28698, 45600, 17920, 25286, 27650, 24090, 25000, 1300, 21286, 1477, 21750, 29959, 18000, 23257, 17755, 35760, 18030, 35133, 32463, 18890, 24682, 23595, 17871, 36500, 63887, 20781, 25339, 57200, 20544, 19690, 21930, 26142]
+</code></pre>
+<h3 id="缩尾处理-WINSORIZATION-METHOD-PERCENTILE-CAPPING">缩尾处理-WINSORIZATION METHOD(PERCENTILE CAPPING)</h3>
+<p>这种方法类似于 IQR 方法。如果一个值超过第 99 个百分位数的值并且低于给定值的第一个百分位数，则将被视为异常值。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">train = pd.read_csv(<span class="string">'Titanic.csv'</span>)</span><br><span class="line">out=[]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Winsorization_outliers</span><span class="params">(df)</span>:</span></span><br><span class="line">    q1 = np.percentile(df , <span class="number">1</span>)</span><br><span class="line">    q3 = np.percentile(df , <span class="number">99</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> df:</span><br><span class="line">        <span class="keyword">if</span> i &gt; q3 <span class="keyword">or</span> i &lt; q1:</span><br><span class="line">            out.append(i)</span><br><span class="line">    print(<span class="string">"Outliers:"</span>,out)</span><br><span class="line">Winsorization_outliers(train[<span class="string">'Fare'</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>Outliers: [263.0, 263.0, 512.3292, 262.375, 263.0, 263.0, 512.3292, 512.3292, 262.375]
+</code></pre>
+<h3 id="聚类-DBSCAN（基于密度的应用噪声空间聚类）">聚类-DBSCAN（基于密度的应用噪声空间聚类）</h3>
+<p>DBSCAN 是一种基于密度的聚类算法，它将数据集划分为高密度区域的子组，并将高密度区域聚类识别为异常值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> sklearn.cluster <span class="keyword">import</span> DBSCAN</span><br><span class="line">train = pd.read_csv(<span class="string">'Titanic.csv'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">DB_outliers</span><span class="params">(df)</span>:</span></span><br><span class="line">    outlier_detection = DBSCAN(eps = <span class="number">2</span>, metric=<span class="string">'euclidean'</span>, min_samples = <span class="number">5</span>)</span><br><span class="line">    clusters = outlier_detection.fit_predict(df.values.reshape(<span class="number">-1</span>,<span class="number">1</span>))</span><br><span class="line">    data = pd.DataFrame()</span><br><span class="line">    data[<span class="string">'cluster'</span>] = clusters</span><br><span class="line">    print(data[<span class="string">'cluster'</span>].value_counts().sort_values(ascending=<span class="literal">False</span>))</span><br><span class="line">DB_outliers(train[<span class="string">'Fare'</span>])</span><br></pre></td></tr></table></figure>
+<pre><code> 0     705
+ 2      50
+ 4      36
+-1      32
+ 6      15
+ 1      12
+ 7       8
+ 5       7
+ 8       7
+ 9       7
+ 3       6
+ 10      6
+Name: cluster, dtype: int64
+</code></pre>
+<h3 id="孤立森林-ISOLATION-FOREST">孤立森林-ISOLATION FOREST</h3>
+<p>它是一种属于集成决策树家族的聚类算法，在原理上类似于随机森林</p>
+<p><img src="https://p.ipic.vip/e7beoi.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> IsolationForest</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line">train = pd.read_csv(<span class="string">'Titanic.csv'</span>)</span><br><span class="line">train[<span class="string">'Fare'</span>].fillna(train[train.Pclass==<span class="number">3</span>][<span class="string">'Fare'</span>].median(),inplace=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Iso_outliers</span><span class="params">(df)</span>:</span></span><br><span class="line">    iso = IsolationForest(random_state = <span class="number">1</span>, contamination= <span class="string">'auto'</span>)</span><br><span class="line">    preds = iso.fit_predict(df.values.reshape(<span class="number">-1</span>,<span class="number">1</span>))</span><br><span class="line">    data = pd.DataFrame()</span><br><span class="line">    data[<span class="string">'cluster'</span>] = preds</span><br><span class="line">    print(data[<span class="string">'cluster'</span>].value_counts().sort_values(ascending=<span class="literal">False</span>))</span><br><span class="line">Iso_outliers(train[<span class="string">'Fare'</span>])</span><br></pre></td></tr></table></figure>
+<pre><code> 1    706
+-1    185
+Name: cluster, dtype: int64
+</code></pre>
+<h3 id="基于数据可视化">基于数据可视化</h3>
+<p>通过箱型图、散点图、直方图、两两分布图、QQ图等将数据进行可视化，通过观察来找到离群点</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> statsmodels.graphics.gofplots <span class="keyword">import</span> qqplot</span><br><span class="line">train = pd.read_csv(<span class="string">'Titanic.csv'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Box_plots</span><span class="params">(df)</span>:</span></span><br><span class="line">    plt.figure(figsize=(<span class="number">10</span>, <span class="number">4</span>))</span><br><span class="line">    plt.title(<span class="string">"Box Plot"</span>)</span><br><span class="line">    sns.boxplot(df)</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line">Box_plots(train[<span class="string">'Age'</span>])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hist_plots</span><span class="params">(df)</span>:</span></span><br><span class="line">    plt.figure(figsize=(<span class="number">10</span>, <span class="number">4</span>))</span><br><span class="line">    plt.hist(df)</span><br><span class="line">    plt.title(<span class="string">"Histogram Plot"</span>)</span><br><span class="line">    plt.show()</span><br><span class="line">hist_plots(train[<span class="string">'Age'</span>])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scatter_plots</span><span class="params">(df1,df2)</span>:</span></span><br><span class="line">    fig, ax = plt.subplots(figsize=(<span class="number">10</span>,<span class="number">4</span>))</span><br><span class="line">    ax.scatter(df1,df2)</span><br><span class="line">    ax.set_xlabel(<span class="string">'Age'</span>)</span><br><span class="line">    ax.set_ylabel(<span class="string">'Fare'</span>)</span><br><span class="line">    plt.title(<span class="string">"Scatter Plot"</span>)</span><br><span class="line">    plt.show()</span><br><span class="line">scatter_plots(train[<span class="string">'Age'</span>],train[<span class="string">'Fare'</span>])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dist_plots</span><span class="params">(df)</span>:</span></span><br><span class="line">    plt.figure(figsize=(<span class="number">10</span>, <span class="number">4</span>))</span><br><span class="line">    sns.distplot(df)</span><br><span class="line">    plt.title(<span class="string">"Distribution plot"</span>)</span><br><span class="line">    sns.despine()</span><br><span class="line">    plt.show()</span><br><span class="line">dist_plots(train[<span class="string">'Fare'</span>])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">qq_plots</span><span class="params">(df)</span>:</span></span><br><span class="line">    plt.figure(figsize=(<span class="number">10</span>, <span class="number">4</span>))</span><br><span class="line">    qqplot(df,line=<span class="string">'s'</span>)</span><br><span class="line">    plt.title(<span class="string">"Normal QQPlot"</span>)</span><br><span class="line">    plt.show()</span><br><span class="line">qq_plots(train[<span class="string">'Fare'</span>])</span><br></pre></td></tr></table></figure>
+<p><img src="https://p.ipic.vip/f00qsh.png" alt="图片"></p>
+<p><img src="https://p.ipic.vip/05kbbz.png" alt="图片"></p>
+<p><img src="https://p.ipic.vip/oa743c.png" alt="图片"></p>
+<p><img src="https://p.ipic.vip/nt4br1.png" alt="图片"></p>
+<h2 id="异常值处理">异常值处理</h2>
+<p>上面介绍的内容是如何发现数据中的离群点。在找到离群点后，如何处理？</p>
+<h3 id="处理1：删除离群点">处理1：删除离群点</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line">train = pd.read_csv(<span class="string">'cost-of-living-2018.csv'</span>)</span><br><span class="line">sns.boxplot(train[<span class="string">'Cost of Living Index'</span>])</span><br><span class="line">plt.title(<span class="string">"Before outlier removing"</span>)</span><br><span class="line">plt.show()  <span class="comment"># 删除前</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 基于IQR方法删除离群点</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">drop_outliers</span><span class="params">(df, field_name)</span>:</span></span><br><span class="line">    iqr = <span class="number">1.5</span> * (np.percentile(df[field_name], <span class="number">75</span>) - np.percentile(df[field_name], <span class="number">25</span>))</span><br><span class="line">    df.drop(df[df[field_name] &gt; (iqr + np.percentile(df[field_name], <span class="number">75</span>))].index, inplace=<span class="literal">True</span>)</span><br><span class="line">    df.drop(df[df[field_name] &lt; (np.percentile(df[field_name], <span class="number">25</span>) - iqr)].index, inplace=<span class="literal">True</span>)</span><br><span class="line">drop_outliers(train, <span class="string">'Cost of Living Index'</span>)</span><br><span class="line">sns.boxplot(train[<span class="string">'Cost of Living Index'</span>])</span><br><span class="line">plt.title(<span class="string">"After outlier removing"</span>)</span><br><span class="line">plt.show()   <span class="comment"># 删除后</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://p.ipic.vip/gpl9da.png" alt="图片"></p>
+<h3 id="处理2：数据转换">处理2：数据转换</h3>
+<p>介绍4种数据转换的方法：</p>
+<ol>
+<li>尺度缩放：Scalling</li>
+<li>对数变换：Log transformation</li>
+<li>立方根归一化：Cube Root Normalization</li>
+<li>Box-Cox转换：Box-Cox transformation</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 尺度缩放</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> preprocessing</span><br><span class="line">train = pd.read_csv(<span class="string">'cost-of-living-2018.csv'</span>)</span><br><span class="line">plt.hist(train[<span class="string">'Cost of Living Index'</span>])</span><br><span class="line">plt.title(<span class="string">"Histogram before Scalling"</span>)</span><br><span class="line">plt.show()   <span class="comment"># 缩放前</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">scaler = preprocessing.StandardScaler()</span><br><span class="line">train[<span class="string">'Cost of Living Index'</span>] = scaler.fit_transform(train[<span class="string">'Cost of Living Index'</span>].values.reshape(<span class="number">-1</span>,<span class="number">1</span>))</span><br><span class="line">plt.hist(train[<span class="string">'Cost of Living Index'</span>])</span><br><span class="line">plt.title(<span class="string">"Histogram after Scalling"</span>)</span><br><span class="line">plt.show()  <span class="comment"># 缩放后</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 观察横坐标的值变化</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://p.ipic.vip/5vb61y.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 2、基于对数变换</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line">train = pd.read_csv(<span class="string">'cost-of-living-2018.csv'</span>)</span><br><span class="line">sns.distplot(train[<span class="string">'Cost of Living Index'</span>])</span><br><span class="line">plt.title(<span class="string">"Distribution plot before Log transformation"</span>)</span><br><span class="line">sns.despine()</span><br><span class="line">plt.grid()</span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># ----变换后</span></span><br><span class="line">train[<span class="string">'Cost of Living Index'</span>] = np.log(train[<span class="string">'Cost of Living Index'</span>])</span><br><span class="line">sns.distplot(train[<span class="string">'Cost of Living Index'</span>])</span><br><span class="line">plt.title(<span class="string">"Distribution plot after Log transformation"</span>)</span><br><span class="line">sns.despine()</span><br><span class="line">plt.grid()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p>​    <img src="https://p.ipic.vip/ollu79.png" alt="图片"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 3、基于立方根转换</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line">train = pd.read_csv(<span class="string">'Titanic.csv'</span>)</span><br><span class="line">plt.hist(train[<span class="string">'Age'</span>])</span><br><span class="line">plt.title(<span class="string">"Histogram before cube root Transformation"</span>)</span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 立方根变换</span></span><br><span class="line">train[<span class="string">'Age'</span>] = (train[<span class="string">'Age'</span>]**(<span class="number">1</span>/<span class="number">3</span>))</span><br><span class="line">plt.hist(train[<span class="string">'Age'</span>])</span><br><span class="line">plt.title(<span class="string">"Histogram after cube root Transformation"</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://p.ipic.vip/pr5xmb.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 4、Box-Cox转换</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> scipy</span><br><span class="line">train = pd.read_csv(<span class="string">'cost-of-living-2018.csv'</span>)</span><br><span class="line">sns.boxplot(train[<span class="string">'Rent Index'</span>])</span><br><span class="line">plt.title(<span class="string">"Box Plot before outlier removing"</span>)</span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line">train[<span class="string">'Rent Index'</span>],fitted_lambda= scipy.stats.boxcox(train[<span class="string">'Rent Index'</span>] ,lmbda=<span class="literal">None</span>)</span><br><span class="line">sns.boxplot(train[<span class="string">'Rent Index'</span>])</span><br><span class="line">plt.title(<span class="string">"Box Plot after outlier removing"</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://p.ipic.vip/x9pbz4.jpg" alt=""></p>
+<h3 id="处理3：数值插补Imputation">处理3：数值插补Imputation</h3>
+<p>与缺失值的插补一样，我们也可以插补异常值。我们可以在此方法中使用均值、中值、零值。一般在这里使用<strong>中位数</strong>是最合适的，因为它不受异常值的影响。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 基于均值插补</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">train = pd.read_csv(<span class="string">'Titanic.csv'</span>)</span><br><span class="line">sns.boxplot(train[<span class="string">'Age'</span>])</span><br><span class="line">plt.title(<span class="string">"Box Plot before mean imputation"</span>)</span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line">q1 = train[<span class="string">'Age'</span>].quantile(<span class="number">0.25</span>)</span><br><span class="line">q3 = train[<span class="string">'Age'</span>].quantile(<span class="number">0.75</span>)</span><br><span class="line">iqr = q3-q1</span><br><span class="line">Lower_tail = q1 - <span class="number">1.5</span> * iqr</span><br><span class="line">Upper_tail = q3 + <span class="number">1.5</span> * iqr</span><br><span class="line">m = np.mean(train[<span class="string">'Age'</span>])</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> train[<span class="string">'Age'</span>]:</span><br><span class="line">    <span class="keyword">if</span> i &gt; Upper_tail <span class="keyword">or</span> i &lt; Lower_tail:</span><br><span class="line">            train[<span class="string">'Age'</span>] = train[<span class="string">'Age'</span>].replace(i, m)  <span class="comment"># 大于Upper或者小于Lower的值，用均值填充</span></span><br><span class="line">sns.boxplot(train[<span class="string">'Age'</span>])</span><br><span class="line">plt.title(<span class="string">"Box Plot after mean imputation"</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p>​    <img src="https://p.ipic.vip/lpp95b.jpg" alt=""><br>
+​</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 基于中位数插补</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">train = pd.read_csv(<span class="string">'Titanic.csv'</span>)</span><br><span class="line">sns.boxplot(train[<span class="string">'Age'</span>])</span><br><span class="line">plt.title(<span class="string">"Box Plot before median imputation"</span>)</span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line">q1 = train[<span class="string">'Age'</span>].quantile(<span class="number">0.25</span>)</span><br><span class="line">q3 = train[<span class="string">'Age'</span>].quantile(<span class="number">0.75</span>)</span><br><span class="line">iqr = q3-q1</span><br><span class="line">Lower_tail = q1 - <span class="number">1.5</span> * iqr</span><br><span class="line">Upper_tail = q3 + <span class="number">1.5</span> * iqr</span><br><span class="line">med = np.median(train[<span class="string">'Age'</span>])</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> train[<span class="string">'Age'</span>]:</span><br><span class="line">    <span class="keyword">if</span> i &gt; Upper_tail <span class="keyword">or</span> i &lt; Lower_tail:</span><br><span class="line">            train[<span class="string">'Age'</span>] = train[<span class="string">'Age'</span>].replace(i, med)</span><br><span class="line">sns.boxplot(train[<span class="string">'Age'</span>])</span><br><span class="line">plt.title(<span class="string">"Box Plot after median imputation"</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://p.ipic.vip/3auqhm.jpg" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 基于零值插补</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">train = pd.read_csv(<span class="string">'Titanic.csv'</span>)</span><br><span class="line">sns.boxplot(train[<span class="string">'Age'</span>])</span><br><span class="line">plt.title(<span class="string">"Box Plot before Zero value imputation"</span>)</span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line">q1 = train[<span class="string">'Age'</span>].quantile(<span class="number">0.25</span>)</span><br><span class="line">q3 = train[<span class="string">'Age'</span>].quantile(<span class="number">0.75</span>)</span><br><span class="line">iqr = q3-q1</span><br><span class="line">Lower_tail = q1 - <span class="number">1.5</span> * iqr</span><br><span class="line">Upper_tail = q3 + <span class="number">1.5</span> * iqr</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> train[<span class="string">'Age'</span>]:</span><br><span class="line">    <span class="keyword">if</span> i &gt; Upper_tail <span class="keyword">or</span> i &lt; Lower_tail:</span><br><span class="line">            train[<span class="string">'Age'</span>] = train[<span class="string">'Age'</span>].replace(i, <span class="number">0</span>)</span><br><span class="line">sns.boxplot(train[<span class="string">'Age'</span>])</span><br><span class="line">plt.title(<span class="string">"Box Plot after Zero value imputation"</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="https://p.ipic.vip/herydx.jpg" alt=""></p>
+<h3 id="处理4：离群点单独处理">处理4：离群点单独处理</h3>
+<p>如果存在大量的异常值并且数据集很小，在统计模型中我们应该将它们分开处理。一种方法是将离群点和非离群点视为两个不同的组，并为两个组构建单独的模型，然后组合输出。</p>
+<h2 id="总结">总结</h2>
+<ol>
+<li>当数据有异常值或偏斜时，中位数是数据集中趋势的最佳度量。</li>
+<li>Winsorization Method 或 Percentile Capping 是其他方法中更好的异常值检测技术。</li>
+<li>中位数插补是最好的离群值插补方法。</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2023/01/11/kaggle%E7%BB%9D%E6%8A%80-%E7%A6%BB%E7%BE%A4%E7%82%B9%E5%AE%9A%E4%BD%8D%E4%B8%8E%E5%A4%84%E7%90%86.html">kaggle绝技-离群点定位与处理</a></p>
+  <p><span>发布时间:</span>2023年01月11日 - 21:01</p>
+  <p><span>原始链接:</span><a href="/2023/01/11/kaggle%E7%BB%9D%E6%8A%80-%E7%A6%BB%E7%BE%A4%E7%82%B9%E5%AE%9A%E4%BD%8D%E4%B8%8E%E5%A4%84%E7%90%86.html" title="kaggle绝技-离群点定位与处理">http://www.renpeter.cn/2023/01/11/kaggle%E7%BB%9D%E6%8A%80-%E7%A6%BB%E7%BE%A4%E7%82%B9%E5%AE%9A%E4%BD%8D%E4%B8%8E%E5%A4%84%E7%90%86.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2023/01/11/kaggle%E7%BB%9D%E6%8A%80-%E7%A6%BB%E7%BE%A4%E7%82%B9%E5%AE%9A%E4%BD%8D%E4%B8%8E%E5%A4%84%E7%90%86.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag"># 数据分析</a>
+          
+            <a href="/tags/kaggle/" rel="tag"># kaggle</a>
+          
+            <a href="/tags/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/" rel="tag"># 特征工程</a>
+          
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" rel="tag"># 数据挖掘</a>
+          
+            <a href="/tags/%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B/" rel="tag"># 异常检测</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/12/24/%E5%9F%BA%E4%BA%8E%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9A%84%E7%B3%96%E5%B0%BF%E7%97%85%E9%A2%84%E6%B5%8B.html" rel="next" title="基于机器学习的糖尿病预测">
+                <i class="fa fa-chevron-left"></i> 基于机器学习的糖尿病预测
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">808</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">104</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">146</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#kaggle离群点分析"><span class="nav-number">1.</span> <span class="nav-text">kaggle离群点分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是离群点"><span class="nav-number">2.</span> <span class="nav-text">什么是离群点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#离群值如何产生？"><span class="nav-number">3.</span> <span class="nav-text">离群值如何产生？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#离群点类型"><span class="nav-number">4.</span> <span class="nav-text">离群点类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#确定离群点方法"><span class="nav-number">5.</span> <span class="nav-text">确定离群点方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#假设检验-格鲁布斯检验方法"><span class="nav-number">5.1.</span> <span class="nav-text">假设检验-格鲁布斯检验方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Z-SCORE-METHOD"><span class="nav-number">5.2.</span> <span class="nav-text">Z-SCORE METHOD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ROBUST-Z-SCORE"><span class="nav-number">5.3.</span> <span class="nav-text">ROBUST Z-SCORE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IQR-METHOD"><span class="nav-number">5.4.</span> <span class="nav-text">IQR METHOD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缩尾处理-WINSORIZATION-METHOD-PERCENTILE-CAPPING"><span class="nav-number">5.5.</span> <span class="nav-text">缩尾处理-WINSORIZATION METHOD(PERCENTILE CAPPING)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#聚类-DBSCAN（基于密度的应用噪声空间聚类）"><span class="nav-number">5.6.</span> <span class="nav-text">聚类-DBSCAN（基于密度的应用噪声空间聚类）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#孤立森林-ISOLATION-FOREST"><span class="nav-number">5.7.</span> <span class="nav-text">孤立森林-ISOLATION FOREST</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于数据可视化"><span class="nav-number">5.8.</span> <span class="nav-text">基于数据可视化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异常值处理"><span class="nav-number">6.</span> <span class="nav-text">异常值处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#处理1：删除离群点"><span class="nav-number">6.1.</span> <span class="nav-text">处理1：删除离群点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#处理2：数据转换"><span class="nav-number">6.2.</span> <span class="nav-text">处理2：数据转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#处理3：数值插补Imputation"><span class="nav-number">6.3.</span> <span class="nav-text">处理3：数值插补Imputation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#处理4：离群点单独处理"><span class="nav-number">6.4.</span> <span class="nav-text">处理4：离群点单独处理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CNN/" rel="tag">CNN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSV/" rel="tag">CSV</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CV/" rel="tag">CV</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jieba/" rel="tag">Jieba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KDE/" rel="tag">KDE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kats/" rel="tag">Kats</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LaTex/" rel="tag">LaTex</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">67</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NN/" rel="tag">NN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCA/" rel="tag">PCA</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVM/" rel="tag">SVM</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/group/" rel="tag">group</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jupyter/" rel="tag">jupyter</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/keras/" rel="tag">keras</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/markdown/" rel="tag">markdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/matplotlib/" rel="tag">matplotlib</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">151</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyg2plot/" rel="tag">pyg2plot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">97</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/seaborn/" rel="tag">seaborn</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shap/" rel="tag">shap</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sklearn/" rel="tag">sklearn</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tableau/" rel="tag">tableau</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/uci/" rel="tag">uci</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E5%88%86%E7%B1%BB/" rel="tag">二分类</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">38</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BC%98%E5%8C%96%E5%99%A8/" rel="tag">优化器</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%AC%E4%BC%97%E5%8F%B7/" rel="tag">公众号</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B3%E8%81%94%E5%88%86%E6%9E%90/" rel="tag">关联分析</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%99%E4%BD%9C/" rel="tag">写作</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%B1%BB/" rel="tag">分类</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%B7%E7%A7%AF/" rel="tag">卷积</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag">卷积神经网络</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AC%E5%9B%9E%E7%8E%87/" rel="tag">召回率</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">125</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%A3%E9%87%8A%E6%80%A7/" rel="tag">可解释性</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E5%BD%92/" rel="tag">回归</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E5%BD%92%E5%88%86%E6%9E%90/" rel="tag">回归分析</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/" rel="tag">图像处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A9%E6%B1%A0/" rel="tag">天池</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E5%85%B8/" rel="tag">字典</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%B9%E5%99%A8/" rel="tag">容器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AF%BC%E6%95%B0/" rel="tag">导数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%80%E6%BA%90/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B/" rel="tag">异常检测</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%A0%E9%87%8F/" rel="tag">张量</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BD%92%E4%B8%80%E5%8C%96/" rel="tag">归一化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AA%E7%8E%AF/" rel="tag">循环</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%84%9F%E5%8F%97%E9%87%8E/" rel="tag">感受野</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%BD%E6%A0%B7/" rel="tag">抽样</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E5%AD%A6/" rel="tag">数学</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">90</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag">数据处理</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">104</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" rel="tag">数据挖掘</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/" rel="tag">文本处理</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3/" rel="tag">无监督</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">无监督学习</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E5%BA%8F%E5%88%86%E6%9E%90/" rel="tag">时序分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">138</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9D%8E%E6%B2%90/" rel="tag">李沐</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A0%91%E6%A8%A1%E5%9E%8B/" rel="tag">树模型</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A2%AF%E5%BA%A6/" rel="tag">梯度</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D/" rel="tag">梯度下降</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AC%A0%E9%87%87%E6%A0%B7/" rel="tag">欠采样</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AD%A3%E5%88%99%E5%8C%96/" rel="tag">正则化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%A0%E5%8C%96/" rel="tag">池化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a><span class="tag-list-count">40</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/" rel="tag">激活函数</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2/" rel="tag">牛客</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/" rel="tag">特征工程</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%B9%E5%BE%81%E7%BC%96%E7%A0%81/" rel="tag">特征编码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%8B%AC%E7%83%AD%E7%A0%81/" rel="tag">独热码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">50</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">监督学习</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%B8%E5%85%B3%E6%80%A7/" rel="tag">相关性</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%B8%E5%85%B3%E7%B3%BB%E6%95%B0/" rel="tag">相关系数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9F%A9%E9%98%B5%E8%BF%90%E7%AE%97/" rel="tag">矩阵运算</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A5%9E%E7%BB%8F%E5%85%83/" rel="tag">神经元</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag">神经网络</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A6%BB%E6%95%A3%E5%8C%96/" rel="tag">离散化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%AF%E5%88%86/" rel="tag">积分</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0/" rel="tag">窗口函数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AB%9E%E8%B5%9B/" rel="tag">竞赛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B2%BE%E5%BA%A6/" rel="tag">精度</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B4%A2%E5%BC%95/" rel="tag">索引</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1/" rel="tag">统计</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag">编程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB/" rel="tag">聚类</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">自动化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%8D%E4%BA%91%E5%9B%BE/" rel="tag">词云图</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/" rel="tag">逻辑回归</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%99%8D%E7%BB%B4/" rel="tag">降维</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97/" rel="tag">随机森林</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%90%E8%97%8F%E5%B1%82/" rel="tag">隐藏层</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/" rel="tag">集成学习</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%92%E6%98%A5/" rel="tag">青春</a><span class="tag-list-count">1</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共1221.5k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2023/01/11/kaggle%E7%BB%9D%E6%8A%80-%E7%A6%BB%E7%BE%A4%E7%82%B9%E5%AE%9A%E4%BD%8D%E4%B8%8E%E5%A4%84%E7%90%86.html';
+          this.page.identifier = '2023/01/11/kaggle绝技-离群点定位与处理.html';
+          this.page.title = 'kaggle绝技-离群点定位与处理';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
