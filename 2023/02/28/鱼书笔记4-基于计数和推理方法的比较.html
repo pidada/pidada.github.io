@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="机器学习,NLP,深度学习," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="尤尔小屋" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="对比计数统计和推理两种方法 本文记录的是书籍《深度学习进阶：自然语言处理》的第四章学习笔记。">
+<meta name="keywords" content="机器学习,NLP,深度学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="鱼书笔记4-基于计数和推理方法的比较">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.renpeter.cn&#x2F;2023&#x2F;02&#x2F;28&#x2F;%E9%B1%BC%E4%B9%A6%E7%AC%94%E8%AE%B04-%E5%9F%BA%E4%BA%8E%E8%AE%A1%E6%95%B0%E5%92%8C%E6%8E%A8%E7%90%86%E6%96%B9%E6%B3%95%E7%9A%84%E6%AF%94%E8%BE%83.html">
+<meta property="og:site_name" content="尤尔小屋">
+<meta property="og:description" content="对比计数统计和推理两种方法 本文记录的是书籍《深度学习进阶：自然语言处理》的第四章学习笔记。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;cd7qk7.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;cz1ofu.png">
+<meta property="og:updated_time" content="2023-02-28T15:43:15.887Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;p.ipic.vip&#x2F;cd7qk7.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    
+    emojis: {
+      className: 'github-emoji'
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.renpeter.cn/2023/02/28/鱼书笔记4-基于计数和推理方法的比较.html"/>
+
+
+
+
+
+  <title>鱼书笔记4-基于计数和推理方法的比较 | 尤尔小屋</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+   <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+    <a href="https://github.com/pidada" target="_blank" rel="noopener"><img style="position: absolute; top: 0; right: 0; border: 0" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_white_ffffff.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">尤尔小屋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay Foolish Stay Hungry</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-link"></i> <br />
+            
+            links
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.renpeter.cn/2023/02/28/%E9%B1%BC%E4%B9%A6%E7%AC%94%E8%AE%B04-%E5%9F%BA%E4%BA%8E%E8%AE%A1%E6%95%B0%E5%92%8C%E6%8E%A8%E7%90%86%E6%96%B9%E6%B3%95%E7%9A%84%E6%AF%94%E8%BE%83.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="PiQianChao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cunshang.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="尤尔小屋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">鱼书笔记4-基于计数和推理方法的比较</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2023-02-28T23:37:16+08:00">
+                2023-2-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NLP/" itemprop="url" rel="index">
+                    <span itemprop="name">NLP</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NLP/%E9%B1%BC%E4%B9%A6/" itemprop="url" rel="index">
+                    <span itemprop="name">鱼书</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2023/02/28/%E9%B1%BC%E4%B9%A6%E7%AC%94%E8%AE%B04-%E5%9F%BA%E4%BA%8E%E8%AE%A1%E6%95%B0%E5%92%8C%E6%8E%A8%E7%90%86%E6%96%B9%E6%B3%95%E7%9A%84%E6%AF%94%E8%BE%83.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2023/02/28/鱼书笔记4-基于计数和推理方法的比较.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  14
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="对比计数统计和推理两种方法">对比计数统计和推理两种方法</h2>
+<p>本文记录的是书籍《深度学习进阶：自然语言处理》的第四章学习笔记。</p>
+<p><img src="https://p.ipic.vip/cd7qk7.jpg" alt=""></p>
+<a id="more"></a>
+<h3 id="基于计数的方法">基于计数的方法</h3>
+<p>基于计数的方法是根据一个单词周围的单词的出现次数来表示该单词。</p>
+<ol>
+<li>生成单词的共现矩阵</li>
+<li>进行降维SVD，获得密集向量</li>
+</ol>
+<p>问题：语料库大的时候出现问题，<strong>维度爆炸和计算量增加</strong>。</p>
+<h3 id="基于推理的方法">基于推理的方法</h3>
+<p>使用神经网络的方法，通常在mini-batch数据上进行学习。</p>
+<p>每次只需要学习部分数据；并且可以使用多台机器、多个GPU并行执行加速运算。</p>
+<p>大致过程：</p>
+<ol>
+<li>基于推理的方法引入某种模型（比如神经网络）</li>
+<li>模型接收的<strong>上下文作为输入</strong>，<strong>输出各个单词的出现概率</strong></li>
+<li>模型产物：获得单词的分布式表示</li>
+</ol>
+<h2 id="神经网络中单词的处理方法">神经网络中单词的处理方法</h2>
+<p>神经网络不能直接处理单词，需要将单词转化成固定长度的向量，使用one-hot编码：</p>
+<ul>
+<li>出现单词的位置用1表示</li>
+<li>没有出现对应单词的位置用0表示</li>
+</ul>
+<h3 id="向量内积np-dot实现">向量内积np.dot实现</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">%matplotlib inline</span><br><span class="line"></span><br><span class="line">c = np.array([[<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>]])</span><br><span class="line">W = np.random.randn(<span class="number">7</span>,<span class="number">3</span>)</span><br><span class="line">h = np.dot(c,W)</span><br><span class="line"></span><br><span class="line">h</span><br></pre></td></tr></table></figure>
+<pre><code>array([[ 0.12477247, -0.25928347, -0.21568563]])
+</code></pre>
+<h3 id="使用MatMul层实现">使用MatMul层实现</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MatMul</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, W)</span>:</span></span><br><span class="line">        self.params = [W]  <span class="comment"># 保存学习的参数；权重矩阵</span></span><br><span class="line">        self.grads = [np.zeros_like(W)]  <span class="comment"># 构造一个和W矩阵维度一致，但是全为0的矩阵</span></span><br><span class="line">        self.x = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 前向传播</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        W, = self.params    <span class="comment"># 参数</span></span><br><span class="line">        out = np.dot(x,W)   <span class="comment"># 矩阵x和矩阵w相乘</span></span><br><span class="line">        self.x = x</span><br><span class="line">        <span class="keyword">return</span> out</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 后向传播</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">backward</span><span class="params">(self, dout)</span>:</span></span><br><span class="line">        W, = self.params</span><br><span class="line">        dx = np.dot(dout, W.T)  <span class="comment"># dout是上游传来的；W.T是把W转置了</span></span><br><span class="line">        dW = np.dot(self.x.T, dout)</span><br><span class="line">        <span class="comment"># grads[0][...] 使用了省略号：可以固定Numpy数组的内存地址，覆盖Numpy数组的元素</span></span><br><span class="line">        self.grads[<span class="number">0</span>][...] = dW  <span class="comment"># 实例变量grads中设置权重的梯度</span></span><br><span class="line">        <span class="keyword">return</span> dx</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">sys.path.append(<span class="string">".."</span>)</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">c = np.array([[<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>]])</span><br><span class="line">W = np.random.randn(<span class="number">7</span>,<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">layer = MatMul(W)  <span class="comment"># 类的实例化</span></span><br><span class="line">h = layer.forward(c)  <span class="comment"># 调用类的forward方法</span></span><br><span class="line"></span><br><span class="line">h</span><br></pre></td></tr></table></figure>
+<pre><code>array([[-0.23997344, -0.90521716,  0.74001086]])
+</code></pre>
+<h2 id="简单的Word2Vec">简单的Word2Vec</h2>
+<p>使用由原版Word2Vec提出来的CBOW( continous bag-of-words)的模型作为神经网络。</p>
+<p>两个经典的Word2Vec中使用的模型：</p>
+<ul>
+<li>CBOW模型</li>
+<li>skip-gram模型</li>
+</ul>
+<h3 id="CBOW模型推理">CBOW模型推理</h3>
+<p>CBOW模型是根据上下文预测目标词的模型。</p>
+<p>模型的输入：上下文，比如<code>['you','goodbye']</code>这样的单词，<strong>但是需要转化为one-hot编码表示</strong>。</p>
+<p>本文中考虑上下文的两个单词，因此模型会有两个输入层。如果是考虑N个单词，则输入层有N个。</p>
+<ul>
+<li>
+<p>从输入层到中间层的变换使用相同的全连接层(权重都是$W_{in}$)</p>
+</li>
+<li>
+<p>从中间层到输出层神经元的变换由另一个全连接层完成(权重是$W_{out}$)</p>
+</li>
+</ul>
+<p><strong>中间层的神经元是各个输入层经全连接层变换后得到的值得平均。</strong></p>
+<p>输出层的神经元是各个单词的得分，它的值越大说明对应单词的出现概率值越高。</p>
+<blockquote>
+<p>得分是指被解释为概率之前的值，对这些得分应用Softmax函数，就可以得到概率值。</p>
+</blockquote>
+<h3 id="代码实现">代码实现</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">sys.path.append(<span class="string">'..'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment">#  上下文的one-hot编码表示</span></span><br><span class="line">c0 = np.array([[<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>]])</span><br><span class="line">c1 = np.array([[<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>]])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 权重的初始值</span></span><br><span class="line">W_in = np.random.randn(<span class="number">7</span>,<span class="number">3</span>)</span><br><span class="line">W_out = np.random.randn(<span class="number">3</span>,<span class="number">7</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成层</span></span><br><span class="line">in_layer0 = MatMul(W_in)  <span class="comment"># 层的内部实现矩阵乘积</span></span><br><span class="line">in_layer1 = MatMul(W_in)</span><br><span class="line">out_layer = MatMul(W_out)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 正向传播过程</span></span><br><span class="line">h0 = in_layer0.forward(c0)</span><br><span class="line">h1 = in_layer1.forward(c1)</span><br><span class="line">h = <span class="number">0.5</span> * (h0 + h1)  <span class="comment"># 中间层的均值</span></span><br><span class="line"></span><br><span class="line">s = out_layer.forward(h)  <span class="comment"># 计算各个单词的得分</span></span><br><span class="line">s</span><br></pre></td></tr></table></figure>
+<pre><code>array([[-0.03647001,  1.22730525, -1.35937841,  1.0817182 ,  1.64785619,
+         1.49898799, -0.18553477]])
+</code></pre>
+<h3 id="CBOW模型的学习">CBOW模型的学习</h3>
+<p>CBOW模型的学习就是调整权重，以使其预测准确。</p>
+<p>CBOW模型 + Softmax层 + Cross Entropy Error层</p>
+<h3 id="Word2Vec的权重和分布式表示">Word2Vec的权重和分布式表示</h3>
+<p>Word2Vec中使用的网络有两个权重，分别是输入侧的$W_{in}$和输出侧的$W_{out}$。</p>
+<p>二者都是保存了单词含义进行了编码的向量，到底该选择哪个权重？最受欢迎的方案：<strong>只使用输入侧的权重</strong></p>
+<h2 id="数据准备">数据准备</h2>
+<h3 id="上下文和目标词">上下文和目标词</h3>
+<ol>
+<li>Word2Vec使用的神经网络的输入是上下文contexts；</li>
+<li>它的正确标签是这些上下文包围在中间的单词，也就是目标词target。</li>
+</ol>
+<h3 id="使用语料库获取上下文和目标词">使用语料库获取上下文和目标词</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 第二章的precess函数 ；经常使用</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">preprocess</span><span class="params">(text)</span>:</span></span><br><span class="line">    text = text.lower()  <span class="comment"># 转成小写</span></span><br><span class="line">    text = text.replace(<span class="string">'.'</span>, <span class="string">' .'</span>)  <span class="comment"># 增加空格</span></span><br><span class="line">    words = text.split(<span class="string">' '</span>)  <span class="comment">#  切割</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 单词和单词ID的对应关系</span></span><br><span class="line">    word_to_id = &#123;&#125;</span><br><span class="line">    id_to_word = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> word <span class="keyword">in</span> words:</span><br><span class="line">        <span class="keyword">if</span> word <span class="keyword">not</span> <span class="keyword">in</span> word_to_id.keys():   <span class="comment"># 原文 if word not in word_to_id:</span></span><br><span class="line">            new_id = len(word_to_id)</span><br><span class="line">            word_to_id[word] = new_id</span><br><span class="line">            id_to_word[new_id] = word</span><br><span class="line">    <span class="comment"># 单词列表-----&gt; 单词ID列表</span></span><br><span class="line">    corpus = np.array([word_to_id[w] <span class="keyword">for</span> w <span class="keyword">in</span> words])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> corpus, word_to_id, id_to_word</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">sys.path.append(<span class="string">'..'</span>)</span><br><span class="line"></span><br><span class="line">text = <span class="string">'You say goodbye and I say hello.'</span></span><br><span class="line">corpus, word_to_id, id_to_word = preprocess(text)</span><br><span class="line"></span><br><span class="line">corpus</span><br></pre></td></tr></table></figure>
+<pre><code>array([0, 1, 2, 3, 4, 1, 5, 6])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id_to_word</span><br></pre></td></tr></table></figure>
+<pre><code>{0: 'you', 1: 'say', 2: 'goodbye', 3: 'and', 4: 'i', 5: 'hello', 6: '.'}
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">corpus[<span class="number">1</span>:<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
+<pre><code>array([1, 2, 3, 4, 1, 5])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_contexts_target</span><span class="params">(corpus, window_size=<span class="number">1</span>)</span>:</span></span><br><span class="line">    target = corpus[window_size:-window_size]  <span class="comment"># 目标词从第2个元素开始（索引号为1）</span></span><br><span class="line"></span><br><span class="line">    contexts = []  <span class="comment"># 二维数据，contexts[0] 保存的就是第0个上下文</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> idx <span class="keyword">in</span> range(window_size, len(corpus) - window_size):</span><br><span class="line">        <span class="comment">#print("idx: ", idx)</span></span><br><span class="line">        cs = []</span><br><span class="line">        <span class="keyword">for</span> t <span class="keyword">in</span> range(-window_size, window_size + <span class="number">1</span>):  <span class="comment"># [-1,2) 即 -1 0 1；</span></span><br><span class="line">            <span class="comment">#print("t: ", t)</span></span><br><span class="line">            <span class="keyword">if</span> t == <span class="number">0</span>:  <span class="comment"># 单词本身跳过；只寻找-1和1的上下文</span></span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            cs.append(corpus[idx + t])</span><br><span class="line">            <span class="comment">#print("cs: \n", cs)</span></span><br><span class="line">        contexts.append(cs)</span><br><span class="line">    <span class="keyword">return</span> np.array(contexts), np.array(target)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">contexts, target = create_contexts_target(corpus, window_size=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">contexts   <span class="comment"># 上下文</span></span><br></pre></td></tr></table></figure>
+<pre><code>array([[0, 2],
+       [1, 3],
+       [2, 4],
+       [3, 1],
+       [4, 5],
+       [1, 6]])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">target   <span class="comment"># 目标值</span></span><br></pre></td></tr></table></figure>
+<pre><code>array([1, 2, 3, 4, 1, 5])
+</code></pre>
+<h3 id="convert-one-hot：转成one-hot编码">convert_one_hot：转成one-hot编码</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">convert_one_hot</span><span class="params">(corpus, vocab_size)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    corpus：单词ID列表；一维或者二维的numpy数组形式</span></span><br><span class="line"><span class="string">    vocab_size：词汇个数</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    N = corpus.shape[<span class="number">0</span>]  <span class="comment">#</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> corpus.ndim == <span class="number">1</span>:</span><br><span class="line">        one_hot = np.zeros((N, vocab_size), dtype=np.int32)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> idx, word_id <span class="keyword">in</span> enumerate(corpus):</span><br><span class="line">            one_hot[idx, word_id] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">elif</span> corpus.ndim == <span class="number">2</span>:</span><br><span class="line">        C = corpus.shape[<span class="number">1</span>]</span><br><span class="line">        one_hot = np.zeros((N, C, vocab_size), dtype=np.int32)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> idx_0, word_ids <span class="keyword">in</span> enumerate(corpus):</span><br><span class="line">            <span class="keyword">for</span> idx_1, word_id <span class="keyword">in</span> enumerate(word_ids):</span><br><span class="line">                one_hot[idx_0, idx_1, word_id] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> one_hot</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#text = 'You say goodbye and I say hello.'</span></span><br><span class="line"><span class="comment">#corpus, word_to_id, id_to_word = preprocess(text)</span></span><br><span class="line"><span class="comment">#contexts, target = create_contexts_target(corpus, window_size=1)</span></span><br><span class="line"></span><br><span class="line">vocab_size = len(word_to_id)</span><br><span class="line">target = convert_one_hot(target, vocab_size)</span><br><span class="line">contexts = convert_one_hot(contexts, vocab_size)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">target  <span class="comment"># 转成One-Hot编码后的形式</span></span><br></pre></td></tr></table></figure>
+<pre><code>array([[0, 1, 0, 0, 0, 0, 0],
+       [0, 0, 1, 0, 0, 0, 0],
+       [0, 0, 0, 1, 0, 0, 0],
+       [0, 0, 0, 0, 1, 0, 0],
+       [0, 1, 0, 0, 0, 0, 0],
+       [0, 0, 0, 0, 0, 1, 0]])
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">contexts  <span class="comment">#  转成One-Hot编码后的形式</span></span><br></pre></td></tr></table></figure>
+<pre><code>array([[[1, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 0, 0, 0, 0]],
+
+       [[0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 1, 0, 0, 0]],
+
+       [[0, 0, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0]],
+
+       [[0, 0, 0, 1, 0, 0, 0],
+        [0, 1, 0, 0, 0, 0, 0]],
+
+       [[0, 0, 0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 0, 1, 0]],
+
+       [[0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1]]])
+</code></pre>
+<h2 id="简单CBOW模型实现">简单CBOW模型实现</h2>
+<h3 id="交叉损失熵Crossentropy-Error">交叉损失熵Crossentropy-Error</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cross_entropy_error</span><span class="params">(y, t)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    交叉损失熵损失的实现</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">if</span> y.ndim == <span class="number">1</span>:</span><br><span class="line">        t = t.reshape(<span class="number">1</span>, t.size)</span><br><span class="line">        y = y.reshape(<span class="number">1</span>, y.size)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 在监督标签为one-hot-vector的情况下，转换为正确解标签的索引</span></span><br><span class="line">    <span class="keyword">if</span> t.size == y.size:</span><br><span class="line">        t = t.argmax(axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    batch_size = y.shape[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> -np.sum(np.log(y[np.arange(batch_size), t] + <span class="number">1e-7</span>)) / batch_size</span><br></pre></td></tr></table></figure>
+<h3 id="SoftmaxWithLoss层实现">SoftmaxWithLoss层实现</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义softmax函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">softmax</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> x.ndim == <span class="number">2</span>:</span><br><span class="line">        x = x - x.max(axis=<span class="number">1</span>, keepdims=<span class="literal">True</span>)</span><br><span class="line">        x = np.exp(x)</span><br><span class="line">        x /= x.sum(axis=<span class="number">1</span>, keepdims=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">elif</span> x.ndim == <span class="number">1</span>:</span><br><span class="line">        x = x - np.max(x)</span><br><span class="line">        x = np.exp(x) / np.sum(np.exp(x))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 基于交叉损失熵的softmax损失层</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SoftmaxWithLoss</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.params, self.grads = [], []</span><br><span class="line">        self.y = <span class="literal">None</span>  <span class="comment"># softmax的输出</span></span><br><span class="line">        self.t = <span class="literal">None</span>  <span class="comment"># 监督标签</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x, t)</span>:</span>  <span class="comment"># 前向传播</span></span><br><span class="line">        self.t = t</span><br><span class="line">        self.y = softmax(x)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 在监督标签为one-hot向量的情况下，转换为正确解标签的索引</span></span><br><span class="line">        <span class="keyword">if</span> self.t.size == self.y.size:</span><br><span class="line">            self.t = self.t.argmax(axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        loss = cross_entropy_error(self.y, self.t)  <span class="comment"># 调用交叉损失熵函数</span></span><br><span class="line">        <span class="keyword">return</span> loss</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">backward</span><span class="params">(self, dout=<span class="number">1</span>)</span>:</span></span><br><span class="line">        batch_size = self.t.shape[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">        dx = self.y.copy()</span><br><span class="line">        dx[np.arange(batch_size), self.t] -= <span class="number">1</span></span><br><span class="line">        dx *= dout</span><br><span class="line">        dx = dx / batch_size</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dx</span><br></pre></td></tr></table></figure>
+<h3 id="SimpleCBOW类实现">SimpleCBOW类实现</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">sys.path.append(<span class="string">'..'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SimpleCBOW</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, vocab_size, hidden_size)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        vocab_size：词汇个数;</span></span><br><span class="line"><span class="string">        hidden_size：中间层的神经元个数</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        V,H = vocab_size, hidden_size</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 权重参数</span></span><br><span class="line">        W_in = <span class="number">0.01</span> * np.random.randn(V,H).astype(<span class="string">'f'</span>)</span><br><span class="line">        W_out = <span class="number">0.01</span> * np.random.randn(H,V).astype(<span class="string">'f'</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 生成层：两个输入侧的MatMul 和 一个输出侧 + Softmax_with_loss层</span></span><br><span class="line">        self.in_layer0 = MatMul(W_in)</span><br><span class="line">        self.in_layer1 = MatMul(W_in)</span><br><span class="line">        self.out_layer = MatMul(W_out)</span><br><span class="line">        self.loss_layer = SoftmaxWithLoss()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 将所有的权重和梯度保存到列表中</span></span><br><span class="line">        layers = [self.in_layer0, self.in_layer1, self.out_layer]</span><br><span class="line"></span><br><span class="line">        self.params, self.grads = [], []</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> layer <span class="keyword">in</span> layers:</span><br><span class="line">            self.params += layer.params</span><br><span class="line">            self.grads += layer.grads</span><br><span class="line"></span><br><span class="line">        <span class="comment">#  将单词的分布式表示设置为成员变量</span></span><br><span class="line">        self.word_vecs = W_in</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 基于上下文的正向传播forward</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, contexts, target)</span>:</span></span><br><span class="line">        h0 = self.in_layer0.forward(contexts[:,<span class="number">0</span>])</span><br><span class="line">        h1 = self.in_layer1.forward(contexts[:,<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">        h = (h0 + h1) / <span class="number">2</span></span><br><span class="line"></span><br><span class="line">        score = self.out_layer.forward(h)</span><br><span class="line">        loss = self.loss_layer.forward(score, target)</span><br><span class="line">        <span class="keyword">return</span> loss</span><br><span class="line"></span><br><span class="line">    <span class="comment">#  反向传播</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">backward</span><span class="params">(self, dout=<span class="number">1</span>)</span>:</span></span><br><span class="line">        ds = self.loss_layer.backward(dout)</span><br><span class="line">        da = self.out_layer.backward(ds)</span><br><span class="line">        da *= <span class="number">0.5</span></span><br><span class="line"></span><br><span class="line">        self.in_layer1.backward(da)</span><br><span class="line">        self.in_layer0.backward(da)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br></pre></td></tr></table></figure>
+<h3 id="基于上下文的正向传播forward">基于上下文的正向传播forward</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># def forward(self, contexts, target):</span></span><br><span class="line"><span class="comment">#     h0 = self.in_layer0.farward(contexts[:,0])</span></span><br><span class="line"><span class="comment">#     h1 = self.in_layer.farward(contexts[:,1])</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#     h = (h0 + h1) / 2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#     score = self.out_layer.farward(h)</span></span><br><span class="line"><span class="comment">#     loss = self.loss_layer.farward(score, target)</span></span><br><span class="line"><span class="comment">#     return loss</span></span><br></pre></td></tr></table></figure>
+<h3 id="CBOW模型的反向传播">CBOW模型的反向传播</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># def backward(self, dout=1):</span></span><br><span class="line"><span class="comment">#     ds = self.loss_layer.backward(dout)</span></span><br><span class="line"><span class="comment">#     da = self.out_layer.backward(ds)</span></span><br><span class="line"><span class="comment">#     da *= 0.5</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#     self.in_layer1.backward(da)</span></span><br><span class="line"><span class="comment">#     self.in_layer0.backward(da)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#     return None</span></span><br></pre></td></tr></table></figure>
+<h3 id="Trainer类实现">Trainer类实现</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#  参数去重</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">remove_duplicate</span><span class="params">(params, grads)</span>:</span></span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    将参数列表中重复的权重整合为1个，</span></span><br><span class="line"><span class="string">    加上与该权重对应的梯度</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    params, grads = params[:], grads[:]  <span class="comment"># 副本</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        find_flg = <span class="literal">False</span></span><br><span class="line">        L = len(params)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, L - <span class="number">1</span>):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(i + <span class="number">1</span>, L):</span><br><span class="line">                <span class="comment"># 在共享权重的情况下</span></span><br><span class="line">                <span class="keyword">if</span> params[i] <span class="keyword">is</span> params[j]:</span><br><span class="line">                    grads[i] += grads[j]  <span class="comment"># 加上梯度</span></span><br><span class="line">                    find_flg = <span class="literal">True</span></span><br><span class="line">                    params.pop(j)</span><br><span class="line">                    grads.pop(j)</span><br><span class="line">                <span class="comment"># 在作为转置矩阵共享权重的情况下（weight tying）</span></span><br><span class="line">                <span class="keyword">elif</span> params[i].ndim == <span class="number">2</span> <span class="keyword">and</span> params[j].ndim == <span class="number">2</span> <span class="keyword">and</span> \</span><br><span class="line">                     params[i].T.shape == params[j].shape <span class="keyword">and</span> np.all(params[i].T == params[j]):</span><br><span class="line">                    grads[i] += grads[j].T</span><br><span class="line">                    find_flg = <span class="literal">True</span></span><br><span class="line">                    params.pop(j)</span><br><span class="line">                    grads.pop(j)</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> find_flg:</span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line">            <span class="keyword">if</span> find_flg:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> find_flg:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> params, grads</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trainer</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, model, optimizer)</span>:</span></span><br><span class="line">            self.model = model</span><br><span class="line">            self.optimizer = optimizer</span><br><span class="line">            self.loss_list = []</span><br><span class="line">            self.eval_interval = <span class="literal">None</span></span><br><span class="line">            self.current_epoch = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fit</span><span class="params">(self, x, t, max_epoch=<span class="number">10</span>, batch_size=<span class="number">32</span>, max_grad=None, eval_interval=<span class="number">20</span>)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        x: 输入数据</span></span><br><span class="line"><span class="string">        t: 监督标签</span></span><br><span class="line"><span class="string">        max_epoch: 进行学习的epoch数</span></span><br><span class="line"><span class="string">        batch_size: mini-batch的大小</span></span><br><span class="line"><span class="string">        max_grad: 梯度的最大范数</span></span><br><span class="line"><span class="string">        eval_interval: 输出结果的间隔——迭代次数</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        data_size = len(x)</span><br><span class="line">        max_iters = data_size // batch_size</span><br><span class="line">        self.eval_interval = eval_interval</span><br><span class="line">        model, optimizer = self.model, self.optimizer</span><br><span class="line">        total_loss = <span class="number">0</span></span><br><span class="line">        loss_count = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        start_time = time.time()</span><br><span class="line">        <span class="keyword">for</span> epoch <span class="keyword">in</span> range(max_epoch):</span><br><span class="line">            <span class="comment"># 打乱</span></span><br><span class="line">            idx = np.random.permutation(np.arange(data_size))</span><br><span class="line">            x = x[idx]</span><br><span class="line">            t = t[idx]</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> iters <span class="keyword">in</span> range(max_iters):</span><br><span class="line">                batch_x = x[iters*batch_size:(iters+<span class="number">1</span>)*batch_size]</span><br><span class="line">                batch_t = t[iters*batch_size:(iters+<span class="number">1</span>)*batch_size]</span><br><span class="line"></span><br><span class="line">                <span class="comment"># 计算梯度，更新参数</span></span><br><span class="line">                loss = model.forward(batch_x, batch_t)</span><br><span class="line">                model.backward()</span><br><span class="line"></span><br><span class="line">                <span class="comment"># 参数去重</span></span><br><span class="line">                params, grads = remove_duplicate(model.params, model.grads)  <span class="comment"># 将共享的权重整合为1个</span></span><br><span class="line">                <span class="keyword">if</span> max_grad <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">                    clip_grads(grads, max_grad)</span><br><span class="line">                optimizer.update(params, grads)</span><br><span class="line">                total_loss += loss</span><br><span class="line">                loss_count += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">                <span class="comment"># 评价</span></span><br><span class="line">                <span class="keyword">if</span> (eval_interval <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>) <span class="keyword">and</span> (iters % eval_interval) == <span class="number">0</span>:</span><br><span class="line">                    avg_loss = total_loss / loss_count</span><br><span class="line">                    elapsed_time = time.time() - start_time</span><br><span class="line">                    self.loss_list.append(float(avg_loss))</span><br><span class="line">                    total_loss, loss_count = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line"></span><br><span class="line">            self.current_epoch += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">plot</span><span class="params">(self, ylim=None)</span>:</span></span><br><span class="line">        x = np.arange(len(self.loss_list))</span><br><span class="line">        <span class="keyword">if</span> ylim <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            plt.ylim(*ylim)</span><br><span class="line">        plt.plot(x, self.loss_list, label=<span class="string">'train'</span>)</span><br><span class="line">        plt.xlabel(<span class="string">'iterations (x'</span> + str(self.eval_interval) + <span class="string">')'</span>)</span><br><span class="line">        plt.ylabel(<span class="string">'loss'</span>)</span><br><span class="line">        plt.show()</span><br></pre></td></tr></table></figure>
+<h3 id="SGD优化">SGD优化</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SGD</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, lr=<span class="number">0.05</span>)</span>:</span></span><br><span class="line">        self.lr = lr  <span class="comment"># 学习率设置</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(self, params, grads)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(params)):</span><br><span class="line">            params[i] -= self.lr * grads[i]  <span class="comment"># 参数更新</span></span><br></pre></td></tr></table></figure>
+<h3 id="案例实战">案例实战</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">window_size = <span class="number">1</span></span><br><span class="line">hidden_size = <span class="number">5</span></span><br><span class="line">batch_size = <span class="number">3</span></span><br><span class="line">max_epoch = <span class="number">1000</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#  实际数据</span></span><br><span class="line">text = <span class="string">'You say goodbye and I say hello.'</span></span><br><span class="line">corpus, word_to_id, id_to_word = preprocess(text)  <span class="comment"># 数据预处理</span></span><br><span class="line">contexts, target = create_contexts_target(corpus, window_size=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">vocab_size = len(word_to_id)</span><br><span class="line">target = convert_one_hot(target, vocab_size)</span><br><span class="line">contexts = convert_one_hot(contexts, vocab_size)</span><br><span class="line"></span><br><span class="line">model = SimpleCBOW(vocab_size, hidden_size)</span><br><span class="line">optimizer = SGD()</span><br><span class="line">trainer = Trainer(model, optimizer)</span><br><span class="line">trainer.fit(contexts, target, max_epoch, batch_size)</span><br><span class="line">trainer.plot()</span><br></pre></td></tr></table></figure>
+<p><img src="https://p.ipic.vip/cz1ofu.png" alt=""></p>
+<p>​</p>
+<h2 id="词向量权重和ID分布式表示">词向量权重和ID分布式表示</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">word_vecs = model.word_vecs  <span class="comment"># 变量权重</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> word_id, word <span class="keyword">in</span> id_to_word.items():</span><br><span class="line">    print(word, word_vecs[word_id])</span><br></pre></td></tr></table></figure>
+<pre><code>you [ 0.56529504 -0.89804494  2.2253568  -0.06463418 -1.1290963 ]
+say [-1.1766486   0.99819845 -1.1207973   0.6008937   1.1576382 ]
+goodbye [ 1.5599341   0.2788804  -0.38262236 -0.35986307 -1.1309035 ]
+and [-0.8373688  -0.9373508  -1.2509673   1.8487976   0.51270753]
+i [ 1.593292   0.2917557 -0.3518384 -0.3507546 -1.129358 ]
+hello [ 0.5445614  -0.89658004  2.2065814  -0.07632335 -1.112859  ]
+. [-0.3468702   1.9544731   0.13033707 -1.2471999   0.658087  ]
+</code></pre>
+<p>将单词表示为了密集向量，这就是单词的分布式表示</p>
+
+      
+    </div>
+    
+    
+    
+
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2023/02/28/%E9%B1%BC%E4%B9%A6%E7%AC%94%E8%AE%B04-%E5%9F%BA%E4%BA%8E%E8%AE%A1%E6%95%B0%E5%92%8C%E6%8E%A8%E7%90%86%E6%96%B9%E6%B3%95%E7%9A%84%E6%AF%94%E8%BE%83.html">鱼书笔记4-基于计数和推理方法的比较</a></p>
+  <p><span>发布时间:</span>2023年02月28日 - 23:02</p>
+  <p><span>原始链接:</span><a href="/2023/02/28/%E9%B1%BC%E4%B9%A6%E7%AC%94%E8%AE%B04-%E5%9F%BA%E4%BA%8E%E8%AE%A1%E6%95%B0%E5%92%8C%E6%8E%A8%E7%90%86%E6%96%B9%E6%B3%95%E7%9A%84%E6%AF%94%E8%BE%83.html" title="鱼书笔记4-基于计数和推理方法的比较">http://www.renpeter.cn/2023/02/28/%E9%B1%BC%E4%B9%A6%E7%AC%94%E8%AE%B04-%E5%9F%BA%E4%BA%8E%E8%AE%A1%E6%95%B0%E5%92%8C%E6%8E%A8%E7%90%86%E6%96%B9%E6%B3%95%E7%9A%84%E6%AF%94%E8%BE%83.html</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://www.renpeter.cn/2023/02/28/%E9%B1%BC%E4%B9%A6%E7%AC%94%E8%AE%B04-%E5%9F%BA%E4%BA%8E%E8%AE%A1%E6%95%B0%E5%92%8C%E6%8E%A8%E7%90%86%E6%96%B9%E6%B3%95%E7%9A%84%E6%AF%94%E8%BE%83.html"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+	  $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+	    });
+    });  
+</script>
+
+      
+</div>
+
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>Coffee or Tea</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="PiQianChao WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/NLP/" rel="tag"># NLP</a>
+          
+            <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag"># 深度学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2023/02/23/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%BB%8E0%E5%85%A5%E9%97%A8-%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92.html" rel="next" title="机器学习从0入门-线性回归">
+                <i class="fa fa-chevron-left"></i> 机器学习从0入门-线性回归
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2023/02/28/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B%E5%AE%9E%E6%88%98-%E6%95%B0%E6%8D%AE%E6%8E%A2%E7%B4%A2EDA.html" rel="prev" title="机器学习算法竞赛实战-数据探索EDA">
+                机器学习算法竞赛实战-数据探索EDA <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cunshang.jpg"
+                alt="PiQianChao" />
+            
+              <p class="site-author-name" itemprop="name">PiQianChao</p>
+              <p class="site-description motion-element" itemprop="description">My Blog</p>
+          </div>
+            
+           <iframe  frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=694660&auto=1&height=66"></iframe>
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">816</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">106</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">154</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/pidada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:pichaochao1119@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#对比计数统计和推理两种方法"><span class="nav-number">1.</span> <span class="nav-text">对比计数统计和推理两种方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基于计数的方法"><span class="nav-number">1.1.</span> <span class="nav-text">基于计数的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于推理的方法"><span class="nav-number">1.2.</span> <span class="nav-text">基于推理的方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#神经网络中单词的处理方法"><span class="nav-number">2.</span> <span class="nav-text">神经网络中单词的处理方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#向量内积np-dot实现"><span class="nav-number">2.1.</span> <span class="nav-text">向量内积np.dot实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用MatMul层实现"><span class="nav-number">2.2.</span> <span class="nav-text">使用MatMul层实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简单的Word2Vec"><span class="nav-number">3.</span> <span class="nav-text">简单的Word2Vec</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CBOW模型推理"><span class="nav-number">3.1.</span> <span class="nav-text">CBOW模型推理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码实现"><span class="nav-number">3.2.</span> <span class="nav-text">代码实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CBOW模型的学习"><span class="nav-number">3.3.</span> <span class="nav-text">CBOW模型的学习</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Word2Vec的权重和分布式表示"><span class="nav-number">3.4.</span> <span class="nav-text">Word2Vec的权重和分布式表示</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据准备"><span class="nav-number">4.</span> <span class="nav-text">数据准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#上下文和目标词"><span class="nav-number">4.1.</span> <span class="nav-text">上下文和目标词</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用语料库获取上下文和目标词"><span class="nav-number">4.2.</span> <span class="nav-text">使用语料库获取上下文和目标词</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#convert-one-hot：转成one-hot编码"><span class="nav-number">4.3.</span> <span class="nav-text">convert_one_hot：转成one-hot编码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简单CBOW模型实现"><span class="nav-number">5.</span> <span class="nav-text">简单CBOW模型实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#交叉损失熵Crossentropy-Error"><span class="nav-number">5.1.</span> <span class="nav-text">交叉损失熵Crossentropy-Error</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SoftmaxWithLoss层实现"><span class="nav-number">5.2.</span> <span class="nav-text">SoftmaxWithLoss层实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SimpleCBOW类实现"><span class="nav-number">5.3.</span> <span class="nav-text">SimpleCBOW类实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于上下文的正向传播forward"><span class="nav-number">5.4.</span> <span class="nav-text">基于上下文的正向传播forward</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CBOW模型的反向传播"><span class="nav-number">5.5.</span> <span class="nav-text">CBOW模型的反向传播</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Trainer类实现"><span class="nav-number">5.6.</span> <span class="nav-text">Trainer类实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SGD优化"><span class="nav-number">5.7.</span> <span class="nav-text">SGD优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例实战"><span class="nav-number">5.8.</span> <span class="nav-text">案例实战</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#词向量权重和ID分布式表示"><span class="nav-number">6.</span> <span class="nav-text">词向量权重和ID分布式表示</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+	
+	
+		<script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+		<script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+		<div class="widget-wrap">
+			<h3 class="widget-title">标签云</h3>
+			<div id="myCanvasContainer" class="widget tagcloud">
+			<canvas width="250" height="250" id="resCanvas" style="width=100%">
+				 <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CNN/" rel="tag">CNN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSV/" rel="tag">CSV</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CV/" rel="tag">CV</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EDA/" rel="tag">EDA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hadoop/" rel="tag">Hadoop</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hive/" rel="tag">Hive</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JJ/" rel="tag">JJ</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jieba/" rel="tag">Jieba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KDE/" rel="tag">KDE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kats/" rel="tag">Kats</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LaTex/" rel="tag">LaTex</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LeetCode/" rel="tag">LeetCode</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MSE/" rel="tag">MSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">67</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NN/" rel="tag">NN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PCA/" rel="tag">PCA</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVM/" rel="tag">SVM</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TensorFlow/" rel="tag">TensorFlow</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tool/" rel="tag">Tool</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/d3/" rel="tag">d3</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dash/" rel="tag">dash</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a><span class="tag-list-count">42</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/group/" rel="tag">group</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/highcharts/" rel="tag">highcharts</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jupyter/" rel="tag">jupyter</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kaggle/" rel="tag">kaggle</a><span class="tag-list-count">24</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/keras/" rel="tag">keras</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/markdown/" rel="tag">markdown</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/matplotlib/" rel="tag">matplotlib</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/numpy/" rel="tag">numpy</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pandas/" rel="tag">pandas</a><span class="tag-list-count">151</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/plotly/" rel="tag">plotly</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/px/" rel="tag">px</a><span class="tag-list-count">35</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyecharts/" rel="tag">pyecharts</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pyg2plot/" rel="tag">pyg2plot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">97</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/seaborn/" rel="tag">seaborn</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shap/" rel="tag">shap</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sklearn/" rel="tag">sklearn</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spider/" rel="tag">spider</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlzoo/" rel="tag">sqlzoo</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tableau/" rel="tag">tableau</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/uci/" rel="tag">uci</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%8C%E5%88%86%E7%B1%BB/" rel="tag">二分类</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%92%E8%81%94%E7%BD%91/" rel="tag">互联网</a><span class="tag-list-count">38</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%A7%E5%93%81/" rel="tag">产品</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BC%98%E5%8C%96%E5%99%A8/" rel="tag">优化器</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%AC%E4%BC%97%E5%8F%B7/" rel="tag">公众号</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%85%B3%E8%81%94%E5%88%86%E6%9E%90/" rel="tag">关联分析</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%99%E4%BD%9C/" rel="tag">写作</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%B1%BB/" rel="tag">分类</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%BA%E5%9F%9F%E9%93%BE/" rel="tag">区域链</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%B7%E7%A7%AF/" rel="tag">卷积</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag">卷积神经网络</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AC%E5%9B%9E%E7%8E%87/" rel="tag">召回率</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">可视化</a><span class="tag-list-count">125</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E8%A7%A3%E9%87%8A%E6%80%A7/" rel="tag">可解释性</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%B4%E6%81%A9%E8%BE%BE/" rel="tag">吴恩达</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E5%BD%92/" rel="tag">回归</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%9E%E5%BD%92%E5%88%86%E6%9E%90/" rel="tag">回归分析</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/" rel="tag">图像处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%BA%E9%87%91/" rel="tag">基金</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A9%E6%B1%A0/" rel="tag">天池</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%97%E5%85%B8/" rel="tag">字典</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%B9%E5%99%A8/" rel="tag">容器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AF%BC%E6%95%B0/" rel="tag">导数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B2%AD%E5%9B%9E%E5%BD%92/" rel="tag">岭回归</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BB%BA%E6%A8%A1/" rel="tag">建模</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%80%E6%BA%90/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B/" rel="tag">异常检测</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%A0%E9%87%8F/" rel="tag">张量</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BD%92%E4%B8%80%E5%8C%96/" rel="tag">归一化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AA%E7%8E%AF/" rel="tag">循环</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%84%9F%E5%8F%97%E9%87%8E/" rel="tag">感受野</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%95%E8%B5%84/" rel="tag">投资</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%BD%E6%A0%B7/" rel="tag">抽样</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="tag">推荐系统</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/" rel="tag">支持向量机</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E5%AD%A6/" rel="tag">数学</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a><span class="tag-list-count">90</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" rel="tag">数据处理</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a><span class="tag-list-count">104</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" rel="tag">数据挖掘</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E6%8E%A2%E7%B4%A2/" rel="tag">数据探索</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86/" rel="tag">文本处理</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E6%B8%B8/" rel="tag">旅游</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3/" rel="tag">无监督</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">无监督学习</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E5%BA%8F%E5%88%86%E6%9E%90/" rel="tag">时序分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97/" rel="tag">时间序列</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a><span class="tag-list-count">142</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9D%8E%E6%B2%90/" rel="tag">李沐</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A0%91%E6%A8%A1%E5%9E%8B/" rel="tag">树模型</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A2%AF%E5%BA%A6/" rel="tag">梯度</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D/" rel="tag">梯度下降</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AC%A0%E9%87%87%E6%A0%B7/" rel="tag">欠采样</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AD%A3%E5%88%99%E5%8C%96/" rel="tag">正则化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%A0%E5%8C%96/" rel="tag">池化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%9C%B3/" rel="tag">深圳</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a><span class="tag-list-count">44</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E6%BC%82/" rel="tag">深漂</a><span class="tag-list-count">22</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/" rel="tag">激活函数</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%88%AC%E8%99%AB/" rel="tag">爬虫</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%9B%E5%AE%A2/" rel="tag">牛客</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/" rel="tag">特征工程</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%89%B9%E5%BE%81%E7%BC%96%E7%A0%81/" rel="tag">特征编码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%8B%AC%E7%83%AD%E7%A0%81/" rel="tag">独热码</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a><span class="tag-list-count">50</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">监督学习</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%B8%E5%85%B3%E6%80%A7/" rel="tag">相关性</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9B%B8%E5%85%B3%E7%B3%BB%E6%95%B0/" rel="tag">相关系数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%9F%A9%E9%98%B5%E8%BF%90%E7%AE%97/" rel="tag">矩阵运算</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A5%9E%E7%BB%8F%E5%85%83/" rel="tag">神经元</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag">神经网络</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A6%BB%E6%95%A3%E5%8C%96/" rel="tag">离散化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A7%AF%E5%88%86/" rel="tag">积分</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0/" rel="tag">窗口函数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AB%9E%E8%B5%9B/" rel="tag">竞赛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B2%BE%E5%BA%A6/" rel="tag">精度</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%B4%A2%E5%BC%95/" rel="tag">索引</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/" rel="tag">线性回归</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%8F%E6%B5%8E/" rel="tag">经济</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E8%AE%A1/" rel="tag">统计</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A0%81/" rel="tag">编码</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag">编程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BE%8E%E9%A3%9F/" rel="tag">美食</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB/" rel="tag">聚类</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">自动化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E6%88%91%E7%AE%A1%E7%90%86/" rel="tag">自我管理</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" rel="tag">自然语言处理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/" rel="tag">计算机</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%8D%E4%BA%91%E5%9B%BE/" rel="tag">词云图</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%90%E8%90%A5/" rel="tag">运营</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%92%E5%BD%92/" rel="tag">递归</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/" rel="tag">逻辑回归</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%99%8D%E7%BB%B4/" rel="tag">降维</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97/" rel="tag">随机森林</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%90%E8%97%8F%E5%B1%82/" rel="tag">隐藏层</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/" rel="tag">集成学习</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%92%E6%98%A5/" rel="tag">青春</a><span class="tag-list-count">1</span></li></ul>
+			</canvas>
+			</div>
+		</div>
+	
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PiQianChao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共1238k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="true"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://pidada.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://www.renpeter.cn/2023/02/28/%E9%B1%BC%E4%B9%A6%E7%AC%94%E8%AE%B04-%E5%9F%BA%E4%BA%8E%E8%AE%A1%E6%95%B0%E5%92%8C%E6%8E%A8%E7%90%86%E6%96%B9%E6%B3%95%E7%9A%84%E6%AF%94%E8%BE%83.html';
+          this.page.identifier = '2023/02/28/鱼书笔记4-基于计数和推理方法的比较.html';
+          this.page.title = '鱼书笔记4-基于计数和推理方法的比较';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://pidada.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+</body>
+</html>
